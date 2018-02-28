@@ -32,8 +32,7 @@ view_Create = class {
       control.create(
         nick.value().trim(),
         invertiaKey.value().trim(),
-        infomercadosKey.value().trim(),
-        counter
+        infomercadosKey.value().trim()
       );
     });
     const setKeys = $("button").html(_("Set Keys")).on("click", ev => {
@@ -43,7 +42,6 @@ view_Create = class {
         infomercadosKey.value().trim()
       );
     });
-    const counter = $("span").klass("frame");
     control.dom().show("create", $("table").att("align", "center")
       .add($("tr")
         .add($("td").html(_("Nick")))
@@ -60,9 +58,6 @@ view_Create = class {
         .add($("td").add(setKeys)))
       .add($("tr")
         .add($("td").att("colspan", 4)))
-      .add($("tr")
-        .add($("td").att("colspan", 4).style("text-align:center")
-          .add(counter)))
     );
   }
 }

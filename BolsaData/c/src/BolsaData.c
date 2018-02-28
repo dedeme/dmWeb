@@ -112,6 +112,7 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Map/*Json*/ *rqm) {
       jmap_pobject(m, "db", map_new());
     }
     jmap_parray(m, "trash", read_trash(cgi));
+
     return cgi_ok(cgi, m);
 
   // ------------------------------------------------------- setDb
@@ -132,7 +133,7 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Map/*Json*/ *rqm) {
     if (file_exists(path)) {
       jmap_pstring(m, "quotes", file_read(path));
     } else {
-      jmap_pstring(m, "quotes", "");
+      jmap_pstring(m, "quotes", "200080227:-1:-1:-1:-1:-1:false");
     }
 
     return cgi_ok(cgi, m);
@@ -147,9 +148,27 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Map/*Json*/ *rqm) {
 
     return cgi_ok(cgi, map_new());
 
+  // --------------------------------------------------------- addNick
+  } else if (!strcmp(rq, "addNick")) {
+    char *file = str_printf("%s.db", jmap_gstring(rqm, "nick"));
+    file_write(
+      path_cat(home, "data", file, NULL),
+      "200080227:-1:-1:-1:-1:-1:false"
+    );
+
+    return cgi_ok(cgi, map_new());
+
+  // --------------------------------------------------------- delNick
+  } else if (!strcmp(rq, "delNick")) {
+    char *file = str_printf("%s.db", jmap_gstring(rqm, "nick"));
+    char *path = path_cat(home, "data", file, NULL);
+    file_del(path);
+
+    return cgi_ok(cgi, map_new());
+
   // ------------------------------------------------------- getSource
   } else if (!strcmp(rq, "getSource")) {
-    char*url = jmap_gstring(rqm, "url");
+    char *url = jmap_gstring(rqm, "url");
     Arr/*char*/ *page = ext_wget(url);
 
     char *fail = "";

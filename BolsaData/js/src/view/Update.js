@@ -128,9 +128,7 @@ view_Update = class {
         .add($("td").style("text-align:left;white-space:nowrap;")
           .add(pagesSpan)))
       .add($("tr")
-        .add($("td").add(
-          Ui.link(ev => { control.quoteTranslator(false); })
-            .add(Ui.img("transOff"))))
+        .add($("td").style("width:5px;"))
         .add($("td").style("width:5px;"))
         .add($("td").add(db.quoteTranslator()
           ? Ui.link(ev => { control.quoteTranslator(false); })
