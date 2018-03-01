@@ -6,7 +6,7 @@
 #ifndef UTILS_H
   # define UTILS_H
 
-#include <Cgi.h>
+#include <dm/Cgi.h>
 
 ///
 CgiRp *send_conf(Cgi *cgi);

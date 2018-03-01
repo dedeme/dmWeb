@@ -2,8 +2,7 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 
-#include <dm.h>
-#include <Cgi.h>
+#include <dm/dm.h>
 #include "BolsaData.h"
 
 static char *app_name = "BolsaData";
