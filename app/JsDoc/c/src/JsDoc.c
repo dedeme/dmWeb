@@ -4,7 +4,7 @@
 
 #include "JsDoc.h"
 #include "utils.h"
-#include <dm/dm.h>
+#include <dmc/all.h>
 
 static char *app_name = "JsDoc";
 static char *app_dir = "dmcgi/JsDoc";

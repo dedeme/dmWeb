@@ -98,7 +98,7 @@ view_Trace = class {
         while (true) {
           let cost = stocks * open;
           cost += appFee(cost);
-          if (cost < stockCash) {
+          if (cost <= stockCash) {
             return -cost;
           }
           --stocks;

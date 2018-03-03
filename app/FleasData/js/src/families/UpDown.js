@@ -94,12 +94,12 @@ families_UpDown = class {
     function traceError(quotes, t, r) {
       const textra = t.extra();
       const len =  self.len() + 5;
-      const quotesExp = Quote.getN(
-        quotes, t.nick(), t.quote(). date(), len - 1)
-      ;
-      const closesExp = It.from(quotesExp).map(q => "" + q.close()).to();
+      let quotesExp = Quote.getN(quotes, t.nick(), t.quote(). date(), len);
+      quotesExp = It.from(quotesExp).take(quotesExp.length - 1).to();
+      const closesExp = It.from(quotesExp)
+        .map(q => "" + q.close()).to();
       const old = closesExp[0];
-      const lastClose = closesExp[len - 2];
+      const lastClose = +closesExp[len - 2];
 
       return r ||
         !It.from(textra[0]).map(c => "" + c).eq(It.from(closesExp)) ||
@@ -116,9 +116,8 @@ families_UpDown = class {
     function traceBody(quotes, t) {
       const textra = t.extra();
       const len = self.len() + 5;
-      const quotesExp = Quote.getN(
-        quotes, t.nick(), t.quote().date(), len - 1
-      );
+      let quotesExp = Quote.getN(quotes, t.nick(), t.quote().date(), len);
+      quotesExp = It.from(quotesExp).take(quotesExp.length - 1).to();
       const closesExp = It.from(quotesExp).map(q => q.close()).to();
       const old = closesExp[0];
       const lastClose = closesExp[len - 2];

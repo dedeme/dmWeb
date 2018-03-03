@@ -2,7 +2,7 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "utils.h"
-#include <dm/dm.h>
+#include <dmc/all.h>
 
 static char *data_dir(Cgi *cgi) {
   char *data_dir = path_cat(cgi_home(cgi), "data", NULL);
