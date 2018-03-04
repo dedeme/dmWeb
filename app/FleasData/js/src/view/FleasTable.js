@@ -81,8 +81,8 @@ view_FleasTable = class {
             .add(tdl().html(intFormat(f.cycle())))
             .add(tdl().html(intFormat(5000 + f.bet() * 1000)))
             .add(td().html(
-                f.ibex() === 0 ? _("Out")
-                : f.ibex() === 1 ? _("In") : _("Mix")
+                f.ibex() === 0 ? _("In")
+                : f.ibex() === 1 ? _("Out") : _("Mix")
               ))
             .addIt(specialCols(f, span))
             .add(tdl().html(floatFormat(f.stats().cash())))

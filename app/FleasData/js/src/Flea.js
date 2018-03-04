@@ -5,6 +5,7 @@ goog.provide("Flea");
 
 goog.require("Stat");
 goog.require("Gen");
+goog.require("families_Family");
 goog.require("families_BuyAndHold");
 goog.require("families_UpDown");
 goog.require("families_MovingAverage");
@@ -13,12 +14,14 @@ goog.require("families_Rsi");
 goog.require("families_Follow");
 goog.require("families_FollowMa");
 goog.require("families_FollowWma");
+goog.require("families_Best");
+goog.require("families_Ibest");
 
 Flea = class {
   /**
    * @param {number} id
    * @param {number} cycle
-   * @param {number} family
+   * @param {!families_Family} family
    * @param {number} bet
    * @param {number} ibex
    * @param {!Stat} stats
@@ -54,7 +57,7 @@ Flea = class {
     return this._cycle;
   }
 
-  /** @return {number} */
+  /** @return {!families_Family} */
   family () {
     return this._family;
   }
@@ -87,34 +90,45 @@ Flea = class {
     function gen (g) {
       return Gen.restore(g).actualOption();
     }
-    function extra(family) {
-      switch (family) {
-        case Flea.buyAndHold(): return new families_BuyAndHold(
-          ).mkFamily();
-        case Flea.upDown(): return new families_UpDown(
+    function extra(fm) {
+      if (fm.opt() == Flea.familyBest()) {
+        return new families_Best(
             gen(serial[6][0]), gen(serial[6][1]), gen(serial[6][2])
           ).mkFamily();
-        case Flea.movingAverage(): return new families_MovingAverage(
+      } else if (fm.opt() == Flea.familyIbexBest()) {
+        return new families_Ibest(
             gen(serial[6][0]), gen(serial[6][1]), gen(serial[6][2])
           ).mkFamily();
-        case Flea.wmovingAverage(): return new families_WmovingAverage(
-            gen(serial[6][0]), gen(serial[6][1]), gen(serial[6][2])
-          ).mkFamily();
-        case Flea.rsi(): return new families_Rsi(
-            gen(serial[6][0]), gen(serial[6][1]), gen(serial[6][2])
-          ).mkFamily();
-        case Flea.follow(): return new families_Follow(
-            gen(serial[6][0]), gen(serial[6][1]), gen(serial[6][2])
-          ).mkFamily();
-        case Flea.followMa(): return new families_FollowMa(
-            gen(serial[6][0]), gen(serial[6][1]), gen(serial[6][2]),
-            gen(serial[6][3])
-          ).mkFamily();
-        case Flea.followWma(): return new families_FollowWma(
-            gen(serial[6][0]), gen(serial[6][1]), gen(serial[6][2]),
-            gen(serial[6][3])
-          ).mkFamily();
-        default: throw ("'" + family + "': Unkon family");
+      } else {
+        const family = fm.gen().actualOption();
+        switch (family) {
+          case Flea.buyAndHold(): return new families_BuyAndHold(
+            ).mkFamily();
+          case Flea.upDown(): return new families_UpDown(
+              gen(serial[6][0]), gen(serial[6][1]), gen(serial[6][2])
+            ).mkFamily();
+          case Flea.movingAverage(): return new families_MovingAverage(
+              gen(serial[6][0]), gen(serial[6][1]), gen(serial[6][2])
+            ).mkFamily();
+          case Flea.wmovingAverage(): return new families_WmovingAverage(
+              gen(serial[6][0]), gen(serial[6][1]), gen(serial[6][2])
+            ).mkFamily();
+          case Flea.rsi(): return new families_Rsi(
+              gen(serial[6][0]), gen(serial[6][1]), gen(serial[6][2])
+            ).mkFamily();
+          case Flea.follow(): return new families_Follow(
+              gen(serial[6][0]), gen(serial[6][1]), gen(serial[6][2])
+            ).mkFamily();
+          case Flea.followMa(): return new families_FollowMa(
+              gen(serial[6][0]), gen(serial[6][1]), gen(serial[6][2]),
+              gen(serial[6][3])
+            ).mkFamily();
+          case Flea.followWma(): return new families_FollowWma(
+              gen(serial[6][0]), gen(serial[6][1]), gen(serial[6][2]),
+              gen(serial[6][3])
+            ).mkFamily();
+          default: throw ("'" + family + "': Unkon family");
+        }
       }
     }
 
@@ -122,8 +136,7 @@ Flea = class {
       return null;
     }
 
-    const family = gen(serial[2])
-
+    const family = families_Family.restore(serial[2]);
     return new Flea (
       serial[0],
       serial[1],
@@ -183,21 +196,50 @@ Flea = class {
     return 8;
   }
 
+  /** @return {number} */
+  static familiesAll () {
+    return 0;
+  }
+
+  /** @return {number} */
+  static familyBest () {
+    return 1;
+  }
+
+  /** @return {number} */
+  static familyIbexBest () {
+    return 2;
+  }
+
   /**
    * @param {number} family
    * @return {string}
    */
-  static familyNames(family) {
+  static familyNamesById(family) {
     switch(family) {
-    case Flea.buyAndHold(): return "BuyAndHold";
-    case Flea.upDown(): return "Up-Down";
-    case Flea.movingAverage(): return "MovingAverage";
-    case Flea.wmovingAverage(): return "WmovingAverage";
-    case Flea.rsi(): return "Rsi";
-    case Flea.follow(): return "Follow";
-    case Flea.followMa(): return "FollowMa";
-    case Flea.followWma(): return "FollowWma";
-    default: throw ("'" + family + "': Unkown family");
+      case Flea.buyAndHold(): return "BuyAndHold";
+      case Flea.upDown(): return "Up-Down";
+      case Flea.movingAverage(): return "MovingAverage";
+      case Flea.wmovingAverage(): return "WmovingAverage";
+      case Flea.rsi(): return "Rsi";
+      case Flea.follow(): return "Follow";
+      case Flea.followMa(): return "FollowMa";
+      case Flea.followWma(): return "FollowWma";
+      default: throw ("'" + family + "': Unkown family");
+    }
+  }
+
+  /**
+   * @param {!families_Family} fm
+   * @return {string}
+   */
+  static familyNames(fm) {
+    if (fm.opt() == Flea.familyBest()) {
+      return "Best";
+    } else if (fm.opt() == Flea.familyIbexBest()) {
+      return "Ibest";
+    } else {
+      return Flea.familyNamesById(fm.gen().actualOption());
     }
   }
 

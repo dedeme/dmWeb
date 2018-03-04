@@ -142,14 +142,14 @@ Main = class {
         /** @type {!Array<?>} */ (JSON.parse(rp["conf"]))
       );
       self._conf.lang() === "es" ? I18n.es() : I18n.en();
-
+//self._conf.setDbase("all");
       switch (self._conf.page()) {
         case "run":
           self._view = new view_Run(self);
           self._view.show();
           break;
         case "bests":
-          data = {"rq": "bestsTime"};
+          data = {"rq": "bestsTime", "dbase": self._conf.dbase()};
           self._client.send(data, rq => {
             self._bestsLastUpdate = rq["time"];
             let more = true;
@@ -157,7 +157,11 @@ Main = class {
             It.range(1, 9).sync(
               (i, f) => {
                 if (more) {
-                  data = {"rq": "readBests", "ix": "" + i};
+                  data = {
+                    "rq": "readBests",
+                    "dbase": self._conf.dbase(),
+                    "ix": "" + i
+                  };
                   self._client.send(data, rp => {
                     const moreBests =
                       /** @type {!Array<?>} */ (JSON.parse(rp["bests"]));
@@ -179,7 +183,7 @@ Main = class {
           });
           break;
         case "statistics":
-          data = {"rq": "bestsTime"};
+          data = {"rq": "bestsTime", "dbase": self._conf.dbase()};
           self._client.send(data, rq => {
             self._bestsLastUpdate = rq["time"];
             self._view = new view_Statistics(self);
@@ -187,7 +191,7 @@ Main = class {
           });
           break;
         case "trace":
-          data = {"rq": "readTraces"}
+          data = {"rq": "readTraces", "dbase": self._conf.dbase()}
           self._client.send(data, rp => {
             const traces = rp["traces"];
             if (traces) {
@@ -290,6 +294,16 @@ Main = class {
   changeLanguage () {
     const self = this;
     self.conf().setLang(self.conf().lang() === "en" ? "es" : "en");
+    self.sendConf(() => { self.run2(); });
+  }
+
+  /**
+   * @param {string} dbase
+   * @return {void}
+   */
+  setDbase(dbase) {
+    const self = this;
+    self.conf().setDbase(dbase);
     self.sendConf(() => { self.run2(); });
   }
 
@@ -434,7 +448,7 @@ Main = class {
   /** @param {function():void} f */
   updateBests (f) {
     const self = this;
-    const data = {"rq": "bestsTime"};
+    const data = {"rq": "bestsTime", "dbase": self._conf.dbase()};
     self._client.send(data, rq => {
       const time = rq["time"];
       if (time > self._bestsLastUpdate) {
@@ -460,7 +474,7 @@ Main = class {
   /** @param {function():void} f */
   updateStatistics (f) {
     const self = this;
-    const data = {"rq": "bestsTime"};
+    const data = {"rq": "bestsTime", "dbase": self._conf.dbase()};
     self._client.send(data, rq => {
       const time = rq["time"];
       if (time > self._bestsLastUpdate) {

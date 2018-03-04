@@ -57,15 +57,21 @@ view_Statistics = class {
 
       return $("table")
         .add($("tr").add(entry("", _("All"))))
-        .addIt(It.range(Flea.familyNumber())
-          .map(fn => new Tp("" + fn, Flea.familyNames(fn)))
+        .addIt(It.range(
+            conf.dbase() == "all" || conf.dbase() == "ibex"
+            ? Flea.familyNumber()
+            : 0
+          )
+          .map(fn => new Tp("" + fn, Flea.familyNamesById(fn)))
           .sortf((tp1, tp2) => tp1.e2() > tp2.e2() ? 1 : - 1)
           .map(tp => entry(tp.e1(), tp.e2())))
       ;
     }
 
     function generalData () {
-      const ft = subpage === "" ? f => true : f => f.family() === +subpage;
+      const ft = subpage === ""
+        ? f => true
+        : f => f.family().gen().actualOption() === +subpage;
       let n = 0;
       const familyNumber = {};
       const fleas = [];
@@ -99,20 +105,26 @@ view_Statistics = class {
         }
 
         fleas.sort((f1, f2) => f2.stats().cash() - f1.stats().cash());
-
         generalDataDiv.removeAll()
           .add($("table").att("align", "center")
-            .addIt(It.keys(familyNumber)
-              .sortf((f1, f2) =>
-                Flea.familyNames(+f1) > Flea.familyNames(+f2) ? 1 : -1
-              )
-              .map(fn =>
-                $("tr")
-                  .add($("td").klass("frame4").style("text-align:left")
-                    .html(Flea.familyNames(+fn)))
-                  .add($("td").klass("frame").style("text-align:left")
-                    .html(familyNumber[fn]))
-              )))
+            .addIt(
+              conf.dbase() == "all" || conf.dbase() == "ibex"
+              ? It.keys(familyNumber)
+                  .sortf((f1, f2) =>
+                    Flea.familyNamesById(+f1) > Flea.familyNamesById(+f2)
+                      ? 1 : -1
+                  )
+                  .map(fn =>
+                    $("tr")
+                      .add($("td").klass("frame4").style("text-align:left")
+                        .html(Flea.familyNamesById(+fn)))
+                      .add($("td").klass("frame").style("text-align:left")
+                        .html(familyNumber[fn]))
+                  )
+              : conf.dbase() == "bests"
+              ? It.empty()
+              : It.empty()
+          ))
           .add($("p").html(" "))
           .add($("table").klass("summary").att("align", "center")
             .add($("tr")
@@ -178,7 +190,10 @@ view_Statistics = class {
           .add($("span").html(" " + ix + " "))
           .add($("img").att("src", "img/wait.gif"))
         ;
-        const data = {"rq": "readFleas", "ix": "" + ix};
+        const data = {"rq": "readFleas",
+          "dbase": conf.dbase(),
+          "ix": "" + ix
+        };
         client.send(data, rp => {
           const fsSerial =
             /** @type {!Array<!Array<*>>} */ (JSON.parse(rp["fleas"]));
@@ -191,7 +206,7 @@ view_Statistics = class {
               .each(flea => {
                 fleas.push(flea);
 
-                const ffm = flea.family();
+                const ffm = flea.family().gen().actualOption();
                 const ffmN = familyNumber[ffm];
                 if (ffmN) {
                   familyNumber[ffm] = ffmN + 1;
@@ -264,7 +279,7 @@ view_Statistics = class {
       return $("div")
         .add($("div").style("text-align:center")
           .add($("span").klass("frame").html(
-            subpage === "" ? _("All The Fleas"): Flea.familyNames(+subpage)
+            subpage === "" ? _("All The Fleas"): Flea.familyNamesById(+subpage)
           )))
         .add($("div").style("text-align:center")
           .add($("div").style("height:20px").html(""))

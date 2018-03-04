@@ -6,12 +6,15 @@ goog.provide("Conf");
 Conf = class {
   /**
    * @param {string} lang
+   * @param {string} dbase
    * @param {string} page
    * @param {string} subpage
    */
-  constructor (lang, page, subpage) {
+  constructor (lang, dbase, page, subpage) {
     /** @private */
     this._lang = lang;
+    /** @private */
+    this._dbase = dbase;
     /** @private */
     this._page = page;
     /** @private */
@@ -26,6 +29,16 @@ Conf = class {
   /** @param {string} value */
   setLang (value) {
     this._lang = value;
+  }
+
+  /** @return {string} */
+  dbase () {
+    return this._dbase;
+  }
+
+  /** @param {string} value */
+  setDbase (value) {
+    this._dbase = value;
   }
 
   /** @return {string} */
@@ -61,6 +74,7 @@ Conf = class {
   serialize () {
     return [
       this._lang,
+      this._dbase,
       this._page,
       this._subpage
     ];
@@ -74,6 +88,7 @@ Conf = class {
     if (serial.length === 0) {
       return new Conf(
         "es",
+        "all",
         "settings",
         ""
       );
@@ -81,7 +96,8 @@ Conf = class {
     return new Conf(
       serial[0],
       serial[1],
-      serial[2]
+      serial[2],
+      serial[3]
     );
   }
 }

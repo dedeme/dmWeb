@@ -167,7 +167,9 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Map/*Json*/ *rqm) {
 
   // ------------------------------------------------------- bestsTime
   } else if (!strcmp(rq, "bestsTime")) {
-    char *file = path_cat(home, "fleas", "data", "bests1.db", NULL);
+    char *file = path_cat(
+      home, "fleas", "data", jmap_gstring(rqm, "dbase"), "bests1.db", NULL
+    );
     struct stat *st = file_info(file);
 
     Map/*Json*/ *m = map_new();
@@ -177,7 +179,9 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Map/*Json*/ *rqm) {
   // ------------------------------------------------------- readBests
   } else if (!strcmp(rq, "readBests")) {
     char *fname = str_printf("bests%s.db", jmap_gstring(rqm, "ix"));
-    char *file = path_cat(home, "fleas", "data", fname, NULL);
+    char *file = path_cat(
+      home, "fleas", "data", jmap_gstring(rqm, "dbase"), fname, NULL)
+    ;
 
     char *bests;
     if (file_exists(file)) {
@@ -190,9 +194,11 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Map/*Json*/ *rqm) {
     jmap_pstring(m, "bests", bests);
     return cgi_ok(cgi, m);
 
-  // ------------------------------------------------------- readTraces
+  // ------------------------------------------------------- readTracesxxx
   } else if (!strcmp(rq, "readTraces")) {
-    char *ftraces = path_cat(home, "fleas", "data", "traces.db", NULL);
+    char *ftraces = path_cat(
+      home, "fleas", "data", jmap_gstring(rqm, "dbase"), "traces.db", NULL
+    );
 
     Map/*Json*/ *m = map_new();
     if (!file_exists(ftraces)) {
@@ -219,7 +225,9 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Map/*Json*/ *rqm) {
     char *fname = str_printf("fleas%s.db", ix);
     bool ix_is_0 = *ix == '0';
 
-    char *file = path_cat(home, "fleas", "data", fname, NULL);
+    char *file = path_cat(
+      home, "fleas", "data", jmap_gstring(rqm, "dbase"), fname, NULL
+    );
 
     char *data;
     if (file_exists(file)) {
@@ -233,7 +241,7 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Map/*Json*/ *rqm) {
     if (ix_is_0) {
       size_t cycle = jmap_guint(
         json_robject(file_read(path_cat(
-          home, "fleas", "data", "conf.db", NULL
+          home, "fleas", "data", jmap_gstring(rqm, "dbase"), "conf.db", NULL
         ))),
         "cycle"
       );

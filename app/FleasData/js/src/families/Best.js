@@ -1,10 +1,10 @@
 // Copyright 22-Dic-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("families_UpDown");
+goog.provide("families_Best");
 goog.require("Family");
 
-families_UpDown = class {
+families_Best = class {
   /**
    * @param {number} len
    * @param {number} buyStrip
@@ -63,7 +63,7 @@ families_UpDown = class {
     function bests(intFormat, floatFormat, span) {
       return It.from([
           tdl().att("title", _("Length"))
-            .html(intFormat(self.len() + 5)),
+            .html(intFormat(self.len() + 26)),
           tdl().att("title", _("Buy Strip"))
             .html(floatFormat(self.buyStrip() * 0.1) + "%"),
           tdl().att("title", _("Sell Strip"))

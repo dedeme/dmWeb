@@ -56,7 +56,26 @@ Dom = class {
     }
 
     const lopts = [
-      entry(_("Run"), "run"),
+      Ui.link(ev => {
+          const db = conf.dbase();
+          const newDbase = db === "all" ? "ibexBest"
+            : db === "ibexBest" ? "ibex"
+            : db === "ibex" ? "best"
+            : "all"
+          ;
+          control.setDbase(newDbase);
+        }).klass("link").html("<b>&lt;&lt;</b>"),
+      $("span").style("display:inline-block;width:80px;text-align:center;")
+        .html(` <b>${conf.dbase()}</b> `),
+      Ui.link(ev => {
+          const db = conf.dbase();
+          const newDbase = db === "all" ? "best"
+            : db === "best" ? "ibex"
+            : db === "ibex" ? "ibexBest"
+            : "all"
+          ;
+          control.setDbase(newDbase);
+        }).klass("link").html("<b>&gt;&gt;</b>"),
       separator(),
       entry(_("Bests"), "bests"),
       separator(),
