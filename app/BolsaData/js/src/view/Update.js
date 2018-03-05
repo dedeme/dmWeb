@@ -102,13 +102,14 @@ view_Update = class {
 
     const right = $("div").style("width:100%;height:100%").klass("frame")
       .add($("div").style("width:100%;text-align:center")
-        .html("Total = " + It.keys(db.invertiaId()).size() +
-          " : Ibex = " + It.keys(db.ibex()).reduce(0, (s, k) =>
-              db.ibex()[k] ? s + 1 : s
+        .html("Total = " + It.keys(db.companies()).size() +
+          " : Ibex = " + It.keys(db.companies()).reduce(0, (s, k) =>
+              db.companies()[k][Db.IBEX()] ? s + 1 : s
             )));
 
     const left = $("table")
       .add($("tr")
+        .add($("td").style("width:5px;"))
         .add($("td").style("width:5px;"))
         .add($("td").style("width:5px;"))
         .add($("td").add(Ui.link(ev => {
@@ -130,6 +131,7 @@ view_Update = class {
       .add($("tr")
         .add($("td").style("width:5px;"))
         .add($("td").style("width:5px;"))
+        .add($("td").style("width:5px;"))
         .add($("td").add(db.quoteTranslator()
           ? Ui.link(ev => { control.quoteTranslator(false); })
               .add(Ui.img("transOff"))
@@ -142,13 +144,16 @@ view_Update = class {
               right.removeAll().add(counter);
               control.updateAll(pages, counter);
             }).klass("link").html(_("Update All")))))
-      .add($("tr").add($("td").att("colspan", 5).html("<hr>")))
-      .addIt(It.keys(db.invertiaId()).sort().map(k =>
+      .add($("tr").add($("td").att("colspan", 6).html("<hr>")))
+      .addIt(It.keys(db.companies()).sort().map(k =>
         $("tr")
-          .add($("td").add(Ui.img(db.ibex()[k] ? "flag" : "blank")))
-          .add($("td").add(db.status()[k] === ""
+          .add($("td")
+            .add(Ui.img(db.companies()[k][Db.SELECTED()] ? "flag1" : "blank")))
+          .add($("td")
+            .add(Ui.img(db.companies()[k][Db.IBEX()] ? "flag2" : "blank")))
+          .add($("td").add(db.companies()[k][Db.STATUS()] === ""
               ? Ui.img("well")
-              : Ui.img("error").att("title", db.status()[k])
+              : Ui.img("error").att("title", db.companies()[k][Db.STATUS()])
             ))
           .add($("td").add(Ui.link(ev => {
               if (confirm(_args(_("Delete '%0'?"), k))) {
@@ -175,7 +180,7 @@ view_Update = class {
                     .add(Ui.link(ev => { control.setModel(k); }).klass("link")
                       .html(_("Set Model")))
                     .add($("span").html(" · "))
-                    .add(db.ibex()[k]
+                    .add(db.companies()[k][Db.IBEX()]
                       ? Ui.link(ev => { control.ibex(k, false); }).klass("link")
                         .html(_("Remove from Ibex"))
                       : Ui.link(ev => { control.ibex(k, true); }).klass("link")

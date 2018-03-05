@@ -37,34 +37,15 @@ Db = class {
 
     /**
      * @private
-     * @type {!Object<string, string>}
-     */
-    this._invertiaId = d["invertiaId"] || {};
-
-    /**
-     * @private
-     * @type {!Object<string, string>}
-     */
-    this._infomercadosId = d["infomercadosId"] || {};;
-
-
-    /**
-     * @private
      * @type {string}
      */
     this._model = d["model"] || "";
 
     /**
      * @private
-     * @type {!Object<string, boolean>}
-     */
-    this._ibex = d["ibex"] || {};
-
-    /**
-     * @private
      * @type {!Object<string, string>}
      */
-    this._status = {};
+    this._companies = d["companies"] || {};
 
     /**
      * @private
@@ -131,20 +112,6 @@ Db = class {
     this._page = value;
   }
 
-  /**
-   * @return {!Object<string, string>}
-   *   key   : nick
-   *   value : Invertia identifier
-   */
-  invertiaId () {
-    return this._invertiaId;
-  }
-
-  /** @return {!Object<string, string>} */
-  infomercadosId () {
-    return this._infomercadosId;
-  }
-
   /** @return {string} */
   model () {
     return this._model;
@@ -158,20 +125,23 @@ Db = class {
     this._model = value;
   }
 
-  /** @return {!Object<string, boolean>} */
-  ibex () {
-    return this._ibex;
-  }
-
   /**
+   * This object returns an array with several fields. It can be used with
+   * constants Db.STATUS(), Db.SELECTION(), Db.IBEX, Db.INVERTIA and
+   * Db.INFOMERCADOS.
    * @return {!Object<string, string>}
    *   key   : nick
-   *   value : "" -> quotes of nick are verified and well
-   *           "?" -> quotes of nick are not verified yet
-   *           "text" -> There are errors in quotes data
+   *   value : array of:
+   *      status: "" -> quotes of nick are verified and well
+   *              "?" -> quotes of nick are not verified yet
+   *              "text" -> There are errors in quotes data
+   *      selection: selected to work [true | false]
+   *      ibex: Ibex company [true | false]
+   *      invertiaId
+   *      infomercadosId
    */
-  status () {
-    return this._status;
+  companies () {
+    return this._companies;
   }
 
   /** @return {!Object<string, number>} */
@@ -191,29 +161,24 @@ Db = class {
 
   /** @return {!Object<string, ?>} */
   serialize () {
-    const qs = this._quotes;
     return {
       "language" : this._language,
       "source" : this._source,
       "page" : this._page,
       "quoteTranslator" : this._quoteTranslator,
-      "invertiaId" : this._invertiaId,
-      "infomercadosId" : this._infomercadosId,
       "model": this._model,
-      "ibex": this._ibex,
-      "status" : this._status
+      "companies" : this._companies
     };
   }
 
   verify () {
-    const ibex = this._ibex;
-    if (!It.keys(this._invertiaId).hasNext()) {
+    if (!It.keys(this._companies).hasNext()) {
       alert(_("There are no companies yet"));
       return;
     }
     let model = this._model;
-    if (model === "" || !It.keys(this._invertiaId).contains(model)) {
-      model = It.keys(this._invertiaId).next();
+    if (model === "") {
+      model = It.keys(this._companies).next();
       this._model = model;
     }
     const dates = [];
@@ -228,21 +193,18 @@ Db = class {
         );
       }
     });
-    this._status[model] = "";
+    this._companies[model][Db.STATUS()] = "";
     if (err !== "") {
-      this._status[model] = err;
+      this._companies[model][Db.STATUS()] = err;
     }
-    It.keys(this._invertiaId).each(k => {
-      if (ibex[k] === undefined) {
-        ibex[k] = false;
-      }
+    It.keys(this._companies).each(k => {
       let fixCount = 0;
       let previousClose = -1;
       let err = "";
       if (k !== model) {
-        this._status[k] = "";
+        this._companies[k][Db.STATUS()] = "";
       } else {
-        err = this._status[k];
+        err = this._companies[k][Db.STATUS()];
       }
       It.zip(
         It.from(dates),
@@ -298,7 +260,7 @@ Db = class {
           }
 
           if (err !== "") {
-            this._status[k] = err;
+            this._companies[k][Db.STATUS()] = err;
           }
         }
 
@@ -317,11 +279,44 @@ Db = class {
       "source" : serial["source"],
       "page" : serial["page"],
       "quoteTranslator" : serial["quoteTranslator"],
-      "invertiaId" : serial["invertiaId"],
-      "infomercadosId" : serial["infomercadosId"],
       "model" : serial["model"],
-      "ibex" : serial["ibex"]
+      "companies" : serial["companies"]
     });
+  }
+
+  /**
+   * @return {number}
+   */
+  static STATUS () {
+    return 0;
+  }
+
+  /**
+   * @return {number}
+   */
+  static SELECTED () {
+    return 1;
+  }
+
+  /**
+   * @return {number}
+   */
+  static IBEX () {
+    return 2;
+  }
+
+  /**
+   * @return {number}
+   */
+  static INVERTIA () {
+    return 3;
+  }
+
+  /**
+   * @return {number}
+   */
+  static INFOMERCADOS () {
+    return 4;
   }
  }
 

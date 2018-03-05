@@ -167,7 +167,7 @@ Main = class {
           db.language() === "es" ? I18n.es() : I18n.en();
           const page = db.page();
           if (page === "update" || page === "create") {
-            It.keys(db.invertiaId()).sync(
+            It.keys(db.companies()).sync(
               (nick, f) => {
                 let data = {"rq": "getQuotes", "nick": nick};
                 client.send(data, rp => {
@@ -224,7 +224,7 @@ Main = class {
       .add($("img").style("width:12px;height:12px").att("src", "img/wait.gif"))
       .add($("span").html(" · "));
     db.verify();
-    It.keys(db.invertiaId()).sync(
+    It.keys(db.companies()).sync(
       (nick, fsync) => {
         const data = {
           "rq": "setQuotes",
@@ -411,14 +411,14 @@ Main = class {
     const self = this;
     const db = self._db;
 
-    if (It.keys(db.status()).contains(nick)) {
+    if (It.keys(db.companies()).contains(nick)) {
       alert(_args(_("Nick %0 is duplicate"), nick));
       return;
     }
 
-    db.invertiaId()[nick] = invertiaKey;
-    db.infomercadosId()[nick] = infomercadosKey;
-    db.status()[nick] = "?";
+    db.companies()[nick][Db.INVERTIA()] = invertiaKey;
+    db.companies()[nick][Db.INFOMERCADOS()] = infomercadosKey;
+    db.companies()[nick][Db.STATUS()] = "?";
     const data = {
       "rq" : "addNick",
       "nick" : nick
@@ -446,18 +446,18 @@ Main = class {
         alert(_("Both keys are missing"));
         return;
       }
-      if (db.invertiaId()[nick] === undefined) {
+      if (db.companies()[nick][Db.INVERTIA()] === undefined) {
         alert(_args(
           _("Nick '%0' is not defined in %1"), nick, Main.infomercados()
         ));
         return;
       }
-      db.infomercadosId()[nick] = infomercadosKey;
+      db.companies()[nick][Db.INFOMERCADOS()] = infomercadosKey;
       const conf = confirm(_args(
         _("%0 wil be set:\n%1: %2\n%3: %4"),
         nick,
-        Main.invertia(), db.invertiaId()[nick],
-        Main.infomercados(), db.infomercadosId()[nick]
+        Main.invertia(), db.companies()[nick][Db.INVERTIA()],
+        Main.infomercados(), db.companies()[nick][Db.INFOMERCADOS()]
       ));
       if (!conf) {
         return;
@@ -470,18 +470,18 @@ Main = class {
       alert(_("One of key to set must be blank"));
       return;
     }
-    if (db.infomercadosId()[nick] === undefined) {
+    if (db.companies()[nick][Db.INFOMERCADOS()] === undefined) {
       alert(_args(
         _("Nick '%0' is not defined in %1"), nick, Main.invertia()
       ));
       return;
     }
-    db.invertiaId()[nick] = invertiaKey;
+    db.companies()[nick][Db.INVERTIA()] = invertiaKey;
     const conf = confirm(_args(
       _("%0 wil be set:\n%1: %2\n%3: %4"),
       nick,
-      Main.invertia(), db.invertiaId()[nick],
-      Main.infomercados(), db.infomercadosId()[nick]
+      Main.invertia(), db.companies()[nick][Db.INVERTIA()],
+      Main.infomercados(), db.companies()[nick][Db.INFOMERCADOS()]
     ));
     if (!conf) {
       return;
@@ -503,8 +503,8 @@ Main = class {
     const self = this;
     const db = self._db;
     const key = db.source() === Main.invertia()
-      ? db.invertiaId()[nick]
-      : db.infomercadosId()[nick]
+      ? db.companies()[nick][Db.INVERTIA()]
+      : db.companies()[nick][Db.INFOMERCADOS()]
     ;
     if (key === undefined) {
       alert(_("Key is missing"));
@@ -547,7 +547,7 @@ Main = class {
       });
     }
 
-    db.status()[nick] = "?";
+    db.companies()[nick][Db.STATUS()] = "?";
 
     read (1);
   }
@@ -561,13 +561,13 @@ Main = class {
     const self = this;
     const db = self._db;
 
-    const keysMap = db.source() === Main.invertia()
-      ? db.invertiaId()
-      : db.infomercadosId()
+    const companyIx = db.source() === Main.invertia()
+      ? Db.INVERTIA()
+      : Db.INFOMERCADOS()
     ;
-    It.keys(keysMap).sort().sync(
+    It.keys(db.companies()).sort().sync(
       (nick, f) => {
-          const key = keysMap[nick];
+          const key = db.companies()[nick][companyIx];
           let newQs = [];
           function read(nPage) {
             counter.html(nick + ": " + nPage);
@@ -605,7 +605,7 @@ Main = class {
               }
             });
           }
-        db.status()[nick] = "?";
+        db.companies()[nick][Db.STATUS()] = "?";
         read (1);
       },
       () => { self.sendQuotes(() => { self.go("update"); }); }
@@ -636,7 +636,7 @@ Main = class {
    * @return {void}
    */
   ibex (nick, value) {
-    this._db.ibex()[nick] = value;
+    this._db.companies()[nick][Db.IBEX()] = value;
     this.go("update");
   }
 
@@ -646,9 +646,7 @@ Main = class {
    */
   del (nick) {
     const self = this;
-    delete self._db.invertiaId()[nick];
-    delete self._db.ibex()[nick];
-    delete self._db.status()[nick];
+    delete self._db.companies()[nick];
     const data = {
       "rq" : "delNick",
       "nick" : nick
