@@ -58,9 +58,9 @@ Dom = class {
     const lopts = [
       Ui.link(ev => {
           const db = conf.dbase();
-          const newDbase = db === "all" ? "ibexBest"
-            : db === "ibexBest" ? "ibex"
-            : db === "ibex" ? "best"
+          const newDbase = db === "all" ? "selBest"
+            : db === "selBest" ? "sel"
+            : db === "sel" ? "best"
             : "all"
           ;
           control.setDbase(newDbase);
@@ -70,8 +70,8 @@ Dom = class {
       Ui.link(ev => {
           const db = conf.dbase();
           const newDbase = db === "all" ? "best"
-            : db === "best" ? "ibex"
-            : db === "ibex" ? "ibexBest"
+            : db === "best" ? "sel"
+            : db === "sel" ? "selBest"
             : "all"
           ;
           control.setDbase(newDbase);

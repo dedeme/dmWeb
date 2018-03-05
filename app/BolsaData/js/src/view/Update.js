@@ -129,8 +129,8 @@ view_Update = class {
         .add($("td").style("text-align:left;white-space:nowrap;")
           .add(pagesSpan)))
       .add($("tr")
-        .add($("td").style("width:5px;"))
-        .add($("td").style("width:5px;"))
+        .add($("td").style("width:5px;text-align:center;").text("S"))
+        .add($("td").style("width:5px;text-align:center;").text("I"))
         .add($("td").style("width:5px;"))
         .add($("td").add(db.quoteTranslator()
           ? Ui.link(ev => { control.quoteTranslator(false); })
@@ -179,6 +179,12 @@ view_Update = class {
                   .add($("td").style("text-align:left;")
                     .add(Ui.link(ev => { control.setModel(k); }).klass("link")
                       .html(_("Set Model")))
+                    .add($("span").html(" · "))
+                    .add(db.companies()[k][Db.SELECTED()]
+                      ? Ui.link(ev => { control.sel(k, false); }).klass("link")
+                        .html(_("Deselect"))
+                      : Ui.link(ev => { control.sel(k, true); }).klass("link")
+                        .html(_("Select")))
                     .add($("span").html(" · "))
                     .add(db.companies()[k][Db.IBEX()]
                       ? Ui.link(ev => { control.ibex(k, false); }).klass("link")

@@ -632,6 +632,16 @@ Main = class {
 
   /**
    * @param {string} nick
+   * @param {boolean} value 'true' selects nick, 'false' deselects it.
+   * @return {void}
+   */
+  sel (nick, value) {
+    this._db.companies()[nick][Db.SELECTED()] = value;
+    this.go("update");
+  }
+
+  /**
+   * @param {string} nick
    * @param {boolean} value 'true' adds nick to ibex, 'false' removes it.
    * @return {void}
    */

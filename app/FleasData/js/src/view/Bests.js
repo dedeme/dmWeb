@@ -163,8 +163,9 @@ view_Bests = class {
             .add(tdl().html(intFormat(f.cycle())))
             .add(tdl().html(intFormat(5000 + f.bet() * 1000)))
             .add(td().html(
-                f.ibex() === 1 ? _("Out")
-                : f.ibex() === 0 ? _("In") : _("Mix")
+                f.ibex() === 0 ? _("Sel")
+                : f.ibex() === 1 ? _("Ibex")
+                : f.ibex() === 2 ? _("No Ibex") : _("Mix")
               ))
             .addIt(specialCols(f, span))
             .add(tdl().html(floatFormat(f.stats().cash())))

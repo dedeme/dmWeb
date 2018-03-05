@@ -23,11 +23,11 @@ Flea = class {
    * @param {number} cycle
    * @param {!families_Family} family
    * @param {number} bet
-   * @param {number} ibex
+   * @param {number} sel
    * @param {!Stat} stats
    * @param {!Family} extra
    */
-  constructor (id, cycle, family, bet, ibex, stats, extra) {
+  constructor (id, cycle, family, bet, sel, stats, extra) {
     /** @private */
     this._id = id;
     /** @private */
@@ -37,7 +37,7 @@ Flea = class {
     /** @private */
     this._bet = bet;
     /** @private */
-    this._ibex = ibex;
+    this._sel = sel;
     /** @private */
     this._stats = stats;
     /**
@@ -69,7 +69,7 @@ Flea = class {
 
   /** @return {number} */
   ibex () {
-    return this._ibex;
+    return this._sel;
   }
 
   /** @return {!Stat} */

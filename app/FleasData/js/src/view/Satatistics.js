@@ -58,7 +58,7 @@ view_Statistics = class {
       return $("table")
         .add($("tr").add(entry("", _("All"))))
         .addIt(It.range(
-            conf.dbase() == "all" || conf.dbase() == "ibex"
+            conf.dbase() == "all" || conf.dbase() == "sel"
             ? Flea.familyNumber()
             : 0
           )
@@ -108,7 +108,7 @@ view_Statistics = class {
         generalDataDiv.removeAll()
           .add($("table").att("align", "center")
             .addIt(
-              conf.dbase() == "all" || conf.dbase() == "ibex"
+              conf.dbase() == "all" || conf.dbase() == "sel"
               ? It.keys(familyNumber)
                   .sortf((f1, f2) =>
                     Flea.familyNamesById(+f1) > Flea.familyNamesById(+f2)
