@@ -214,12 +214,12 @@ goog.provide("Tx");
       }
       ix = l.indexOf("'"); // 4
       if (ix !== -1 && ix < pos) {
-        r = 2;
+        r = 4;
         pos = ix;
       }
       ix = l.indexOf("`"); // 5
       if (ix !== -1 && ix < pos) {
-        r = 2;
+        r = 5;
         pos = ix;
       }
 

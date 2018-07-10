@@ -132,12 +132,15 @@ PortfolioEntry = class {
   /**
    * @param {string} nick
    * @param {number} stocks
+   * @param {number} price
    */
-  constructor (nick, stocks) {
+  constructor (nick, stocks, price) {
     /** @private */
     this._nick = nick;
     /** @private */
     this._stocks = stocks;
+    /** @private */
+    this._price = price;
   }
 
   /** @return {string} */
@@ -150,11 +153,17 @@ PortfolioEntry = class {
     return this._stocks;
   }
 
+  /** @return {number} */
+  price () {
+    return this._price;
+  }
+
   /** @return {!Array<?>} */
   serialize () {
     return [
       this._nick,
-      this._stocks
+      this._stocks,
+      this._price
     ];
   }
 
@@ -165,7 +174,8 @@ PortfolioEntry = class {
   static restore (serial) {
     return new PortfolioEntry (
       serial[0],
-      serial[1]
+      serial[1],
+      serial[2]
     );
   }
 }

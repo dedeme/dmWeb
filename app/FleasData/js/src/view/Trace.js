@@ -127,24 +127,25 @@ view_Trace = class {
      * @param {!Array<!PortfolioEntry>} portfolio
      * @param {string} nick
      * @param {number} stocks (can be negative)
+     * @param {number} price
      * @return {!Array<!PortfolioEntry>}
      */
-    function addPortfolio (portfolio, nick, stocks) {
+    function addPortfolio (portfolio, nick, stocks, price) {
       const r = [];
       let added = false;
       It.from(portfolio).each(e => {
         if (e.nick() === nick) {
           const sts = e.stocks() + stocks;
           if (Math.abs(sts) > 0.01) {
-            r.push(new PortfolioEntry(nick, sts))
+            r.push(new PortfolioEntry(nick, sts, price))
           }
           added = true;
         } else {
-          r.push(new PortfolioEntry(e.nick(), e.stocks()));
+          r.push(new PortfolioEntry(e.nick(), e.stocks(), price));
         }
       });
       if (!added) {
-        r.push(new PortfolioEntry(nick, stocks));
+        r.push(new PortfolioEntry(nick, stocks, price));
       }
 
       return r;
@@ -211,7 +212,8 @@ view_Trace = class {
         t.nick(),
         t.stocks() === 0
           ? buyNumber(t.quote().open(), t.cash())
-          : -t.stocks()
+          : -t.stocks(),
+        1
       );
 
       let r = false;
@@ -281,7 +283,8 @@ view_Trace = class {
         t.nick(),
         t.stocks() === 0
           ? buyNumber(t.quote().open(), t.cash())
-          : -t.stocks()
+          : -t.stocks(),
+        0
       );
 
       traceDiv.removeAll()
@@ -305,9 +308,9 @@ view_Trace = class {
           .add($("tr")
             .add(tdIf(Math.abs(cashDif - cashDifExp) <= 0.01).html(_("Cash")))
             .add(td().html(
-                _("Before: ") + floatFormat(t.beforeCash()) + "<br>" +
-                _("After: ") + floatFormat(t.afterCash()) + "<br>" +
-                _("Diference: ") + floatFormat(cashDif)))
+                _("Before") + ": " + floatFormat(t.beforeCash()) + "<br>" +
+                _("After") + ": " +floatFormat(t.afterCash()) + "<br>" +
+                _("Diference") + ": " + floatFormat(cashDif)))
             .add(td().html(floatFormat(cashDifExp))))
           .add($("tr")
             .add(td().html(_("Before Portfolio")))

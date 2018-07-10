@@ -12,17 +12,6 @@ view_Statistics = class {
   constructor (control) {
     /** @private */
     this._control = control;
-
-    this._interval = setInterval(function () {
-      if (control.conf().page() !== "statistics") {
-        clearInterval(this._interval);
-      } else {
-        control.updateStatistics(() => {
-          clearInterval(this._interval);
-          control.run2();
-        });
-      }
-    }, 10000)
   }
 
   /**

@@ -32,18 +32,6 @@ view_Bests = class {
      * @type {!Array<string>}
      */
     this._keys = It.keys(this._bests).sortf((a, b) => +a < +b ? 1 : -1).to();
-
-    this._interval = setInterval(function () {
-      if (control.conf().page() !== "bests") {
-        clearInterval(this._interval);
-      } else {
-        control.updateBests(() => {
-          clearInterval(this._interval);
-          control.run2();
-        });
-      }
-    }, 10000)
-
   }
 
   /**

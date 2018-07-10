@@ -194,7 +194,7 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Map/*Json*/ *rqm) {
     jmap_pstring(m, "bests", bests);
     return cgi_ok(cgi, m);
 
-  // ------------------------------------------------------- readTracesxxx
+  // -------------------------------------------------------- readTraces
   } else if (!strcmp(rq, "readTraces")) {
     char *ftraces = path_cat(
       home, "fleas", "data", jmap_gstring(rqm, "dbase"), "traces.db", NULL

@@ -1,0 +1,11 @@
+"src/pages/dummy.ml" 2 1 5 "src/pages/dummy.ml" 2 1 9
+type(
+  string
+)
+ident(
+  def data "src/pages/dummy.ml" 2 1 22 "src/pages/dummy.ml" 1 0 -1
+)
+"src/pages/dummy.ml" 2 1 12 "src/pages/dummy.ml" 2 1 22
+type(
+  string
+)

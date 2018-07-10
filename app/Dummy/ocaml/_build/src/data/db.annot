@@ -1,0 +1,959 @@
+"src/data/db.ml" 5 101 105 "src/data/db.ml" 5 101 113
+type(
+  string ref
+)
+ident(
+  def data_dir "src/data/db.ml" 7 124 124 "src/data/db.ml" 1 0 -1
+)
+"src/data/db.ml" 5 101 116 "src/data/db.ml" 5 101 119
+type(
+  string -> string ref
+)
+ident(
+  ext_ref Pervasives.ref
+)
+"src/data/db.ml" 5 101 120 "src/data/db.ml" 5 101 122
+type(
+  string
+)
+"src/data/db.ml" 5 101 116 "src/data/db.ml" 5 101 122
+type(
+  string ref
+)
+"src/data/db.ml" 7 124 128 "src/data/db.ml" 7 124 140
+type(
+  unit -> string
+)
+ident(
+  def main_db_file "src/data/db.ml" 9 176 176 "src/data/db.ml" 1 0 -1
+)
+"src/data/db.ml" 7 124 141 "src/data/db.ml" 7 124 143
+type(
+  unit
+)
+"src/data/db.ml" 7 124 152 "src/data/db.ml" 7 124 153
+type(
+  string ref -> string
+)
+ident(
+  ext_ref Pervasives.( ! )
+)
+"src/data/db.ml" 7 124 153 "src/data/db.ml" 7 124 161
+type(
+  string ref
+)
+ident(
+  int_ref data_dir "src/data/db.ml" 5 101 105 "src/data/db.ml" 5 101 113
+)
+"src/data/db.ml" 7 124 152 "src/data/db.ml" 7 124 161
+type(
+  string
+)
+"src/data/db.ml" 7 124 162 "src/data/db.ml" 7 124 163
+type(
+  string -> string -> string
+)
+ident(
+  ext_ref Path.( ^ )
+)
+"src/data/db.ml" 7 124 164 "src/data/db.ml" 7 124 173
+type(
+  string
+)
+"src/data/db.ml" 7 124 152 "src/data/db.ml" 7 124 173
+call(
+  tail
+)
+type(
+  string
+)
+"src/data/db.ml" 9 176 180 "src/data/db.ml" 9 176 192
+type(
+  string -> unit
+)
+ident(
+  def main_db_init "src/data/db.ml" 18 447 447 "src/data/db.ml" 1 0 -1
+)
+"src/data/db.ml" 9 176 193 "src/data/db.ml" 9 176 205
+type(
+  string
+)
+ident(
+  def version_text "src/data/db.ml" 9 176 208 "src/data/db.ml" 16 442 445
+)
+"src/data/db.ml" 10 215 219 "src/data/db.ml" 10 215 228
+type(
+  string -> string -> unit
+)
+ident(
+  ext_ref File.write_all
+)
+"src/data/db.ml" 11 229 241 "src/data/db.ml" 11 229 242
+type(
+  string ref -> string
+)
+ident(
+  ext_ref Pervasives.( ! )
+)
+"src/data/db.ml" 11 229 242 "src/data/db.ml" 11 229 250
+type(
+  string ref
+)
+ident(
+  int_ref data_dir "src/data/db.ml" 5 101 105 "src/data/db.ml" 5 101 113
+)
+"src/data/db.ml" 11 229 241 "src/data/db.ml" 11 229 250
+type(
+  string
+)
+"src/data/db.ml" 11 229 251 "src/data/db.ml" 11 229 252
+type(
+  string -> string -> string
+)
+ident(
+  ext_ref Path.( ^ )
+)
+"src/data/db.ml" 11 229 253 "src/data/db.ml" 11 229 266
+type(
+  string
+)
+"src/data/db.ml" 11 229 241 "src/data/db.ml" 11 229 266
+call(
+  stack
+)
+type(
+  string
+)
+"src/data/db.ml" 11 229 268 "src/data/db.ml" 11 229 280
+type(
+  string
+)
+ident(
+  int_ref version_text "src/data/db.ml" 9 176 193 "src/data/db.ml" 9 176 205
+)
+"src/data/db.ml" 10 215 219 "src/data/db.ml" 11 229 280
+call(
+  stack
+)
+type(
+  unit
+)
+"src/data/db.ml" 12 282 286 "src/data/db.ml" 12 282 295
+type(
+  string -> string -> unit
+)
+ident(
+  ext_ref File.write_all
+)
+"src/data/db.ml" 12 282 297 "src/data/db.ml" 12 282 309
+type(
+  unit -> string
+)
+ident(
+  int_ref main_db_file "src/data/db.ml" 7 124 128 "src/data/db.ml" 7 124 140
+)
+"src/data/db.ml" 12 282 310 "src/data/db.ml" 12 282 312
+type(
+  unit
+)
+"src/data/db.ml" 12 282 296 "src/data/db.ml" 12 282 313
+call(
+  stack
+)
+type(
+  string
+)
+"src/data/db.ml" 13 320 328 "src/data/db.ml" 13 320 330
+type(
+  unit -> string Dic.t
+)
+ident(
+  ext_ref Dic.mk
+)
+"src/data/db.ml" 13 320 331 "src/data/db.ml" 13 320 333
+type(
+  unit
+)
+"src/data/db.ml" 13 320 328 "src/data/db.ml" 13 320 333
+call(
+  stack
+)
+type(
+  string Dic.t
+)
+"src/data/db.ml" 13 320 334 "src/data/db.ml" 13 320 336
+type(
+  string Dic.t -> (string Dic.t -> string Dic.t) -> string Dic.t
+)
+ident(
+  ext_ref Pervasives.( |> )
+)
+"src/data/db.ml" 13 320 337 "src/data/db.ml" 13 320 340
+type(
+  string -> string -> string Dic.t -> string Dic.t
+)
+ident(
+  ext_ref Dic.put
+)
+"src/data/db.ml" 13 320 341 "src/data/db.ml" 13 320 347
+type(
+  string
+)
+"src/data/db.ml" 13 320 348 "src/data/db.ml" 13 320 352
+type(
+  string
+)
+"src/data/db.ml" 13 320 337 "src/data/db.ml" 13 320 352
+type(
+  string Dic.t -> string Dic.t
+)
+"src/data/db.ml" 13 320 328 "src/data/db.ml" 13 320 352
+call(
+  stack
+)
+type(
+  string Dic.t
+)
+"src/data/db.ml" 13 320 353 "src/data/db.ml" 13 320 355
+type(
+  string Dic.t -> (string Dic.t -> string Dic.t) -> string Dic.t
+)
+ident(
+  ext_ref Pervasives.( |> )
+)
+"src/data/db.ml" 13 320 356 "src/data/db.ml" 13 320 359
+type(
+  string -> string -> string Dic.t -> string Dic.t
+)
+ident(
+  ext_ref Dic.put
+)
+"src/data/db.ml" 13 320 360 "src/data/db.ml" 13 320 366
+type(
+  string
+)
+"src/data/db.ml" 13 320 367 "src/data/db.ml" 13 320 377
+type(
+  string
+)
+"src/data/db.ml" 13 320 356 "src/data/db.ml" 13 320 377
+type(
+  string Dic.t -> string Dic.t
+)
+"src/data/db.ml" 13 320 328 "src/data/db.ml" 13 320 377
+call(
+  stack
+)
+type(
+  string Dic.t
+)
+"src/data/db.ml" 13 320 378 "src/data/db.ml" 13 320 380
+type(
+  string Dic.t -> (string Dic.t -> Json.t) -> Json.t
+)
+ident(
+  ext_ref Pervasives.( |> )
+)
+"src/data/db.ml" 14 381 395 "src/data/db.ml" 14 381 399
+type(
+  (string -> Json.t) -> string Dic.t -> Json.t
+)
+ident(
+  ext_ref Json.wdic
+)
+"src/data/db.ml" 14 381 405 "src/data/db.ml" 14 381 406
+type(
+  string
+)
+ident(
+  def v "src/data/db.ml" 14 381 410 "src/data/db.ml" 14 381 418
+)
+"src/data/db.ml" 14 381 417 "src/data/db.ml" 14 381 418
+type(
+  string
+)
+ident(
+  int_ref v "src/data/db.ml" 14 381 405 "src/data/db.ml" 14 381 406
+)
+"src/data/db.ml" 14 381 410 "src/data/db.ml" 14 381 418
+type(
+  Json.t
+)
+"src/data/db.ml" 14 381 400 "src/data/db.ml" 14 381 419
+type(
+  string -> Json.t
+)
+"src/data/db.ml" 14 381 395 "src/data/db.ml" 14 381 419
+type(
+  string Dic.t -> Json.t
+)
+"src/data/db.ml" 13 320 328 "src/data/db.ml" 14 381 420
+call(
+  stack
+)
+type(
+  Json.t
+)
+"src/data/db.ml" 14 381 421 "src/data/db.ml" 14 381 423
+type(
+  Json.t -> (Json.t -> string) -> string
+)
+ident(
+  ext_ref Pervasives.( |> )
+)
+"src/data/db.ml" 14 381 424 "src/data/db.ml" 14 381 435
+type(
+  Json.t -> string
+)
+ident(
+  ext_ref Json.to_str
+)
+"src/data/db.ml" 13 320 328 "src/data/db.ml" 14 381 435
+call(
+  stack
+)
+type(
+  string
+)
+"src/data/db.ml" 12 282 286 "src/data/db.ml" 15 436 441
+call(
+  tail
+)
+type(
+  unit
+)
+"src/data/db.ml" 10 215 219 "src/data/db.ml" 15 436 441
+type(
+  unit
+)
+"src/data/db.ml" 18 447 451 "src/data/db.ml" 18 447 464
+type(
+  unit -> string
+)
+ident(
+  def get_main_data "src/data/db.ml" 20 503 503 "src/data/db.ml" 1 0 -1
+)
+"src/data/db.ml" 18 447 465 "src/data/db.ml" 18 447 467
+type(
+  unit
+)
+"src/data/db.ml" 18 447 470 "src/data/db.ml" 18 447 483
+type(
+  string -> string
+)
+ident(
+  ext_ref File.read_all
+)
+"src/data/db.ml" 18 447 485 "src/data/db.ml" 18 447 497
+type(
+  unit -> string
+)
+ident(
+  int_ref main_db_file "src/data/db.ml" 7 124 128 "src/data/db.ml" 7 124 140
+)
+"src/data/db.ml" 18 447 498 "src/data/db.ml" 18 447 500
+type(
+  unit
+)
+"src/data/db.ml" 18 447 484 "src/data/db.ml" 18 447 501
+call(
+  stack
+)
+type(
+  string
+)
+"src/data/db.ml" 18 447 470 "src/data/db.ml" 18 447 501
+call(
+  tail
+)
+type(
+  string
+)
+"src/data/db.ml" 20 503 507 "src/data/db.ml" 20 503 515
+type(
+  string -> unit
+)
+ident(
+  def set_lang "src/data/db.ml" 26 688 688 "src/data/db.ml" 1 0 -1
+)
+"src/data/db.ml" 20 503 516 "src/data/db.ml" 20 503 520
+type(
+  string
+)
+ident(
+  def lang "src/data/db.ml" 21 523 525 "src/data/db.ml" 24 681 686
+)
+"src/data/db.ml" 21 523 525 "src/data/db.ml" 21 523 539
+type(
+  string -> string -> unit
+)
+ident(
+  ext_ref File.write_all
+)
+"src/data/db.ml" 21 523 541 "src/data/db.ml" 21 523 553
+type(
+  unit -> string
+)
+ident(
+  int_ref main_db_file "src/data/db.ml" 7 124 128 "src/data/db.ml" 7 124 140
+)
+"src/data/db.ml" 21 523 554 "src/data/db.ml" 21 523 556
+type(
+  unit
+)
+"src/data/db.ml" 21 523 540 "src/data/db.ml" 21 523 557
+call(
+  stack
+)
+type(
+  string
+)
+"src/data/db.ml" 22 565 571 "src/data/db.ml" 22 565 584
+type(
+  unit -> string
+)
+ident(
+  int_ref get_main_data "src/data/db.ml" 18 447 451 "src/data/db.ml" 18 447 464
+)
+"src/data/db.ml" 22 565 585 "src/data/db.ml" 22 565 587
+type(
+  unit
+)
+"src/data/db.ml" 22 565 571 "src/data/db.ml" 22 565 587
+call(
+  stack
+)
+type(
+  string
+)
+"src/data/db.ml" 22 565 588 "src/data/db.ml" 22 565 590
+type(
+  string -> (string -> Json.t) -> Json.t
+)
+ident(
+  ext_ref Pervasives.( |> )
+)
+"src/data/db.ml" 22 565 591 "src/data/db.ml" 22 565 597
+type(
+  string -> Json.t
+)
+ident(
+  ext_ref Json.of_str
+)
+"src/data/db.ml" 22 565 571 "src/data/db.ml" 22 565 597
+call(
+  stack
+)
+type(
+  Json.t
+)
+"src/data/db.ml" 22 565 598 "src/data/db.ml" 22 565 600
+type(
+  Json.t -> (Json.t -> string Dic.t) -> string Dic.t
+)
+ident(
+  ext_ref Pervasives.( |> )
+)
+"src/data/db.ml" 22 565 601 "src/data/db.ml" 22 565 605
+type(
+  (Json.t -> string) -> Json.t -> string Dic.t
+)
+ident(
+  ext_ref Json.rdic
+)
+"src/data/db.ml" 22 565 606 "src/data/db.ml" 22 565 613
+type(
+  Json.t -> string
+)
+ident(
+  ext_ref Json.rstring
+)
+"src/data/db.ml" 22 565 601 "src/data/db.ml" 22 565 613
+type(
+  Json.t -> string Dic.t
+)
+"src/data/db.ml" 22 565 571 "src/data/db.ml" 22 565 613
+call(
+  stack
+)
+type(
+  string Dic.t
+)
+"src/data/db.ml" 22 565 614 "src/data/db.ml" 22 565 616
+type(
+  string Dic.t -> (string Dic.t -> string Dic.t) -> string Dic.t
+)
+ident(
+  ext_ref Pervasives.( |> )
+)
+"src/data/db.ml" 22 565 617 "src/data/db.ml" 22 565 624
+type(
+  string -> string -> string Dic.t -> string Dic.t
+)
+ident(
+  ext_ref Dic.put
+)
+"src/data/db.ml" 22 565 625 "src/data/db.ml" 22 565 631
+type(
+  string
+)
+"src/data/db.ml" 22 565 632 "src/data/db.ml" 22 565 636
+type(
+  string
+)
+ident(
+  int_ref lang "src/data/db.ml" 20 503 516 "src/data/db.ml" 20 503 520
+)
+"src/data/db.ml" 22 565 617 "src/data/db.ml" 22 565 636
+type(
+  string Dic.t -> string Dic.t
+)
+"src/data/db.ml" 22 565 571 "src/data/db.ml" 22 565 636
+call(
+  stack
+)
+type(
+  string Dic.t
+)
+"src/data/db.ml" 22 565 637 "src/data/db.ml" 22 565 639
+type(
+  string Dic.t -> (string Dic.t -> Json.t) -> Json.t
+)
+ident(
+  ext_ref Pervasives.( |> )
+)
+"src/data/db.ml" 23 640 646 "src/data/db.ml" 23 640 650
+type(
+  (string -> Json.t) -> string Dic.t -> Json.t
+)
+ident(
+  ext_ref Json.wdic
+)
+"src/data/db.ml" 23 640 656 "src/data/db.ml" 23 640 657
+type(
+  string
+)
+ident(
+  def v "src/data/db.ml" 23 640 661 "src/data/db.ml" 23 640 669
+)
+"src/data/db.ml" 23 640 668 "src/data/db.ml" 23 640 669
+type(
+  string
+)
+ident(
+  int_ref v "src/data/db.ml" 23 640 656 "src/data/db.ml" 23 640 657
+)
+"src/data/db.ml" 23 640 661 "src/data/db.ml" 23 640 669
+type(
+  Json.t
+)
+"src/data/db.ml" 23 640 651 "src/data/db.ml" 23 640 670
+type(
+  string -> Json.t
+)
+"src/data/db.ml" 23 640 646 "src/data/db.ml" 23 640 670
+type(
+  string Dic.t -> Json.t
+)
+"src/data/db.ml" 22 565 571 "src/data/db.ml" 23 640 670
+call(
+  stack
+)
+type(
+  Json.t
+)
+"src/data/db.ml" 23 640 671 "src/data/db.ml" 23 640 673
+type(
+  Json.t -> (Json.t -> string) -> string
+)
+ident(
+  ext_ref Pervasives.( |> )
+)
+"src/data/db.ml" 23 640 674 "src/data/db.ml" 23 640 680
+type(
+  Json.t -> string
+)
+ident(
+  ext_ref Json.to_str
+)
+"src/data/db.ml" 22 565 571 "src/data/db.ml" 23 640 680
+call(
+  stack
+)
+type(
+  string
+)
+"src/data/db.ml" 21 523 525 "src/data/db.ml" 24 681 686
+call(
+  tail
+)
+type(
+  unit
+)
+"src/data/db.ml" 26 688 692 "src/data/db.ml" 26 688 700
+type(
+  string -> unit
+)
+ident(
+  def set_menu "src/data/db.ml" 33 875 875 "src/data/db.ml" 1 0 -1
+)
+"src/data/db.ml" 26 688 701 "src/data/db.ml" 26 688 704
+type(
+  string
+)
+ident(
+  def opt "src/data/db.ml" 26 688 707 "src/data/db.ml" 31 872 873
+)
+"src/data/db.ml" 27 709 711 "src/data/db.ml" 27 709 725
+type(
+  string -> string -> unit
+)
+ident(
+  ext_ref File.write_all
+)
+"src/data/db.ml" 27 709 727 "src/data/db.ml" 27 709 739
+type(
+  unit -> string
+)
+ident(
+  int_ref main_db_file "src/data/db.ml" 7 124 128 "src/data/db.ml" 7 124 140
+)
+"src/data/db.ml" 27 709 740 "src/data/db.ml" 27 709 742
+type(
+  unit
+)
+"src/data/db.ml" 27 709 726 "src/data/db.ml" 27 709 743
+call(
+  stack
+)
+type(
+  string
+)
+"src/data/db.ml" 28 751 757 "src/data/db.ml" 28 751 770
+type(
+  unit -> string
+)
+ident(
+  int_ref get_main_data "src/data/db.ml" 18 447 451 "src/data/db.ml" 18 447 464
+)
+"src/data/db.ml" 28 751 771 "src/data/db.ml" 28 751 773
+type(
+  unit
+)
+"src/data/db.ml" 28 751 757 "src/data/db.ml" 28 751 773
+call(
+  stack
+)
+type(
+  string
+)
+"src/data/db.ml" 28 751 774 "src/data/db.ml" 28 751 776
+type(
+  string -> (string -> Json.t) -> Json.t
+)
+ident(
+  ext_ref Pervasives.( |> )
+)
+"src/data/db.ml" 28 751 777 "src/data/db.ml" 28 751 783
+type(
+  string -> Json.t
+)
+ident(
+  ext_ref Json.of_str
+)
+"src/data/db.ml" 28 751 757 "src/data/db.ml" 28 751 783
+call(
+  stack
+)
+type(
+  Json.t
+)
+"src/data/db.ml" 28 751 784 "src/data/db.ml" 28 751 786
+type(
+  Json.t -> (Json.t -> string Dic.t) -> string Dic.t
+)
+ident(
+  ext_ref Pervasives.( |> )
+)
+"src/data/db.ml" 28 751 787 "src/data/db.ml" 28 751 791
+type(
+  (Json.t -> string) -> Json.t -> string Dic.t
+)
+ident(
+  ext_ref Json.rdic
+)
+"src/data/db.ml" 28 751 792 "src/data/db.ml" 28 751 799
+type(
+  Json.t -> string
+)
+ident(
+  ext_ref Json.rstring
+)
+"src/data/db.ml" 28 751 787 "src/data/db.ml" 28 751 799
+type(
+  Json.t -> string Dic.t
+)
+"src/data/db.ml" 28 751 757 "src/data/db.ml" 28 751 799
+call(
+  stack
+)
+type(
+  string Dic.t
+)
+"src/data/db.ml" 28 751 800 "src/data/db.ml" 28 751 802
+type(
+  string Dic.t -> (string Dic.t -> string Dic.t) -> string Dic.t
+)
+ident(
+  ext_ref Pervasives.( |> )
+)
+"src/data/db.ml" 28 751 803 "src/data/db.ml" 28 751 810
+type(
+  string -> string -> string Dic.t -> string Dic.t
+)
+ident(
+  ext_ref Dic.put
+)
+"src/data/db.ml" 28 751 811 "src/data/db.ml" 28 751 817
+type(
+  string
+)
+"src/data/db.ml" 28 751 818 "src/data/db.ml" 28 751 821
+type(
+  string
+)
+ident(
+  int_ref opt "src/data/db.ml" 26 688 701 "src/data/db.ml" 26 688 704
+)
+"src/data/db.ml" 28 751 803 "src/data/db.ml" 28 751 821
+type(
+  string Dic.t -> string Dic.t
+)
+"src/data/db.ml" 28 751 757 "src/data/db.ml" 28 751 821
+call(
+  stack
+)
+type(
+  string Dic.t
+)
+"src/data/db.ml" 28 751 822 "src/data/db.ml" 28 751 824
+type(
+  string Dic.t -> (string Dic.t -> Json.t) -> Json.t
+)
+ident(
+  ext_ref Pervasives.( |> )
+)
+"src/data/db.ml" 29 825 831 "src/data/db.ml" 29 825 835
+type(
+  (string -> Json.t) -> string Dic.t -> Json.t
+)
+ident(
+  ext_ref Json.wdic
+)
+"src/data/db.ml" 29 825 841 "src/data/db.ml" 29 825 842
+type(
+  string
+)
+ident(
+  def v "src/data/db.ml" 29 825 846 "src/data/db.ml" 29 825 854
+)
+"src/data/db.ml" 29 825 853 "src/data/db.ml" 29 825 854
+type(
+  string
+)
+ident(
+  int_ref v "src/data/db.ml" 29 825 841 "src/data/db.ml" 29 825 842
+)
+"src/data/db.ml" 29 825 846 "src/data/db.ml" 29 825 854
+type(
+  Json.t
+)
+"src/data/db.ml" 29 825 836 "src/data/db.ml" 29 825 855
+type(
+  string -> Json.t
+)
+"src/data/db.ml" 29 825 831 "src/data/db.ml" 29 825 855
+type(
+  string Dic.t -> Json.t
+)
+"src/data/db.ml" 28 751 757 "src/data/db.ml" 29 825 855
+call(
+  stack
+)
+type(
+  Json.t
+)
+"src/data/db.ml" 29 825 856 "src/data/db.ml" 29 825 858
+type(
+  Json.t -> (Json.t -> string) -> string
+)
+ident(
+  ext_ref Pervasives.( |> )
+)
+"src/data/db.ml" 29 825 859 "src/data/db.ml" 29 825 865
+type(
+  Json.t -> string
+)
+ident(
+  ext_ref Json.to_str
+)
+"src/data/db.ml" 28 751 757 "src/data/db.ml" 29 825 865
+call(
+  stack
+)
+type(
+  string
+)
+"src/data/db.ml" 26 688 707 "src/data/db.ml" 31 872 873
+call(
+  tail
+)
+type(
+  unit
+)
+"src/data/db.ml" 33 875 879 "src/data/db.ml" 33 875 885
+type(
+  string -> string -> unit
+)
+ident(
+  def create "src/data/db.ml" 38 982 982 "src/data/db.ml" 1 0 -1
+)
+"src/data/db.ml" 33 875 886 "src/data/db.ml" 33 875 890
+type(
+  string
+)
+ident(
+  def home "src/data/db.ml" 33 875 891 "src/data/db.ml" 36 977 980
+)
+"src/data/db.ml" 33 875 891 "src/data/db.ml" 33 875 903
+type(
+  string
+)
+ident(
+  def version_text "src/data/db.ml" 33 875 906 "src/data/db.ml" 36 977 980
+)
+"src/data/db.ml" 34 908 912 "src/data/db.ml" 34 908 920
+type(
+  string ref
+)
+ident(
+  int_ref data_dir "src/data/db.ml" 5 101 105 "src/data/db.ml" 5 101 113
+)
+"src/data/db.ml" 34 908 921 "src/data/db.ml" 34 908 923
+type(
+  string ref -> string -> unit
+)
+ident(
+  ext_ref Pervasives.( := )
+)
+"src/data/db.ml" 34 908 930 "src/data/db.ml" 34 908 934
+type(
+  string
+)
+ident(
+  int_ref home "src/data/db.ml" 33 875 886 "src/data/db.ml" 33 875 890
+)
+"src/data/db.ml" 34 908 935 "src/data/db.ml" 34 908 936
+type(
+  string -> string -> string
+)
+ident(
+  ext_ref Path.( ^ )
+)
+"src/data/db.ml" 34 908 937 "src/data/db.ml" 34 908 943
+type(
+  string
+)
+"src/data/db.ml" 34 908 930 "src/data/db.ml" 34 908 943
+call(
+  stack
+)
+type(
+  string
+)
+"src/data/db.ml" 34 908 912 "src/data/db.ml" 34 908 944
+type(
+  unit
+)
+"src/data/db.ml" 35 946 950 "src/data/db.ml" 35 946 962
+type(
+  string -> unit
+)
+ident(
+  int_ref main_db_init "src/data/db.ml" 9 176 180 "src/data/db.ml" 9 176 192
+)
+"src/data/db.ml" 35 946 963 "src/data/db.ml" 35 946 975
+type(
+  string
+)
+ident(
+  int_ref version_text "src/data/db.ml" 33 875 891 "src/data/db.ml" 33 875 903
+)
+"src/data/db.ml" 35 946 950 "src/data/db.ml" 35 946 976
+call(
+  tail
+)
+type(
+  unit
+)
+"src/data/db.ml" 33 875 906 "src/data/db.ml" 36 977 980
+type(
+  unit
+)
+"src/data/db.ml" 38 982 986 "src/data/db.ml" 38 982 990
+type(
+  string -> unit
+)
+ident(
+  def init "src/data/db.ml" 40 1038 1041 "src/data/db.ml" 1 0 -1
+)
+"src/data/db.ml" 38 982 991 "src/data/db.ml" 38 982 995
+type(
+  string
+)
+ident(
+  def home "src/data/db.ml" 38 982 998 "src/data/db.ml" 40 1038 1041
+)
+"src/data/db.ml" 39 1000 1004 "src/data/db.ml" 39 1000 1012
+type(
+  string ref
+)
+ident(
+  int_ref data_dir "src/data/db.ml" 5 101 105 "src/data/db.ml" 5 101 113
+)
+"src/data/db.ml" 39 1000 1013 "src/data/db.ml" 39 1000 1015
+type(
+  string ref -> string -> unit
+)
+ident(
+  ext_ref Pervasives.( := )
+)
+"src/data/db.ml" 39 1000 1022 "src/data/db.ml" 39 1000 1026
+type(
+  string
+)
+ident(
+  int_ref home "src/data/db.ml" 38 982 991 "src/data/db.ml" 38 982 995
+)
+"src/data/db.ml" 39 1000 1027 "src/data/db.ml" 39 1000 1028
+type(
+  string -> string -> string
+)
+ident(
+  ext_ref Path.( ^ )
+)
+"src/data/db.ml" 39 1000 1029 "src/data/db.ml" 39 1000 1035
+type(
+  string
+)
+"src/data/db.ml" 39 1000 1022 "src/data/db.ml" 39 1000 1035
+call(
+  stack
+)
+type(
+  string
+)
+"src/data/db.ml" 38 982 998 "src/data/db.ml" 40 1038 1041
+type(
+  unit
+)

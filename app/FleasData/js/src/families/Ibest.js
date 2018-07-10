@@ -63,7 +63,7 @@ families_Ibest = class {
     function bests(intFormat, floatFormat, span) {
       return It.from([
           tdl().att("title", _("Length"))
-            .html(intFormat(self.len() + 61)),
+            .html(intFormat(self.len() + 15)),
           tdl().att("title", _("Buy Strip"))
             .html(floatFormat(self.buyStrip() * 0.1) + "%"),
           tdl().att("title", _("Sell Strip"))
