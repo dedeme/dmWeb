@@ -52,6 +52,6 @@ Document "dummy_api"
   Title: API reference for dummy
   XOCamlbuildPath: .
   XOCamlbuildExtraArgs:
-    "-docflags '-sort -t libdmo -keep-code -colorize-code -short-functors -charset utf-8'"
+    "-docflags '-sort -t Dummy -keep-code -colorize-code -short-functors -charset utf-8'"
   XOCamlbuildLibraries: pages, data
 

@@ -5,5 +5,13 @@ lib
 obj
 bin
 _test
+_build
+*.native
+configure
+*.docdir
+Makefile
+setup.*
+
 gitk
 *.geany
+
