@@ -1,4 +1,4 @@
-// Copyright 09-07-2018 ºDeme
+// Copyright 10-07-2018 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 goog.provide("Main");
@@ -10,6 +10,8 @@ goog.require("user_Auth");
 goog.require("Bye");
 goog.require("Settings");
 goog.require("Backups");
+
+goog.require("Nicks");
 
 Main = class {
   /** @return {!Main} */
@@ -30,7 +32,7 @@ Main = class {
 
   /** @return {string} */
   static app () {
-    return "Dummy";
+    return "Quotes";
   }
 
   /** @return {string} */
@@ -74,6 +76,13 @@ Main = class {
               bk.trash(trash => {
                 self.show(rp["menu"], bk.mk(backups, trash));
               });
+            });
+            break;
+          case "nicks" :
+            const pg = new Nicks(self);
+            pg.idata((d) => {
+              self.show(rp["menu"], pg.mk(d))
+              pg.initialFocus();
             });
             break;
           default:
@@ -158,7 +167,7 @@ Main = class {
 
     const menu = $("table").klass("main").add($("tr")
       .add($("td")
-        .add(entry(_("Writer"), "writer"))
+        .add(entry(_("Nicks"), "nicks"))
         .add(separator())
         .add(entry(_("Reader"), "reader")))
       .add($("td").style("text-align:right")

@@ -2,6 +2,8 @@
    GNU General Public License - V3 <http://www.gnu.org/licenses/>
 *)
 
+(** Program entry *)
+
 let () = Printexc.record_backtrace true
 
 and data_dir = Path.(Const.app_dir ^ "data")
@@ -29,64 +31,54 @@ let init cgi = (
   ) in
 
 let process cgi session_id rq =
-  match Dic.get "rq" rq with
-  | None -> raise (Failure "Key 'rq' does not exist in 'main'")
-  | Some r ->
-    match Json.rstring r with
-    | "idata" -> Cgi.ok_str cgi (Db.get_main_data ())
-    | "setMenu" -> (
-        match Dic.get "option" rq with
-        | None -> raise (Failure "Expected key 'option' for 'setMenu'")
-        | Some o -> (
-            Db.set_menu (Json.rstring o);
-            Cgi.ok_empty cgi
-          )
-      )
-    | "bye" ->
-      let rp = Cgi.del_session cgi session_id in
-      let t0 = Date.now () in
-      let t1 = Date.add_days (-7) t0 in
-      let t2 = Date.(mk (day t0) (month t0) ((year t0) - 1)) in
-      let d1 = Date.format "%Y%m%d" t1 in
-      let d2 = Date.format "%Y%m%d" t2 in
-      let rec filter previous bks = match bks with
-        | [] -> ()
-        | f::fs ->
-          let name = Path.only_name f in (
-            if name < d2 then
-              let cut1 = String.sub name 0 4
-              and cut2 = String.sub previous 0 4 in
-              if cut1 = cut2 then File.del f else ()
-            else if name < d1 then
-              let cut1 = String.sub name 0 6
-              and cut2 = String.sub previous 0 6 in
-              if cut1 = cut2 then File.del f else ()
-            else ();
-            filter name fs
-          )
-      in (
-        Ext.zip
-          Path.((Cgi.home cgi) ^ "data")
-          Path.((Cgi.home cgi) ^ "backups" ^
-            Printf.sprintf "%s.zip" Date.(format "%Y%m%d" (now ())));
-        filter "        "
-          (Array.to_list (File.dir Path.((Cgi.home cgi) ^ "backups")));
-        rp
-      )
-    | s -> raise (Failure (Printf.sprintf
-      "Request '%s' is unknown in main.rq" s))
+  match Cgi.rrq rq "rq" Json.rstring with
+  | "idata" -> Cgi.ok_str cgi (Db.get_main_data ())
+  | "setMenu" -> (
+      Db.set_menu (Cgi.rrq rq "option" Json.rstring);
+      Cgi.ok_empty cgi
+    )
+  | "bye" ->
+    let rp = Cgi.del_session cgi session_id in
+    let t0 = Date.now () in
+    let t1 = Date.add_days (-7) t0 in
+    let t2 = Date.(mk (day t0) (month t0) ((year t0) - 1)) in
+    let d1 = Date.format "%Y%m%d" t1 in
+    let d2 = Date.format "%Y%m%d" t2 in
+    let rec filter previous bks = match bks with
+      | [] -> ()
+      | f::fs ->
+        let name = Path.only_name f in (
+          if name < d2 then
+            let cut1 = String.sub name 0 4
+            and cut2 = String.sub previous 0 4 in
+            if cut1 = cut2 then File.del f else ()
+          else if name < d1 then
+            let cut1 = String.sub name 0 6
+            and cut2 = String.sub previous 0 6 in
+            if cut1 = cut2 then File.del f else ()
+          else ();
+          filter name fs
+        )
+    in (
+      Ext.zip
+        Path.((Cgi.home cgi) ^ "data")
+        Path.((Cgi.home cgi) ^ "backups" ^
+          Printf.sprintf "%s.zip" Date.(format "%Y%m%d" (now ())));
+      filter "        "
+        (Array.to_list (File.dir Path.((Cgi.home cgi) ^ "backups")));
+      rp
+    )
+  | s -> raise (Failure (Printf.sprintf
+    "Request '%s' is unknown in main.rq" s))
   in
 
 let hub cgi session_id rq =
-  match Dic.get "page" rq with
-  | None -> raise (Failure "Key 'page' does not exist")
-  | Some p ->
-    match Json.rstring p with
-    | "main" -> process cgi session_id rq
-    | "settings" -> Settings.process cgi rq
-    | "changePass" -> Change_pass.process cgi rq
-    | "backups" -> Backups.process cgi Const.version_text rq
-    | s -> raise (Failure (Printf.sprintf "Page '%s' is unknown" s))
+  match Cgi.rrq rq "page" Json.rstring with
+  | "main" -> process cgi session_id rq
+  | "settings" -> Settings.process cgi rq
+  | "changePass" -> Change_pass.process cgi rq
+  | "backups" -> Backups.process cgi Const.version_text rq
+  | s -> raise (Failure (Printf.sprintf "Page '%s' is unknown" s))
   in
 
 (* main ---------------------------------------------------- *)

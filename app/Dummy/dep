@@ -2,6 +2,6 @@
 
 cd ocaml
 oasis setup -setup-update dynamic
-cd ../js
+cd ../bs
 ./dep
 cd ..

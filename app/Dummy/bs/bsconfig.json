@@ -1,0 +1,10 @@
+{
+  "name": "Dummy",
+  "namespace": true,
+  "sources": ["src", "src/user", "libs/libbs", "libs/libwidgets"],
+  "suffix": ".bs.js",
+  "warnings": {
+    "number": "-44"
+  }
+}
+

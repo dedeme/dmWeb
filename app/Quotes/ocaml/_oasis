@@ -1,0 +1,45 @@
+Name: Quotes
+Version: 2018.7
+Synopsis: Template for web applications
+Authors: Me <me@myhost.com>
+License: LGPL-3
+
+Description: Template for web applications
+
+OASISFormat: 0.4
+BuildTools: ocamlbuild
+Plugins: META (0.4), DevFiles (0.4)
+
+Library "data"
+  Path: src/data
+  Modules:  Db, Quote, Nick, Nick_db, Server, Invertia, Infomercados,
+            Finanzas, Qissue, Qissue_db, Qchecker
+  BuildDepends: libdmo (= 2018.6)
+
+Library "pages"
+  Path: src/pages
+  Modules:  Servers, Nicks
+  BuildDepends: data
+
+Library "core"
+  Path: src/core
+  Modules:  Backups, Change_pass, Settings
+  BuildDepends: data
+
+Executable "quotes"
+  Install: false
+  Path: src
+  MainIs: main.ml
+  BuildDepends: core, pages, data
+  CompiledObject: best
+
+Executable "test_quotes"
+  Install: false
+  Path: tests
+  MainIs: all.ml
+  BuildDepends: core, pages, data
+  CompiledObject: best
+
+Test "test_quotes"
+  Command: $test_quotes
+  WorkingDirectory: tests

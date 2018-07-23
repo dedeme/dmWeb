@@ -5,10 +5,10 @@ lib
 obj
 bin
 _test
+api
 _build
 *.native
 configure
-*.docdir
 Makefile
 setup.*
 

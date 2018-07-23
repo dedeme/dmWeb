@@ -2,6 +2,8 @@
    GNU General Public License - V3 <http://www.gnu.org/licenses/>
 *)
 
+(** Global constants *)
+
 let app_name = "Dummy"
 
 let data_version = "201807"

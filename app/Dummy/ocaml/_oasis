@@ -42,16 +42,3 @@ Executable "test_dummy"
 Test "test_dummy"
   Command: $test_dummy
   WorkingDirectory: tests
-
-AlphaFeatures: ocamlbuild_more_args
-Document "dummy_api"
-  Install: false
-  Type: ocamlbuild (0.4)
-  BuildTools: ocamldoc
-
-  Title: API reference for dummy
-  XOCamlbuildPath: .
-  XOCamlbuildExtraArgs:
-    "-docflags '-sort -t Dummy -keep-code -colorize-code -short-functors -charset utf-8'"
-  XOCamlbuildLibraries: pages, data
-
