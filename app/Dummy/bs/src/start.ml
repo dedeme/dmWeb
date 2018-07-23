@@ -19,6 +19,8 @@ let run () = (
             if lang = "es" then I18n.es () else I18n.en ();
             if menu = settings_page_id then Settings.show menu lang
             else if menu = backups_page_id then Backups.show menu
+            else if menu = reader_page_id then Reader.show menu
+            else if menu = writer_page_id then Writer.show menu
             else Js.Exn.raiseError {j|Page $menu is unknown|j}
           )
         )

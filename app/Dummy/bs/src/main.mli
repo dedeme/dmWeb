@@ -25,6 +25,12 @@ val settings_page_id : string
 val backups_page_id : string
 (** [backups_page_id] is the identifier of Backups page. *)
 
+val reader_page_id : string
+(** [reader_page_id] is the identifier of Reader page. *)
+
+val writer_page_id : string
+(** [writer_page_id] is the identifier of Writer page. *)
+
 val client : unit -> Client.t
 (** [client ()] returns the communications client. *)
 

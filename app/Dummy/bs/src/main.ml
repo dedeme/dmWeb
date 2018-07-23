@@ -18,6 +18,8 @@ let captcha_chpass_store = {j|$(app)__captchaCh|j}
 
 let settings_page_id = "settings"
 let backups_page_id = "backups"
+let writer_page_id = "writer"
+let reader_page_id = "reader"
 
 let client () = match !cl with
   | None -> Js.Exn.raiseError ("Client is not defined")
@@ -73,14 +75,14 @@ let show page o =
     q "table" [Klass "main"][
       q "tr" [][
         q "td" [][
-          entry (i18 "Writer") "writer";
+          entry (i18 "Writer") writer_page_id;
           separator ();
-          entry (i18 "Reader") "reader";
+          entry (i18 "Reader") reader_page_id;
         ];
         q "td" [Style "text-align:right"][
-          entry (i18 "Backs") "backups";
+          entry (i18 "Backs") backups_page_id;
           separator ();
-          entry (i18 "Settings") "settings";
+          entry (i18 "Settings") settings_page_id;
           separator ();
           link (fun _ -> bye ()) |> Domo.add [
               img "cross" |> Domo.set [Style "vertical-align:bottom"]
