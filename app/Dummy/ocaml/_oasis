@@ -29,14 +29,14 @@ Executable "dummy"
   Install: false
   Path: src
   MainIs: main.ml
-  BuildDepends: core, pages
+  BuildDepends: core, pages, data
   CompiledObject: best
 
 Executable "test_dummy"
   Install: false
   Path: tests
   MainIs: all.ml
-  BuildDepends: core, pages
+  BuildDepends: core, pages, data
   CompiledObject: best
 
 Test "test_dummy"

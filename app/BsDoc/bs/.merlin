@@ -1,0 +1,19 @@
+####{BSB GENERATED: NO EDIT
+B lib/bs
+FLG -open BsDoc
+FLG -ppx /home/deme/node_modules/bs-platform/lib/bsppx.exe
+S /home/deme/node_modules/bs-platform/lib/ocaml
+B /home/deme/node_modules/bs-platform/lib/ocaml
+FLG -nostdlib -no-alias-deps -color always
+FLG -w -30-40+6+7+27+32..39+44+45+101-44
+S libs/libwidgets
+B lib/bs/libs/libwidgets
+S libs/libbs
+B lib/bs/libs/libbs
+S src/data
+B lib/bs/src/data
+S src/user
+B lib/bs/src/user
+S src
+B lib/bs/src
+####BSB GENERATED: NO EDIT}

@@ -150,10 +150,11 @@ let show () =
         Value (i18 "Accept")][];
     captcha = Captcha.mk captcha_auth_store 3 ()
   } in (
-    match Store.get lang_store with
+    (match Store.get lang_store with
     | None -> I18n.es ()
     | Some "en" -> I18n.en ()
-    | Some _ -> I18n.es ();
+    | Some _ -> I18n.es ()
+    );
 
     show_root (q "div" [][
       q "div" [

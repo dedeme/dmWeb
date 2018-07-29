@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd ocaml
+oasis setup -setup-update dynamic
+cd ../bs
+./dep
+cd ..
