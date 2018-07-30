@@ -1,10 +1,10 @@
 Name: Quotes
 Version: 2018.7
-Synopsis: Template for web applications
+Synopsis: Management of stock quotes
 Authors: Me <me@myhost.com>
 License: LGPL-3
 
-Description: Template for web applications
+Description: Management of stock quotes
 
 OASISFormat: 0.4
 BuildTools: ocamlbuild

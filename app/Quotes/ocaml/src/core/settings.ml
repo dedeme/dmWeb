@@ -2,11 +2,11 @@
    GNU General Public License - V3 <http://www.gnu.org/licenses/>
 *)
 
-let process cgi rq =
+let process rq =
   match Cgi.rrq rq "rq" Json.rstring with
   | "setLang" -> Cgi.(
       Db.set_lang (rrq rq "lang" Json.rstring);
-      ok_empty cgi
+      ok_empty ()
     )
   | s -> raise (Failure (Printf.sprintf
     "Request '%s' is unknown in main.rq" s))

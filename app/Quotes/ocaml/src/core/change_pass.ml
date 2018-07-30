@@ -2,8 +2,8 @@
    GNU General Public License - V3 <http://www.gnu.org/licenses/>
 *)
 
-let process cgi rq = Json.(Cgi.(
-    change_pass cgi
+let process rq = Json.(Cgi.(
+    change_pass
       (rrq rq "user" rstring)
       (rrq rq "oldPass" rstring)
       (rrq rq "newPass" rstring)

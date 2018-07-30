@@ -4,5 +4,5 @@
 
 (** Backups page *)
 
-val process : Cgi.t -> string -> Json.t Dic.t -> Cgi.rp
-(** [process cgi version_text rq] processes backups page *)
+val process : string -> Json.t Dic.t -> Cgi.rp
+(** [process version_text rq] processes backups page *)

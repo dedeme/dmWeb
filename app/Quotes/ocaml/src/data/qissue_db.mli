@@ -19,5 +19,5 @@ val replace : string -> Qissue.t It.t -> unit
 val get : string -> Qissue.t It.t
 (** [get nick_id] returns issues of nick 'nick_id' *)
 
-val nicks_status : Nick.t It.t -> (string * bool) It.t
-(** nicks_status it *)
+val nicks_status : unit -> string It.t
+(** [nicks_status ()] returns an iterator over 'nick_id's with issues. *)

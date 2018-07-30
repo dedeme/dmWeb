@@ -16,11 +16,12 @@ let index d =
     let n = It.count it in
     let it = It.sort fsort it in
     let nrows cols = ((n - 1) / cols) + 1 in
-    let (rows, cols) =
-      if n < 3 then (n, 1)
-      else if n < 5 then (nrows 2, 2)
-      else if n < 7 then (nrows 3, 3)
-      else (nrows 4, 4)
+    let cols = 4 in
+    let rows =
+      if n < 3 then n
+      else if n < 5 then nrows 2
+      else if n < 7 then nrows 3
+      else nrows 4
     in
     let a = It.to_array it in
     q "table" [Klass "main"][
@@ -33,10 +34,11 @@ let index d =
             It.map
               (fun c ->
                 let i = c * rows + r in
-                if i >= n then q "td" [][]
+                if i >= n then q "td" [Style "width:25%"; Html "&nbsp;"][]
                 else
                   let (text, link) = a.(i) in
-                  q "td" [][q "a" [Att ("href", link); Text text][]]
+                  q "td" [Style "width:25%"][
+                    q "a" [Att ("href", link); Text text][]]
               )
               (It.range 0 cols)
             |> It.to_list)

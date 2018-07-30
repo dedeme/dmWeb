@@ -15,7 +15,9 @@ let replace nick_id issues =
 
 let get nick_id = read () |> It.filter Qissue.(fun i -> i.id = nick_id)
 
-let nicks_status it =
-  let issues = read () in
-  let f nk = It.any (fun i -> Qissue.(i.id) = Nick.(nk.id)) issues in
-  It.map Nick.(fun nk -> (nk.id, f nk)) it
+let nicks_status () = Qissue.(
+  let contains l issue = It.any (fun id -> id = issue.id) (It.of_list l) in
+  read () |>
+  It.reduce [] (fun r i -> if contains r i then r else i.id::r) |>
+  It.of_list
+)

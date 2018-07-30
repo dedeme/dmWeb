@@ -1,7 +1,7 @@
 #!/bin/bash
 
-LIBS="https://github.com/dedeme/dmjsBasic.git dmjsBasic \
-      https://github.com/dedeme/dmjsWidgets.git dmjsWidgets "
+LIBS="https://github.com/dedeme/libbs.git libbs \
+      https://github.com/dedeme/libwidgets.git libwidgets "
 
 # Do not change --------------------------------------------
 

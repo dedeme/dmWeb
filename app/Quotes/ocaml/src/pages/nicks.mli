@@ -4,5 +4,5 @@
 
 (** Nicks page *)
 
-val process : Cgi.t -> Json.t Dic.t -> Cgi.rp
-(** [process cgi rq] processes 'rq'. *)
+val process : Json.t Dic.t -> Cgi.rp
+(** [process rq] processes 'rq'. *)

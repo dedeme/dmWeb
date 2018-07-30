@@ -4,5 +4,5 @@
 
 (** Settings page *)
 
-val process : Cgi.t -> Json.t Dic.t -> Cgi.rp
+val process : Json.t Dic.t -> Cgi.rp
 (** [process cgi rq] processes settings page *)

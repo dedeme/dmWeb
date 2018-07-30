@@ -5,7 +5,6 @@
 (** Issue of quotes *)
 
 type qf_t = Open | Close | Max | Min | Vol
-
 (** [qf_t] Quote field type. *)
 
 type k_t =
@@ -18,13 +17,13 @@ type k_t =
     (** [Max (date, quote_field)] Open or Close > Max *)
   | Min of (string * qf_t)
     (** [Min (date, quote_field)] Open or Close < Min *)
-
-(** [k_t] Issue kind *)
+(** [k_t] Issue kind. *)
 
 type t = {
     id   : string;
     kind : k_t
   }
+(** [k] Qissue type. *)
 
 val to_json : t -> Json.t
 (** [to_json qi] serializes 'qi' *)

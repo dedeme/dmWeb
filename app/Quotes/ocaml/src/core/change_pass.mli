@@ -4,5 +4,5 @@
 
 (** Change password page *)
 
-val process : Cgi.t -> Json.t Dic.t -> Cgi.rp
-(** [process cgi rq] processes change passoword page *)
+val process : Json.t Dic.t -> Cgi.rp
+(** [process rq] processes change passoword page *)

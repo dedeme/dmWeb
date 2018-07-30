@@ -13,11 +13,10 @@ and trash_dir = Path.(Const.app_dir ^ "trash") in
 
 (* functions ----------------------------------------------- *)
 
-let send rp = print_string (Cgi.str_of_rp rp) in
-
-let init cgi = (
+let init () = (
     if File.exists data_dir then (
-      Db.init (Cgi.home cgi)
+      (* Db.create (Cgi.home) Const.version_text; *)
+      Db.init (Cgi.home ())
     )
     else (
       File.mkdir data_dir;
@@ -25,19 +24,19 @@ let init cgi = (
       File.mkdir backups_dir;
       File.mkdir trash_dir;
 
-      Db.create (Cgi.home cgi) Const.version_text
+      Db.create (Cgi.home ()) Const.version_text
     )
   ) in
 
-let process cgi session_id rq =
+let process session_id rq =
   match Cgi.rrq rq "rq" Json.rstring with
-  | "idata" -> Cgi.ok_str cgi (Db.get_main_data ())
-  | "setMenu" -> Json.(Cgi.(
-      Db.set_menu (rrq rq "option" rstring);
-      ok_empty cgi
-    ))
+  | "idata" -> Cgi.ok_str (Db.get_main_data ())
+  | "setMenu" -> (
+      Db.set_menu (Cgi.rrq rq "option" Json.rstring);
+      Cgi.ok_empty ()
+    )
   | "bye" ->
-    let rp = Cgi.del_session cgi session_id in
+    let rp = Cgi.del_session session_id in
     let t0 = Date.now () in
     let t1 = Date.add_days (-7) t0 in
     let t2 = Date.(mk (day t0) (month t0) ((year t0) - 1)) in
@@ -60,69 +59,69 @@ let process cgi session_id rq =
         )
     in (
       Ext.zip
-        Path.((Cgi.home cgi) ^ "data")
-        Path.((Cgi.home cgi) ^ "backups" ^
+        Path.((Cgi.home ()) ^ "data")
+        Path.((Cgi.home ()) ^ "backups" ^
           Printf.sprintf "%s.zip" Date.(format "%Y%m%d" (now ())));
       filter "        "
-        (Array.to_list (File.dir Path.((Cgi.home cgi) ^ "backups")));
+        (Array.to_list (File.dir Path.((Cgi.home ()) ^ "backups")));
       rp
     )
   | s -> raise (Failure (Printf.sprintf
     "Request '%s' is unknown in main.rq" s))
   in
 
-let hub cgi session_id rq =
+let hub session_id rq =
   match Cgi.rrq rq "page" Json.rstring with
-  | "main" -> process cgi session_id rq
-  | "settings" -> Settings.process cgi rq
-  | "changePass" -> Change_pass.process cgi rq
-  | "backups" -> Backups.process cgi Const.version_text rq
-  | "nicks" -> Nicks.process cgi rq
+  | "main" -> process session_id rq
+  | "settings" -> Settings.process rq
+  | "changePass" -> Change_pass.process rq
+  | "backups" -> Backups.process Const.version_text rq
+  | "nicks" -> Nicks.process rq
   | s -> raise (Failure (Printf.sprintf "Page '%s' is unknown" s))
   in
 
 (* main ---------------------------------------------------- *)
 
-let cgi = Cgi.mk Const.app_name Const.app_dir Const.expiration "A Dummy key" in
 try (
-  init cgi;
+  Cgi.mk Const.app_name Const.app_dir Const.expiration "A Dummy key";
+  init ();
   match Array.length Sys.argv with
   | 2 -> Cgi.(
       let rq = Sys.argv.(1) in
       match String.index_opt rq ':' with
       | None -> ( (* ........................................ CONNECTION *)
-          let cgi = set_key rq cgi in
-          send (connect cgi rq)
+          set_key rq;
+          send (connect rq)
         )
       | Some 0 -> ( (* .................................. AUTHENTICATION *)
-          let key = Cryp.key Cgi.klen (app_name cgi) in
-          let cgi = set_key key cgi in
-          let a = Txt.(mk rq |> sub_end 1 |> to_str |> Cryp.decryp key |>
-            mk |> csplit ':' |> It.map to_str |> It.to_array) in
-          let rp = Cgi.authenticate cgi a.(0) a.(1) (a.(2) = "1") in
-          send rp
-        )
+          let key = Cryp.key Cgi.klen (app_name ()) in (
+            set_key key;
+            let a = Txt.(mk rq |> sub_end 1 |> to_str |> Cryp.decryp key |>
+              mk |> csplit ':' |> It.map to_str |> It.to_array) in
+            let rp = Cgi.authenticate a.(0) a.(1) (a.(2) = "1") in
+            send rp
+          ))
       | Some i -> ( (* ..................................... NORMAL DATA *)
           let session_id = String.sub rq 0 i in
-          match Cgi.get_session_data cgi session_id with
+          match Cgi.get_session_data session_id with
           | None -> Cgi.(
-              send (expired cgi)
+              send (expired ())
             )
           | Some (key, con_id) -> Json.(
+              set_key key;
               let rq = Txt.(
                   mk rq |> sub_end (i + 1) |> to_str |> Cryp.decryp key
                 ) in
-              let cgi = set_key key cgi in
               match of_str rq with
               | Object dic -> (
                   match Dic.get "connectionId" dic with
-                  | None -> send (hub cgi session_id dic)
+                  | None -> send (hub session_id dic)
                   | Some js ->
                       match js with
                       | String cid -> if cid = con_id
-                        then send (hub cgi session_id dic)
+                        then send (hub session_id dic)
                         else Cgi.(
-                          send (expired cgi)
+                          send (expired ())
                         )
                       | _ -> raise (Failure "'js' is not a String JSON")
                 )
