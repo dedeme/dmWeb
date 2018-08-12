@@ -4,14 +4,15 @@
 
 let check_server sv n = It.any (fun (id, _) -> id = n) (Server.get_nicks sv)
 
-let check_servers servers n =
-  let f s ser = match s with
-  | None -> if check_server ser n then None else Some Server.(ser.id)
-  | _ -> s
+let check_server_code servers n =
+  let f r ser = match r with
+  | None -> if check_server ser n then None else Some Server.(ser.name)
+  | _ -> r
   in
-  List.fold_left f None servers
+  It.reduce None f servers
 
-let check servers nick_id =
-  match check_servers servers nick_id with
-  | Some ser_id -> It.unary Qissue.({id = nick_id; kind = Server ser_id})
-  | None -> It.empty
+let check servers nick_id = Qissue.(
+  match check_server_code servers nick_id with
+  | None -> None
+  | Some ser_name -> Some {id = nick_id; kind = Server ser_name}
+)

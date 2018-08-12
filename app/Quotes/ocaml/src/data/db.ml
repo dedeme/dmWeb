@@ -20,18 +20,31 @@ let main_db_init version_text = File.(
 
 let get_main_data () = File.read_all (main_db_file ())
 
-let set_lang lang =
+let get_id key = Json.(
+  get_main_data () |> of_str |> rdic rstring |> Dic.get key
+)
+
+let set_id key value =
   File.write_all (main_db_file ()) Json.(
-      get_main_data () |> of_str |> rdic rstring |> Dic.put "lang" lang |>
+      get_main_data () |> of_str |> rdic rstring |> Dic.put key value |>
       wdic (fun v -> String v) |> to_str
     )
 
-let set_menu opt = (
-  File.write_all (main_db_file ()) Json.(
-      get_main_data () |> of_str |> rdic rstring |> Dic.put "menu" opt |>
-      wdic (fun v -> String v) |> to_str
-    )
-)
+let set_lang = set_id "lang"
+
+let set_menu = set_id "menu"
+
+let get_edit_id ()  = get_id "edit_id"
+
+let set_edit_id = set_id "edit_id"
+
+let get_servers_id () = get_id "servers_id"
+
+let set_servers_id = set_id "servers_id"
+
+let get_issues_id () = get_id "issues_id"
+
+let set_issues_id = set_id "issues_id"
 
 let create home version_text = (
     data_dir := Path.(home ^ "data");
@@ -51,4 +64,5 @@ let create home version_text = (
 let init home = (
     data_dir := Path.(home ^ "data");
   )
+
 

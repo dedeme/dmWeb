@@ -51,16 +51,38 @@ let process rq =
       ok_empty ()
     ))
   | "del" -> Json.(Cgi.(
-      Nick_db.remove (rrq rq "id" rstring);
+      let id = rrq rq "id" rstring
+      and servers = Server_db.(read () |> to_it) in
+      Nick_db.remove (id);
+      It.each
+        (fun server ->
+          Server.get_nicks server |>
+          It.filter (fun (i, _) -> id <> i) |>
+          Server.set_nicks server
+        ) servers;
       ok_empty ()
     ))
   | "check" -> Json.(Cgi.(
       let id = rrq rq "id" rstring in
-      let list = Qchecker.check Servers.list id in (
-        Qissue_db.replace id list;
-        ok [("withIssues", Bool (It.has list))]
-      )
-    ))
+      let sdb = Server_db.read () in
+      let issue = Qchecker.check (Server_db.to_it sdb) id in (
+        Qissue_db.set id issue;
+        ok [("withIssues", Bool (match issue with None -> false | _ -> true))]
+      )))
+  | "edit" -> Json.(Cgi.(
+      let id = rrq rq "id" rstring
+      and menu = rrq rq "menu" rstring in (
+        Db.set_edit_id id;
+        Db.set_menu menu;
+        ok_empty ()
+      )))
+  | "issue" -> Json.(Cgi.(
+      let id = rrq rq "id" rstring
+      and menu = rrq rq "menu" rstring in (
+        Db.set_issues_id id;
+        Db.set_menu menu;
+        ok_empty ()
+      )))
   | s -> raise (Failure (Printf.sprintf
     "Request '%s' is unknown in 'Nicks.rq'" s))
 

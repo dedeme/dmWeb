@@ -5,9 +5,11 @@
 (** Server object *)
 
 type t = {
-  id : string;
   name : string;
-  read : string -> Quote.t list option (** list is 'before to after' ordered *)
+  read : string -> Quote.t list option;
+  (* [read code] returns a list 'before to after' ordered of quotes *)
+  read_last : unit -> (string * float) list option
+  (* [read_last] return a list with closes of the last market session. *)
 }
 (** Server type *)
 

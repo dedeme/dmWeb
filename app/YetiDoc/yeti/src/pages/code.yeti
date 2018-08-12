@@ -1,0 +1,52 @@
+// Copyright 11-Aug-2018 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Code page.
+module pages.code;
+
+load es.dm.all;
+load es.dm.json;
+cgi = load es.dm.cgi;
+db = load data.db;
+hlight = load data.hlight;
+
+typedef txT = {
+    bf is bufT,
+    s is string,
+    ix is number
+  };
+
+(
+  colorize tx = hlight.colorize tx;
+
+  putHyper hyper tx =
+    if hyper == "hp::" then tx
+    else
+      case sindex ("\n  " ^ (strRight hyper 4) ^ " ") tx of
+      None (): tx;
+      Some i: strLeft tx i ^ "<span id=\"" ^ hyper ^ "\"></span>" ^
+              strRight tx i
+      esac
+    fi;
+
+  readCode hyper tx =
+    Some (
+      if tx == "" or (not (strChar tx ((strLength tx) - 1) == "\n"))
+      then tx ^ "\n" else tx fi |>
+        strReplace "&" "&amp;" |> strReplace "<" "&lt;" |>
+        putHyper hyper |> colorize);
+
+  mkCode mpath fpath hyper =
+    case db.getPaths() |> find (_ mp = mp.id == mpath) of
+    p::_: readCode hyper (file.readAll (p.path ^/ fpath ^ ".yeti"));
+    _: None ()
+    esac;
+
+{
+  process rq =
+    mpath = rstring rq["mpath"];
+    fpath = rstring rq["fpath"];
+    hyper = rstring rq["hyper"];
+    cgi.ok ["page": mkCode mpath fpath hyper |> wopt wstring],
+}
+)

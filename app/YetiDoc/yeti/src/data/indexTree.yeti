@@ -1,0 +1,27 @@
+// Copyright 05-Aug-2018 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Menu path entry.
+module data.indexTree;
+
+load es.dm.all;
+load es.dm.json;
+
+typedef t = {
+    id is string,
+    help is option<string>,
+    entry is list<t>
+  }
+
+{
+  toJson {id, help, entry} =
+    warray (array [wstring id, wopt wstring help, wlist toJson entry]),
+
+  ofJson js =
+    a = rarray js;
+    {
+      id = rstring a[0],
+      help = ropt rstring a[1],
+      entry = rlist ofJson a[2]
+    }
+}

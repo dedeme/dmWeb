@@ -28,6 +28,15 @@ val backups_page_id : string
 val nicks_page_id : string
 (** [nicks_page_id] is the identifier of Nicks page. *)
 
+val edit_page_id : string
+(** [edit_page_id] is the identifier of Edition page. *)
+
+val issues_page_id : string
+(** [issues_page_id] is the identifier of Issues page. *)
+
+val servers_page_id : string
+(** [servers_page_id] is the identifier of Servers page. *)
+
 val client : unit -> Client.t
 (** [client ()] returns the communications client. *)
 

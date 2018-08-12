@@ -1,0 +1,94 @@
+// Copyright 08-Aug-2018 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Index page.
+module pages.pindex;
+
+load es.dm.all;
+load es.dm.json;
+cgi = load es.dm.cgi;
+
+db = load data.db;
+indexTree = load data.indexTree;
+
+{
+  fsort e1 e2 =
+    case e1.help of
+    None ():
+      case e2.help of
+      None (): e1.id < e2.id;
+      _: false
+      esac;
+    Some _:
+      case e2.help of
+      None (): true;
+      Some _: e1.id < e2.id;
+      esac
+    esac,
+
+  readHelp path =
+    {close, lst} = file.lines path;
+    case
+      map strTrim lst |>
+      takeWhile (_ l = not (strStarts? l "module")) |>
+      find (_ l = strStarts? l "///")
+    of
+    l::_:
+      close ();
+      l = strTrim (strRight l 3);
+      case cindex '.' l of
+      None (): l;
+      Some i: strLeft l (i + 1)
+      esac;
+    _: close (); ""
+    esac,
+
+  getIndex' path =
+    get' path id is string -> string -> indexTree.t=
+      (fmap dirEntry =
+        (name = dirEntry.name;
+         newPath = path ^/ name;
+         if dirEntry.directory?
+         then
+            Some (get' newPath name)
+         else
+            if strEnds? name ".yeti"
+            then
+              id = strSlice name 0 ((strLength name) - 5);
+              help = Some(readHelp newPath);
+              entry = [];
+              Some {id, help, entry}
+            else
+              None ()
+            fi
+         fi);
+       l = map fmap (file.dir path) |> filter (_ o = not (none? o)) |>
+           map optGet;
+       {id, help = (None ()), entry = sortBy fsort l});
+    Some (get' path ""),
+
+  getIndex rq =
+    pname = rstring rq["path"];
+    case find (_ mp = mp.id == pname) (db.getPaths ()) of
+    path::_: if file.directory? path.path
+             then getIndex' path.path
+             else None ()
+             fi;
+    _: None ()
+    esac,
+
+  process rq =
+    case rstring rq["rq"] of
+      "tree":
+        cgi.ok ["tree": (getIndex rq |> wopt indexTree.toJson)];
+      "setMenu":
+        db.setMenu (rstring rq["option"]);
+        cgi.okEmpty ();
+    s: throw (exc.error "Request '\(s)' is unknown in pindex page.")
+    esac,
+}
+
+as
+{
+  process is hash<string, json> -> cgi.rp
+}

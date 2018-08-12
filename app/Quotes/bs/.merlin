@@ -10,8 +10,12 @@ S libs/libwidgets
 B lib/bs/libs/libwidgets
 S libs/libbs
 B lib/bs/libs/libbs
+S src/widgets
+B lib/bs/src/widgets
 S src/data
 B lib/bs/src/data
+S src/pages
+B lib/bs/src/pages
 S src/user
 B lib/bs/src/user
 S src

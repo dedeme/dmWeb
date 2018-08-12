@@ -1,0 +1,10 @@
+{
+  "name": "BsDoc",
+  "namespace": false,
+  "sources": ["src", "src/user", "src/data", "libs/libbs", "libs/libwidgets"],
+  "suffix": ".bs.js",
+  "warnings": {
+    "number": "-44"
+  }
+}
+

@@ -1,0 +1,48 @@
+#!/bin/bash
+
+LIBS="https://github.com/dedeme/libbs.git libbs \
+      https://github.com/dedeme/libwidgets.git libwidgets "
+
+# Do not change --------------------------------------------
+
+# Work from libs
+# Variables: GIT, LIB
+clone() {
+  if [ -e tmp ]
+  then
+    rm -fR tmp
+  fi
+  mkdir tmp
+  cd tmp
+  git clone $GIT
+  cd ..
+  if [ -e $LIB ]
+  then
+    rm -fR $LIB
+  fi
+  mv tmp/$LIB/src $LIB
+  rm -fR tmp
+}
+
+if [ ! -e libs ]
+then
+  mkdir libs
+fi
+
+cd libs
+
+GIT=""
+LIB=""
+IX="0"
+for GIT_LIB in $LIBS
+do
+  if [ $IX == "0" ]
+  then
+    GIT=$GIT_LIB
+    IX="1"
+  else
+    LIB=$GIT_LIB
+    clone
+    IX="0"
+  fi
+done

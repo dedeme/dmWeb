@@ -111,21 +111,11 @@ SPAN.diary {
   padding: 4px;border-radius: 4px;
 }
 
-.navtop {
-  font-family: monospace;font-weight: normal; font-size: 7pt;
-  float: right; color: #998866;
+.frame4 {
+  background-color: rgb(250, 245, 240);
+  border: 1px solid rgb(110,130,150);
+  padding: 4px;border-radius: 4px;
 }
-
-.docComment {color:#A9A9A9}
-.comment {color:#80A9A9}
-.reserved {color:#004471; font-weight: bold}
-.className{color:#b14B9D; font-weight: bold}
-.tgFunction{color:#C13B3B}
-.annotation{color:#484800; font-weight: bold}
-.number{color:#805280}
-.quote1{color:#61BED9}
-.quote2{color:#6189D9}
-.quote3{color:#61BED9}
 
 h1 {
     font-size:18px;

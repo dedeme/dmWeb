@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd yeti
+bash make project
+cd ../bs
+./dep
+cd ..

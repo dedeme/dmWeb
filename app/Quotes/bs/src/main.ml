@@ -19,6 +19,9 @@ let captcha_chpass_store = {j|$(app)__captchaCh|j}
 let settings_page_id = "settings"
 let backups_page_id = "backups"
 let nicks_page_id = "nicks"
+let edit_page_id = "edit"
+let issues_page_id = "issues"
+let servers_page_id = "servers"
 
 let client () = match !cl with
   | None -> Js.Exn.raiseError ("Client is not defined")
@@ -62,7 +65,7 @@ let show_root e =
           q "td" [
               Style "text-align: right;font-size: 10px;
                      <small>Help & Credits</small>";
-              Html {j|"- © ºDeme. $app ($version) -"|j}][]]]]]
+              Html {j|- © ºDeme. $app ($version) -|j}][]]]]]
   in ()
 
 let show page o =
@@ -75,6 +78,12 @@ let show page o =
       q "tr" [][
         q "td" [][
           entry (i18 "Nicks") nicks_page_id;
+          separator ();
+          entry (i18 "Edit") edit_page_id;
+          separator ();
+          entry (i18 "Issues") issues_page_id;
+          separator ();
+          entry (i18 "Servers") servers_page_id
         ];
         q "td" [Style "text-align:right"][
           entry (i18 "Backs") backups_page_id;

@@ -1,7 +1,8 @@
 {
   "name": "Quotes",
   "namespace": true,
-  "sources": ["src", "src/user", "src/data", "libs/libbs", "libs/libwidgets"],
+  "sources": ["src", "src/user", "src/pages", "src/data", "src/widgets",
+              "libs/libbs", "libs/libwidgets"],
   "suffix": ".bs.js",
   "warnings": {
     "number": "-44"

@@ -1,0 +1,172 @@
+// Copyright 11-Aug-2018 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Hightlight code.
+
+module data.hlight;
+
+import java.lang.Character;
+
+load es.dm.all;
+
+(
+  reserved = " " ^
+    "and b_and as b_or case catch class classOf div do done elif else end " ^
+    "esac fi finally if import in is instanceof load loop module new not " ^
+    "norec of or shl shr then try typedef unsafely_as var with xor yrt ";
+
+  span klass tx start end =
+    "<span class='\(klass)'>\(strSlice tx start end)</span>";
+
+  idStart? s = Character#isUnicodeIdentifierStart((s as ~String)#charAt(0));
+
+  idCont? s =
+    Character#isUnicodeIdentifierPart((s as ~String)#charAt(0)) or s == "'";
+
+  isDigit? s = Character#isDigit((s as ~String)#charAt(0));
+
+  /* ....... */
+  lineComment tx start len = (
+    if strChar tx start != "/" then None ()
+    elif strChar tx (start + 1) != "/" then None ()
+    else
+      end = (case cindex' "\n" start tx of None (): len; Some i: i esac);
+      if strChar tx (start + 2) == "/"
+      then Some {result = span "docComment" tx start end, ix = end}
+      else Some {result = span "comment" tx start end, ix = end}
+      fi
+    fi);
+
+  /* ....... */
+  blockComment tx start len = (
+    if strChar tx start != "/" then None ()
+    elif strChar tx (start + 1) != "*" then None ()
+    else
+      end = (case sindex' "*/" start tx of None (): len; Some i: (i + 2) esac);
+      if strChar tx (start + 2) == "*"
+      then Some {result = span "docComment" tx start end, ix = end}
+      else Some {result = span "comment" tx start end, ix = end}
+      fi
+    fi);
+
+  /* ....... */
+  doubleQuotes tx start len = (
+    span' end = span "quote1" tx start end;
+    if strChar tx start != "\"" then None ()
+    else
+      quote i =
+        case cindex' "\"" i tx of
+        None (): Some {result = span' len, ix = len};
+        Some i2:
+          r = Some {result = span' (i2 + 1), ix = i2 + 1};
+          case cindex' "\\" i tx of
+          None (): r;
+          Some i3: if i3 < i2 then quote (i3 + 2) else r fi
+          esac
+        esac;
+      quote (start + 1)
+    fi);
+
+  /* ....... */
+  singleQuotes tx start len = (
+    span' end = span "quote1" tx start end;
+    prev = if start > 0 then strChar tx (start - 1) else " " fi;
+    if strChar tx start != "'" then None ()
+    elif idCont? prev then None ()
+    else
+      quote i =
+        case cindex' "'" i tx of
+        None (): Some {result = span' len, ix = len};
+        Some i2:
+          r = Some {result = span' (i2 + 1), ix = i2 + 1};
+          case cindex' "\\" i tx of
+          None (): r;
+          Some i3: if i3 < i2 then quote (i3 + 2) else r fi
+          esac
+        esac;
+      quote (start + 1)
+    fi);
+
+  readId tx start len = (
+    read i =
+      if i == len then i
+      else
+        ch = strChar tx i;
+        if idCont? ch then read (i + 1) else i fi
+      fi;
+    ch = strChar tx start;
+    if idStart? ch then Some (read (start + 1)) else None () fi);
+
+
+  reserved? w =
+    case sindex (" \(w) ") reserved of None (): false; Some _: true esac;
+
+  type? w = Character#isUpperCase(strChar w 0);
+
+  funMain? tx i = i > 2 and strChar tx (i - 3) == "\n" and
+                  strChar tx (i - 2) == " " and strChar tx (i - 1) == " ";
+
+  /* ....... */
+  ident tx start len =
+    case readId tx start len of
+    None (): None ();
+    Some (i):
+      word = strSlice tx start i;
+      if reserved? word then Some {result = span "reserved" tx start i, ix = i}
+      elif type? word then Some {result = span "className" tx start i, ix = i}
+      elif funMain? tx start then
+        Some {result = span "mainFun" tx start i, ix = i}
+      else Some {result = word, ix = i}
+      fi
+    esac;
+
+  /* ....... */
+  num tx start len =
+    if isDigit? (strChar tx start)
+    then
+      nm i = (
+        c = strChar tx i;
+        if isDigit? c or
+           c == "." or c == "e" or c == "E" or c == "+" or c == "-"
+        then nm (i + 1)
+        else Some {result = span "number" tx start i, ix = i}
+        fi);
+      nm (start + 1)
+    else None ()
+    fi;
+
+  /* ------------------------------------- */
+
+  processTypes tx ix len ls = (
+    proc l =
+      case l of
+      f::rest:
+        case f tx ix len of
+        None (): proc rest;
+        Some r: Some r
+        esac;
+      _: None ()
+      esac;
+    proc ls);
+
+{
+colorize tx =
+  len = strLength tx;
+  bf = buf.mk ();
+  col i =
+    if i >= len then buf.toStr bf;
+    else
+      ftypes = [
+        lineComment, blockComment, singleQuotes, doubleQuotes, num, ident
+      ];
+      case processTypes tx i len ftypes of
+      None (): (
+        buf.add bf (strChar tx i);
+        col (i + 1));
+      Some {result, ix}:
+        buf.add bf result;
+        col ix
+      esac
+    fi;
+  col 0,
+})

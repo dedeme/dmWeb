@@ -3,6 +3,7 @@ libs
 index.js
 lib
 obj
+classes
 bin
 _test
 api

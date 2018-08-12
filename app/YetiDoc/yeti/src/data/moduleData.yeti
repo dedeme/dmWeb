@@ -1,0 +1,40 @@
+// Copyright 05-Aug-2018 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Module data register.
+
+module data.moduleData;
+
+load es.dm.all;
+load es.dm.json;
+
+typedef t = {
+    title is string,
+    html1 is string,
+    html2 is string,
+    link is {name is string, link is string},
+    fs is list<string>
+  }
+
+{
+  toJson {title, html1, html2, link, fs} =
+    warray (array [
+      wstring title,
+      wstring html1,
+      wstring html2,
+      warray (array [wstring link.name, wstring link.link]),
+      wlist wstring fs]),
+
+  ofJson js =
+    hyp js = (
+      a = rarray js;
+      {name = rstring a[0], link = rstring a[1]});
+    a = rarray js;
+    {
+      title = rstring a[0],
+      html1 = rstring a[1],
+      html2 = rstring a[2],
+      link = hyp a[3],
+      fs = rlist rstring a[4]
+    }
+}

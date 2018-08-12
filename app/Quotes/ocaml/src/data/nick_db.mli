@@ -18,7 +18,7 @@ val get_name : string -> string option
 (** [get_name id] returns name of nick 'id'. *)
 
 val add : string -> bool -> bool -> bool
-(** [add name is_ibex is_sel] adds a nick and returns false if the action fails
+(** [add name is_ibex is_sel] adds a nick and returns false if action fails
   because name is duplicated. *)
 
 val remove : string -> unit
@@ -26,6 +26,10 @@ val remove : string -> unit
 
 val modify : string -> string -> bool -> bool -> unit
 (** [modify nick_id name is_ibex is_sel] modifies data of nick_id *)
+
+val modify_name : string -> string -> bool
+(** [modify_name nick_id nick_name] modifies the name of a nick and returns
+    'false if action fails because name is duplicated. *)
 
 val set_model : string -> unit
 (** [set_model nick_id] sets 'nick_id' as model. *)

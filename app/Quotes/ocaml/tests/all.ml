@@ -6,8 +6,8 @@ let () = Printexc.record_backtrace true in
 
 Db.create "./" "noversion";
 
-(*
+
 Quote_test.test ();
 Invertia_test.test ();
-Infomercados_test.test (); *)
+Infomercados_test.test ();
 Finanzas_test.test ();

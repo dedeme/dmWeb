@@ -7,12 +7,18 @@ let printf = Printf.printf
 let test () = (
   printf "Infomercados test:\n";
 
-  let inv = Infomercados.mk "0" in Server.(
-    assert (inv.id = "0");
+  let inv = Infomercados.mk () in Server.(
     assert (inv.name = "Infomercados");
-    match inv.read "acs-acs/" with
+    match inv.read "acs-acs" with
     | None -> assert false
-    | Some tx -> assert true
+    | Some _ -> assert true;
+
+    match inv.read_last () with
+    | None -> assert false
+    | Some l -> (
+(*        List.iter (fun (n, c) -> Printf.printf "%s-%f\n" n c) l;
+*)        assert true
+      )
   );
 
   printf "    Finished\n"

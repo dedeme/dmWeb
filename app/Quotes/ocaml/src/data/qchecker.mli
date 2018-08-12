@@ -4,5 +4,5 @@
 
 (** Ckecker of quotes issues *)
 
-val check : Server.t list -> string -> Qissue.t It.t
-(** [chech servers nick_id] returns issues of 'nick_id' *)
+val check : Server.t It.t -> string -> Qissue.t option
+(** [chech servers nick_id] returns a server issue of 'nick_id' if exists. *)

@@ -2,8 +2,6 @@
    GNU General Public License - V3 <http://www.gnu.org/licenses/>
 *)
 
-(** Program entry *)
-
 let () = Printexc.record_backtrace true
 
 and data_dir = Path.(Const.app_dir ^ "data")
@@ -77,6 +75,10 @@ let hub session_id rq =
   | "changePass" -> Change_pass.process rq
   | "backups" -> Backups.process Const.version_text rq
   | "nicks" -> Nicks.process rq
+  | "edit" -> Edit.process rq
+  | "issues" -> Issues.process rq
+  | "servers" -> Servers.process rq
+  | "wserverId" -> Wserver_id.process rq
   | s -> raise (Failure (Printf.sprintf "Page '%s' is unknown" s))
   in
 

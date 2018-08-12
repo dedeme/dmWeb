@@ -2,7 +2,7 @@
     GNU General Public License - V3 <http://www.gnu.org/licenses/>
 *)
 
-(** Dummy reader page *)
+(** Index page *)
 
 val show : string -> unit
-(** [show menu] creates reader page *)
+(** [show menu] creates index page *)

@@ -13,11 +13,11 @@ val read : unit -> Qissue.t It.t
 val write: Qissue.t It.t -> unit
 (** [write it] writes 'it' on disk. *)
 
-val replace : string -> Qissue.t It.t -> unit
-(** [replace nick_id issues] updates nick 'nick_id' issues *)
+val set : string -> Qissue.t option -> unit
+(** [set nick_id issue] set a 'nick_id' issue o remove it of data base. *)
 
-val get : string -> Qissue.t It.t
-(** [get nick_id] returns issues of nick 'nick_id' *)
+val get : string -> Qissue.t option
+(** [get nick_id] returns issue of nick 'nick_id' if exists *)
 
 val nicks_status : unit -> string It.t
 (** [nicks_status ()] returns an iterator over 'nick_id's with issues. *)

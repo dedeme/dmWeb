@@ -1,0 +1,98 @@
+// Copyright 10-Aug-2018 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Module page.
+module pages.mod;
+
+load es.dm.all;
+load es.dm.json;
+cgi = load es.dm.cgi;
+db = load data.db;
+eval= load yeti.lang.compiler.eval;
+md = load data.moduleData;
+
+typedef txT = {
+    bf is bufT,
+    s is string,
+    ix is number
+  };
+
+(
+  add tx s = (buf.add tx.bf s; tx);
+
+  move tx i = tx with {ix = i};
+
+  indexOf tx s = sindex' s tx.ix tx.s;
+
+  sub tx i = strSlice tx.s tx.ix i;
+
+  format s = (
+    tx = {bf = buf.mk(), s, ix = 0};
+    tx = move tx (optGet (indexOf tx "<body>") + 6);
+
+    ix = optGet (indexOf tx "</h2>") + 5;
+    html1 = sub tx (ix);
+    tx = move tx ix;
+
+    tx =
+      case indexOf tx "<div class=contents>" of
+      None (): tx;
+      Some i:
+        tx = add tx (sub tx i);
+        tx = move tx i;
+        move tx (optGet (indexOf tx "</div>") + 6);
+      esac;
+    html2 = (buf.toStr tx.bf) ^ (strRight tx.s tx.ix);
+    {html1, html2});
+
+  mkIndex html allPath = (
+    key = "class=\"field wdoc\"><span class=sn>";
+    lenKey = strLength key;
+    mk ls tx =
+      case indexOf tx key of
+      None (): {fs = ls, html2 = (buf.toStr tx.bf) ^ (strRight tx.s tx.ix)};
+      Some i:
+        tx = add tx (sub tx i);
+        tx = move tx (i + lenKey);
+        ch = strChar tx.s tx.ix;
+        case ch of
+        "`": mk ls tx;
+        _:
+          i = optGet (indexOf tx "<");
+          id = sub tx i;
+          tx = add tx ("class=\"field wdoc\"><span class=link>" ^
+                  "<a href = \"?\(allPath)&hp::\(id)\">\(id)</a>");
+          tx = move tx i;
+          mk (id::ls) tx
+        esac
+      esac;
+    mk [] {bf = buf.mk(), s = html, ix = 0});
+
+{
+  process rq =
+    mpath = rstring rq["mpath"];
+    fpath = rstring rq["fpath"];
+    allPath = mpath ^ "@" ^ fpath;
+
+    rp =
+      case db.getPaths () |> find (_ p = p.id == mpath) of
+      p::_:
+        fname = fpath ^ ".yeti";
+        p = p.path ^/ fname;
+        tmp = db.tmpDir ();
+        modules = array [];
+        eval.compileYetiFiles [] [Type (push modules)] [p];
+        eval.generateYetiDoc {directory = tmp, modules, error = failWith};
+        case filter (_ d = (path.onlyName d.name) != "index") (file.dir tmp) of
+        d::_: (
+          {html1, html2} = format (file.readAll (tmp ^/ d.name));
+          {fs, html2} = mkIndex html2 allPath;
+          link = {name = fname, link = "?" ^ allPath ^ "&hp::"};
+          Some {title = fpath, html1, html2, link, fs});
+        _: None ();
+        esac;
+      _: None()
+      esac;
+    cgi.ok ["data": wopt md.toJson rp]
+}
+)

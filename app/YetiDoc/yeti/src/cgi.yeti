@@ -1,0 +1,360 @@
+// Copyright 05-Aug-2018 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Cgi utilities.
+module es.dm.cgi;
+
+exc = load es.dm.exc;
+file = load es.dm.file;
+cryp = load es.dm.cryp;
+date = load es.dm.date;
+load es.dm.std;
+load es.dm.path;
+load es.dm.json;
+
+typedef opaque rp = string;
+
+{
+  klen () = 300,
+  tNoExpiration () = 2592000, // seconds == 30 days
+  demeKey () =
+    "nkXliX8lg2kTuQSS/OoLXCk8eS4Fwmc+N7l6TTNgzM1vdKewO0cjok51vcdl" ^
+    "OKVXyPu83xYhX6mDeDyzapxL3dIZuzwyemVw+uCNCZ01WDw82oninzp88Hef" ^
+    "bn3pPnSMqEaP2bOdX+8yEe6sGkc3IO3e38+CqSOyDBxHCqfrZT2Sqn6SHWhR" ^
+    "KqpJp4K96QqtVjmXwhVcST9l+u1XUPL6K9HQfEEGMGcToMGUrzNQxCzlg2g+" ^
+    "Hg55i7iiKbA0ogENhEIFjMG+wmFDNzgjvDnNYOaPTQ7l4C8aaPsEfl3sugiw",
+  fail msg = throw (exc.error msg),
+  /// Key to encript files
+  var fkey () = fail "'fkey' has not been initialized"; "",
+  /// Key to communications. Must be set before calling 'ok' or 'error'
+  var key () = fail "'key' has not been initialized"; "",
+  var appName' () = fail "'appName' has not been initialized"; "",
+  var home' () = fail "'home' has not been initialized"; "",
+  var tExpiration () = fail "'tExpiration' has not been initialized"; 0,
+
+  /* user ------------------------------------------------- */
+
+  userToJson u = wlist wstring [u.id, u.pass, u.level],
+
+  userOfJson js =
+    a = array ((rlist rstring js));
+    {id = a[0], pass = a[1], level = a[2]},
+
+  writeUsers users =
+    file.writeAll
+      ((home ()) ^/ "users.db")
+      (users |> wlist userToJson |> jsToStr |> cryp.cryp (fkey ())),
+
+  readUsers () =
+    file.readAll ((home ()) ^/ "users.db") |> cryp.decryp (fkey ()) |>
+      jsOfStr |> rlist userOfJson,
+
+  delUser' id = readUsers () |> filter (_ u = u.id != id) |> writeUsers,
+
+  putUser id pass level =
+    user = {id, pass = cryp.key (klen ()) pass, level};
+    writeUsers (readUsers () |> filter (_ u = u.id != id) |> (user::)),
+
+  checkUser id key =
+    k = cryp.key (klen()) key;
+    case find (_ u = u.id == id and u.pass == k) (readUsers ()) of
+    u::_: Some u;
+    _: None ()
+    esac,
+
+  changeLevel' id level =
+    case find (_ u = u.id == id) (readUsers ()) of
+    u::_: (putUser id u.pass level; true);
+    _: false
+    esac,
+
+  changePass' id oldPass newPass =
+    oldp = cryp.key (klen ()) oldPass;
+    newp = cryp.key (klen ()) newPass;
+    case find (_ u = u.id == id) (readUsers ()) of
+    u::_:
+      (if u.pass != oldp then false
+       else putUser id newp u.level; true
+       fi);
+    _: false
+    esac,
+
+  /* session ---------------------------------------------- */
+
+  sessionToJson s = wlist wstring [
+      s.sessionId,
+      s.userId,
+      s.comKey,
+      s.conId,
+      string s.expiration,
+      string s.lapse
+    ],
+
+  sessionOfJson js =
+    a = array ((rlist rstring js));
+    {
+      sessionId = a[0],
+      userId = a[1],
+      comKey = a[2],
+      conId = a[3],
+      expiration = number a[4],
+      lapse = number a[5]
+    },
+
+  writeSessions sessions =
+    file.writeAll
+      ((home ()) ^/ "sessions.db")
+      (sessions |> wlist sessionToJson |> jsToStr |> cryp.cryp (fkey ())),
+
+  readSessions () =
+    file.readAll ((home ()) ^/ "sessions.db") |> cryp.decryp (fkey ()) |>
+      jsOfStr |> rlist sessionOfJson,
+
+  addSession sessionId userId comKey lapse =
+    lapse =
+      if lapse <= 0 or lapse >= (tNoExpiration ()) then (tNoExpiration ())
+      else lapse
+      fi;
+    ss =
+      {
+        sessionId = sessionId,
+        userId = userId,
+        comKey = comKey,
+        conId = "",
+        expiration = date.now () |> date.addSeconds lapse |> date.toTime,
+        lapse = lapse
+      };
+    writeSessions
+      (readSessions () |> filter (_ s = s.sessionId != sessionId) |> (ss::)),
+
+  readSession sessionId =
+    now = date.now() |> date.toTime;
+    ss = filter (_ s = s.expiration > now ) (readSessions ());
+    case find (_ s = s.sessionId == sessionId) ss of
+    s::_:
+      s' = s with {expiration = now + s.lapse * 1000};
+      writeSessions (s'::(filter (_ s = s.sessionId != sessionId) ss));
+      Some {comKey = s.comKey, conId = s.conId};
+    _:
+      writeSessions ss;
+      None ()
+    esac,
+
+  delSession' sessionId =
+    readSessions () |> filter (_ s = s.sessionId != sessionId) |>
+    writeSessions,
+
+  setConnectionId sessionId conId =
+    ss = readSessions ();
+    case find (_ s = sessionId == s.sessionId) ss of
+    s::_:
+      s' = s with {conId};
+      writeSessions (s'::(ss |> filter (_ s = sessionId != s.sessionId)));
+    _: ()
+    esac,
+
+  /* public interface -------------------------------------- */
+
+  mk appName home tExp key =
+    appName' := do: appName done;
+    home' := do: home done;
+    tExpiration := do: tExp done;
+    fkey := do: cryp.key (klen ()) key done;
+
+
+    if file.exists? home then () else file.mkdir home fi;
+    if file.exists? (home ^/ "users.db") then ()
+    else
+      writeUsers [];
+      putUser "admin" (demeKey ()) "0";
+      writeSessions [];
+    fi
+    ,
+
+
+  home () = home' (),
+
+  appName () = appName' (),
+
+  setKey k = key := do: k done,
+
+  getSessionData sessionId = readSession sessionId,
+
+  strOfRp rp = rp,
+
+  ok data = wobject data |> jsToStr |> cryp.cryp (key ()),
+
+  okStr data = cryp.cryp (key ()) data,
+
+  okEmpty () = wobject [:] |> jsToStr |> cryp.cryp (key ()),
+
+  expired () =
+    wobject ["expired" : wboolean true] |> jsToStr |> cryp.cryp ("nosession"),
+
+  error e = wobject ["error" : wstring e] |> jsToStr |> cryp.cryp (key ()),
+
+  send resp = print resp,
+
+  addUser admin akey user ukey level =
+    case checkUser admin akey of
+    None (): ok ["ok": wboolean false];
+    Some ad:
+      case ad.level of
+      "0":
+        putUser user ukey level;
+        ok ["ok": wboolean true];
+      _ : ok ["ok": wboolean false]
+      esac
+    esac,
+
+  delUser admin akey user =
+    case checkUser admin akey of
+    None (): ok ["ok": wboolean false];
+    Some ad:
+      case ad.level of
+      "0":
+        delUser' user;
+        ok ["ok": wboolean true];
+      _: ok ["ok": wboolean false]
+      esac
+    esac,
+
+  changeLevel admin akey user level =
+    case checkUser admin akey of
+    None(): ok ["ok": wboolean false];
+    Some ad:
+      case ad.level of
+      "0": if changeLevel' user level then ok ["ok": wboolean true]
+                                      else: ok ["ok": wboolean false];
+      _: ok ["ok": wboolean false]
+      esac
+    esac,
+
+  changePass user oldPass newPass =
+    if changePass' user oldPass newPass
+    then ok ["ok": wboolean true]
+    else ok ["ok": wboolean false]
+    fi,
+
+  delSession sessionId =
+    delSession' sessionId;
+    okEmpty (),
+
+  authenticate user key expiration =
+    case checkUser user key of
+    None (): ok [
+        "level": wstring "",
+        "sessionId": wstring "",
+        "key": wstring ""
+      ];
+   Some u:
+      sessionId = cryp.genk (klen ());
+      k = cryp.genk (klen ());
+      addSession sessionId user k
+        (if expiration then tExpiration () else 0 fi);
+      ok [
+        "level": wstring u.level,
+        "sessionId": wstring sessionId,
+        "key": wstring k
+      ]
+   esac,
+
+ connect sessionId =
+    setConnectionId sessionId (cryp.genk (klen ()));
+    case readSession sessionId of
+    None(): ok [
+        "key": wstring "",
+        "connectionId": wstring ""
+      ];
+    Some {comKey, conId}: ok [
+        "key": wstring comKey,
+        "connectionId": wstring conId
+      ]
+    esac
+}
+
+/* ------------------------------------------------------------------ */
+as
+{
+  /// `[klen ()]` is the standard length of keys used by 'cgi'.
+  klen is () -> number,
+
+  /// `[mk appName home tExpiration key]` creates a new interface of
+  /// commnications.
+	/// : appName    : Application name.
+	/// : home        : Relative path of application directory below 'wwwcgi'
+  ///                 directory. (e.g. dmcgi/JsMon)
+  /// : tExpiration: Time in seconds.
+  /// : key         : Key to encrypt 'sessions.db' and 'users.db'.
+  mk is string -> string -> number -> string -> (),
+
+  /// `[home ()]` returns the absolute path of 'cgi' home.
+  home is () -> string,
+
+  /// `[appName ()]` returns the application name.
+  appName is () -> string,
+
+  /// `[setKey key]` sets the key to encrypt communications
+  setKey is string -> (),
+
+  /// `[getSessionData sessionId]` returns commnication key and
+  /// connection identifier.
+  getSessionData is string -> option<{comKey is string, conId is string}>,
+
+  /// `[strOfRp rp]` converts a response to a string.
+  strOfRp is rp -> string,
+
+  /// `[ok data]` returns a normal response.
+  ok is hash<string, json> -> rp,
+
+  /// `[okStr data]` returns a normal response.
+  /// : 'data' es an Object JSON passed to string with json.toStr.
+  /// : This function is thought to easily send JSON data bases.
+  okStr is string -> rp,
+
+  /// `[okEmpty ()]` returns an empty response.
+  okEmpty is () -> rp,
+
+  /// `[expired ()]` returns an 'ok' response with the field 'expired:true'.
+  /// : This function uses as communication key "nosession"
+  expired is () -> rp,
+
+  /// `[error e]` return a response with a field "error" which value is 'e'.
+  error is  string -> rp,
+
+  /// `[send resp]` sends 'resp' to client.
+  send is rp -> (),
+
+  /// `[addUser admin akey user ukey level]` adds a new user.
+  /// : Returns 'ok: false/true'
+  addUser is string -> string -> string -> string -> string -> rp,
+
+  /// `[delUser admin akey user]` removes 'user'
+  /// : Returns 'ok: false/true'
+  delUser is string -> string -> string -> rp,
+
+  /// `[changeLevel admin akey user level]` changes user level.
+  /// : Returns 'ok: false/true'
+  changeLevel is string -> string -> string -> string -> rp,
+
+  /// `[changePass user oldPass newPass] changes user password.
+  /// : Returns 'ok: false/true'
+  changePass is string -> string -> string -> rp,
+
+  /// `[delSession sessionId]` deletes a sesssion.
+  /// : Returns no field.
+  delSession is string -> rp,
+
+  /// `[authenticate user pass expiration]` authenticates 'user'.
+  /// : If expiration is 'false'  expiration will be set to 30 days.
+  /// : Returns 'level:string -> User level', 'sessionId:string' and
+  /// :   'key:string -> communication key'.
+  /// : If authentication fails all the fields are set to blank ("")
+  authenticate is string -> string -> boolean -> rp,
+
+  /// `[connect sessionId]` intializes a new connection of the current session.
+  /// : Returns 'key:string -> communication key' and 'connectionId:string'.
+  /// : If connection fails all the fields are set to blank ("")
+  connect is string -> rp,
+
+}

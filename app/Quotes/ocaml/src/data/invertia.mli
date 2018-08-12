@@ -4,5 +4,5 @@
 
 (** Invertia server *)
 
-val mk : string -> Server.t
-(** [mk id] creates a Invertia server *)
+val mk : unit -> Server.t
+(** [mk ()] creates an Invertia server *)

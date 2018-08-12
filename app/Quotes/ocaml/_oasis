@@ -13,12 +13,17 @@ Plugins: META (0.4), DevFiles (0.4)
 Library "data"
   Path: src/data
   Modules:  Db, Quote, Nick, Nick_db, Server, Invertia, Infomercados,
-            Finanzas, Qissue, Qissue_db, Qchecker
+            Finanzas, Quote_db, Server_db, Qissue, Qissue_db, Qchecker
   BuildDepends: libdmo (= 2018.6)
 
 Library "pages"
   Path: src/pages
-  Modules:  Servers, Nicks
+  Modules:  Servers, Nicks, Edit
+  BuildDepends: data
+
+Library "widgets"
+  Path: src/widgets
+  Modules: Wserver_id
   BuildDepends: data
 
 Library "core"
@@ -30,7 +35,7 @@ Executable "quotes"
   Install: false
   Path: src
   MainIs: main.ml
-  BuildDepends: core, pages, data
+  BuildDepends: core, widgets, pages, data
   CompiledObject: best
 
 Executable "test_quotes"

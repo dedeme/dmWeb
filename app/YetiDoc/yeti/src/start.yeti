@@ -1,0 +1,103 @@
+module start;
+
+import java.lang.Throwable;
+
+load es.dm.all;
+load const;
+cgi = load es.dm.cgi;
+
+db = load data.db;
+menuPath = load data.menuPath;
+paths = load pages.paths;
+pindex = load pages.pindex;
+mod = load pages.mod;
+code = load pages.code;
+
+dataDir = appDir ^/ "data";
+
+/* functions ------------------------------------------------------ */
+
+init () =
+  if file.exists? dataDir then
+    // db.create (cgi.home ()) versionText;
+    db.init (cgi.home ());
+  else
+    file.mkdir dataDir;
+    db.create (cgi.home ()) (versionText ())
+  fi;
+
+process sessionId rq =
+  (load es.dm.json;
+   case rstring rq["rq"] of
+   "idata":
+      a = rarray (db.getMainData () |> jsOfStr);
+      cgi.ok [
+        "menu": a[0],
+        "lang": a[1],
+        "showAll": a[2],
+        "paths": db.getPaths () |> wlist menuPath.toJson
+      ];
+    "bye": cgi.delSession sessionId;
+    s: throw (exc.error "Request '\(s)' is unknown in main.rq")
+  esac);
+
+hub sessionId rq =
+  (load es.dm.json;
+   case rstring rq["page"] of
+   "main": process sessionId rq;
+   "paths": paths.process rq;
+   "index": pindex.process rq;
+   "module":mod.process rq;
+   "code":code.process rq;
+   s: throw (exc.error "Page '\(s)' is unknown"); cgi.okEmpty();
+   esac);
+
+/* main ----------------------------------------------------------- */
+
+main args =
+  try
+    cgi.mk appName appDir appExpiration "Yeti doc interesting key";
+    init ();
+    load es.dm.std;
+    case args of
+    rq::_:
+      case cindex ":" rq of
+      None (): // ................................................. CONNECTION
+        cgi.setKey rq;
+        cgi.send (cgi.connect rq);
+      Some 1: // ...............................................AUTHENTICATION
+        key = cryp.key (cgi.klen ()) (cgi.appName ());
+        cgi.setKey key;
+        a = array (strRight rq 1 |> cryp.decryp key |> csplit ':');
+        rp = cgi.authenticate a[0] a[1] (a[2] == "1");
+        cgi.send rp;
+     Some i: // ...................................................NORMAL DATA
+        sessionId = strLeft rq i;
+        data = strRight rq (i + 1);
+        case cgi.getSessionData sessionId of
+        None (): cgi.send (cgi.expired ());
+        Some {comKey, conId}:
+          load es.dm.json;
+          cgi.setKey comKey;
+          obj = cryp.decryp comKey data |> jsOfStr |> robject;
+          if "connectionId" in obj
+          then
+            if rstring obj["connectionId"] == conId
+            then cgi.send (hub sessionId obj)
+            else cgi.send (cgi.expired ())
+            fi
+          else
+            cgi.send (hub sessionId obj)
+          fi
+        esac
+      esac;
+    a: throw (exc.error "Sys.argv has \(length a) parameters and must have 1")
+    esac
+  catch Throwable ex:
+    exc.print ex;
+  yrt;
+
+class Main
+  static void main(String[] args)
+    main (args)
+end;

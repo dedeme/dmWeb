@@ -1,0 +1,80 @@
+// Copyright 05-Aug-2018 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Data base management.
+module data.db;
+
+load es.dm.all;
+menuPath = load data.menuPath;
+
+(
+  fail msg = throw (exc.error msg);
+
+  var dataDir () = (fail "'dataDir' has not been initialized"; "");
+
+  mainDbFile () = (dataDir ()) ^/ "main.db";
+
+  pathsDbFile () = (dataDir ()) ^/ "paths.db";
+
+  mainDbInit versionText = (
+    load es.dm.json;
+    file.writeAll
+      ((dataDir ()) ^/ "version.txt") versionText;
+    file.writeAll (mainDbFile ())
+        (warray (array [wstring "@", wstring "es", wboolean true]) |> jsToStr);
+    file.writeAll (pathsDbFile ()) (warray (array []) |> jsToStr));
+
+{
+  /// `[getMainData ()]` read data of "main.db" in a JSON string.
+  getMainData () = file.readAll (mainDbFile ()),
+
+  /// `[getPaths ()]` returns menu paths.
+  getPaths () =
+    load data.menuPath;
+    load es.dm.json;
+    map
+      (_ mp = mp with {ok = file.directory? mp.path})
+      (file.readAll (pathsDbFile ()) |> jsOfStr |> rlist menuPath.ofJson),
+
+  /// `[setPaths s]` writes paths as a JSON string.
+  setPaths s = file.writeAll (pathsDbFile ()) s,
+
+  changeLang () =
+    load es.dm.json;
+    a = getMainData () |> jsOfStr |> rarray;
+    lang = rstring a[1];
+    newLang = if lang == "en" then "es" else "en" fi;
+    a[1] := wstring newLang;
+    file.writeAll (mainDbFile ()) (jsToStr (warray a)),
+
+  /// `[changeLang ()]` changes language.
+  changeShowAll () =
+    load es.dm.json;
+    a = getMainData () |> jsOfStr |> rarray;
+    show = rboolean a[2];
+    a[2] := wboolean (not show);
+    file.writeAll (mainDbFile ()) (jsToStr (warray a)),
+
+  /// `[setMenu page]` sets the selected menu page.
+  setMenu opt =
+    load es.dm.json;
+    a = getMainData () |> jsOfStr |> rarray;
+    a[0] := wstring opt;
+    file.writeAll (mainDbFile ()) (jsToStr (warray a)),
+
+  /// `[tmpDir ()]` returns a clean tmp dir.
+  tmpDir () =
+    r = (dataDir ()) ^/ "tmp";
+    file.del r;
+    file.mkdir r;
+    r,
+
+  /// `[create home]` creates a initializes data base.
+  create home version =
+    dataDir := \(home ^/ "data");
+    mainDbInit version,
+
+  /// `[init home]` initializes data base.
+  init home = dataDir := \(home ^/ "data"),
+}
+)

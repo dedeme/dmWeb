@@ -25,3 +25,21 @@ val set_lang : string -> unit
 val set_menu : string -> unit
 (** [set_menu opt] changes menu. *)
 
+val get_edit_id : unit -> string option
+(** [get_edit_id ()] returns the nick id of edit page. *)
+
+val set_edit_id : string -> unit
+(** [set_edit_id id] sets the nick id of edit page. *)
+
+val get_servers_id : unit -> string option
+(** [get_servers_id ()] returns the nick id of servers page. *)
+
+val set_servers_id : string -> unit
+(** [set_edit_id id] sets the nick id of servers page. *)
+
+val get_issues_id : unit -> string option
+(** [get_issues_id ()] returns the nick id of issues page. *)
+
+val set_issues_id : string -> unit
+(** [set_issues_id id] sets the nick id of issues page. *)
+

@@ -20,6 +20,9 @@ let run () = (
             if menu = settings_page_id then Settings.show menu lang
             else if menu = backups_page_id then Backups.show menu
             else if menu = nicks_page_id then Nicks.show menu
+            else if menu = edit_page_id then Edit.show menu
+            else if menu = issues_page_id then Issues.show menu
+            else if menu = servers_page_id then Servers.show menu
             else Js.Exn.raiseError {j|Page $menu is unknown|j}
           )
         )

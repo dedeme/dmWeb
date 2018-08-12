@@ -8,17 +8,24 @@ type t = {
   nicks : Nick.t list;
 }
 
-let path_quotes () = Path.((Db.directory ()) ^ "quotes")
-
 let path () = Path.((Db.directory ()) ^ "nicks.db")
 
 let create_quotes name =
   let fname = name ^ ".db" in
-  File.write_all Path.((path_quotes ()) ^ fname) Json.(Array [||] |> to_str)
+  File.write_all Path.((Quote_db.path_quotes ()) ^ fname) ""
 
 let remove_quotes name =
   let fname = name ^ ".db" in
-  File.del Path.((path_quotes ()) ^ fname)
+  File.del Path.((Quote_db.path_quotes ()) ^ fname)
+
+let modify_quotes old_name new_name =
+  let old_name = old_name ^ ".db"
+  and new_name = new_name ^ ".db" in
+  let old_path = Path.(Quote_db.(path_quotes ()) ^ old_name)
+  and new_path = Path.(Quote_db.(path_quotes ()) ^ new_name) in
+  if File.exists old_path
+  then File.rename old_path new_path
+  else ()
 
 let write db = Json.(
   Array [|
@@ -106,6 +113,23 @@ let modify nick_id name is_ibex is_sel =
           ) db.nicks
       }
   | None -> ()
+
+let modify_name nick_id nick_name =
+  let odb = read () in match odb with
+  | Some db -> Nick.(
+      match List.find_opt (fun n -> n.id = nick_id) db.nicks with
+      | None -> true
+      | Some nick ->
+        if (nick.name = nick_name) then true
+        else
+          if List.exists (fun n -> n.name = nick_name) db.nicks then false
+          else (
+            modify_quotes nick.name nick_name;
+            modify nick_id nick_name nick.is_ibex nick.is_sel;
+            true
+          )
+    )
+  | None -> true
 
 let set_model nick_id =
   let odb = read () in match odb with
