@@ -9,6 +9,7 @@ _test
 api
 _build
 *.native
+*.jar
 configure
 Makefile
 setup.*
