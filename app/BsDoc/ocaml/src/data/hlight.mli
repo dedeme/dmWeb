@@ -4,5 +4,5 @@
 
 (** Text Highlighter *)
 
-val colorize : Txt.t -> Txt.t
+val colorize : Txpro.t -> Txpro.t
 (** [colorize tx] Highlights code in 'tx'. *)

@@ -6,21 +6,21 @@ open Index_tree
 
 let read_line file =
   let chn = File.ropen file
-  and ffind s = Txt.(mk s |> starts "(**") in
+  and ffind s = Txpro.(mk s |> starts "(**") in
   let l = It.find ffind (File.to_it chn) in (
     close_in chn;
     l
   )
 
 let format l = Txt.(
-  let tx = mk l |> sub_end 3 |> ltrim in
-  match cindex '.' tx with
+  let tx = right l 3 |> ltrim in
+  match cindex tx '.' with
   | None ->
-    (match index "*)" tx with
-    | None -> tx |> to_str
-    | Some i -> sub 0 i tx |> rtrim |> to_str
+    (match index tx "*)" with
+    | None -> tx
+    | Some i -> sub tx 0 i |> rtrim
     )
-  | Some i -> sub 0 (i + 1) tx |> to_str
+  | Some i -> sub tx 0 (i + 1)
 )
 
 let read_help file =
@@ -48,9 +48,9 @@ let get_index' path =
       let new_path = Path.(path ^ file) in
       if File.is_directory new_path
       then Some (get new_path file)
-      else if Txt.(mk file |> ends ".mli")
+      else if Txpro.(mk file |> ends ".mli")
         then Some {
-            id = Txt.(mk file |> sub 0 (-4) |> to_str);
+            id = Txpro.(mk file |> sub 0 (-4) |> to_str);
             help = Some (read_help new_path);
             entries = []
           }

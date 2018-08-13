@@ -32,7 +32,7 @@ let widget field = field.w
 
 let download field = Json.(
   let {server; icon; msg; field; _} = field in
-  let value = Txt.(field |> Domo.value |> mk |> trim |> to_str) in
+  let value = Txt.trim (Domo.value field) in
   let t = Js.Date.make () in
   if value = "" then alert (i18 "Field is empty")
   else (
@@ -59,7 +59,7 @@ let download field = Json.(
         ignore Domo.(msg |> set [Html ""]))))))
 
 let change nick server value =
-  let value = Txt.(mk value |> trim |> to_str) in Json.(
+  let value = Txt.trim value in Json.(
     if value = "" then ()
     else
       let rq = wrq [

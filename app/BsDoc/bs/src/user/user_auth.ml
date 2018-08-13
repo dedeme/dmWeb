@@ -44,8 +44,8 @@ let body data =
       ) else Domo.(
         faccept
           data.captcha
-          Txt.(mk (value data.user) |> trim |> to_str)
-          Txt.(mk (value data.pass) |> trim |> to_str)
+          (value data.user |> Txt.trim)
+          (value data.pass |> Txt.trim)
           (checked data.persistent)
       )
     ))]

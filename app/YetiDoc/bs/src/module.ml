@@ -32,7 +32,7 @@ let index d =
                   let (fname) = a.(i) in
                   let fname_link =
                     if fname.[0] = '('
-                      then Txt.(mk fname |> sub 1 (-1) |> to_str)
+                      then Txt.sub 1 (-1) fname
                       else fname in
                   q "td" [Style "width:25%"][
                     q "a" [Att ("href", "#" ^ fname_link); Text fname][]]

@@ -18,7 +18,7 @@ let scroll_to : string -> unit =
 let show' mpath fpath hyper pg =
   let cat s1 s2 = s1 ^ s2 in
   let numbers =
-    It.(Txt.join_str
+    It.(Txt.join
       "\n"
       (map
         (fun n ->
@@ -26,7 +26,7 @@ let show' mpath fpath hyper pg =
           let len = String.length sn in
           reduce sn (fun seed  _ -> cat "&nbsp;" seed) (range 0 (4 - len))
         )
-        (range 1 Txt.(csplit '\n' (mk pg) |> count))))
+        (range 1 (Txt.split "\n" pg |> count))))
   in
   let w =
     q "div" [][
@@ -35,8 +35,7 @@ let show' mpath fpath hyper pg =
           q "td" [Klass "frame"][
             q "a" [
                 Att ("href", "?" ^ mpath ^ "@" ^ fpath);
-                Html (fpath ^
-                  (if Txt.(starts "hp::" (mk hyper)) then ".ml" else ".mli"))
+                Html (fpath)
               ][]]]];
       q "table" [
           Att_i ("border", 0);

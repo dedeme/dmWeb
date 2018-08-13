@@ -2,9 +2,10 @@
     GNU General Public License - V3 <http://www.gnu.org/licenses/>
 *)
 
-open Txt
+open Txpro
 
-let is_letter c = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c = '_'
+let is_letter c =
+  (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c = '_' || c = '\''
 
 let is_digit c = c >= '0' && c <= '9'
 
@@ -16,15 +17,15 @@ let next_id tx =
     else
       let c = char_at 0 tx in
       if is_digit_or_letter c
-      then next (cat_tx "" [done_; (sub 0 1 tx)]) (sub_end 1 tx)
+      then next (cat "" [done_; (left 1 tx)]) (right 1 tx)
       else (done_, tx)
   in
   let rec next0 tx =
     if len tx = 0 then (mk "", tx)
     else
       let c = char_at 0 tx in
-      if c <= ' ' then next0 (sub_end 1 tx)
-      else if is_letter c then next (sub 0 1 tx) (sub_end 1 tx)
+      if c <= ' ' then next0 (right 1 tx)
+      else if is_letter c then next (left 1 tx) (right 1 tx)
       else (mk "", tx)
   in
   next0 tx

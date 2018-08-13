@@ -4,5 +4,5 @@ module.exports = {
     path: __dirname +'/www',
     filename: 'index.js',
   },
-  mode: 'production',  // development or production or none
+  mode: 'none',  // development or production or none
 };

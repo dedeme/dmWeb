@@ -26,12 +26,12 @@ let run () = (
             | None -> location_assign ("?" ^ menu)
             | Some path -> (
                 if path = "@" then Paths.show menu show_all lang
-                else let tx = Txt.mk path in
-                  match Txt.cindex '@' tx with
+                else
+                  match Txt.index "@" path with
                   | None -> Index.show path
                   | Some i ->
-                    let pmenu = Txt.(sub 0 i tx |> to_str)
-                    and fpath = Txt.(sub_end (i + 1) tx |> to_str) in
+                    let pmenu = Txt.left i path
+                    and fpath = Txt.right (i + 1) path in
                     match Dic.get "1" url with
                     | None -> Module.show pmenu fpath
                     | Some hyper -> Code.show pmenu fpath hyper

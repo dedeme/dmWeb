@@ -57,7 +57,7 @@ let show' menu ie =
               mli_entry
                 menu
                 (Txt.(
-                  join_str
+                  join
                     "/"
                     It.(of_list path |> reverse)
                   ) ^ "/")

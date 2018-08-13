@@ -13,22 +13,21 @@ let validate paths name path =
     then (i18f (i18 "Name '%0' is repeated") [name])
   else
     let msg ch =
-      i18f (i18 "Name '%0' contains '%1'") [name; String.make 1 ch]
+      i18f (i18 "Name '%0' contains '%1'") [name; ch]
     in
-    let contains ch = Txt.(ccontains ch (mk name))  in
-    if contains '=' then msg '='
-    else if contains '@' then msg '@'
-    else if contains '/' then msg '/'
-    else if contains '&' then msg '&'
-    else if contains ' ' then
+    let contains ch = Txt.contains ch name in
+    if contains "=" then msg "="
+    else if contains "@" then msg "@"
+    else if contains "/" then msg "/"
+    else if contains "&" then msg "&"
+    else if contains " " then
       i18f (i18 "Name '%0' contains blanks") [name]
     else ""
 
 let new_path paths name path =
-  let trim s = Txt.(mk s |> trim |> to_str) in
+  let trim s = Txt.trim s in
   let rec rm_slash path =
-    let tx = Txt.mk path in
-    if Txt.ends "/" tx then rm_slash Txt.(sub 0 (-1) tx |> to_str)
+    if Txt.ends "/" path then rm_slash (Txt.left (-1) path)
     else path
   in
   let (name, path) = (trim name, trim path) in
@@ -93,10 +92,9 @@ let modify_path paths old_name new_name old_path new_path =
       )
       paths
   in (
-    let trim s = Txt.(mk s |> trim |> to_str) in
+    let trim s = Txt.trim s in
     let rec rm_slash path =
-      let tx = Txt.mk path in
-      if Txt.ends "/" tx then rm_slash Txt.(sub 0 (-1) tx |> to_str)
+      if Txt.ends "/" path then rm_slash (Txt.left (-1) path)
       else path
     in
     let (new_name, new_path) = (trim new_name, trim new_path) in

@@ -15,7 +15,7 @@ Accept = Aceptar
 # src/backups.ml: 161
 All the data will be replaced = ¡ATENCIÓN!. Todos los datos serán reemplazados.\n¿Continuar?
 
-# src/main.ml: 81
+# src/main.ml: 83
 # src/backups.ml: 184
 Backs = Copias
 
@@ -114,7 +114,8 @@ Password is missing = Falta indicar la contraseña
 # src/user/user_chpass.ml: 157
 Password successfully changed = La contraseña se cambió correctamente
 
-# src/main.ml: 78
+# src/reader.ml: 10
+# src/main.ml: 80
 Reader = Lector
 
 # src/backups.ml: 229
@@ -126,7 +127,7 @@ Restore backup = Restaurar copia
 # src/user/user_expired.ml: 25
 Session is expired. = La sesión ha expirado.
 
-# src/main.ml: 83
+# src/main.ml: 85
 # src/settings.ml: 21
 Settings = Configuración
 
@@ -142,7 +143,8 @@ User = Usuario
 # src/user/user_auth.ml: 10
 User name is missing = Falta indicar el nombre del usuario
 
-# src/main.ml: 76
+# src/main.ml: 78
+# src/writer.ml: 10
 Writer = Escritor
 
 # src/user/user_auth.ml: 121

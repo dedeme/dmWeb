@@ -63,8 +63,8 @@ try (
       | Some 0 -> ( (* .................................. AUTHENTICATION *)
           let key = Cryp.key Cgi.klen (app_name ()) in (
             set_key key;
-            let a = Txt.(mk rq |> sub_end 1 |> to_str |> Cryp.decryp key |>
-              mk |> csplit ':' |> It.map to_str |> It.to_array) in
+            let a = Txt.(csplit (right rq 1 |> Cryp.decryp key) ':' |>
+              It.to_array) in
             let rp = Cgi.authenticate a.(0) a.(1) (a.(2) = "1") in
             send rp
           ))
@@ -76,9 +76,7 @@ try (
             )
           | Some (key, con_id) -> Json.(
               set_key key;
-              let rq = Txt.(
-                  mk rq |> sub_end (i + 1) |> to_str |> Cryp.decryp key
-                ) in
+              let rq = Txt.right rq (i + 1) |> Cryp.decryp key in
               match of_str rq with
               | Object dic -> (
                   match Dic.get "connectionId" dic with

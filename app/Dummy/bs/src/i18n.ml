@@ -107,15 +107,13 @@ let en () = dic := Dic.of_it (It.of_list en_dic)
 let es () = dic := Dic.of_it (It.of_list es_dic)
 
 let i18 key = match Dic.get key !dic with
-| None -> key
-| Some s -> s
+  | None -> key
+  | Some s -> s
 
-let i18f fmt l = Txt.(
-let a = Array.of_list l in
-let fmt = mk (i18 fmt) in
-let fn tx i =
-replace ("%" ^ string_of_int i) a.(i) tx |> mk
-in
-It.reduce fmt fn (It.range 0 (Array.length a)) |> replace "%%" "%"
-)
+let i18f fmt l =
+  let a = Array.of_list l in
+  let fmt = i18 fmt in
+  let fn s i = Txt.replace ("%" ^ string_of_int i) a.(i) s in
+  It.reduce fmt fn (It.range 0 (Array.length a)) |>
+    Txt.replace "%%" "%"
 

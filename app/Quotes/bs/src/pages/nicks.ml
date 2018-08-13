@@ -163,7 +163,7 @@ let sep () = q "span" [Style "padding-left:5px"][]
 
 let head new_input entries =
   let onclick _ =
-    let nick = Txt.(Domo.value new_input |> mk |> trim |> to_str) in
+    let nick = Txt.trim (Domo.value new_input) in
     if nick = "" then alert (i18 "Nick name is missing")
     else Json.(
         let rq = wrq [

@@ -13,13 +13,13 @@ val is_digit : char -> bool
 val is_digit_or_letter : char -> bool
 (** [is_digit_or_letter ch] return 'true' if 'ch' is a number or letter. *)
 
-val next_id : Txt.t -> (Txt.t * Txt.t)
+val next_id : Txpro.t -> (Txpro.t * Txpro.t)
 (** [next_id tx] tries to read next identifier and returns such identifier and
     the resto of 'tx'.
      -If following token is not a indentifier returns ("", tx)
 *)
 
-val min_ix : Txt.t -> string list -> (string * int) option
+val min_ix : Txpro.t -> string list -> (string * int) option
 (** [min_ix tx l] returns (substring, position) of substring in 'l' which has
     the minimum index in 'tx' or None if no string of 'l' is substring of 'tx'.
 *)

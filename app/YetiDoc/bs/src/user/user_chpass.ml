@@ -116,7 +116,7 @@ let mk () =
       run ()
     ))]
   and _ = accept |> set [On ("click", (fun _ ->
-      let trim e = Txt.(value e |> mk |> trim |> to_str) in
+      let trim e = Txt.trim (value e) in
       let old_passv = trim old_pass
       and new_passv = trim new_pass
       and new_pass2v = trim new_pass2
