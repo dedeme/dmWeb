@@ -21,8 +21,8 @@ let write nick_name quotes =
       | Some q -> to_lines_ok ((Quote.to_str q)::r) rest
   in
   let qs = It.(Txt.(
-    mk quotes |> csplit '\n' |>
-    map (fun l -> to_str (trim l)) |>
+    quotes |> csplit '\n' |>
+    map trim |>
     filter (fun l -> l <> "")
   )) in
   match to_lines_ok [] (It.to_list qs) with

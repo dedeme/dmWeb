@@ -13,14 +13,14 @@ let read_line file =
   )
 
 let format l = Txt.(
-  let tx = right l 3 |> ltrim in
-  match cindex tx '.' with
+  let tx = right 3 l |> ltrim in
+  match cindex '.' tx with
   | None ->
-    (match index tx "*)" with
+    (match index "*)" tx with
     | None -> tx
-    | Some i -> sub tx 0 i |> rtrim
+    | Some i -> sub 0 i tx |> rtrim
     )
-  | Some i -> sub tx 0 (i + 1)
+  | Some i -> sub 0 (i + 1) tx
 )
 
 let read_help file =
