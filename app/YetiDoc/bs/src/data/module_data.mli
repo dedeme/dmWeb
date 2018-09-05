@@ -9,7 +9,8 @@ type t = {
   html1 : string;
   html2 : string;
   hyperlink : string * string;
-  findex : string list
+  findex : string list;
+  tpindex : string list;
 }
 (** [t] type of Module.data *)
 

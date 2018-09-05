@@ -13,17 +13,19 @@ typedef t = {
     html1 is string,
     html2 is string,
     link is {name is string, link is string},
-    fs is list<string>
+    fs is list<string>,
+    tps is list<string>
   }
 
 {
-  toJson {title, html1, html2, link, fs} =
+  toJson {title, html1, html2, link, fs, tps} =
     warray (array [
       wstring title,
       wstring html1,
       wstring html2,
       warray (array [wstring link.name, wstring link.link]),
-      wlist wstring fs]),
+      wlist wstring fs,
+      wlist wstring tps]),
 
   ofJson js =
     hyp js = (
@@ -35,6 +37,7 @@ typedef t = {
       html1 = rstring a[1],
       html2 = rstring a[2],
       link = hyp a[3],
-      fs = rlist rstring a[4]
+      fs = rlist rstring a[4],
+      tps = rlist rstring a[5]
     }
 }

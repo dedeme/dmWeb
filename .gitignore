@@ -1,19 +1,22 @@
 tools
-libs
-index.js
 lib
+*.geany
+gitk
+
+#c
 obj
-classes
 bin
 _test
-api
-_build
-*.native
-*.jar
-configure
-Makefile
-setup.*
 
-gitk
-*.geany
+#js
+**/www/index.js
+**/www/js
 
+app/BolsaData
+app/BsDoc
+app/CDoc
+app/FleasData
+app/Hconta
+app/JsDoc
+app/Quotes
+app/YetiDoc

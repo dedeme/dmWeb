@@ -45,7 +45,7 @@ typedef txT = {
     html2 = (buf.toStr tx.bf) ^ (strRight tx.s tx.ix);
     {html1, html2});
 
-  mkIndex html allPath = (
+  mkFunctions html allPath = (
     key = "class=\"field wdoc\"><span class=sn>";
     lenKey = strLength key;
     mk ls tx =
@@ -65,6 +65,35 @@ typedef txT = {
           tx = move tx i;
           mk (id::ls) tx
         esac
+      esac;
+    start =
+      case sindex "<h3>Module signature</h3>" html of
+      None (): {bf = buf.mk(), s = html, ix = 0};
+      Some ix: (
+          bf = buf.mk();
+          buf.add bf (strLeft html ix);
+          {bf, s = html, ix}
+        )
+      esac;
+    mk [] start);
+
+  mkTypes html = (
+    key = "<em>typedef</em>";
+    lenKey = strLength key;
+    mk ls tx =
+      case indexOf tx key of
+      None (): {tps = ls, html2 = (buf.toStr tx.bf) ^ (strRight tx.s tx.ix)};
+      Some i:
+        tx = add tx (sub tx i);
+        tx = move tx (i + lenKey);
+        i = optGet (indexOf tx "=");
+        idTx = (sub tx i);
+        id = strTrim idTx |>
+             strReplace "&lt;" "<" |>
+             strReplace "&gt;" ">";
+        tx = add tx "<span id=\"\(id)\"></span>\(key)\(idTx)";
+        tx = move tx i;
+        mk (id::ls) tx
       esac;
     mk [] {bf = buf.mk(), s = html, ix = 0});
 
@@ -86,9 +115,10 @@ typedef txT = {
         case filter (_ d = (path.onlyName d.name) != "index") (file.dir tmp) of
         d::_: (
           {html1, html2} = format (file.readAll (tmp ^/ d.name));
-          {fs, html2} = mkIndex html2 allPath;
+          {fs, html2} = mkFunctions html2 allPath;
+          {tps, html2} = mkTypes html2;
           link = {name = fname, link = "?" ^ allPath ^ "&hp::"};
-          Some {title = fpath, html1, html2, link, fs});
+          Some {title = path.name fpath, html1, html2, link, fs, tps});
         _: None ();
         esac;
       _: None()

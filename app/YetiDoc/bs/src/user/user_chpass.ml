@@ -158,6 +158,7 @@ let mk () =
               run ()
             )
           else (
+              alert (i18 "Password could not be changed");
               let (mk, old_pass) = !mk' () in
               show_root mk;
               focus old_pass

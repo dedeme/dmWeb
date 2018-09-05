@@ -208,6 +208,9 @@ module_View = class {
     );
     addTopLinks();
 
+    const iBar = modPath.lastIndexOf("/");
+    $$("title").next().text(iBar == -1 ? modPath : modPath.substring(iBar + 1));
+
     const lc = location.href/**/;
     const ix = lc.indexOf("#");
     if (ix != -1) {

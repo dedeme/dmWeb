@@ -13,6 +13,7 @@ fi
 mkdir tmp
 cd tmp
 git clone https://github.com/dedeme/libdmjs.git
+git clone https://github.com/dedeme/libdmwg.git
 cd ..
 
 if [ -e dmjs ]
@@ -20,6 +21,7 @@ then
   rm -fR dmjs
 fi
 mv tmp/libdmjs/src/dmjs dmjs
+cp -R tmp/libdmwg/src/dmjs/* dmjs
 rm -fR tmp
 
 

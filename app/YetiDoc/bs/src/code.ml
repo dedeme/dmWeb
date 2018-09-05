@@ -35,7 +35,7 @@ let show' mpath fpath hyper pg =
           q "td" [Klass "frame"][
             q "a" [
                 Att ("href", "?" ^ mpath ^ "@" ^ fpath);
-                Html (fpath)
+                Html (Txt.replace "/" "." fpath)
               ][]]]];
       q "table" [
           Att_i ("border", 0);
@@ -58,7 +58,8 @@ let show' mpath fpath hyper pg =
 
   in (
     Main.show mpath w;
-    let _ = (It.get (qq "title")) |> Domo.set [Text ("#" ^ fpath)] in ();
+    let _ = (It.get (qq "title")) |>
+      Domo.set [Text ("#" ^ (Path.name fpath))] in ();
     if hyper <> "hp:" && hyper <> "hp::" then scroll_to (hyper) else ()
   )
 

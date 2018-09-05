@@ -12,6 +12,7 @@ paths = load pages.paths;
 pindex = load pages.pindex;
 mod = load pages.mod;
 code = load pages.code;
+chpass = load core.changePass;
 
 dataDir = appDir ^/ "data";
 
@@ -47,8 +48,9 @@ hub sessionId rq =
    "main": process sessionId rq;
    "paths": paths.process rq;
    "index": pindex.process rq;
-   "module":mod.process rq;
-   "code":code.process rq;
+   "module": mod.process rq;
+   "code": code.process rq;
+   "changePass": chpass.process rq;
    s: throw (exc.error "Page '\(s)' is unknown"); cgi.okEmpty();
    esac);
 
@@ -60,12 +62,12 @@ main args =
     init ();
     load es.dm.std;
     case args of
-    rq::_:
+    rq::_: (
       case cindex ":" rq of
       None (): // ................................................. CONNECTION
         cgi.setKey rq;
         cgi.send (cgi.connect rq);
-      Some 1: // ...............................................AUTHENTICATION
+      Some 0: // ...............................................AUTHENTICATION
         key = cryp.key (cgi.klen ()) (cgi.appName ());
         cgi.setKey key;
         a = array (strRight rq 1 |> cryp.decryp key |> csplit ':');
@@ -90,9 +92,9 @@ main args =
             cgi.send (hub sessionId obj)
           fi
         esac
-      esac;
+      esac);
     a: throw (exc.error "Sys.argv has \(length a) parameters and must have 1")
-    esac
+    esac;
   catch Throwable ex:
     exc.print ex;
   yrt;

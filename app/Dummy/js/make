@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JS_ROOT="../.."
+JS_ROOT="../../.."
 LIBS="lib/dmjs"
 
 # DON'T CHANGE vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv

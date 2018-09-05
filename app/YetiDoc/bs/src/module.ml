@@ -8,28 +8,37 @@ open Ui
 let index d =
   let up = Js.String.toUpperCase in
   let fsort s1 s2 = String.compare (up s1) (up s2) in
-  let block it =
-    let n = It.count it in
-    let it = It.sort fsort it in
-    let nrows cols = ((n - 1) / cols) + 1 in
+  let block fit tpit =
+    let fn = It.count fit in
+    let fit = It.sort fsort fit in
+    let tpn = It.count tpit in
+    let tpit = It.sort fsort tpit in
+    let nrows n cols = ((n - 1) / cols) + 1 in
     let cols = 4 in
-    let rows =
+    let f_rows n =
       if n < 3 then n
-      else if n < 5 then nrows 2
-      else if n < 7 then nrows 3
-      else nrows 4
+      else if n < 5 then nrows n 2
+      else if n < 7 then nrows n 3
+      else nrows n 4
     in
-    let a = It.to_array it in
-    q "table" [Klass "main"] [] |> (Domo.add (
+    let frows = f_rows fn in
+    let tprows = f_rows tpn in
+    let fa = It.to_array fit in
+    let tpa = It.to_array tpit in
+    q "table" [Klass "main"] []
+    |> Domo.add [
+      q "tr"[][
+        q "td" [Att_i ("colspan", 4); Html "<b>Typedefs</b>"][]]]
+    |> Domo.add (
       It.map
         (fun r ->
           q "tr"[] (
             It.map
               (fun c ->
-                let i = c * rows + r in
-                if i >= n then q "td" [Style "width:25%"; Html "&nbsp;"][]
+                let i = c * tprows + r in
+                if i >= tpn then q "td" [Style "width:25%"; Html "&nbsp;"][]
                 else
-                  let (fname) = a.(i) in
+                  let (fname) = tpa.(i) in
                   let fname_link =
                     if fname.[0] = '('
                       then Txt.sub 1 (-1) fname
@@ -40,10 +49,41 @@ let index d =
               (It.range 0 cols)
             |> It.to_list)
         )
-        (It.range 0 rows)
-      |> It.to_list))
+        (It.range 0 tprows)
+      |> It.to_list)
+    |> Domo.add [
+      q "tr"[][
+        q "td" [Att_i ("colspan", 4)][
+          q "hr" [][]]]]
+    |> Domo.add [
+      q "tr"[][
+        q "td" [Att_i ("colspan", 4); Html "<b>Functions</b>"][]]]
+    |> Domo.add (
+      It.map
+        (fun r ->
+          q "tr"[] (
+            It.map
+              (fun c ->
+                let i = c * frows + r in
+                if i >= fn then q "td" [Style "width:25%"; Html "&nbsp;"][]
+                else
+                  let (fname) = fa.(i) in
+                  let fname_link =
+                    if fname.[0] = '('
+                      then Txt.sub 1 (-1) fname
+                      else fname in
+                  q "td" [Style "width:25%"][
+                    q "a" [Att ("href", "#" ^ fname_link); Text fname][]]
+              )
+              (It.range 0 cols)
+            |> It.to_list)
+        )
+        (It.range 0 frows)
+      |> It.to_list)
   in
-    block (It.of_list Module_data.(d.findex))
+    block
+      (It.of_list Module_data.(d.findex))
+      (It.of_list Module_data.(d.tpindex))
 
 let overview d =
   let (name, link) = Module_data.(d.hyperlink) in

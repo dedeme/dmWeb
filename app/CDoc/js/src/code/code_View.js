@@ -34,9 +34,7 @@ code_View = class {
 
     const ix = modPath.lastIndexOf("/");
     $$("title").next().text(
-      "CDoc : " +
-      (ix == -1 ? modPath : modPath.substring(ix + 1))
-    );
+      "#" + (ix == -1 ? modPath : modPath.substring(ix + 1)));
 
     $("#" + anchor).e().scrollIntoView(true);
 /*    if (navigator.vendor.indexOf("Google") != -1) {

@@ -3,30 +3,6 @@
 # ORPHAN
 Writer = Escritor
 
-# TO DO
-# src/paths.ml: 58
-Delete %0? =
-
-# TO DO
-# src/paths.ml: 16
-Name '%0' contains '%1' =
-
-# TO DO
-# src/paths.ml: 24
-Name '%0' contains blanks =
-
-# TO DO
-# src/paths.ml: 13
-Name '%0' is repeated =
-
-# TO DO
-# src/paths.ml: 10
-Name is missing. =
-
-# TO DO
-# src/paths.ml: 11
-Path is missing. =
-
 # src/user/user_auth.ml: 150
 # src/user/user_chpass.ml: 22
 Accept = Aceptar
@@ -59,6 +35,9 @@ Current password = Contraseña actual
 # src/user/user_chpass.ml: 127
 Current password is missing = Falta indicar la contraseña actual
 
+# src/paths.ml: 58
+Delete %0? = ¿Eliminar %0?
+
 # src/user/user_chpass.ml: 95
 Fail trying to change password = Fallo intentando cambiar la contraseña
 
@@ -84,6 +63,18 @@ Logout-message = <p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>
 # src/paths.ml: 222
 Name = Nombre
 
+# src/paths.ml: 16
+Name '%0' contains '%1' = El nombre '%0' contiene '%1'
+
+# src/paths.ml: 24
+Name '%0' contains blanks = El nombre '%0' contiene blancos
+
+# src/paths.ml: 13
+Name '%0' is repeated = El nombre '%0' está repetido
+
+# src/paths.ml: 10
+Name is missing. = Falta el nombre.
+
 # src/user/user_chpass.ml: 57
 New password = Nueva contraseña
 
@@ -96,6 +87,9 @@ New password is missing = Falta indicar la nueva contraseña
 # src/user/user_auth.ml: 69
 Password = Contraseña
 
+# src/user/user_chpass.ml: 161
+Password could not be changed = La contraseña no pudo ser cambiada
+
 # src/user/user_auth.ml: 11
 Password is missing = Falta indicar la contraseña
 
@@ -104,6 +98,9 @@ Password successfully changed = La contraseña se cambió correctamente
 
 # src/paths.ml: 223
 Path = Ruta
+
+# src/paths.ml: 11
+Path is missing. = Falta la ruta.
 
 # src/user/user_expired.ml: 25
 Session is expired. = La sesión ha expirado.

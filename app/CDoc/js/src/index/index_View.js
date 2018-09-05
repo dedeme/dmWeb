@@ -79,6 +79,6 @@ index_View = class {
 
     addTrs(new List().cons(""), new List().cons(""), tree.entries());
     this._control.control().dom().show(paths, selected, table);
-    $$("title").next().text("JsDoc : " + selected);
+    $$("title").next().text(selected);
   }
 }}

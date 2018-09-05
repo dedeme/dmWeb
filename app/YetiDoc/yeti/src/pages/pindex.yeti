@@ -36,7 +36,7 @@ indexTree = load data.indexTree;
     l::_:
       close ();
       l = strTrim (strRight l 3);
-      case cindex '.' l of
+      case sindex ". " l of
       None (): l;
       Some i: strLeft l (i + 1)
       esac;

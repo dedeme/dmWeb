@@ -12,6 +12,7 @@ let es_dic = [
   {j|Confirm password is missing|j}, {j|Falta la confirmación de la contraseña|j};
   {j|Current password|j}, {j|Contraseña actual|j};
   {j|Current password is missing|j}, {j|Falta indicar la contraseña actual|j};
+  {j|Delete %0?|j}, {j|¿Eliminar %0?|j};
   {j|Fail trying to change password|j}, {j|Fallo intentando cambiar la contraseña|j};
   {j|Grey squares checks are wrong|j}, {j|Las casillas grises están mal marcadas|j};
   {j|here|j}, {j|aquí|j};
@@ -20,13 +21,19 @@ let es_dic = [
   {j|Login|j}, {j|Identificación|j};
   {j|Logout-message|j}, {j|<p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>|j};
   {j|Name|j}, {j|Nombre|j};
+  {j|Name '%0' contains '%1'|j}, {j|El nombre '%0' contiene '%1'|j};
+  {j|Name '%0' contains blanks|j}, {j|El nombre '%0' contiene blancos|j};
+  {j|Name '%0' is repeated|j}, {j|El nombre '%0' está repetido|j};
+  {j|Name is missing.|j}, {j|Falta el nombre.|j};
   {j|New password|j}, {j|Nueva contraseña|j};
   {j|New password and confirm password do not match|j}, {j|La nueva contraseña y su confirmación no coinciden|j};
   {j|New password is missing|j}, {j|Falta indicar la nueva contraseña|j};
   {j|Password|j}, {j|Contraseña|j};
+  {j|Password could not be changed|j}, {j|La contraseña no pudo ser cambiada|j};
   {j|Password is missing|j}, {j|Falta indicar la contraseña|j};
   {j|Password successfully changed|j}, {j|La contraseña se cambió correctamente|j};
   {j|Path|j}, {j|Ruta|j};
+  {j|Path is missing.|j}, {j|Falta la ruta.|j};
   {j|Session is expired.|j}, {j|La sesión ha expirado.|j};
   {j|There is no library|j}, {j|No hay ninguna librería|j};
   {j|User|j}, {j|Usuario|j};
@@ -35,7 +42,6 @@ let es_dic = [
 ]
 
 let en_dic = [
-  {j|Writer|j}, {j|Writer|j};
   {j|Accept|j}, {j|Accept|j};
   {j|Cancel|j}, {j|Cancel|j};
   {j|Change Language to %0|j}, {j|Change Language to %0|j};
@@ -46,6 +52,7 @@ let en_dic = [
   {j|Confirm password is missing|j}, {j|'Confirm password' is missing|j};
   {j|Current password|j}, {j|Current password|j};
   {j|Current password is missing|j}, {j|'Current password' is missing|j};
+  {j|Delete %0?|j}, {j|Delete %0?|j};
   {j|Fail trying to change password|j}, {j|Fail trying to change password|j};
   {j|Grey squares checks are wrong|j}, {j|Grey squares checks are wrong|j};
   {j|here|j}, {j|here|j};
@@ -54,13 +61,19 @@ let en_dic = [
   {j|Login|j}, {j|Login|j};
   {j|Logout-message|j}, {j|<p>%0 has finished.</p><p><b>Good by!</b></p>|j};
   {j|Name|j}, {j|Name|j};
+  {j|Name '%0' contains '%1'|j}, {j|Name '%0' contains '%1'|j};
+  {j|Name '%0' contains blanks|j}, {j|Name '%0' contains blanks|j};
+  {j|Name '%0' is repeated|j}, {j|Name '%0' is repeated|j};
+  {j|Name is missing.|j}, {j|Name is missing.|j};
   {j|New password|j}, {j|New password|j};
   {j|New password and confirm password do not match|j}, {j|New password and confirm password do not match|j};
   {j|New password is missing|j}, {j|'New password' is missing|j};
   {j|Password|j}, {j|Password|j};
+  {j|Password could not be changed|j}, {j|Password could not be changed|j};
   {j|Password is missing|j}, {j|Password is missing|j};
   {j|Password successfully changed|j}, {j|Password successfully changed|j};
   {j|Path|j}, {j|Path|j};
+  {j|Path is missing.|j}, {j|Path is missing.|j};
   {j|Session is expired.|j}, {j|Session is expired.|j};
   {j|There is no library|j}, {j|There is no library|j};
   {j|User|j}, {j|User|j};
