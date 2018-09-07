@@ -1,5 +1,7 @@
 // Generate by jsi18n. Don't modify
 
+/** I18n management. */
+
 let lang = {};
 
 const en = {

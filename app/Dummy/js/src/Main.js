@@ -24,6 +24,7 @@ const backupsPageId = "backups";
 const updatePageId = "update";
 const createPageId = "create";
 
+/** Main page. */
 export default class Main {
 
   constructor () {

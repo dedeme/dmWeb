@@ -9,7 +9,7 @@ import Chpass from "./Chpass.js";
 
 const $ = Ui.$;
 
-/** Settings page */
+/** Settings page. */
 export default class Settings {
   /**
    * @param {!Main} main Main

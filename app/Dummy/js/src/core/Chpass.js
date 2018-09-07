@@ -10,7 +10,7 @@ import Captcha from "../dmjs/Captcha.js";
 
 const $ = Ui.$;
 
-/** Container for pages */
+/** Change password page. */
 export default class Chpass {
   /**
    * @param {!Main} main Main page

@@ -3,6 +3,7 @@
 
 import Main from "./Main.js";
 
+/** Application entry. */
 export function main () {
   new Main().run();
 }

@@ -1,0 +1,8 @@
+site_name: dmWeb/Dummy  doc
+
+nav:
+  - Home: index.md
+
+#theme: "mkdocs"
+
+

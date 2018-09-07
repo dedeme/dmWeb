@@ -11,6 +11,7 @@ import {I18n, _} from "../I18n.js";
 
 const $ = Ui.$;
 
+/** Authentication pages. */
 export default class Auth {
   /**
    * @param {!Main} main Main page

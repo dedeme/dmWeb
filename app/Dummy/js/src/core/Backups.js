@@ -9,7 +9,7 @@ import Ui from "../dmjs/Ui.js";
 
 const $ = Ui.$;
 
-/** Container for pages */
+/** Backups page. */
 export default class Backups {
   /**
    * @param {!Main} main Main page

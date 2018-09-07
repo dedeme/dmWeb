@@ -7,7 +7,7 @@ import Ui from "../dmjs/Ui.js";
 
 const $ = Ui.$;
 
-/** Expired page */
+/** Expired page. */
 export default class Expired {
   /**
    * @param {!Main} main Main page

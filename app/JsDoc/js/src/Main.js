@@ -1,151 +1,201 @@
-// Copyright 2-Jan-2018 ºDeme
+// Copyright 04-Sept-2018 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("Main");
+import Client from "./dmjs/Client.js";
+import Dom from "./core/Dom.js";
+import Expired from "./core/Expired.js";
+import Auth from "./core/Auth.js";
+import Bye from "./core/Bye.js";
+import {I18n} from "./I18n.js";
+import Ui from "./dmjs/Ui.js";
 
-goog.require("github_dedeme");
-goog.require("I18n");
-goog.require("Dom");
-goog.require("user_Expired");
-goog.require("user_Auth");
-goog.require("user_Chpass");
-goog.require("Conf");
-goog.require("Db");
-goog.require("Bye");
-goog.require("paths_Control");
-goog.require("index_Control");
-goog.require("module_Control");
-goog.require("code_Control");
+import {MenuPath, Model} from "./Model.js";
+import Paths from "./Paths.js";
+import Index from "./Index.js";
+import Module from "./Module.js";
 
-Main = class {
+const app = "JsDoc";
+const version = "201809";
+const langStore = "${app}__lang";
+const captchaAuthStore = "${app}__captcha";
+const captchaChpassStore = "${app}__captchaCh";
+
+const settingsPageId = "settings";
+const backupsPageId = "backups";
+const updatePageId = "update";
+const createPageId = "create";
+
+/** Main page. */
+export default class Main {
+
   constructor () {
+    const self = this;
     /**
      * @private
-     * @type {Conf}
+     * @type {!Dom}
      */
-    this._conf = null;
-    /** @private */
-    this._client = new Client(
-      Main.app(),
-      () => { new user_Expired(this).show(); }
-    );
-    /** @private */
-    this._dom = new Dom(this);
+    this._dom = new Dom(self);
+
+    /**
+     * @private
+     * @type {!Client}
+     */
+    this._client = new Client(app, () => {
+      new Expired(self).show();
+    });
+
+    /**
+     * @private
+     * @type {Object<string, string>}
+     */
+    this._model = null;
   }
 
-  /** @return {string} */
-  static app () {
-    return "JsDoc";
+  /** @return {!Dom} Container for DOM objects. */
+  get dom () {
+    return this._dom;
   }
 
-  /** @return {string} */
-  static version () {
-    return "201802";
-  }
-
-  /** @return {string} */
-  static langStore () {
-    return Main.app() + "__lang";
-  }
-
-  /** @return {string} */
-  static captchaAuthStore () {
-    return Main.app() + "__captcha";
-  }
-
-  /** @return {string} */
-  static captchaChpassStore () {
-    return Main.app() + "__captchaCh";
-  }
-
-  /** @return {!Conf} */
-  conf () {
-    if (this._conf === null) {
-      throw ("conf is null");
-    }
-    return this._conf;
-  }
-
-  /** @return {!Client} */
-  client () {
+  /** @return {!Client} Application Client. */
+  get client () {
     return this._client;
   }
 
-  /** @return {!Dom} */
-  dom () {
-    return this._dom;
+  /** @return {!Object<string, string>} Configuration data. */
+  get model () {
+    if (this._model === null) {
+      throw new Error("Model has not been initialized");
+    }
+    return this._model;
   }
 
   run () {
     const self = this;
     const client = self._client;
+
     client.connect(ok => {
+      this._client.setPageId();
       if (ok) {
-        const data = {"page": "Main", "rq": "get"};
-        client.send0(data, rp => {
-          self._conf = Conf.restore(
-            /** @type {!Array<?>} */ (JSON.parse(rp["conf"]))
-          );
-          if (self._conf.lang() === "es") I18n.es(); else I18n.en();
+        const data = {
+          "page": "main",
+          "rq": "idata"
+        };
+        client.send(data, rp => {
+          const locationPath = rp["path"];
+          const lang = rp["lang"];
+          const showAll = rp["show"];
+          const ps = rp["paths"].map(p =>
+            new MenuPath(p[0], p[1], p[2], p[3])
+          ).sort((a, b) => a.id.localeCompare(b.id));
+
+          if (lang === "es") I18n.es();
+          else I18n.en();
+
+          this._model = new Model(locationPath, lang, showAll, ps);
 
           const url = Ui.url();
-          let path = url["0"];
-          if (path === undefined) {
-            path = self._conf.path();
-            location.assign("?" + self._conf.path());
+          const path = url["0"];
+          if (!path) {
+            location.assign("?" + locationPath);
+          } else if (path === "@") {
+            this._model.sel = "@";
+            new Paths(self).show();
+          } else if (path.indexOf("@") === -1) {
+            this._model.sel = path;
+            new Index(self).show();
           } else {
-            const data = {
-              "page": "Main",
-              "rq": "set",
-              "conf": self._conf.serialize()
-            };
-            client.send0(data, rp => {
-              if (path === "@") {
-                this._client.setPageId();
-                new paths_Control(self).run();
-              } else if (path.indexOf("@") === -1) {
-                new index_Control(self).run();
-              } else {
-                if (!url["1"]) {
-                  new module_Control(self).run();
-                } else {
-                  new code_Control(self).run();
-                }
-              }
-            });
+            const parts = path.split("@");
+            this.model.sel = parts[0];
+            this.model.module = parts[1];
+            if (url["1"] === undefined) {
+              new Module(self).show();
+            } else {
+              throw Error(`Unknown path '${path}'`);
+            }
           }
         });
       } else {
-        new user_Auth(self, self._client).show();
+        new Auth(self).show();
       }
     });
   }
 
-  // menu ------------------------------
+  // __________
+  // Call backs
+  // TTTTTTTTTT
 
-  /**
-   * @return {void}
-   */
+  /** @return {void} */
   bye () {
-    const self = this;
-    const data = {"rq": "logout"};
-    self._client.send0(data, rp => { new Bye(self).show(); });
+    const rq = {
+      "page": "main",
+      "rq": "logout"
+    };
+    this.client.send(rq, () => {});
+    new Bye(this).show();
   }
 
   /**
-   * @param {string} page
+   * @param {string} path Path to go
    * @return {void}
    */
-  go (page) {
-    const self = this;
-//    self.conf().setPage(page);
-//    self.sendConf(() => { self.run(); });
+  go (path) {
+    const rq = {
+      "page": "main",
+      "rq": "go",
+      path
+    };
+    this.client.send(rq, () => {
+      location.assign("?" + path);
+    });
   }
 
+  // _______
+  // statics
+  // TTTTTTT
 
-  // settings --------------------------
+  /** @return {string} Application name */
+  static get app () {
+    return app;
+  }
 
+  /** @return {string} Application version */
+  static get version () {
+    return version;
+  }
+
+  /** @return {string} Key for language data store */
+  static get langStore () {
+    return langStore;
+  }
+
+  /** @return {string} Key for authentication captcha data store */
+  static get captchaAuthStore () {
+    return captchaAuthStore;
+  }
+
+  /** @return {string} Key for change pass captcha data store */
+  static get captchaChpassStore () {
+    return captchaChpassStore;
+  }
+
+  /** @return {string} Id of settings page */
+  static get settingsPageId () {
+    return settingsPageId;
+  }
+
+  /** @return {string} Id of backups page */
+  static get backupsPageId () {
+    return backupsPageId;
+  }
+
+  /** @return {string} Id of update page */
+  static get updatePageId () {
+    return updatePageId;
+  }
+
+  /** @return {string} Id of create page */
+  static get createPageId () {
+    return createPageId;
+  }
 
 }
-new Main().run();
-

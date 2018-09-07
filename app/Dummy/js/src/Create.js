@@ -8,7 +8,7 @@ import Ui from "./dmjs/Ui.js";
 
 const $ = Ui.$;
 
-/** Update page */
+/** Create page. */
 export default class Create {
   /**
    * @param {!Main} main Main

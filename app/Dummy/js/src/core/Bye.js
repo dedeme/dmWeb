@@ -6,7 +6,7 @@ import {_args, _} from "../I18n.js";
 import Ui from "../dmjs/Ui.js";
 
 const $ = Ui.$;
-
+/** Bye page. */
 export default class Bye {
   /**
    * @param {!Main} main Main page

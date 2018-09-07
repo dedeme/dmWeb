@@ -10,7 +10,7 @@ import Ui from "../dmjs/Ui.js";
 
 const $ = Ui.$;
 
-/** Container for pages */
+/** Container for pages. */
 export default class Dom {
   /**
    * @param {!Main} main Main page
