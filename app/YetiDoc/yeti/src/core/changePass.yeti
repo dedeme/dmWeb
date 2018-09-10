@@ -1,0 +1,16 @@
+// Copyright 05-Aug-2018 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Change pass page.
+module core.changePass;
+
+cgi = load es.dm.cgi;
+load es.dm.json;
+
+{
+  process rq =
+    cgi.changePass
+      (rstring rq["user"])
+      (rstring rq["oldPass"])
+      (rstring rq["newPass"])
+}

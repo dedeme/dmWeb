@@ -1,13 +1,10 @@
-tools
-lib
 *.geany
-gitk
 
 #c
-obj
+lib
 bin
-_test
 
 #js
+libs
+tmp
 **/www/index.js
-**/www/js

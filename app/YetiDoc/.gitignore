@@ -1,0 +1,10 @@
+*.geany
+
+#yeti
+classes
+pack
+
+#bs
+lib
+libs
+**/www/index.js

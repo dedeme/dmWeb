@@ -1,0 +1,12 @@
+#ocaml
+_build
+*.native
+*.geany
+setup.*
+
+
+#bs
+lib
+libs
+*geany
+**/www/index.js

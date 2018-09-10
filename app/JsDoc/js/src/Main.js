@@ -13,6 +13,7 @@ import {MenuPath, Model} from "./Model.js";
 import Paths from "./Paths.js";
 import Index from "./Index.js";
 import Module from "./Module.js";
+import Code from "./Code.js";
 
 const app = "JsDoc";
 const version = "201809";
@@ -110,7 +111,8 @@ export default class Main {
             if (url["1"] === undefined) {
               new Module(self).show();
             } else {
-              throw Error(`Unknown path '${path}'`);
+              this.model.link = url["1"];
+              new Code(self).show();
             }
           }
         });
