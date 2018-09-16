@@ -70,85 +70,84 @@ export default class Main {
     return this._model;
   }
 
-  run () {
+  async run () {
     const self = this;
-    const client = self._client;
+    const data = {
+      "page": "main",
+      "rq": "idata"
+    };
+    const rp = await self._client.send(data);
+    const locationPath = rp["path"];
+    const lang = rp["lang"];
+    const showAll = rp["show"];
+    const ps = rp["paths"].map(p =>
+      new MenuPath(p[0], p[1], p[2], p[3])
+    ).sort((a, b) => a.id.localeCompare(b.id));
 
-    client.connect(ok => {
-      this._client.setPageId();
-      if (ok) {
-        const data = {
-          "page": "main",
-          "rq": "idata"
-        };
-        client.send(data, rp => {
-          const locationPath = rp["path"];
-          const lang = rp["lang"];
-          const showAll = rp["show"];
-          const ps = rp["paths"].map(p =>
-            new MenuPath(p[0], p[1], p[2], p[3])
-          ).sort((a, b) => a.id.localeCompare(b.id));
+    if (lang === "es") I18n.es();
+    else I18n.en();
 
-          if (lang === "es") I18n.es();
-          else I18n.en();
+    self._model = new Model(locationPath, lang, showAll, ps);
 
-          this._model = new Model(locationPath, lang, showAll, ps);
-
-          const url = Ui.url();
-          const path = url["0"];
-          if (!path) {
-            location.assign("?" + locationPath);
-          } else if (path === "@") {
-            this._model.sel = "@";
-            new Paths(self).show();
-          } else if (path.indexOf("@") === -1) {
-            this._model.sel = path;
-            new Index(self).show();
-          } else {
-            const parts = path.split("@");
-            this.model.sel = parts[0];
-            this.model.module = parts[1];
-            if (url["1"] === undefined) {
-              new Module(self).show();
-            } else {
-              this.model.link = url["1"];
-              new Code(self).show();
-            }
-          }
-        });
+    const url = Ui.url();
+    const path = url["0"];
+    if (!path) {
+      location.assign("?" + locationPath);
+    } else if (path === "@") {
+      self._model.sel = "@";
+      new Paths(self).show();
+    } else if (path.indexOf("@") === -1) {
+      self._model.sel = path;
+      new Index(self).show();
+    } else {
+      const parts = path.split("@");
+      self.model.sel = parts[0];
+      self.model.module = parts[1];
+      if (url["1"] === undefined) {
+        new Module(self).show();
       } else {
-        new Auth(self).show();
+        self.model.link = url["1"];
+        new Code(self).show();
       }
-    });
+    }
+  }
+
+  async start () {
+    const ok = await this._client.connect();
+    this._client.setPageId();
+    if (ok) {
+      this.run();
+    } else {
+      new Auth(this).show();
+    }
   }
 
   // __________
   // Call backs
   // TTTTTTTTTT
 
-  /** @return {void} */
-  bye () {
+  /** @return {Promise} */
+  async bye () {
     const rq = {
       "page": "main",
       "rq": "logout"
     };
-    this.client.send(rq, () => {});
+    await this.client.send(rq);
     new Bye(this).show();
   }
 
   /**
    * @param {string} path Path to go
-   * @return {void}
+   * @return {Promise}
    */
-  go (path) {
+  async go (path) {
     const rq = {
       "page": "main",
       "rq": "go",
-      path
+      "path": path
     };
-    this.client.send(rq, () => {
-      location.assign("?" + path);
-    });
+    await this.client.send(rq);
+    location.assign("?" + path);
   }
 
   // _______

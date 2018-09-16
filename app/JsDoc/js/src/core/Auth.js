@@ -70,9 +70,9 @@ export default class Auth {
      * @param {string} pass Password
      * @param {boolean} persistent If is 'true' connection lasts until its
      *    maximum.
-     * @return {void}
+     * @return {Promise}
      */
-    const faccept = (user, pass, persistent) => {
+    const faccept = async (user, pass, persistent) => {
       if (user === "") {
         alert(_("User name is missing"));
         return;
@@ -81,14 +81,13 @@ export default class Auth {
         alert(_("Password is missing"));
         return;
       }
-      main.client.authentication(user, pass, !persistent, (ok) => {
-        if (ok) {
-          captcha.resetCounter();
-        } else {
-          captcha.incCounter();
-        }
-        main.run();
-      });
+      const ok = await main.client.authentication(user, pass, !persistent);
+      if (ok) {
+        captcha.resetCounter();
+      } else {
+        captcha.incCounter();
+      }
+      main.start();
     };
 
     /**

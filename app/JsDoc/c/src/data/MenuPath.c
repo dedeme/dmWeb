@@ -107,3 +107,10 @@ MenuPath *menuPath_from_json(Json *js) {
 #undef TY
 #undef FN
 
+Json *amenuPath_to_json(AmenuPath *this) {
+  return amenuPath_to_jsonf(this, menuPath_to_json);
+}
+
+AmenuPath *amenuPath_from_json(Json *js) {
+  return amenuPath_from_jsonf(js, menuPath_from_json);
+}

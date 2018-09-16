@@ -301,9 +301,9 @@ export default class Module {
   }
 
   /**
-   * @return {void}
+   * @return {Promise}
    */
-  show () {
+  async show () {
     const self = this;
     const main = self._main;
     const sel = main.model.sel;
@@ -318,13 +318,12 @@ export default class Module {
       "page": "module",
       "path": path.path + "/" + module + ".js"
     };
-    main.client.send(rq, rp => {
-      const mdoc = rp["mdoc"];
-      if (mdoc === undefined) {
-        main.go("@");
-        return;
-      }
-      self.show2(mdoc);
-    });
+    const rp = await main.client.send(rq);
+    const mdoc = rp["mdoc"];
+    if (mdoc === undefined) {
+      main.go("@");
+      return;
+    }
+    self.show2(mdoc);
   }
 }

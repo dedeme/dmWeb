@@ -6,7 +6,7 @@
 import Main from "./Main.js";
 
 export function main () {
-  new Main().run();
+  new Main().start();
 }
 
 window["main"] = main;

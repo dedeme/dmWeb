@@ -83,7 +83,7 @@ Arr/*Tp3[char , char, char]*/ *read_dir(int level, char *prefix, char *path) {
 
   EACH(dirs, char, d) {
     char *only_name = path_only_name(d);
-    arr_add(r, tp3_new("", tabs(level, only_name), ""));
+    arr_add(r, tp3_new(tabs(level, only_name), "", ""));
     arr_add_arr(r, read_dir(
       level + 1,
       *prefix ? path_cat(prefix, only_name, NULL) : only_name,

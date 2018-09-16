@@ -34,9 +34,26 @@ export default class Code {
 
   /** @private */
   show2 (html) {
+    html = html.trim();
     const main = this._main;
+    const model = main.model;
+    const module = model.module;
+    const link = `?${model.sel}@${module}`;
+    const numbers =
+      [...It.range(html.split("\n").length).map(i => String(i + 1))].join("\n");
     const pg = $("div")
-      .add($("pre").html(html))
+      .add($("table").klass("frame")
+        .add($("tr")
+          .add($("td").html(`<a href="${link}">${module}`))))
+      .add($("br"))
+      .add($("table").style("width:100%;").att("cellspacing", 0)
+        .add($("tr")
+          .add($("td").klass("prel")
+            .add($("div")
+              .add($("pre").style("text-align:right;").html(numbers))))
+          .add($("td").klass("prer")
+            .add($("div")
+              .add($("pre").html(html))))))
       .add(this.mkFoot())
     ;
     main.dom.show(pg);
@@ -47,9 +64,9 @@ export default class Code {
   }
 
   /**
-   * @return {void}
+   * @return {Promise}
    */
-  show () {
+  async show () {
     const self = this;
     const main = self._main;
     const sel = main.model.sel;
@@ -65,13 +82,12 @@ export default class Code {
       "path": path.path + "/" + module + ".js",
       "link": main.model.link
     };
-    main.client.send(rq, rp => {
-      const html = rp["html"];
-      if (html === undefined) {
-        main.go("@");
-        return;
-      }
-      self.show2(html);
-    });
+    const rp = await main.client.send(rq);
+    const html = rp["html"];
+    if (html === undefined) {
+      main.go("@");
+      return;
+    }
+    self.show2(html);
   }
 }

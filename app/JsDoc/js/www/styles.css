@@ -16,14 +16,32 @@ TABLE.main {
   border : 0px;
   width : 100%
 }
-TABLE.sudoku {
-  border-collapse : collapse;
-  background-color : rgb(250, 250, 250);
-  border : 1px solid rgb(110,130,150);
-}
 TABLE.border {border: 1px solid rgb(110,130,150);}
 
 TD.border {border: 1px solid rgb(110,130,150);}
+TD.prel {
+  font-family: monospace;font-size: 12px;
+  background-color: rgb(221, 220, 220);color: #222244;
+  border-right: solid 1px; border-left: solid 1px;
+  border-top-left-radius: 10px;
+  border-top:1px solid rgb(110,130,150);
+  border-bottom-left-radius: 10px;
+  border-bottom:1px solid rgb(110,130,150);
+  padding: 4px;
+  text-align: right;
+  width: 10px;
+}
+TD.prer {
+  font-family: monospace;font-size: 12px;
+  background-color: rgb(245, 245, 248);
+  border-right: solid 1px;
+  border-top-right-radius: 10px;
+  border-top:1px solid rgb(110,130,150);
+  border-bottom-right-radius: 10px;
+  border-bottom:1px solid rgb(110,130,150);
+  padding: 4px;
+}
+
 
 BUTTON {
   width:32px;

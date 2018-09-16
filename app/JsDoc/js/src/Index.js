@@ -50,8 +50,8 @@ export default class Index {
     $("@title").text(sel);
   }
 
-  /** @return {void} */
-  show () {
+  /** @return {Promise} */
+  async show () {
     const self = this;
     const main = self._main;
     const sel = main.model.sel;
@@ -64,13 +64,12 @@ export default class Index {
       "page": "index",
       "path": path.path
     };
-    main.client.send(rq, rp => {
-      const entries = rp["entries"];
-      if (entries === undefined) {
-        main.go("@");
-        return;
-      }
-      self.show2(entries);
-    });
+    const rp = await main.client.send(rq);
+    const entries = rp["entries"];
+    if (entries === undefined) {
+      main.go("@");
+      return;
+    }
+    self.show2(entries);
   }
 }

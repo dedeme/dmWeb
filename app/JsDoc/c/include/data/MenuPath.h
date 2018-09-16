@@ -60,4 +60,10 @@ MenuPath *menuPath_from_json(Json *s);
 #undef FN
 
 
+///
+Json *amenuPath_to_json(AmenuPath *this);
+
+///
+AmenuPath *amenuPath_from_json(Json *js);
+
 #endif

@@ -8,7 +8,8 @@ Install in programming place (`dmWeb/app`)
 
 1. Copy the directory Dummy to other place.
 1. Remove the file `c/bin/Dummy`.
-1. Update Dummy geany file, changing the name of file and name of project.
+1. Update Dummy geany file, changing name of file, name of project.
+   and command to launch browser.
 1. Update `js/www/index-clean.html` and `js/www/index-closure.html` changing
    the line `<title>Dummy</title>`.
 1. Delete the content of `js/www/js` direcoty but keeping itself.

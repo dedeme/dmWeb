@@ -68,79 +68,76 @@ export default class Main {
     return this._model;
   }
 
-  run () {
+  async run () {
     const self = this;
-    const client = self._client;
 
-    function hub (page) {
-      switch (page) {
-      case updatePageId:
-        new Update(self).show();
-        break;
-      case createPageId:
-        new Create(self).show();
-        break;
-      case backupsPageId: {
-        new Backups(self).show();
-        break;
-      }
-      case settingsPageId:
-        new Settings(self).show();
-        break;
-      default:
-        throw("Page '" + page + "' is unknown");
-      }
+    const data = {
+      "page": "main",
+      "rq": "getDb"
+    };
+    const rp = await self._client.send(data);
+
+    this._model = rp["db"];
+
+    if (this._model["lang"] === "es") I18n.es();
+    else I18n.en();
+
+    const page = this._model["menu"];
+    switch (page) {
+    case updatePageId:
+      new Update(self).show();
+      break;
+    case createPageId:
+      new Create(self).show();
+      break;
+    case backupsPageId: {
+      new Backups(self).show();
+      break;
     }
+    case settingsPageId:
+      new Settings(self).show();
+      break;
+    default:
+      throw("Page '" + page + "' is unknown");
+    }
+  }
 
-    client.connect(ok => {
-      this._client.setPageId();
-      if (ok) {
-        const data = {
-          "page": "main",
-          "rq": "getDb"
-        };
-        client.send(data, rp => {
-          this._model = rp["db"];
-
-          if (this._model["lang"] === "es") I18n.es();
-          else I18n.en();
-
-          const page = this._model["menu"];
-          hub(page);
-        });
-      } else {
-        new Auth(self).show();
-      }
-    });
+  async start () {
+    const ok = await this._client.connect();
+    this._client.setPageId();
+    if (ok) {
+      this.run();
+    } else {
+      new Auth(this).show();
+    }
   }
 
   // __________
   // Call backs
   // TTTTTTTTTT
 
-  /** @return {void} */
-  bye () {
+  /** @return {Promise} */
+  async bye () {
     const rq = {
       "page": "main",
       "rq": "logout"
     };
-    this.client.send(rq, () => {});
+    await this.client.send(rq);
     new Bye(this).show();
   }
 
   /**
    * @param {string} page Page to go
-   * @return {void}
+   * @return {Promise}
    */
-  go (page) {
+  async go (page) {
     const rq = {
       "page": "main",
       "rq": "setMenu",
       "option": page
     };
-    this.client.send(rq, () => {
-      this.run();
-    });
+    await this.client.send(rq);
+    this.run();
   }
 
   // _______

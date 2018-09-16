@@ -51,12 +51,12 @@ static char *paths_rp = "data/paths.db";
 static char *pathsp = NULL;
 
 static void write_paths(AmenuPath *paths) {
-  file_write(pathsp, (char *)amenuPath_to_json(paths, menuPath_to_json));
+  file_write(pathsp, (char *)amenuPath_to_json(paths));
 }
 
 static AmenuPath *get_paths() {
   XNULL(pathsp)
-  return amenuPath_from_json((Json*)file_read(pathsp), menuPath_from_json);
+  return amenuPath_from_json((Json*)file_read(pathsp));
 }
 
 Json *db_paths(void) {
@@ -68,7 +68,7 @@ Json *db_paths(void) {
       menuPath_set_ok(mp, false);
     }
   }_EACH
-  return amenuPath_to_json(ps, menuPath_to_json);
+  return amenuPath_to_json(ps);
 }
 
 void db_add_path(char *id, char *path) {

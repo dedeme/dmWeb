@@ -28,9 +28,9 @@ export default class Chpass {
    * @param {string} pass Current password.
    * @param {string} newPass New password.
    * @param {function (boolean):void} f Captcha management.
-   * @return {void}
+   * @return {Promise}
    */
-  changePass (pass, newPass, f) {
+  async changePass (pass, newPass, f) {
     const main = this._main;
     const rq = {
       "page": "chpass",
@@ -38,16 +38,15 @@ export default class Chpass {
       "pass": Client.crypPass(pass),
       "newPass": Client.crypPass(newPass)
     };
-    main.client.send(rq, rp => {
-      const ok = rp["ok"];
-      f(ok);
-      if (ok) {
-        alert(_("Password successfully changed"));
-        main.run();
-      } else {
-        main.go(Main.settingsPageId);
-      }
-    });
+    const rp = await main.client.send(rq);
+    const ok = rp["ok"];
+    f(ok);
+    if (ok) {
+      alert(_("Password successfully changed"));
+      main.run();
+    } else {
+      main.go(Main.settingsPageId);
+    }
   }
 
   // ____

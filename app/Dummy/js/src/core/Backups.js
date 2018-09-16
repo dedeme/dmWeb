@@ -26,44 +26,42 @@ export default class Backups {
    * Downloads a backup
    * @param {function(string):void} action This callback passes the name of
    *  backup file.
-   * @return {void}
+   * @return {Promise}
    */
-  backupDownload (action) {
+  async backupDownload (action) {
     const data = {
       "page": "backups",
       "rq": "backup"
     };
-    this._main.client.send(data, rp => {
-      action(rp["name"]);
-    });
+    const rp = await this._main.client.send(data);
+    action(rp["name"]);
   }
 
   /**
    * Restores a backup
    * @param {*} file Javascrip file object.
    * @param {function(number):void} progress For slide bar.
-   * @return {void}
+   * @return {Promise}
    */
-  backupRestore (file, progress) {
+  async backupRestore (file, progress) {
     const main = this._main;
     const client = main.client;
     const step = 25000;
     let start = 0;
 
     const reader = new FileReader();
-    reader.onerror/**/ = () => {
-      alert(_args(_("'%0' can not be read"), file.name/**/));
+    reader.onerror = async () => {
+      alert(_args(_("'%0' can not be read"), file.name));
       const data = {
         "page": "backups",
         "rq": "restoreAbort"
       };
-      client.send(data, () => {
-        main.run();
-      });
+      await client.send(data);
+      main.run();
     };
-    reader.onloadend/**/ = evt => {
-      if (evt.target/**/.readyState/**/ === FileReader.DONE/**/) { // DONE == 2
-        const bindata = new Uint8Array(evt.target/**/.result/**/);
+    reader.onloadend = async evt => {
+      if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+        const bindata = new Uint8Array(evt.target.result);
         progress(start);
         if (bindata.length > 0) {
           const data = {
@@ -71,26 +69,24 @@ export default class Backups {
             "rq": "restoreAppend",
             "data": B64.encodeBytes(bindata)
           };
-          client.send(data, () => {
-            start += step;
-            const blob = file.slice(start, start + step);
-            reader.readAsArrayBuffer(blob);
-          });
+          await client.send(data);
+          start += step;
+          const blob = file.slice(start, start + step);
+          reader.readAsArrayBuffer(blob);
         } else {
-          progress(file.size/**/);
+          progress(file.size);
           const data = {
             "page": "backups",
             "rq": "restoreEnd"
           };
-          client.send(data, (rp) => {
-            const fail = rp["fail"];
-            if (fail === "restore:unzip") {
-              alert(_("Fail unzipping backup"));
-            } else if (fail === "restore:version") {
-              alert(_("File is not a Selectividad backup"));
-            }
-            main.run();
-          });
+          const rp = await client.send(data);
+          const fail = rp["fail"];
+          if (fail === "restore:unzip") {
+            alert(_("Fail unzipping backup"));
+          } else if (fail === "restore:version") {
+            alert(_("File is not a Selectividad backup"));
+          }
+          main.run();
         }
       }
     };
@@ -104,36 +100,33 @@ export default class Backups {
       "page": "backups",
       "rq": "restoreStart"
     };
-    client.send(data, () => {
-      append();
-    });
+    await client.send(data);
+    append();
   }
 
-  /** @return {void} */
-  clearTrash () {
+  /** @return {Promise} */
+  async clearTrash () {
     const main = this._main;
     const data = {
       "page": "backups",
       "rq": "clearTrash"
     };
-    main.client.send(data, () => {
-      main.run();
-    });
+    await main.client.send(data);
+    main.run();
   }
 
   /**
    * @param {string} f File name of trash file
-   * @return {void}
+   * @return {Promise}
    */
-  restoreTrash (f) {
+  async restoreTrash (f) {
     const main = this._main;
     const data = {
       "page": "backups",
       "rq": "restoreTrash", "file": f
     };
-    main.client.send(data, () => {
-      main.run();
-    });
+    await main.client.send(data);
+    main.run();
   }
 
   // ____
@@ -252,18 +245,17 @@ export default class Backups {
   }
 
   /**
-   * @return {void}
+   * @return {Promise}
    */
-  show () {
+  async show () {
     const self = this;
     const rq = {
       "page": "backups",
       "rq": "trashList"
     };
-    self._main.client.send(rq, rp => {
-      const list = rp["list"];
-      self.show2(list);
-    });
+    const rp = await self._main.client.send(rq);
+    const list = rp["list"];
+    self.show2(list);
   }
 
 }

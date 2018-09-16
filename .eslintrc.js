@@ -185,7 +185,7 @@ module.exports = {
             "error"
         ],
         "object-shorthand": [
-            "error"
+            "error", "never"
         ],
         "prefer-const": [
             "error"

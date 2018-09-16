@@ -49,7 +49,7 @@ export default class Paths {
   }
 
   /** @private */
-  addPath (id, path) {
+  async addPath (id, path) {
     const main = this._main;
 
     id = id.trim();
@@ -68,41 +68,38 @@ export default class Paths {
     const rq = {
       "page": "paths",
       "rq": "addPath",
-      id,
-      path
+      "id": id,
+      "path": path
     };
-    main.client.send(rq, () => {
-      main.run();
-    });
+    await main.client.send(rq);
+    main.run();
 
   }
 
   /** @private */
-  changeShowAll () {
+  async changeShowAll () {
     const main = this._main;
     const showAll = !main.model.showAll;
     const rq = {
       "page": "paths",
       "rq": "setShowAll",
-      showAll
+      "showAll": showAll
     };
-    main.client.send(rq, () => {
-      main.run();
-    });
+    await main.client.send(rq);
+    main.run();
   }
 
   /** @private */
-  changeLang () {
+  async changeLang () {
     const main = this._main;
     const lang = main.model.lang === "es" ? "en" : "es";
     const rq = {
       "page": "paths",
       "rq": "setLang",
-      lang
+      "lang": lang
     };
-    main.client.send(rq, () => {
-      main.run();
-    });
+    await main.client.send(rq);
+    main.run();
   }
 
   /** @private */
@@ -111,35 +108,33 @@ export default class Paths {
   }
 
   /** @private */
-  setShow (id, value) {
+  async setShow (id, value) {
     const main = this._main;
     const rq = {
       "page": "paths",
       "rq": "setShow",
-      id,
-      value
+      "id": id,
+      "value": value
     };
-    main.client.send(rq, () => {
-      main.run();
-    });
+    await main.client.send(rq);
+    main.run();
   }
 
   /** @private */
-  deletePath (id) {
+  async deletePath (id) {
     if (confirm(_args(_("Delete %0?"), id))) {
       const main = this._main;
       const rq = {
         "page": "paths",
         "rq": "delete",
-        id
+        "id": id
       };
-      main.client.send(rq, () => {
-        main.run();
-      });
+      await main.client.send(rq);
+      main.run();
     }
   }
 
-  modify (oldId, newId, path) {
+  async modify (oldId, newId, path) {
     const self = this;
     const main = self._main;
 
@@ -167,13 +162,12 @@ export default class Paths {
     const rq = {
       "page": "paths",
       "rq": "modify",
-      oldId,
-      newId,
-      path
+      "oldId": oldId,
+      "newId": newId,
+      "path": path
     };
-    main.client.send(rq, () => {
-      main.run();
-    });
+    await main.client.send(rq);
+    main.run();
   }
 
   // ____
