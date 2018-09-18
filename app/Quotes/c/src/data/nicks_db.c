@@ -51,7 +51,13 @@ Nick_db *nick_db_from_json(Json *js) {
 }
 /*.-.*/
 
+static char *model_name = NULL;
+
 static Nick_db *nicks_db = NULL;
+
+static char *plus_db(char *name) {
+  return str_cat(name, ".db", NULL);
+}
 
 static char *path(void) {
   return path_cat(db_dir(), "nicks.db", NULL);
@@ -92,6 +98,20 @@ Ochar *nicks_db_name(char *id) {
   return ochar_null();
 }
 
+char *nicks_db_model_name(void) {
+  if (!model_name) {
+    char *model_id = nicks_db_model();
+    Ochar *omodel_name = nicks_db_name(model_id);
+    if (ochar_is_null(omodel_name)) {
+      exc_illegal_state(str_printf(
+        "Nick name of model (id: %s) not found", model_id
+      ));
+    }
+    model_name = ochar_value(omodel_name);
+  }
+  return model_name;
+}
+
 bool nicks_db_add(char *name, bool is_ibex, bool is_sel) {
   Nick_db *db = read();
   Anick *nicks = db->nicks;
@@ -112,7 +132,7 @@ bool nicks_db_add(char *name, bool is_ibex, bool is_sel) {
   ++db->next_id;
 
   write();
-  file_write(path_cat(db_dir(), "quotes", name, NULL), "");
+  file_write(path_cat(db_dir(), "quotes", plus_db(name), NULL), "");
   return true;
 }
 
@@ -137,7 +157,7 @@ void nicks_db_remove(char *id) {
       }
     }
     write();
-    file_del(path_cat(db_dir(), "quotes", name, NULL));
+    file_del(path_cat(db_dir(), "quotes", plus_db(name), NULL));
   }
 }
 
@@ -182,8 +202,8 @@ bool nicks_db_set_name(char *id, char *name) {
   }_EACH
   if (old) {
     write();
-    char *old_name = path_cat(db_dir(), "quotes", old, NULL);
-    char *new_name = path_cat(db_dir(), "quotes", name, NULL);
+    char *old_name = path_cat(db_dir(), "quotes", plus_db(old), NULL);
+    char *new_name = path_cat(db_dir(), "quotes", plus_db(name), NULL);
     file_rename(old_name, new_name);
   }
   return true;
@@ -198,3 +218,56 @@ void nicks_db_set_model(char *id) {
   write();
 }
 
+char *nicks_db_quotes_str(char *id) {
+  Ochar *name = nicks_db_name(id);
+  if (ochar_is_null(name)) {
+    return "";
+  }
+  char *db = path_cat(db_dir(), "quotes", plus_db(ochar_value(name)), NULL);
+  if (!file_exists(db)) {
+    return "";
+  }
+  return file_read(db);
+}
+
+static Oaquote *get_quotes(char *id, char *name) {
+  char *db = path_cat(db_dir(), "quotes", plus_db(name), NULL);
+  if (!file_exists(db)) {
+    return oaquote_null();
+  }
+  char *qs = str_trim(file_read(db));
+  Aquote *r = aquote_new();
+  if (qs) {
+    EACH(str_csplit(qs, '\n'), char, q) {
+      aquote_add(r, quote_from_str(q));
+    }_EACH
+  }
+  return oaquote_new(r);
+}
+
+Oaquote *nicks_db_quotes(char *id) {
+  Ochar *name = nicks_db_name(id);
+  if (ochar_is_null(name)) {
+    return oaquote_null();
+  }
+  return get_quotes(id, ochar_value(name));
+}
+
+///
+void nicks_db_set_quotes(char *id, Aquote *qs) {
+  Ochar *name = nicks_db_name(id);
+  if (ochar_is_null(name)) {
+    exc_illegal_state(str_printf("Nick id '%s' not found", id));
+  }
+  char *db = path_cat(db_dir(), "quotes", plus_db(ochar_value(name)), NULL);
+  Buf *bf = buf_new();
+  EACH(qs, Quote, q) {
+    buf_add(bf, quote_to_str(q));
+    buf_cadd(bf, '\n');
+  }_EACH
+  file_write(db, buf_str(bf));
+}
+
+Oaquote *nicks_db_model_quotes(void) {
+  return get_quotes(nicks_db_model(), nicks_db_model_name());
+}

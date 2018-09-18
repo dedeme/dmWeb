@@ -9,6 +9,6 @@
 #include "dmc/ct/Mjson.h"
 
 ///
-CgiRp *edit_process(Mjson *rqm);
+CgiRp *edit_process(Mjson *rqm, int max_quotes);
 
 #endif

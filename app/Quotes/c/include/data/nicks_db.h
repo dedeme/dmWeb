@@ -6,6 +6,7 @@
 
 #include "dmc/std.h"
 #include "Nick.h"
+#include "Quote.h"
 
 /*.-.*/
 
@@ -31,6 +32,9 @@ Anick *nicks_db_list(void);
 /// Returns the nick name of a nick 'id'.
 Ochar *nicks_db_name(char *id);
 
+/// Returns the nick name of model.
+char *nicks_db_model_name(void);
+
 /// Adds a nick and returns false if action fails because 'name'
 /// is duplicated.
 bool nicks_db_add(char *name, bool is_ibex, bool is_sel);
@@ -51,5 +55,17 @@ bool nicks_db_set_name(char *id, char *name);
 
 /// Sets as model the nick with identifier 'id'
 void nicks_db_set_model(char *id);
+
+/// If fails returns ""
+char *nicks_db_quotes_str(char *id);
+
+///
+Oaquote *nicks_db_quotes(char *id);
+
+///
+void nicks_db_set_quotes(char *id, Aquote *qs);
+
+///
+Oaquote *nicks_db_model_quotes(void);
 
 #endif

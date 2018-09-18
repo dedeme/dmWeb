@@ -23,6 +23,7 @@ static char *app_name = "Quotes";
 static char *data_version = "201809";
 static char *app_dir = "dmcgi/Quotes";
 static time_t expiration = 3600;
+static int max_quotes = 550;
 
 static void app_init(void) {
 	char *dir = path_cat(cgi_home(), "data", NULL);
@@ -35,6 +36,7 @@ static void app_init(void) {
     file_write(fversion, version);
     file_mkdir(path_cat(cgi_home(), "tmp", NULL));
     file_mkdir(path_cat(cgi_home(), "trash", NULL));
+    file_mkdir(path_cat(cgi_home(), "backups", NULL));
     db_create(dir);
   }
 }
@@ -48,6 +50,7 @@ static CgiRp *main_process(char *session_id, Mjson *rqm) {
 
   // ---------------------------------------------------------- logout
   if (str_eq(rq, "logout")) {
+    backups_process(app_name, data_version, rqm);
     return cgi_del_session(session_id);
   }
 
@@ -105,7 +108,7 @@ static CgiRp *app_process(char *session_id, Mjson *rqm) {
 
   // ------------------------------------------------------- Edit page
   if (str_eq(page, "edit")) {
-    return edit_process(rqm);
+    return edit_process(rqm, max_quotes);
   }
 
   // ----------------------------------------------------- Issues page

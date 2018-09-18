@@ -1,6 +1,8 @@
 // Copyright 12-Sept-2018 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+import {_, _args} from "../I18n.js";
+
 /** Issue */
 export default class Issue {
   constructor (nickId, type, cause) {
@@ -22,6 +24,29 @@ export default class Issue {
   /** @return {string} */
   get cause () {
     return this._cause;
+  }
+
+  /** @return {string} */
+  get msg () {
+    const [date, field] = this.cause.split(":");
+    switch (this._type) {
+    case Issue.SERVER:
+      return _args(_("Server code of %0 is missing"), this.cause);
+    case Issue.EMPTY:
+      return _args(_("File %0 empty or not found"), this.cause);
+    case Issue.MISSING:
+      return _args(_("Quote of %0 is missimg"), date);
+    case Issue.EXTRA:
+      return _args(_("Extra quote in %0"), date);
+    case Issue.BEFORE_NOW:
+      return _args(_("%0: Difference +- 20% in %1"), field, date);
+    case Issue.MAX:
+      return _args(_("%0 is greater than 'max' in %1"), field, date);
+    case Issue.MIN:
+      return _args(_("%0 is less than 'min' in %1"), field, date);
+    default:
+      return "";
+    }
   }
 
   /**
@@ -57,7 +82,7 @@ export default class Issue {
   }
 
   /**
-   * Missing data of a date
+   * Missing quote
    * @return {number}
    */
   static get MISSING () {
@@ -65,10 +90,10 @@ export default class Issue {
   }
 
   /**
-   * Missing value in a field
+   * Extra quote
    * @return {number}
    */
-  static get FIELD_MISSING () {
+  static get EXTRA () {
     return 5;
   }
 

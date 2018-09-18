@@ -49,6 +49,7 @@ bool quote_error(Quote *this);
 #define FN quote
 #include "dmc/tpl/topt.h"
 #include "dmc/tpl/tarr.h"
+#include "dmc/tpl/tit.h"
 #undef TY
 #undef FN
 

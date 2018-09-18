@@ -87,6 +87,7 @@ bool quote_error(Quote *this) {
 #define FN quote
 #include "dmc/tpl/topt.c"
 #include "dmc/tpl/tarr.c"
+#include "dmc/tpl/tit.c"
 #undef TY
 #undef FN
 
@@ -111,7 +112,7 @@ Quote *quote_from_str(char *q) {
 }
 
 char *quote_to_str(Quote *this) {
-  return str_printf("%s:%.4f:%.4f:%.4f:%.4f:%d:%s",
+  return str_printf("%s:%.7g:%.7g:%.7g:%.7g:%d:%s",
     this->date,
     this->open,
     this->close,

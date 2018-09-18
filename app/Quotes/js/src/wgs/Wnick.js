@@ -41,6 +41,7 @@ export default class Wnick {
 
   /**
    * @param {boolean} value
+   * @param {string} msg
    * @return {void}
    */
   check (value, msg) {
@@ -58,6 +59,21 @@ export default class Wnick {
         await this._main.client.send(data);
         this._main.run();
       }).add(Ui.img("error").att("title", msg)));
+    }
+  }
+
+  /**
+   * @param {boolean} value
+   * @return {void}
+   */
+  download (value) {
+    const self = this;
+    if (value) {
+      self._checkDiv.removeAll().add(Ui.img("well"));
+    } else {
+      self._checkDiv.removeAll().add(
+        Ui.img("error").att("title", _("Fail downloading quotes"))
+      );
     }
   }
 

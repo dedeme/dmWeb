@@ -15,6 +15,12 @@ static char *url_last =
   "https://www.invertia.com/es/mercados/bolsa/indices/acciones/"
   "-/indice/mdo-continuo/IB011CONTINU";
 
+static char *path(char *code) {
+  return path_cat(url_base, code, NULL);
+}
+
+// Read --------------------------------------------------------------
+
 static int read_td(char **s, char *tx, int ix) {
   ix = str_index_from(tx, "<td", ix);
   if (ix == -1) return 0;
@@ -110,7 +116,7 @@ static Oaquote *process_page(char *pg) {
 }
 
 static Oaquote *read(char *code) {
-  Achar *apage = ext_wget(path_cat(url_base, code, NULL));
+  Achar *apage = ext_wget(path(code));
   char *page = str_cjoin(achar_to_it(apage), '\n');
   return process_page(page);
 }
@@ -169,5 +175,5 @@ static Oaclose *read_last() {
 }
 
 Server *invertia_mk(void) {
-  return server_new("Invertia", read, read_last);
+  return server_new("Invertia", path, read, read_last);
 }

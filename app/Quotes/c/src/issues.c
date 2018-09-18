@@ -47,7 +47,7 @@ CgiRp *issues_process(Mjson *rqm) {
     return cgi_ok(m);
   }
 
-  // ------------------------------------------------------ serverIdCodes
+  // --------------------------------------------------- serverIdCodes
   if (str_eq(rq, "serverIdCodes")) {
     char *id = jmap_gstring(rqm, "id");
     Ajson *ics = ajson_new();
@@ -62,6 +62,29 @@ CgiRp *issues_process(Mjson *rqm) {
 
     Mjson *m = mjson_new();
     mjson_put(m, "serverIdCodes", json_warray(ics));
+    return cgi_ok(m);
+  }
+
+  // ---------------------------------------------------------- qissue
+  if (str_eq(rq, "qissue")) {
+    char *id = jmap_gstring(rqm, "id");
+
+    Ajson *sls = ajson_new();
+    EACH(servers_db_list(), Server, sv) {
+      Ajson *sl = ajson_new();
+      ajson_add(sl, json_wstring(server_name(sv)));
+      char *code = mchar_oget(server_nicks(sv), id, "???");
+      ajson_add(sl, json_wstring(server_path(sv)(code)));
+
+      ajson_add(sls, json_warray(sl));
+    }_EACH
+
+    Mjson *m = mjson_new();
+    jmap_pstring(m, "modelId", nicks_db_model());
+    jmap_pstring(m, "quotes", nicks_db_quotes_str(id));
+    jmap_pstring(m, "modelQuotes", nicks_db_quotes_str(nicks_db_model()));
+    mjson_put(m, "nicks", anick_to_json(nicks_db_list()));
+    mjson_put(m, "serverLinks", json_warray(sls));
     return cgi_ok(m);
   }
 

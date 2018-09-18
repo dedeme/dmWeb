@@ -5,14 +5,16 @@
   #define DATA_ISSUE_H
 
 #include "dmc/std.h"
+#include "Quote.h"
 
+///
 enum Issue_t {
   ISSUE_NONE, // There is no issue
   ISSUE_EXISTS, // Nick_id does not exists
   ISSUE_SERVER, // Code of server is missing
   ISSUE_EMPTY, // Not data at all
-  ISSUE_MISSING, // Missing data of a date
-  ISSUE_FIELD_MISSING, // Missing value in a field
+  ISSUE_MISSING, // Missing quote
+  ISSUE_EXTRA, // Extra quote
   ISSUE_BEFORE_NOW, // Current quote varies +- 20%
   ISSUE_MAX, // Open or Close > Max
   ISSUE_MIN // Open or Close < Min
@@ -24,6 +26,9 @@ enum Issue_t {
 
 ///
 typedef struct issue_Issue Issue;
+
+///
+Issue *issue_new(char *id, enum Issue_t type, char *cause);
 
 ///
 char *issue_id(Issue *this);
@@ -43,6 +48,9 @@ Issue *issue_from_json(Json *s);
 /*.-.*/
 
 ///
+Issue *issue_check_quotes(char *nick_id, Aquote *qs);
+
+///
 Issue *issue_check(char *nick_id);
 
 #define TY Issue
@@ -54,5 +62,8 @@ Issue *issue_check(char *nick_id);
 
 ///
 Oissue *issue_search(void);
+
+/// Passes 'qs' to char * inserting a error mark.
+char *issue_annotate(Aquote *qs, Issue *i);
 
 #endif

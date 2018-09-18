@@ -31,7 +31,24 @@ export default class Nicks {
   }
 
   download () {
-
+    for (const wnick of this._wnicks) {
+      wnick.wait();
+      const wait = new Promise(resolve => {
+        setTimeout(async () => {
+          const data = {
+            "page": "edit",
+            "rq": "download",
+            "id": wnick.id,
+          };
+          const rp = await this._main.client.sendAsync(data);
+          wnick.download(rp["ok"]);
+          resolve();
+        }, 200);
+      });
+      (async () => {
+        await wait;
+      })();
+    }
   }
 
   async check () {
@@ -48,7 +65,7 @@ export default class Nicks {
       if (i.type === Issue.NONE) {
         wnick.check(true, "");
       } else {
-        wnick.check(false, i.cause);
+        wnick.check(false, i.msg);
       }
     }
   }

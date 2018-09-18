@@ -4,11 +4,93 @@
 import Main from "./Main.js";
 import {_} from "./I18n.js";
 import Ui from "./dmjs/Ui.js";
+import It from "./dmjs/It.js";
 import Tp from "./dmjs/Tp.js";
+import Nick from "./data/Nick.js";
 import Issue from "./data/Issue.js";
 import WserverIds from "./wgs/WserverIds.js";
+import Wquotes from "./wgs/Wquotes.js";
+import Wrule from "./wgs/Wrule.js";
 
 const $ = Ui.$;
+
+const translator = (() => {
+  const format = (dateFormat, l, dec, sep) => {
+    let prev = "";
+    return It.range(l.length).reduce("", (s, i) => {
+      const ch = l.charAt(i);
+      if (prev === "") {
+        if (ch <= " ") {
+          prev = " ";
+          return dateFormat(s) + ":";
+        }
+        return s + ch;
+      }
+      if (ch <= " ") {
+        if (prev === " ") {
+          return s;
+        }
+        prev = " ";
+        return s + ":";
+      }
+      prev = ch;
+      return s + (ch === dec ? "." : ch === sep ? "" : ch);
+    });
+  };
+
+  const finanzas = (tx) => {
+    const ps = format(
+      (date) => {
+        const ps = date.split("/");
+        return ps[2] + ps[1] + ps[0];
+      },
+      tx, ",", "."
+    ).split(":");
+    return ps[0] + ":" + ps[1] + ":" + ps[2] + ":" +
+      ps[4] + ":" + ps[5] + ":" + ps[6] + ":false";
+  };
+  const infomercados = (tx) => {
+    const ps = format(
+      (date) => {
+        const ps = date.split("/");
+        return ps[2] + ps[1] + ps[0];
+      },
+      tx, ",", "."
+    ).split(":");
+    return ps[0] + ":" + ps[1] + ":" + ps[4] + ":" +
+      ps[2] + ":" + ps[3] + ":" + ps[5] + ":false";
+  };
+  const invertia = (tx) => {
+    const ps = format(
+      (date) => {
+        const ps = date.split("/");
+        return 20 + ps[2] + ps[1] + ps[0];
+      },
+      tx, ",", "."
+    ).split(":");
+    return ps[0] + ":" + ps[2] + ":" + ps[1] + ":" +
+      ps[4] + ":" + ps[5] + ":" + ps[6] + ":false";
+  };
+  const ed1 = $("textarea").att("rows", 3).att("cols", 60);
+  const ed2 = $("input").att("type", "text").style("width: 100%");
+
+  return $("div")
+    .add(Wrule.mkSmall(_("Translator")))
+    .add(ed1)
+    .add($("table").att("align", "center").style("spacing: 20px;")
+      .add($("tr")
+        .add($("td").add($("button").text("Finanzas").on("click", () => {
+          ed2.value(finanzas(ed1.value())).e.select();
+        })))
+        .add($("td").add($("button").text("Infomercados").on("click", () => {
+          ed2.value(infomercados(ed1.value())).e.select();
+        })))
+        .add($("td").add($("button").text("Invertia").on("click", () => {
+          ed2.value(invertia(ed1.value())).e.select();
+        })))))
+    .add(ed2)
+  ;
+})();
 
 /** Issues page. */
 export default class Issues {
@@ -25,7 +107,6 @@ export default class Issues {
     this._nick = $("div").style("text-align:center;");
     this._cause = $("div");
     this._solution = $("div");
-    this._aux = $("div");
   }
 
   async moreIssues (search) {
@@ -34,7 +115,7 @@ export default class Issues {
       "page": "issues",
       "rq": "nextIssue"
     };
-    const rp = self._main.client.send(data);
+    const rp = await self._main.client.send(data);
     const nickId = rp["nickId"];
     if (nickId === "") {
       search.removeAll().add($("span").text(_("There are no more issues")));
@@ -55,7 +136,7 @@ export default class Issues {
   // TTTT
 
   /** @private */
-  empty () {
+  noNick () {
     const self = this;
     const search = $("div");
     self._nick.removeAll()
@@ -69,7 +150,6 @@ export default class Issues {
         self.moreIssues(search);
       }).klass("link").text(_("Search more issues"))));
     self._solution.removeAll();
-    self._aux.removeAll();
   }
 
   none () {
@@ -85,7 +165,6 @@ export default class Issues {
         self.moreIssues(search);
       }).klass("link").text(_("Search more issues"))));
     self._solution.removeAll();
-    self._aux.removeAll();
   }
 
   async server (nickId) {
@@ -105,7 +184,43 @@ export default class Issues {
           self._main.run();
         })))
     ;
-    self._aux.removeAll();
+  }
+
+  browser (serverLinks) {
+    return $("div")
+      .add(Wrule.mkSmall(_("Browser")))
+      .add($("table").att("align", "center").style("spacing: 20px;")
+        .add($("tr")
+          .adds(serverLinks.map(sl =>
+            $("td").add($("button").text(sl[0]).on("click", () => {
+              window.open(sl[1]);
+            }))
+          ))))
+    ;
+  }
+
+  async qissues (nickId) {
+    const data = {
+      "page": "issues",
+      "rq": "qissue",
+      "id": nickId
+    };
+    const rp = await this._main.client.send(data);
+    const modelId = rp["modelId"];
+    const nicks = rp["nicks"].map(n => Nick.fromJson(n));
+    const quotes = rp["quotes"];
+    const modelQuotes = rp["modelQuotes"];
+    const serverLinks = rp["serverLinks"];
+    this._solution.removeAll()
+      .add(new Wquotes(
+        this._main, nickId, modelId, nicks, quotes, modelQuotes
+      ).wg())
+      .add($("table").att("width", "100%")
+        .add($("tr")
+          .add($("td").style("width: 10px").add(translator))
+          .add($("td").style("vertical-align: top;")
+            .add(this.browser(serverLinks)))))
+    ;
   }
 
   /**
@@ -125,11 +240,10 @@ export default class Issues {
       .add(this._nick)
       .add(this._cause)
       .add(this._solution)
-      .add(this._aux)
     ;
 
     if (id === "" || nick === "") {
-      this.empty();
+      this.noNick();
     } else {
       this._nick.removeAll()
         .add($("h2").style("text-align: center;").html(nick));
@@ -143,14 +257,17 @@ export default class Issues {
             .add($("tr")
               .add($("td")
                 .add(Ui.img("error")))
-              .add($("td").klass("frame").html(issue.cause))));
+              .add($("td").klass("frame").html(issue.msg))));
 
         switch (issue.type) {
         case Issue.SERVER:
           this.server(id);
           break;
+        case Issue.EMPTY:
+          this._solution.removeAll();
+          break;
         default:
-          alert("Without implementation");
+          this.qissues(id);
         }
       }
     }

@@ -30,6 +30,7 @@ static void app_init(void) {
     file_write(fversion, version);
     file_mkdir(path_cat(cgi_home(), "tmp", NULL));
     file_mkdir(path_cat(cgi_home(), "trash", NULL));
+    file_mkdir(path_cat(cgi_home(), "backups", NULL));
   }
 }
 
@@ -42,6 +43,7 @@ static CgiRp *main_process(char *session_id, Mjson *rqm) {
 
   // ---------------------------------------------------------- logout
   if (str_eq(rq, "logout")) {
+    backups_process(app_name, data_version, rqm);
     return cgi_del_session(session_id);
   }
 

@@ -13,6 +13,12 @@ static char *url_base =
 
 static char *url_last = "http://www.finanzas.com/mercado-continuo/";
 
+static char *path(char *code) {
+  return str_replace(url_base, "$", code);
+}
+
+// Read --------------------------------------------------------------
+
 static int read_td(char **s, char *tx, int ix) {
   ix = str_index_from(tx, "<td", ix);
   if (ix == -1) return 0;
@@ -108,7 +114,7 @@ static Oaquote *process_page(char *pg) {
 }
 
 static Oaquote *read(char *code) {
-  Achar *apage = ext_wget(str_replace(url_base, "$", code));
+  Achar *apage = ext_wget(path(code));
   char *page = str_cjoin(achar_to_it(apage), '\n');
   return process_page(page);
 }
@@ -169,5 +175,5 @@ static Oaclose *read_last() {
 }
 
 Server *finanzas_mk(void) {
-  return server_new("Finanzas", read, read_last);
+  return server_new("Finanzas", path, read, read_last);
 }

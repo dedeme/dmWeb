@@ -13,6 +13,12 @@ static char *url_base = "http://www.infomercados.com/cotizaciones/historico";
 static char *url_last =
   "http://www.infomercados.com/cotizaciones/mercado-continuo/";
 
+static char *path(char *code) {
+  return str_printf("%s/%s/", url_base, code);
+}
+
+// Read --------------------------------------------------------------
+
 static int read_td(char **s, char *tx, int ix) {
   ix = str_index_from(tx, "<td", ix);
   if (ix == -1) return 0;
@@ -105,7 +111,7 @@ static Oaquote *process_page(char *pg) {
 }
 
 static Oaquote *read(char *code) {
-  Achar *apage = ext_wget(str_printf("%s/%s/", url_base, code));
+  Achar *apage = ext_wget(path(code));
   char *page = str_cjoin(achar_to_it(apage), '\n');
 
   return process_page(page);
@@ -163,6 +169,6 @@ static Oaclose *read_last() {
 }
 
 Server *infomercados_mk(void) {
-  return server_new("Infomercados", read, read_last);
+  return server_new("Infomercados", path, read, read_last);
 }
 

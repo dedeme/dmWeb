@@ -7,6 +7,7 @@
 /* .+.
 -struct: Server
   name: char *
+  path: fpath_t
   read: fread_t
   read_last: fread_last_t
 */
@@ -16,14 +17,21 @@
 
 struct server_Server {
   char *name;
+  fpath_t path;
   fread_t read;
   fread_last_t read_last;
 };
 
-Server *server_new(char *name, fread_t read, fread_last_t read_last) {
+Server *server_new(
+  char *name,
+  fpath_t path,
+  fread_t read,
+  fread_last_t read_last
+) {
   Server *this = MALLOC(Server);
   XNULL(name)
   this->name = name;
+  this->path = path;
   this->read = read;
   this->read_last = read_last;
   return this;
@@ -32,6 +40,11 @@ Server *server_new(char *name, fread_t read, fread_last_t read_last) {
 char *server_name(Server *this) {
   XNULL(this)
   return this->name;
+}
+
+fpath_t server_path(Server *this) {
+  XNULL(this)
+  return this->path;
 }
 
 fread_t server_read(Server *this) {

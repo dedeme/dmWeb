@@ -5,8 +5,10 @@ import Main from "./Main.js";
 import {_, _args} from "./I18n.js";
 import Ui from "./dmjs/Ui.js";
 import Tp from "./dmjs/Tp.js";
+import Nick from "./data/Nick.js";
 import Issue from "./data/Issue.js";
 import WserverIds from "./wgs/WserverIds.js";
+import Wquotes from "./wgs/Wquotes.js";
 
 const $ = Ui.$;
 
@@ -47,7 +49,24 @@ export default class Edit {
     }
   }
 
-  download () {
+  async download (id) {
+    this._status.removeAll()
+      .add($("img").att("src", "img/wait.gif").style("vertical-align:bottom"));
+    const data = {
+      "page": "edit",
+      "rq": "download",
+      "id": id,
+    };
+    const rp = await this._main.client.send(data);
+    if (rp["ok"]) {
+      this._main.run();
+    } else {
+      this._status.removeAll()
+        .add(Ui.img("error")
+          .style("vertical-align:bottom")
+          .att("title", _("Fail downloading quotes"))
+        );
+    }
   }
 
   async check (id) {
@@ -61,7 +80,7 @@ export default class Edit {
     };
     const rp = await self._main.client.send(data);
     const i = Issue.fromJson(rp["issue"]);
-    if (i === Issue.NONE) {
+    if (i.type === Issue.NONE) {
       self._status.removeAll()
         .add(Ui.img("well").style("vertical-align:bottom"));
     } else {
@@ -75,7 +94,7 @@ export default class Edit {
           };
           await self._main.client.send(data);
           self._main.run();
-        }).att("title", i.cause)
+        }).att("title", i.msg)
           .add(Ui.img("error").style("vertical-align:bottom")));
     }
 
@@ -98,7 +117,7 @@ export default class Edit {
             })))
         .add($("td").style("text-align:right;")
           .add(Ui.link(() => {
-            self.download();
+            self.download(nickId);
           }).klass("link").html(_("Download")))
           .add($("span").html(" · "))
           .add(Ui.link(() => {
@@ -110,13 +129,24 @@ export default class Edit {
   }
 
   /** @private */
-  show2 (nickId, nickName, serversIdCode) {
+  show2 (nickId, nickName, modelId, serversIdCode, quotes, modelQuotes, nicks) {
+    const qArray = quotes.trim().split("\n");
+    const totalLen = qArray.length;
+    const errorLen = qArray.filter(n => n.trim().endsWith(":true")).length;
     const w = $("div")
-      .add($("h2").style("text-align: center;").text(nickName))
+      .add($("h2").style("text-align: center;").html(
+        `${nickName} <small><small>[${totalLen}](${errorLen})</big></small>`
+      ))
       .add($("hr"))
       .add(this.nameEditor(nickId, nickName))
       .add(new WserverIds(this._main, serversIdCode, nickId).wg())
     ;
+
+    if (quotes !== "") {
+      w.add(new Wquotes(
+        this._main, nickId, modelId, nicks, quotes, modelQuotes
+      ).wg());
+    }
 
     this._main.dom.show(Main.editPageId, w);
     this._modInput.e.focus();
@@ -145,9 +175,15 @@ export default class Edit {
       this.showEmpty();
     } else {
       const nickId = rp["id"];
+      const modelId = rp["modelId"];
       const serversIdCode = rp["serversIdCode"]
         .map(ic => new Tp(ic[0], ic[1]));
-      this.show2(nickId, nickName, serversIdCode);
+      const quotes = rp["quotes"];
+      const modelQuotes = rp["modelQuotes"];
+      const nicks = rp["nicks"].map(n => Nick.fromJson(n));
+      this.show2(
+        nickId, nickName, modelId, serversIdCode, quotes, modelQuotes, nicks
+      );
     }
   }
 }

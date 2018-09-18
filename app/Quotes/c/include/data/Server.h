@@ -8,6 +8,9 @@
 #include "Quote.h"
 #include "Close.h"
 
+/// Returns the path of a company
+typedef char *(*fpath_t) (char *code) /* fpath_t */;
+
 /// 'code' is the server code for a company
 typedef Oaquote *(*fread_t) (char *code) /* fread_t */;
 
@@ -20,10 +23,18 @@ typedef Oaclose *(*fread_last_t) (void) /* fread_last_t */;
 typedef struct server_Server Server;
 
 ///
-Server *server_new(char *name, fread_t read, fread_last_t read_last);
+Server *server_new(
+  char *name,
+  fpath_t path,
+  fread_t read,
+  fread_last_t read_last
+);
 
 ///
 char *server_name(Server *this);
+
+///
+fpath_t server_path(Server *this);
 
 ///
 fread_t server_read(Server *this);

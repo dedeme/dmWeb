@@ -116,6 +116,21 @@ export default class Backups {
   }
 
   /**
+   * @param {string} f File name of backup file
+   * @return {Promise}
+   */
+  async autorestore (f) {
+    const main = this._main;
+    const data = {
+      "page": "backups",
+      "rq": "autorestore",
+      "file": f
+    };
+    await main.client.send(data);
+    main.run();
+  }
+
+  /**
    * @param {string} f File name of trash file
    * @return {Promise}
    */
@@ -123,7 +138,8 @@ export default class Backups {
     const main = this._main;
     const data = {
       "page": "backups",
-      "rq": "restoreTrash", "file": f
+      "rq": "restoreTrash",
+      "file": f
     };
     await main.client.send(data);
     main.run();
@@ -135,10 +151,11 @@ export default class Backups {
 
   /**
    * @private
-   * @param {!Array<string>} list Trash list
+   * @param {!Array<string>} backups Automatic backups list
+   * @param {!Array<string>} trash Trash list
    * @return {void}
    */
-  show2 (list) {
+  show2 (backups, trash) {
     const self = this;
     const main = self._main;
 
@@ -205,6 +222,8 @@ export default class Backups {
       return $("tr").add($("td").att("colspan", 2)
         .add($("table").att("align", "center")
           .add($("tr")
+            .add($("td").html("<b>" + _("Automatic Backups") + "</b>"))
+            .add($("td").style("width:25px"))
             .add($("td")
               .add($("span").html("<b>" + _("Trash") + "</b>"))
               .add(Ui.link(() => {
@@ -214,8 +233,18 @@ export default class Backups {
               }).klass("link").html(" [ " + _("Clear") + " ]"))))
           .add($("tr")
             .add($("td").klass("frame").style("vertical-align:top")
-              .add($("table")
-                .adds(list.sort().reverse().map(f =>
+              .add($("table").att("align", "center")
+                .adds(backups.sort().reverse().map(f =>
+                  $("tr").add($("td")
+                    .add(Ui.link(() => {
+                      if (confirm(_("All the data will be replaced"))) {
+                        self.autorestore(f);
+                      }
+                    }).klass("link").html(f)))))))
+            .add($("td"))
+            .add($("td").klass("frame").style("vertical-align:top")
+              .add($("table").att("align", "center")
+                .adds(trash.sort().reverse().map(f =>
                   $("tr").add($("td")
                     .add(Ui.link(() => {
                       if (confirm(_("All the data will be replaced"))) {
@@ -251,11 +280,12 @@ export default class Backups {
     const self = this;
     const rq = {
       "page": "backups",
-      "rq": "trashList"
+      "rq": "lists"
     };
     const rp = await self._main.client.send(rq);
-    const list = rp["list"];
-    self.show2(list);
+    const backups = rp["backups"];
+    const trash = rp["trash"];
+    self.show2(backups, trash);
   }
 
 }
