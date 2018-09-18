@@ -168,12 +168,15 @@ export default class Backups {
               .add(div)))
           .add($("tr")
             .add($("td")
-              .add($("button").html(_("Make backup")).on("click", () => {
-                div.add($("img").att("src", "img/wait.gif"));
-                self.backupDownload(fileName => {
-                  div.html("<a href='tmp/" + fileName + "'>backup.zip</a>");
-                });
-              }))))));
+              .add($("button")
+                .style("width: 150px")
+                .html(_("Make backup"))
+                .on("click", () => {
+                  div.add($("img").att("src", "img/wait.gif"));
+                  self.backupDownload(fileName => {
+                    div.html("<a href='tmp/" + fileName + "'>backup.zip</a>");
+                  });
+                }))))));
     }
 
     function upload () {
@@ -185,31 +188,34 @@ export default class Backups {
         .add(progress);
       const input = $("input").att("type", "file").klass("frame");
       const div = $("div");
-      div.add($("button").html(_("Restore backup")).on("click", () => {
-        const n = input.e.files.length;
-        if (n === 0) {
-          alert(_("Backup file is missing"));
-          return;
-        }
-        if (n !== 1) {
-          alert(_("Only one file can be selected"));
-          return;
-        }
-        const file = input.e.files[0];
-        if (file.size === 0) {
-          alert(_args(_("'%0' is an empty file"), file.name));
-        }
-        if (!confirm(_("All the data will be replaced"))) {
-          return;
-        }
-        div.removeAll().add(bar);
-        self.backupRestore(file, n => {
-          const pc = Math.round(n * 100 / file.size);
-          const progress = $("div")
-            .style("background-color:#000080;width:" + pc + "%;height:6px");
-          bar.removeAll().add(progress);
-        });
-      }));
+      div.add($("button")
+        .style("width: 150px")
+        .html(_("Restore backup"))
+        .on("click", () => {
+          const n = input.e.files.length;
+          if (n === 0) {
+            alert(_("Backup file is missing"));
+            return;
+          }
+          if (n !== 1) {
+            alert(_("Only one file can be selected"));
+            return;
+          }
+          const file = input.e.files[0];
+          if (file.size === 0) {
+            alert(_args(_("'%0' is an empty file"), file.name));
+          }
+          if (!confirm(_("All the data will be replaced"))) {
+            return;
+          }
+          div.removeAll().add(bar);
+          self.backupRestore(file, n => {
+            const pc = Math.round(n * 100 / file.size);
+            const progress = $("div")
+              .style("background-color:#000080;width:" + pc + "%;height:6px");
+            bar.removeAll().add(progress);
+          });
+        }));
       return $("tr").add($("td").att("colspan", 2)
         .add($("table").att("align", "center")
           .add($("tr")

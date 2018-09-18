@@ -123,8 +123,9 @@ export default class Nicks {
           .add(input)
           .add(self.sep())
           .add($("button")
+            .style("width: 150px")
             .att("id", "newBt")
-            .html(_("New click"))
+            .html(_("New nick"))
             .on("click", addNick)))
         .add($("td").style("text-align:right;")
           .add(Ui.link(() => {

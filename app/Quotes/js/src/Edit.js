@@ -156,7 +156,7 @@ export default class Edit {
   showEmpty () {
     const w = $("table").att("align", "center")
       .add($("tr")
-        .add($("td").klass("frame4").html(_("No nick was selected."))))
+        .add($("td").klass("frame4").html(_("No nick was selected"))))
     ;
     this._main.dom.show(Main.editPageId, w);
   }

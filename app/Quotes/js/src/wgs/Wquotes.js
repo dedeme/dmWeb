@@ -262,6 +262,7 @@ export default class Wquotes {
         }).klass("link").text(_("Check")))
         .add($("span").html("&nbsp;&nbsp;&nbsp;&nbsp;"))
         .add(doneBt)
+        .add($("span").html("&nbsp;&nbsp;"))
         .add(modifyBt))
       .add($("td")
         .add(self._splitDiv))
