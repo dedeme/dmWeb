@@ -5,85 +5,60 @@
 open Main
 open Ui
 
-let index d =
+
+let fsort s1 s2 =
   let up = Js.String.toUpperCase in
-  let fsort s1 s2 = String.compare (up s1) (up s2) in
-  let block fit tpit =
-    let fn = It.count fit in
-    let fit = It.sort fsort fit in
-    let tpn = It.count tpit in
-    let tpit = It.sort fsort tpit in
-    let nrows n cols = ((n - 1) / cols) + 1 in
-    let cols = 4 in
-    let f_rows n =
-      if n < 3 then n
-      else if n < 5 then nrows n 2
-      else if n < 7 then nrows n 3
-      else nrows n 4
-    in
-    let frows = f_rows fn in
-    let tprows = f_rows tpn in
-    let fa = It.to_array fit in
-    let tpa = It.to_array tpit in
-    q "table" [Klass "main"] []
-    |> Domo.add [
-      q "tr"[][
-        q "td" [Att_i ("colspan", 4); Html "<b>Typedefs</b>"][]]]
-    |> Domo.add (
-      It.map
-        (fun r ->
-          q "tr"[] (
-            It.map
-              (fun c ->
-                let i = c * tprows + r in
-                if i >= tpn then q "td" [Style "width:25%"; Html "&nbsp;"][]
-                else
-                  let (fname) = tpa.(i) in
-                  let fname_link =
-                    if fname.[0] = '('
-                      then Txt.sub 1 (-1) fname
-                      else fname in
-                  q "td" [Style "width:25%"][
-                    q "a" [Att ("href", "#" ^ fname_link); Text fname][]]
-              )
-              (It.range 0 cols)
-            |> It.to_list)
-        )
-        (It.range 0 tprows)
-      |> It.to_list)
-    |> Domo.add [
-      q "tr"[][
-        q "td" [Att_i ("colspan", 4)][
-          q "hr" [][]]]]
-    |> Domo.add [
-      q "tr"[][
-        q "td" [Att_i ("colspan", 4); Html "<b>Functions</b>"][]]]
-    |> Domo.add (
-      It.map
-        (fun r ->
-          q "tr"[] (
-            It.map
-              (fun c ->
-                let i = c * frows + r in
-                if i >= fn then q "td" [Style "width:25%"; Html "&nbsp;"][]
-                else
-                  let (fname) = fa.(i) in
-                  let fname_link =
-                    if fname.[0] = '('
-                      then Txt.sub 1 (-1) fname
-                      else fname in
-                  q "td" [Style "width:25%"][
-                    q "a" [Att ("href", "#" ^ fname_link); Text fname][]]
-              )
-              (It.range 0 cols)
-            |> It.to_list)
-        )
-        (It.range 0 frows)
-      |> It.to_list)
-  in
-    block
-      (It.of_list Module_data.(d.findex))
-      (It.of_list Module_data.(d.tpindex))
+  String.compare (up s1) (up s2)
+
+let linkTds tp a =
+  let a = a |> It.of_array |> It.sort fsort |> It.to_array in
+  let len = Array.length a in
+  let cols = 4 in
+  let rows = (len - 1) / cols + 1 in
+  It.reduce []
+    (fun ls row ->
+      q "tr" []
+        (It.reduce []
+          (fun ls col ->
+            let ix = col * rows + row in
+            if ix >= len then q "td" [][]::ls
+            else q "td" [
+              Html ("<a href='#" ^ tp ^ "." ^ a.(ix) ^ "'>" ^ a.(ix) ^ "</a>")
+            ][]::ls
+          )
+          (It.range 0 cols) |>
+          List.rev)
+      :: ls
+    )
+    (It.range 0 rows) |>
+    List.rev
+
+let groupTds gr tp a =
+  match a with
+  | [||] -> []
+  | _ ->
+    q "tr" [] [
+      q "td" [Att_i ("colspan", 4); Html ("<i>" ^ gr ^ "</i>")] []]::
+    linkTds tp a
+
+let index tree =
+  let head tp =
+    q "tr" [] [q "td" [Att_i ("colspan", 4)][q "hr" [][]]]::
+    q "tr" [] [
+      q "td" [
+        Att_i ("colspan", 4);
+        Html (if tp == "~"
+             then "<b>Module signature</b>"
+             else("<b>Type " ^ tp ^ "</b>"))
+      ][]]::
+    [] in
+  let entries e = Module_data.(
+    (head e.tp) @
+    (groupTds "Variant" e.tp e.enums) @
+    (groupTds "Parameters" e.tp e.ps) @
+    (groupTds "Functions" e.tp e.ms)) in
+  let tds = Array.fold_left (fun s e -> s @ (entries e)) [] tree in
+  q "table" [Klass "main"] tds
 
 let overview d =
   let (name, link) = Module_data.(d.hyperlink) in
@@ -114,11 +89,12 @@ let scroll_to_tag : unit -> unit =
   |}]
 
 let show' mpath d =
-  let (title, html1, html2) = Module_data.((d.title, d.html1, d.html2)) in
+  let (title, html1, html2, tree) =
+    Module_data.((d.title, d.html1, d.html2, d.tree)) in
   let w =
     q "div" [][
       q "div" [Html html1][];
-      q "div" [][index d];
+      q "div" [][index tree];
       q "div" [][overview d];
       q "div" [Html html2][
         bottom;

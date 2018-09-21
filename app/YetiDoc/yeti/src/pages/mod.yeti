@@ -14,20 +14,46 @@ md = load data.moduleData;
 typedef txT = {
     bf is bufT,
     s is string,
-    ix is number
+    i is number
+  };
+
+typedef entryT = {
+    tp is string,
+    enums is list<string>,
+    ms is list<string>,
+    ps is list<string>
+  };
+
+typedef treeRsT = {
+    tree is list<entryT>,
+    html2 is string
   };
 
 (
+  tKey = "<em>typedef</em>";
+
+  mKey = "<h3>Module signature</h3>";
+
+  fKey = "class=\"field wdoc\">";
+
+  fKey2 = "<span class=sn>";
+
+  fKey2b = "<span class=vn>";
+
+  lenFKey2 = strLength fKey2;
+
   add tx s = (buf.add tx.bf s; tx);
 
-  move tx i = tx with {ix = i};
+  sub tx i = strSlice tx.s tx.i i;
 
-  indexOf tx s = sindex' s tx.ix tx.s;
+  move tx i = tx with {i};
 
-  sub tx i = strSlice tx.s tx.ix i;
+  addMove tx i = move (add tx (sub tx i)) i;
+
+  indexOf tx s = sindex' s tx.i tx.s;
 
   format s = (
-    tx = {bf = buf.mk(), s, ix = 0};
+    tx = {bf = buf.mk(), s, i = 0};
     tx = move tx (optGet (indexOf tx "<body>") + 6);
 
     ix = optGet (indexOf tx "</h2>") + 5;
@@ -42,60 +68,124 @@ typedef txT = {
         tx = move tx i;
         move tx (optGet (indexOf tx "</div>") + 6);
       esac;
-    html2 = (buf.toStr tx.bf) ^ (strRight tx.s tx.ix);
+    html2 = (buf.toStr tx.bf) ^ (strRight tx.s tx.i);
     {html1, html2});
 
-  mkFunctions html allPath = (
-    key = "class=\"field wdoc\"><span class=sn>";
-    lenKey = strLength key;
-    mk ls tx =
-      case indexOf tx key of
-      None (): {fs = ls, html2 = (buf.toStr tx.bf) ^ (strRight tx.s tx.ix)};
-      Some i:
-        tx = add tx (sub tx i);
-        tx = move tx (i + lenKey);
-        ch = strChar tx.s tx.ix;
-        case ch of
-        "`": mk ls tx;
-        _:
-          i = optGet (indexOf tx "<");
-          id = sub tx i;
-          tx = add tx ("class=\"field wdoc\"><span class=link>" ^
-                  "<a href = \"?\(allPath)&hp::\(id)\">\(id)</a>");
-          tx = move tx i;
-          mk (id::ls) tx
-        esac
-      esac;
-    start =
-      case sindex "<h3>Module signature</h3>" html of
-      None (): {bf = buf.mk(), s = html, ix = 0};
-      Some ix: (
-          bf = buf.mk();
-          buf.add bf (strLeft html ix);
-          {bf, s = html, ix}
-        )
-      esac;
-    mk [] start);
+  mkEntry entry tx id
+  is entryT -> txT -> string -> entryT = (
+    ch = strChar tx.s tx.i;
+    if ch >= "A" and ch <= "Z"
+    then entry with {enums = id::entry.enums}
+    else (
+      chunk = case indexOf tx "</div>" of
+              None (): "&rarr;";
+              Some i: sub tx i
+              esac;
+      case sindex "&rarr;" chunk of
+      None (): entry with {ps = id::entry.ps};
+      Some _: entry with {ms = id::entry.ms}
+      esac)
+    fi);
 
-  mkTypes html = (
-    key = "<em>typedef</em>";
-    lenKey = strLength key;
-    mk ls tx =
-      case indexOf tx key of
-      None (): {tps = ls, html2 = (buf.toStr tx.bf) ^ (strRight tx.s tx.ix)};
-      Some i:
-        tx = add tx (sub tx i);
-        tx = move tx (i + lenKey);
-        i = optGet (indexOf tx "=");
-        idTx = (sub tx i);
-        id = strTrim idTx |>
-             strReplace "&lt;" "<" |>
-             strReplace "&gt;" ">";
-        tx = add tx "<span id=\"\(id)\"></span>\(key)\(idTx)";
-        tx = move tx i;
-        mk (id::ls) tx
-      esac;
-    mk [] {bf = buf.mk(), s = html, ix = 0});
+  mkTypeId tx =
+    case indexOf tx "=" of
+    None (): None ();
+    Some i:
+      chunk = sub tx i;
+      i0 = strLastIndexOf' chunk ">";
+      if i0 < 0
+      then None ()
+      else Some (strRight chunk (i0 + 1) |> strTrim |>
+                 strReplace "&lt;" "<" |>
+                 strReplace "&gt;" ">")
+      fi
+    esac;
+
+  mkTree html allPath
+  is string -> string -> treeRsT = (
+    mk0 entry ls tx
+    is entryT -> list<entryT> -> txT -> treeRsT = (
+      mk1 ix ls tx = (
+        addEntry () = (
+          addEntry1 tx = (
+            case indexOf tx "<" of
+            None (): mk0 entry ls (addMove tx ix);
+            Some i:
+              id = sub tx i;
+              tx = move tx i;
+              if strStarts? id "`" or strStarts? id "."
+              then mk0 entry ls tx
+              else (
+                entry = mkEntry entry tx id;
+                tp = entry.tp;
+                tx = add tx ("<span id=\"\(tp).\(id)\"></span>" ^
+                             "<a href = \"?" ^
+                             "\(allPath)&hp::\(tp).\(id)\">\(id)</a>");
+                mk0 entry ls tx)
+              fi
+            esac);
+
+          oi =
+            case indexOf tx fKey2 of
+            None (): indexOf tx fKey2b;
+            Some i:
+              case indexOf tx fKey2b of
+              None (): Some(i);
+              Some i2: Some(if i < i2 then i else i2 fi)
+              esac
+            esac;
+          case oi of
+          None (): mk0 entry ls (addMove tx ix);
+          Some i:
+            tx = add tx ((sub tx i) ^ "<span class='link'>");
+            tx = move tx (i + lenFKey2);
+            addEntry1 tx
+          esac);
+
+        {op, i} =
+          case indexOf tx tKey of
+          None ():
+            case indexOf tx mKey of
+            None (): {op = 0, i = ix};
+            Some i:
+              if (i > ix) then {op = 0, i = ix} else {op = 2, i = i} fi
+            esac;
+          Some i:
+            case indexOf tx mKey of
+            None (): if (i > ix) then {op = 0, i = ix} else {op = 1, i = i} fi;
+            Some i2:
+              if (ix < i) and (ix < i2) then {op = 0, i = ix}
+              elif (ix > i) and (ix > i2) then {op = 2, i = i2}
+              else {op = 1, i = i}
+              fi
+            esac
+          esac;
+
+        if op == 0 then
+          if entry.tp == "" then mk0 (entry with {tp = "~"}) ls
+                                     (addMove tx ix)
+          else addEntry ()
+          fi
+        elif op == 1 then (
+          tx = addMove tx i;
+          id = case mkTypeId tx of None (): "?"; Some idf: idf esac;
+          ls = if entry.tp == "" then ls else entry::ls fi;
+          entry = {tp = id, enums = [], ms = [], ps = []};
+          mk0 entry ls (addMove tx (tx.i + 1)))
+        else (
+          ls = if entry.tp == "" then ls else entry::ls fi;
+          entry = {tp = '~', enums = [], ms = [], ps = []};
+          mk0 entry ls (addMove tx (i + 1)))
+        fi);
+
+      case indexOf tx fKey of
+      None (): {tree = if entry.tp == "" then ls else entry::ls fi,
+                html2 = (buf.toStr tx.bf) ^ (strRight tx.s tx.i)};
+      Some i: mk1 i ls tx
+      esac);
+
+    mk0 {tp = "", enums = [], ms = [], ps = []} []
+        {bf = buf.mk(), s = html, i = 0});
 
 {
   process rq =
@@ -115,14 +205,12 @@ typedef txT = {
         case filter (_ d = (path.onlyName d.name) != "index") (file.dir tmp) of
         d::_: (
           {html1, html2} = format (file.readAll (tmp ^/ d.name));
-          {fs, html2} = mkFunctions html2 allPath;
-          {tps, html2} = mkTypes html2;
           link = {name = fname, link = "?" ^ allPath ^ "&hp::"};
-          Some {title = path.name fpath, html1, html2, link, fs, tps});
+          {tree, html2} = mkTree html2 allPath;
+          Some {title = path.name fpath, html1, html2, link, tree});
         _: None ();
         esac;
       _: None()
       esac;
     cgi.ok ["data": wopt md.toJson rp]
-}
-)
+})

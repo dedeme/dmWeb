@@ -13,31 +13,29 @@ typedef t = {
     html1 is string,
     html2 is string,
     link is {name is string, link is string},
-    fs is list<string>,
-    tps is list<string>
+    tree is list<{
+        tp is string,
+        enums is list<string>,
+        ms is list<string>,
+        ps is list<string>
+      }>
   }
 
 {
-  toJson {title, html1, html2, link, fs, tps} =
+  toJson {title, html1, html2, link, tree} =
     warray (array [
       wstring title,
       wstring html1,
       wstring html2,
       warray (array [wstring link.name, wstring link.link]),
-      wlist wstring fs,
-      wlist wstring tps]),
-
-  ofJson js =
-    hyp js = (
-      a = rarray js;
-      {name = rstring a[0], link = rstring a[1]});
-    a = rarray js;
-    {
-      title = rstring a[0],
-      html1 = rstring a[1],
-      html2 = rstring a[2],
-      link = hyp a[3],
-      fs = rlist rstring a[4],
-      tps = rlist rstring a[5]
-    }
+      wlist
+        (_ e =
+          warray (array[
+            wstring e.tp,
+            wlist wstring e.enums,
+            wlist wstring e.ms,
+            wlist wstring e.ps
+          ]))
+        tree
+      ]),
 }

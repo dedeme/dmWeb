@@ -26,6 +26,16 @@ load es.dm.all;
   isDigit? s = Character#isDigit((s as ~String)#charAt(0));
 
   /* ....... */
+  mark tx start len = (
+    if strChar tx start != "<" then None ()
+    else
+      case cindex' ">" start tx of
+      None (): Some {result = strSlice tx start len, ix = len};
+      Some i: Some {result = strSlice tx start (i + 1), ix = i + 1}
+      esac
+    fi);
+
+  /* ....... */
   lineComment tx start len = (
     if strChar tx start != "/" then None ()
     elif strChar tx (start + 1) != "/" then None ()
@@ -157,7 +167,7 @@ colorize tx =
     if i >= len then buf.toStr bf;
     else
       ftypes = [
-        lineComment, blockComment, singleQuotes, doubleQuotes, num, ident
+        mark, lineComment, blockComment, singleQuotes, doubleQuotes, num, ident
       ];
       case processTypes tx i len ftypes of
       None (): (

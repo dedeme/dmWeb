@@ -4,18 +4,21 @@
 
 (** Data of a module. *)
 
+type treeT = {
+  tp : string;
+  enums : string array;
+  ms : string array;
+  ps : string array;
+}
+
 type t = {
   title : string;
   html1 : string;
   html2 : string;
   hyperlink : string * string;
-  findex : string list;
-  tpindex : string list;
+  tree : treeT array;
 }
 (** [t] type of Module.data *)
-
-val to_json : t -> Json.t
-(** [to_json data] serializes 'data'. *)
 
 val of_json : Json.t -> t
 (** [of_json js] restores 'js'. *)

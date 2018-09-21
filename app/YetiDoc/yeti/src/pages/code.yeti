@@ -21,12 +21,36 @@ typedef txT = {
 
   putHyper hyper tx =
     if hyper == "hp::" then tx
-    else
-      case sindex ("\n  " ^ (strRight hyper 4) ^ " ") tx of
+    else (
+      h = (strRight hyper 4);
+      case cindex "." h of
       None (): tx;
-      Some i: strLeft tx i ^ "<span id=\"" ^ hyper ^ "\"></span>" ^
-              strRight tx i
-      esac
+      Some i:
+        hl = strLeft h i;
+        hr = strRight h (i + 1);
+        if hl == "~"
+        then
+          case sindex ("\n{") tx of
+          None (): tx;
+          Some i:
+            case sindex' ("\n  " ^ hr ^ " ") i tx of
+            None (): tx;
+            Some i: strLeft tx i ^ ("<span id=\"\(hyper)\"></span>" ^
+                                    strRight tx i)
+            esac
+          esac
+        else
+          case sindex ("\ntypedef " ^ hl ^ " ") tx of
+          None (): tx;
+          Some i:
+            case sindex' ("\n  " ^ hr ^ " ") i tx of
+            None (): tx;
+            Some i: strLeft tx i ^ ("<span id=\"\(hyper)\"></span>" ^
+                                    strRight tx i)
+            esac
+          esac
+        fi
+      esac)
     fi;
 
   readCode hyper tx =

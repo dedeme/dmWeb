@@ -211,7 +211,7 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Map/*Json*/ *rqm) {
   // ------------------------------------------------------- readQuotes
   } else if (!strcmp(rq, "readQuotes")) {
     char *fname = str_printf("%s.db", jmap_gstring(rqm, "nick"));
-    char *file = path_cat(home, "fleas", "bolsa_data", fname, NULL);
+    char *file = path_cat(home, "fleas", "Quotes/quotes", fname, NULL);
 
     Map/*Json*/ *m = map_new();
     jmap_pstring(m, "quotes", file_read(file));
