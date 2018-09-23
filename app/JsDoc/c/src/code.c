@@ -8,9 +8,10 @@ enum st_t {CODE, LONG_COMMENT, SHORT_COMMENT, QUOTE1, QUOTE2, QUOTE3};
 
 char *reserved = " class arguments await break case catch const continue "
     "debugger default delete do else enum eval export extends false finally "
-    "for from function if implements import in instanceof interface let new "
-    "null of package private protected public return static super switch "
-    "this throw true try typeof var void while with yield constructor self ";
+    "for from function get if implements import in instanceof interface let "
+    "new null of package private protected public return set static super "
+    "switch this throw true try typeof var void while with yield constructor "
+    "self ";
 
 char *rfile(LckFile *file, char *link) {
   enum st_t st = CODE;
