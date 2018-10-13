@@ -2,6 +2,7 @@
 
 PRG=YetiDoc
 LIB=/dm/dmYeti/lib/libdmyeti/pack/libdmyeti.jar
+LIB=$LIB:/dm/dmYeti/lib/libmarketyeti/pack/libmarketyeti.jar
 
 # ---------------------------------------------------------
 YETI=/dm/dmYeti/tools/yeti.jar

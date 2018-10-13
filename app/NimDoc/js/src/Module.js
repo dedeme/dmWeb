@@ -40,24 +40,21 @@ const mkTable = (cells) => {
 const mkDocOverview = (tx) => {
   const parsePre = (tx) => {
     return tx.replace(/&/g, "&amp;").replace(/</g, "&lt");
-  }
+  };
   let inPre = false;
   tx = tx.split("\n").map(l => {
     if (inPre) {
       if (l.startsWith("   ")) {
         return parsePre(l.substring(3));
-      } else {
-        inPre = false;
-        return "</pre>\n" + l;
       }
-    } else {
-      if (l.startsWith("   ")) {
-        inPre = true;
-        return "<pre class='frame'>\n" + parsePre(l.substring(3));
-      } else {
-        return l;
-      }
+      inPre = false;
+      return "</pre>\n" + l;
     }
+    if (l.startsWith("   ")) {
+      inPre = true;
+      return "<pre class='frame'>\n" + parsePre(l.substring(3));
+    }
+    return l;
   }).join("\n");
   const td = $("td").html(tx);
 
@@ -90,16 +87,16 @@ export default class Module {
 
 
   /** @private */
-  addIx(div, rp, id) {
+  addIx (div, rp, id) {
     const model = this._main.model;
     const sel = model.sel;
     const mod = model.module;
     const entries = rp[id];
-    if (entries.length == 0) {
+    if (entries.length === 0) {
       return;
     }
 
-    let title = "<i>" + id +"</i>";
+    const title = "<i>" + id + "</i>";
     entries.sort((a, b) => a.name.localeCompare(b.name));
     const cells = entries.map(entry => mkLink(sel, mod, entry.type, entry.name));
     div.add($("div")
@@ -111,16 +108,6 @@ export default class Module {
   /** @private */
   mkHead (rp) {
     const model = this._main.model;
-/*
-    mjson_put(m, "types", json_warray(filter(entries, "skType")));
-    mjson_put(m, "enums", json_warray(filter(entries, "skEnumField")));
-    mjson_put(m, "params", json_warray(filter(entries, "skParam")));
-    mjson_put(m, "methods", json_warray(filter(entries, "skMethod")));
-    mjson_put(m, "macros", json_warray(filter(entries, "skMacro")));
-    mjson_put(m, "templates", json_warray(filter(entries, "skTemplate")));
-    mjson_put(m, "iterators", json_warray(filter(entries, "skIterator")));
-    mjson_put(m, "procs", json_warray(filter(entries, "skProc")));
-*/
     const r = $("div")
       .add($("div").klass("frame2").html("<b>" + model.module + "</b>"));
 
@@ -162,7 +149,7 @@ export default class Module {
       const code = entry["code"];
       const line = entry["line"];
       const desc = entry["description"] || "";
-      const link = `?${sel}@${mod}&${line}`
+      const link = `?${sel}@${mod}&${line}`;
       body
         .add($("div").att("id", `${type}.${name}`).html("&nbsp;"))
         .add($("div").html(`<a href="${link}"><b>${type2}</b> ${name}</a>`))
@@ -220,7 +207,6 @@ export default class Module {
       main.go("@");
       return;
     }
-console.log(rp);
     self.show2(rp);
   }
 }

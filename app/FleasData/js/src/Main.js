@@ -1,499 +1,219 @@
-// Copyright 12-Nov-2017 ºDeme
+// Copyright 04-Sept-2018 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-/**
- * Instalation requires pdfPrinter installed in /home/deme/bin
- */
-goog.provide("Main");
+import Client from "./dmjs/Client.js";
+import Dom from "./core/Dom.js";
+import Expired from "./core/Expired.js";
+import Auth from "./core/Auth.js";
+import Settings from "./core/Settings.js";
+import Bye from "./core/Bye.js";
+import {I18n} from "./I18n.js";
 
-goog.require("github_dedeme");
-goog.require("I18n");
-goog.require("Dom");
-goog.require("Conf");
-goog.require("Quote");
-goog.require("Trace");
-goog.require("user_Expired");
-goog.require("user_Auth");
-goog.require("user_Chpass");
-goog.require("view_Backups");
-goog.require("view_Settings");
-goog.require("view_Bye");
-goog.require("view_Run");
-goog.require("view_Bests");
-goog.require("view_Statistics");
-goog.require("view_Trace");
+import Data from "./Data.js";
 
-Main = class {
+const app = "FleasData";
+const version = "201810";
+const langStore = "${app}__lang";
+const captchaAuthStore = "${app}__captcha";
+const captchaChpassStore = "${app}__captchaCh";
+
+const settingsPageId = "settings";
+const dataPageId = "data";
+
+const ibexGroupId = "ibex";
+const selGroupId = "sel";
+const allGroupId = "all";
+
+/** Main page. */
+export default class Main {
+
   constructor () {
-    /** @private */
-    this._client = new Client(
-      Main.app(),
-      () => { new user_Expired(this).show(); }
-    );
-
-    /** @private */
-    this._dom = new Dom(this);
+    const self = this;
     /**
      * @private
-     * @type {!Array<string>}
+     * @type {!Dom}
      */
-    this._backups = [];
-    /**
-     * @private
-     * @type {!Array<string>}
-     */
-    this._trash = [];
-    /**
-     * @private
-     * @type {Object<string,!Array<Flea>>}
-     */
-    this._bests = null;
+    this._dom = new Dom(self);
 
     /**
      * @private
-     * @type {number}
+     * @type {!Client}
      */
-    this._bestsLastUpdate = 0;
+    this._client = new Client(app, () => {
+      new Expired(self).show();
+    });
 
-
-    /** @private */
-    this._view = null
-    /** @private */
+    /**
+     * @private
+     * @type {Object<string, string>}
+     */
     this._conf = null;
+
+    /**
+     * @private
+     * @type {Array<string>}
+     */
+    this._families = null;
   }
 
-  /** @return {string} */
-  static app () {
-    return "FleasData";
-  }
-
-  /** @return {string} */
-  static version () {
-    return "201802";
-  }
-
-  /** @return {number} */
-  static maxQuotes () {
-    return 550;
-  }
-
-  /** @return {string} */
-  static langStore () {
-    return Main.app() + "__lang";
-  }
-
-  /** @return {string} */
-  static captchaAuthStore () {
-    return Main.app() + "__captcha";
-  }
-
-  /** @return {string} */
-  static captchaChpassStore () {
-    return Main.app() + "__captchaCh";
-  }
-
-  /** @return {!Client} */
-  client () {
-    return this._client;
-  }
-
-  /** @return {!Dom} */
-  dom () {
+  /** @return {!Dom} Container for DOM objects. */
+  get dom () {
     return this._dom;
   }
 
-  /** @return {!Conf} */
-  conf () {
-    if (this._conf) {
-      return this._conf;
+  /** @return {!Client} Application Client. */
+  get client () {
+    return this._client;
+  }
+
+  /** @return {!Object<string, string>} Configuration data. */
+  get conf () {
+    if (this._conf === null) {
+      throw new Error("Conf has not been initialized");
     }
-    throw ("Conf has not been created");
+    return this._conf;
   }
 
-  /** @return {!Array<string>} */
-  backups () {
-    return this._backups;
-  }
-
-  /** @return {!Array<string>} */
-  trash () {
-    return this._trash;
-  }
-
-  /** @return {!Object<string,!Array<Flea>>} */
-  bests () {
-    if (this._bests) {
-      return this._bests;
+  /** @return {Array<string>} Families name */
+  get families () {
+    if (this._families === null) {
+      throw new Error("Families has not been initialized");
     }
-    throw ("Bests have not been created");
+    return this._families;
   }
 
-  /** @return {number} */
-  bestsLastUpdate () {
-    return this._bestsLastUpdate;
-  }
-
-  run2 () {
+  async run () {
     const self = this;
 
-    let data = {"rq": "getConf"};
-    self._client.send(data, rp => {
-      self._conf = Conf.restore(
-        /** @type {!Array<?>} */ (JSON.parse(rp["conf"]))
-      );
-      self._conf.lang() === "es" ? I18n.es() : I18n.en();
-//self._conf.setDbase("all");
-      switch (self._conf.page()) {
-        case "run":
-          self._view = new view_Run(self);
-          self._view.show();
-          break;
-        case "bests":
-          data = {"rq": "bestsTime", "dbase": self._conf.dbase()};
-          self._client.send(data, rq => {
-            self._bestsLastUpdate = rq["time"];
-            let more = true;
-            let bests = [];
-            It.range(1, 9).sync(
-              (i, f) => {
-                if (more) {
-                  data = {
-                    "rq": "readBests",
-                    "dbase": self._conf.dbase(),
-                    "ix": "" + i
-                  };
-                  self._client.send(data, rp => {
-                    const moreBests =
-                      /** @type {!Array<?>} */ (JSON.parse(rp["bests"]));
-                    if (moreBests.length === 0) {
-                      more = false;
-                    } else {
-                      bests = bests.concat(moreBests);
-                    }
-                    f();
-                  });
-                } else {
-                  f();
-                }
-              }, () => {
-                self._view = new view_Bests(self, bests);
-                self._view.show();
-              }
-            );
-          });
-          break;
-        case "statistics":
-          data = {"rq": "bestsTime", "dbase": self._conf.dbase()};
-          self._client.send(data, rq => {
-            self._bestsLastUpdate = rq["time"];
-            self._view = new view_Statistics(self);
-            self._view.show();
-          });
-          break;
-        case "trace":
-          data = {"rq": "readTraces", "dbase": self._conf.dbase()}
-          self._client.send(data, rp => {
-            const traces = rp["traces"];
-            if (traces) {
-              const flea0 = Flea.restore(traces[0]);
-              if (flea0 === null) {
-                throw ("flea ought not to be null");
-              }
-              /** @type {!Flea} */
-              const flea = flea0;
-              const ts = It.from(traces[1]).map(t => Trace.restore(t)).to();
-              const nicks = {};
-              It.from(ts).each(t => { nicks[t.nick()] = "" });
-              const quotes = {};
-              It.keys(nicks).sync(
-                function (n, f) {
-                  data = {"rq": "readQuotes", "nick": n};
-                  self._client.send(data, rq => {
-                    quotes[n] = Quote.fromString(rq["quotes"]);
-                    f();
-                  });
-                },
-                function () {
-                  self._view = new view_Trace(self, flea, ts, quotes);
-                  self._view.show();
-                }
-              );
-            } else {
-              view_Trace.emptyPage(this);
-            }
-          });
-          break;
-        case "backups":
-          data = {"rq": "readBackLists"};
-          self._client.send(data, rp => {
-            self._backups = rp["backups"];
-            self._trash = rp["trash"];
-            self._view = new view_Backups(self);
-            self._view.show();
-          });
-          break;
-        case "settings":
-          self._view = new view_Settings(self);
-          self._view.show();
-          break;
-        default:
-          throw("Page '" + self._conf.page() + "' is unknown");
-      }
-    });
-  }
-
-  run () {
-    const self = this;
-    self._client.connect(ok => {
-      if (ok) {
-        self.run2();
-      } else {
-        new user_Auth(self, self._client).show();
-      }
-    });
-  }
-
-  /**
-   * @param {function():void} f
-   * @return {void}
-   */
-  sendConf (f) {
-    const self = this;
     const data = {
-      "rq": "setConf",
-      "conf": JSON.stringify(self.conf().serialize())
+      "page": "main",
+      "rq": "getDb"
     };
-    self._client.send(data, rp => {
-      f();
-    });
-  }
+    const rp = await self._client.send(data);
 
-  /**
-   * @param {string} target
-   * @return {void}
-   */
-  go (target) {
-    const self = this;
-    self.conf().setSubpage("");
-    self.conf().setPage(target);
-    self.sendConf(() => { self.run2(); });
-  }
+    this._conf = rp["conf"];
+    this._families = rp["families"];
 
-  /**
-   * @return {void}
-   */
-  bye () {
-    const self = this;
-    const data = {"rq" : "logout"};
-    self._client.send(data, rp => { new view_Bye(self).show(); });
-  }
+    if (this._conf["lang"] === "es") I18n.es();
+    else I18n.en();
 
-// Settings ----------------------------------------------------------
-
-  /** @return {void} */
-  changeLanguage () {
-    const self = this;
-    self.conf().setLang(self.conf().lang() === "en" ? "es" : "en");
-    self.sendConf(() => { self.run2(); });
-  }
-
-  /**
-   * @param {string} dbase
-   * @return {void}
-   */
-  setDbase(dbase) {
-    const self = this;
-    self.conf().setDbase(dbase);
-    self.sendConf(() => { self.run2(); });
-  }
-
-  /** @return {void} */
-  changePassPage () {
-    new user_Chpass(this).show();
-  }
-
-  /**
-   * @param {string} pass
-   * @param {string} newPass
-   * @param {function(boolean):void} f Function to manage captcha counter.
-   * @return {void}
-   */
-  changePass (pass, newPass, f) {
-    const self = this;
-    const data = {
-      "rq": "chpass",
-      "user": "admin",
-      "pass": Client.crypPass(pass),
-      "newPass": Client.crypPass(newPass)
-    };
-    self._client.send(data, rp => {
-      const ok = rp["ok"];
-      f(ok);
-      if (ok) {
-        alert(_("Password successfully changed"));
-        self.run2();
-      } else {
-        self.changePassPage();
-      }
-    });
-  }
-
-// Backups -----------------------------------------------------------
-
-  /**
-   * Downloads a backup
-   * @param {function(string):void} action This callback passes the name of
-   *  backup file.
-   * @return {void}
-   */
-  backupDownload (action) {
-    const data = {"rq": "backup"};
-    this._client.send(data, rp => { action(rp["name"]); });
-  }
-
-  /**
-   * Restores a backup
-   * @param {*} file
-   * @param {function(number):void} progress
-   */
-  backupRestore (file, progress) {
-    const self = this;
-    const step = 25000;
-    let start = 0;
-
-    const reader = new FileReader();
-    reader.onerror/**/ = evt => {
-      alert(_args(_("'%0' can not be read"), file.name/**/));
-      const data = {"rq": "restoreAbort"};
-      self._client.send(data, () => {
-        new view_Backups(self).show();
-      });
-    }
-    reader.onloadend/**/ = evt => {
-      if (evt.target/**/.readyState/**/ === FileReader.DONE/**/) { // DONE == 2
-        const bindata = new Uint8Array(evt.target/**/.result/**/);
-        progress(start);
-        if (bindata.length > 0) {
-          const data = {
-            "rq": "restoreAppend",
-            "data": B64.encodeBytes(bindata)
-          };
-          self._client.send(data, rp => {
-            start += step;
-            var blob = file.slice(start, start + step);
-            reader.readAsArrayBuffer(blob);
-          });
-        } else {
-          progress(file.size/**/);
-          const data = {"rq": "restoreEnd"};
-          self._client.send(data, (rp) => {
-            const fail = rp["fail"];
-            if (fail === "restore:unzip") {
-              alert(_("Fail unzipping backup"));
-            } else if (fail === "restore:version") {
-              alert(_("File is not a Selectividad backup"));
-            }
-            self.run();
-          });
+    const page = this._conf["page"];
+    const family = this._conf["family"];
+    if (page === dataPageId) {
+      const allData = {};
+      for (let i = 0; i < 10; ++i) {
+        const data = {
+          "page": "main",
+          "rq": "getData",
+          "family": family === "" ? this._families[0] : family,
+          "part": String(i)
+        };
+        const rp = await self._client.send(data);
+        const d = rp["data"];
+        for (const k of Object.keys(d)) {
+          allData[k] = d[k];
         }
       }
-    };
-
-    function append() {
-      var blob = file.slice(start, start + step);
-      reader.readAsArrayBuffer(blob);
+      new Data(self, family, allData).show();
+    } else if (page === settingsPageId) {
+      new Settings(self).show();
+    } else {
+      throw("Page '" + page + "' is unknown");
     }
-
-    const data = {"rq": "restoreStart"};
-    self._client.send(data, () => {
-      append();
-    });
   }
 
-  /** @return {void} */
-  clearTrash () {
-    const self = this;
-    const data = {"rq": "clearTrash"};
-    self._client.send(data, () => {
-      self.run();
-    });
+  async start () {
+    const ok = await this._client.connect();
+    this._client.setPageId();
+    if (ok) {
+      this.run();
+    } else {
+      new Auth(this).show();
+    }
   }
 
-  /**
-   * @param {string} f
-   * @return {void}
-   */
-  autorestore (f) {
-    const self = this;
-    const data = {"rq": "autorestore", "file": f};
-    self._client.send(data, () => {
-      self.run();
-    });
-  }
+  // __________
+  // Call backs
+  // TTTTTTTTTT
 
-  /**
-   * @param {string} f
-   * @return {void}
-   */
-  restoreTrash (f) {
-    const self = this;
-    const data = {"rq": "restoreTrash", "file": f};
-    this._client.send(data, () => {
-      self.run();
-    });
-  }
-
-// Bests -------------------------------------------------------------
-
-  /** @param {function():void} f */
-  updateBests (f) {
-    const self = this;
-    const data = {"rq": "bestsTime", "dbase": self._conf.dbase()};
-    self._client.send(data, rq => {
-      const time = rq["time"];
-      if (time > self._bestsLastUpdate) {
-        self._bestsLastUpdate = time;
-        f();
-      }
-    });
+  /** @return {Promise} */
+  async bye () {
+    const rq = {
+      "page": "main",
+      "rq": "logout"
+    };
+    await this.client.send(rq);
+    new Bye(this).show();
   }
 
   /**
-   * Changes the bests id
-   * @param {string} id
-   * @return {void}
+   * @param {string} page Page to go
+   * @param {string} family Fleas family
+   * @return {Promise}
    */
-  setBestsId (id) {
-    const self = this;
-    self.conf().setSubpage(id);
-    self.sendConf(() => { self.run2(); });
+  async go (page, family) {
+    const rq = {
+      "page": "main",
+      "rq": "setMenu",
+      "targetPage": page,
+      "family": family
+    };
+    await this.client.send(rq);
+    this.run();
   }
 
-// Statistics --------------------------------------------------------
+  // _______
+  // statics
+  // TTTTTTT
 
-  /** @param {function():void} f */
-  updateStatistics (f) {
-    const self = this;
-    const data = {"rq": "bestsTime", "dbase": self._conf.dbase()};
-    self._client.send(data, rq => {
-      const time = rq["time"];
-      if (time > self._bestsLastUpdate) {
-        self._bestsLastUpdate = time;
-        f();
-      }
-    });
+  /** @return {string} Application name */
+  static get app () {
+    return app;
   }
 
-  /**
-   * Changes the selectefd faly
-   * @param {string} sel
-   * @return {void}
-   */
-  setStatisticsSelection (sel) {
-    const self = this;
-    self.conf().setSubpage(sel);
-    self.sendConf(() => { self.run2(); });
+  /** @return {string} Application version */
+  static get version () {
+    return version;
   }
+
+  /** @return {string} Key for language data store */
+  static get langStore () {
+    return langStore;
+  }
+
+  /** @return {string} Key for authentication captcha data store */
+  static get captchaAuthStore () {
+    return captchaAuthStore;
+  }
+
+  /** @return {string} Key for change pass captcha data store */
+  static get captchaChpassStore () {
+    return captchaChpassStore;
+  }
+
+  /** @return {string} Id of settings page */
+  static get settingsPageId () {
+    return settingsPageId;
+  }
+
+  /** @return {string} Id of update page */
+  static get dataPageId () {
+    return dataPageId;
+  }
+
+  /** @return {string} */
+  static get ibexGroupId () {
+    return ibexGroupId;
+  }
+
+  /** @return {string} */
+  static get selGroupId () {
+    return selGroupId;
+  }
+
+  /** @return {string} */
+  static get allGroupId () {
+    return allGroupId;
+  }
+
 }
-new Main().run();
-

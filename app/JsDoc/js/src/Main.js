@@ -41,7 +41,7 @@ export default class Main {
      * @private
      * @type {!Client}
      */
-    this._client = new Client(app, () => {
+    this._client = new Client(true, app, () => {
       new Expired(self).show();
     });
 

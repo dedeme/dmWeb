@@ -1,0 +1,24 @@
+name: my_market
+version: 2018.10.9
+
+authors:
+  - ºDeme <>
+
+description: |
+  Management of inversions
+
+dependencies:
+  dedeme_lib:
+    github: dedeme/dedeme_lib
+    branch: master
+  market_lib:
+    github: dedeme/market_lib
+    branch: master
+
+targets:
+  dummy2:
+    main: src/my_market.cr
+
+crystal: 0.26.1
+
+license: GPL-3

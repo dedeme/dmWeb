@@ -1,9 +1,0 @@
-*.geany
-
-#c
-lib
-bin
-
-#js
-libs
-**/www/index.js

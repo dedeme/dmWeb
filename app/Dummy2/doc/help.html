@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="" />
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel='stylesheet' href='http://localhost/notes.css' type='text/css' />
+</head>
+<body>
+<h1>Crystal graphic applications with Http</h1>
+<hr>
+
+<!--_____________________-->
+<h2>1. Copy Dummy2 directory</h2>
+<!--TTTTTTTTTTTTTTTTTTTTT-->
+
+<h3>Example:</h3>
+<p>We copy <tt>Dummy2</tt> as <tt>MyMarket</tt></p>
+
+<!--________________________________-->
+<h2>2. In<tt> <big>server</big></tt></h2>
+<!--TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT-->
+
+<li>Empty directories <tt>bin</tt> and <tt>spec</tt></li>
+<li>
+  Adapt <tt>Dummy2S.geany</tt>.
+  <ul>
+    <li>Change name. (e.g. MyMarketS.geany)</li>
+    <li>
+      Open file and 
+      <ol>
+        <li>Remove all the tabs</li>
+        <li>Change "Proyecto/Propiedades" to set the new "Nombre" 
+            (MyMarketS)</li>
+        <li>
+          Load <tt>src/dummy2.cr</tt> and edit "Construir/Establecer
+          commandos de construcción":<br>
+          Compile:<br>
+          <table><tr><td class="frame">
+            crystal build --no-color src/<b>my_market.cr</b> 
+            -o bin/<b>my_market</b>
+          </td></tr></table>
+          To client:<br>
+          <table><tr><td class="frame">
+            geany <b>MyMarketC.geany</b> // Directory: <b>%p/../client</b>
+          </td></tr></table>
+          Compile all:<br>
+          <table><tr><td class="frame">
+            crystal build --no-color --release src/<b>my_market.cr</b> 
+            -o bin/<b>my_market</b>;cd ../client;./make
+          </td></tr></table>
+          Production:<br>
+          <table><tr><td class="frame">
+            crystal build --no-color --release src/<b>my_market.cr</b> 
+            -o bin/<b>my_market</b>;crystal docs
+          </td></tr></table>
+          Run:<br>
+          <table><tr><td class="frame">
+            bin/<b>my_market</b>            
+          </td></tr></table>
+          Compile2:<br>
+          <table><tr><td class="frame">
+            crystal build --no-color src/<b>my_market.cr</b> 
+            -o bin/<b>my_market</b> 
+          </td></tr></table>
+        </li>
+      </ol>
+    </li>
+    <li>Close file</li>
+  </ul>
+</li>
+<li>Adapt <tt>shard.yml</tt>.</li>
+<li>Open a console and execute <tt>shards install</tt></li>
+<li>
+  Change files and directory names <tt>src/dummy2.cr</tt>,
+ <tt>src/dummy/dummy2.cr</tt> and <tt>src/dummy</tt>. (e.g. 
+ <tt>src/my_market.cr</tt>, <tt>src/dummy/my_market.cr</tt> and
+  <tt>src/my_market</tt>)
+</li>
+<li>
+  Edit <tt>src/my_market.cr</tt> changing the <tt>require</tt> of first
+  line.
+  <table><tr><td class="frame">
+    <tt>require "./dummy2/**</tt> -> <tt>require "./my_market/**"</tt>
+  </td></tr></table>
+</li>
+<li>Change version number in <tt>src/my_market/version.cr</tt></li>
+<li>
+  Change APP_NAME, DATA_VERSION and PORT in <tt>src/Cts.cr</tt><br>
+  For example:
+  <table><tr><td class="frame">
+   APP_NAME = "MyMarket"<br>
+   DATA_VERSION = "MyMarket: Data version 201810"<br>
+   PORT = 18100
+  </td></tr></table>
+</li>
+<li>
+  Change <tt>module Dummy2</tt> (by <tt>module MyMarket</tt>) and date 
+  in all the pages.
+</li>
+<p>
+At this point the applidation should compile.
+</p>
+
+<!--________________________________-->
+<h2>2. In<tt> <big>client</big></tt></h2>
+<!--TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT-->
+
+<li>
+  Adapt <tt>Dummy2C.geany</tt>.
+  <ul>
+    <li>Change name. (e.g. MyMarketC.geany)</li>
+    <li>
+      Open file and 
+      <ol>
+        <li>Remove all the tabs</li>
+        <li>Change "Proyecto/Propiedades" to set the new "Nombre" 
+            (MyMarketC)</li>
+        <li>
+          Load <tt>src/index.js</tt> and edit "Construir/Establecer
+          commandos de construcción":<br>
+          To server:<br>
+          <table><tr><td class="frame">
+            geany <b>MyMarketS.geany</b> // Directory: <b>%p/../server</b>          </td></tr></table>
+          Compile all:<br>
+          <table><tr><td class="frame">
+            ./make;cd ../server;crystal build --no-color --release 
+            src/<b>my_market.cr</b> -o bin/<b>my_market</b>
+          </td></tr></table>
+          Exec:<br>
+          <table><tr><td class="frame">
+            ../server/bin/<b>my_market</b>            
+          </td></tr></table>
+        </li>
+      </ol>
+    </li>
+    <li>Close file</li>
+  </ul>
+</li>
+<li>Empty directory <tt>www/js</tt></li>
+<li>
+  Change title in <tt>index-clean.html</tt> and <tt>index-closure.html</tt>
+</li>
+<li>Update dependencies.</li>
+<li>Change application name and version in <tt>src/Cts.js</tt>
+
+<!--___________-->
+<h2>2. In www2 </h2>
+<!--TTTTTTTTTTT-->
+
+<li>Make a symbolic link to <tt>client/www</tt> with application name (e.g.
+    <tt> MyMarket</tt> -> <tt>client/www</tt>)</li>
+
+<hr>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>

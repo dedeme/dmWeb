@@ -22,6 +22,10 @@ Tp/*char, char*/ *read_file(char *path) {
   while (*l) {
     l = str_trim(l);
     if (str_starts(l, "##")) {
+      int end = str_index(l, ".<");
+      if (end != -1) {
+        l = str_sub(l, 0, end + 1);
+      }
       l = str_trim(str_sub_end(l, 2));
       doc = l;
       break;

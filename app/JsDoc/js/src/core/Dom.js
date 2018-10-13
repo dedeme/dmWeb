@@ -56,9 +56,9 @@ export default class Dom {
     const model = main.model;
 
     function entry (id) {
-      return $("a")
-        .klass(id === model.sel ? "frame" : "link")
-        .att("href", `?${id}`)
+      return Ui.link(() => {
+        main.go(id);
+      }).klass(id === model.sel ? "frame" : "link")
         .text(id)
       ;
     }

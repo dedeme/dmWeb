@@ -84,10 +84,6 @@ module.exports = {
         "no-with": [
             "error"
         ],
-        "radix": [
-            "error",
-            "as-needed"
-        ],
         "require-await": [
             "error"
         ],
