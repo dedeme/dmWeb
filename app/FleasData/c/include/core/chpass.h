@@ -6,10 +6,7 @@
 
 #include "dmc/std.h"
 
-#include "dmc/cgi.h"
-#include "dmc/ct/Mjson.h"
-
-///
-CgiRp *chpass_process(Mjson *rq);
+/// 'rq' is Map[Js]
+void chpass_process(Map *rq);
 
 #endif

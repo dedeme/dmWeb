@@ -201,6 +201,9 @@ module_View = class {
       bf += "<p>&nbsp;</p>";
     });
 
+    bf += "<div style='position: fixed;bottom: 0px;right: 20px'>" +
+      "<a href='#'><img border='0' src='img/up.png'></a></div>";
+
     this._control.control().dom().show(
       paths,
       selected,

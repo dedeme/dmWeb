@@ -29,7 +29,7 @@ export default class Settings {
   async setLang (lang) {
     const main = this._main;
     const rq = {
-      "page": "settings",
+      "source": "settings",
       "rq": "setLang",
       "lang": lang
     };
@@ -55,7 +55,7 @@ export default class Settings {
   show () {
     const self = this;
     const main = self._main;
-    const lang = main.conf["lang"];
+    const lang = main.model["lang"];
 
     const langDiv = $("div")
       .add(Ui.link(() => {
@@ -77,7 +77,7 @@ export default class Settings {
       passDiv
     ];
 
-    main.dom.show("settings", "", $("div").style("text-align:center")
+    main.dom.show("settings", $("div").style("text-align:center")
       .add($("h2").html(_("Settings")))
       .add($("table").att("align", "center").add($("tr").add($("td")
         .klass("frame")

@@ -2,11 +2,15 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "core/chpass.h"
+#include "dmc/cgi.h"
 
-CgiRp *chpass_process(Mjson *rq) {
-  return cgi_change_pass(
-    jmap_gstring(rq, "user"),
-    jmap_gstring(rq, "pass"),
-    jmap_gstring(rq, "newPass")
-  );
+// 'rq' is Map[Js]
+void chpass_process(Map *rq) {
+  CGI_GET_STR(user, rq, "user");
+  CGI_GET_STR(pass, rq, "pass");
+  CGI_GET_STR(new_pass, rq, "newPass");
+  cgi_change_pass(user, pass, new_pass);
+  free(user);
+  free(pass);
+  free(new_pass);
 }

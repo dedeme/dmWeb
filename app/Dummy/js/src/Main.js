@@ -39,7 +39,7 @@ export default class Main {
      * @private
      * @type {!Client}
      */
-    this._client = new Client(app, () => {
+    this._client = new Client(true, app, () => {
       new Expired(self).show();
     });
 
@@ -72,7 +72,7 @@ export default class Main {
     const self = this;
 
     const data = {
-      "page": "main",
+      "source": "main",
       "rq": "getDb"
     };
     const rp = await self._client.send(data);
@@ -119,7 +119,7 @@ export default class Main {
   /** @return {Promise} */
   async bye () {
     const rq = {
-      "page": "main",
+      "source": "main",
       "rq": "logout"
     };
     await this.client.send(rq);
@@ -132,7 +132,7 @@ export default class Main {
    */
   async go (page) {
     const rq = {
-      "page": "main",
+      "source": "main",
       "rq": "setMenu",
       "option": page
     };

@@ -5,7 +5,7 @@ SOURCES="src libs/dmjsBasic libs/dmjsWidgets"
 
 # DON'T CHANGE vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-COMPILER=$JS_ROOT/tools/closure-compiler-v20171203.jar
+COMPILER=$JS_ROOT/tools/closure-compiler-v20180805.jar
 PRETTY=" --compilation_level ADVANCED_OPTIMIZATIONS "
 if [ "$1" == "pretty" ]
 then

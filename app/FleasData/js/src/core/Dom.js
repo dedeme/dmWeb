@@ -49,50 +49,30 @@ export default class Dom {
 
   /**
    * @param {string} page Page name.
-   * @param {string} family Fleas family
    * @param {!Domo} o Page to show inside Dom.
    * @return {void}
    */
-  show (page, family, o) {
+  show (page, o) {
     const main = this._main;
-    if (family === "") {
-      family = main.families[0];
-    }
 
-    const familiesDiv = $("div");
-
-    function entry (id, target) {
+    function entry (id, target, subtarget) {
       return Ui.link(() => {
-        main.go(target, family);
+        main.go(target, subtarget);
       })
         .klass(target === page ? "frame" : "link").html(id);
     }
-
-    function sourceEntry (fm) {
-      return Ui.link(() => {
-        main.go(Main.dataPageId, fm);
-      })
-        .klass(fm === family ? "frame" : "link").html(fm);
-    }
-
     function separator () {
       return $("span").html(" · ");
     }
 
-    function activateData () {
-      if (page === Main.dataPageId) {
-        familiesDiv.add($("table").att("align", "center")
-          .add($("tr")
-            .adds(main.families.map(fm => $("td").add(sourceEntry(fm))))));
-      }
-    }
-
-    const lopts = [
-      entry(_("Data"), Main.dataPageId),
-    ];
+    const lopts = main.fgroups.map(
+      (g, i) => (i === 0)
+        ? entry(g, g, main.model["lmenu"])
+        : $("span").add(separator()).add(entry(g, g, main.model["lmenu"]))
+    );
 
     const ropts = [
-      entry(_("Settings"), Main.settingsPageId),
+      entry(_("Settings"), Main.settingsPageId, ""),
       separator(),
       Ui.link(() => {
         main.bye();
@@ -101,10 +81,9 @@ export default class Dom {
     ];
 
     const menu = $("table").klass("main").add($("tr")
-      .add($("td").style("text-align:right;width:22px;white-space: nowrap;")
+      .add($("td")
         .adds(lopts))
-      .add($("td").style("width:100%").add(familiesDiv))
-      .add($("td").style("text-align:right;width:22px;white-space: nowrap;")
+      .add($("td").style("text-align:right")
         .adds(ropts))
     );
 
@@ -114,7 +93,5 @@ export default class Dom {
         .add($("hr"))
         .add(o)
     );
-
-    activateData();
   }
 }

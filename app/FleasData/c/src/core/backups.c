@@ -2,220 +2,307 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "core/backups.h"
+#include "dmc/cgi.h"
 #include "dmc/ext.h"
-#include "dmc/Date.h"
+#include "dmc/date.h"
 #include "dmc/b64.h"
 
-static char *mk_date(void) {
-  return date_format(date_now(), "%Y%m%d");
+static char *mk_date_new(void) {
+  return date_f_new(date_now(), "%Y%m%d");
 }
 
-static char *mk_date2(void) {
-	Date t = date_now();
-  return str_printf("%s-%ld", date_format(t, "%Y%m%d"), t);
+static char *mk_date2_new(void) {
+	time_t t = date_now();
+  char *d = mk_date_new();
+  char *r = str_f_new("%s-%ld", d, t);
+  free(d);
+  return r;
 }
 
 static void filter_backups(void) {
-  Date t0 = date_now();
-  Date t1 = date_add(t0, -7);
-  Date t2 = date_new(date_day(t0), date_month(t0), date_year(t0) - 1);
+  time_t t0 = date_now();
+  time_t t1 = date_add(t0, -7);
+  time_t t2 = date_new(date_day(t0), date_month(t0), date_year(t0) - 1);
 
-  char *d1 = date_format(t1, "%Y%m%d");
-  char *d2 = date_format(t2, "%Y%m%d");
+  char *d1 = date_f_new(t1, "%Y%m%d");
+  char *d2 = date_f_new(t2, "%Y%m%d");
 
-  Achar *fs = file_dir(path_cat(cgi_home(), "backups", NULL));
-  achar_sort(fs);
-  char *previous = "        ";
+  char *backups_dir = path_cat_new(cgi_home(), "backups", NULL);
+  // Arr[char]
+  Arr *fs = file_dir_new(backups_dir);
+  free(backups_dir);
+
+  arr_sort(fs, (FGREATER)str_greater);
+  char *previous = str_new("        ");
   EACH(fs, char, f) {
-    char *name = path_only_name(f);
-    if (str_cmp(name, d2) < 0) {
-      if (str_eq(str_sub(name, 0, 4), str_sub(previous, 0, 4))) {
+    char *name = str_new(f);
+    path_only_name(&name);
+    if (!str_greater(name, d2)) {
+      str_left(&name, 4);
+      str_left(&previous, 4);
+      if (str_eq(name, previous)) {
         file_del(f);
       }
-    } else if (str_cmp(name, d1) < 0) {
-      if (str_eq(str_sub(name, 0, 6), str_sub(previous, 0, 6))) {
+    } else if (!str_greater(name, d1)) {
+      str_left(&name, 6);
+      str_left(&previous, 6);
+      if (str_eq(name, previous)) {
         file_del(f);
       }
     }
+    free(previous);
     previous = name;
   }_EACH
+
+  free(previous);
+  arr_free(fs);
+  free(d1);
+  free(d2);
 }
 
-static Achar *read_backups(void) {
-  Achar *fs = file_dir(path_cat(cgi_home(), "backups", NULL));
-  Achar *rs = achar_new();
+// Returns Arr[char]
+static Arr *read_backups_new(void) {
+  char *backups_dir = path_cat_new(cgi_home(), "backups", NULL);
+  // Arr[char]
+  Arr *fs = file_dir_new(backups_dir);
+  free(backups_dir);
+  // Arr[char]
+  Arr *rs = arr_new(free);
   EACH(fs, char, f) {
-    achar_add(rs, path_name(f));
+    char *pname = str_new(f);
+    path_name(&pname);
+    arr_push(rs, pname);
   }_EACH
+  arr_free(fs);
 	return rs;
 }
-static Achar *read_trash(void) {
-  Achar *fs = file_dir(path_cat(cgi_home(), "trash", NULL));
-  Achar *rs = achar_new();
+
+// Returns Arr[char]
+static Arr *read_trash_new(void) {
+  char *trash_dir = path_cat_new(cgi_home(), "trash", NULL);
+  // Arr[char]
+  Arr *fs = file_dir_new(trash_dir);
+  // Arr[char]
+  Arr *rs = arr_new(free);
   EACH(fs, char, f) {
-    achar_add(rs, path_name(f));
+    char *pname = str_new(f);
+    path_name(&pname);
+    arr_push(rs, pname);
   }_EACH
+  arr_free(fs);
 	return rs;
 }
 
 static void to_trash(void) {
-  char *date = mk_date2();
-  char *source = path_cat(cgi_home(), "data", NULL);
-  char *target = path_cat(
-    cgi_home(), "trash", str_printf("%s.zip", date), NULL
-  );
+  char *date = mk_date2_new();
+  char *source = path_cat_new(cgi_home(), "data", NULL);
+  char *fzip = str_f_new("%s.zip", date);
+  char *target = path_cat_new(cgi_home(), "trash", fzip, NULL);
   ext_zip(source, target);
+  free(date);
+  free(source);
+  free(fzip);
+  free(target);
 }
 
 static void clear_tmp(void) {
-  char *dir = path_cat(cgi_home(), "tmp", NULL);
+  char *dir = path_cat_new(cgi_home(), "tmp", NULL);
   file_del(dir);
   file_mkdir(dir);
+  free(dir);
 }
 
-static char *unzip(char *app_name, char *data_version) {
-  char *source = path_cat(cgi_home(), "tmp", "back.zip", NULL);
-  char *target = path_cat(cgi_home(), "tmp", NULL);
+static char *unzip(const char *app_name, const char *data_version) {
+  char *source = path_cat_new(cgi_home(), "tmp", "back.zip", NULL);
+  char *target = path_cat_new(cgi_home(), "tmp", NULL);
+
+  ext_unzip(source, target);
+
+  free(source);
+  free(target);
+
+  source = path_cat_new(cgi_home(), "tmp", "data", "version.txt", NULL);
   char *fail = "";
-  TRY {
-    ext_unzip(source, target);
-  } CATCH(e) {
-    fail = "restore:unzip";
-  }_TRY
-  if (*fail) {
-    return fail;
-  }
-
-  source = path_cat(cgi_home(), "tmp", "data", "version.txt", NULL);
   if (!file_exists(source)) {
-    return "restore:version does not exist";
+    fail = "restore:version does not exist";
+  } else {
+    char *good_version = str_f_new(
+      "%s\nData version: %s\n", app_name, data_version
+    );
+    char *version = file_read_new(source);
+    if (!str_eq(version, good_version)) {
+      fail = "restore:version is wrong";
+    }
+    free(good_version);
+    free(version);
   }
-  char *good_version =str_printf(
-    "%s\nData version: %s\n", app_name, data_version
-  );
-  char *version = file_read(source);
-  if (!str_eq(version, good_version)) {
-    return "restore:version is wrong";
-  }
-  return "";
+  free(source);
+
+  return fail;
 }
 
-//    ________________
-CgiRp *backups_process(char *app_name, char* data_version, Mjson *mrq) {
-//    TTTTTTTTTTTTTTTT
+//   _______________
+void backups_process(
+//   TTTTTTTTTTTTTTT
+  const char *app_name,
+  const char *data_version,
+  // Map[Js]
+  Map *rqm
+) {
   char *home = cgi_home();
-  char *rq = jmap_gstring(mrq, "rq");
+  CGI_GET_STR(rq, rqm, "rq");
 
   // -------------------------------------------------------------- backup
   if (str_eq(rq, "backup")) {
     clear_tmp();
-    char *name = str_printf("%sBackup%s.zip", app_name, mk_date());
+    char *d = mk_date_new();
+    char *name = str_f_new("%sBackup%s.zip", app_name, d);
 
-    ext_zip(
-      path_cat(home, "data", NULL),
-      path_cat(home, "tmp", name, NULL)
-    );
+    char *source = path_cat_new(home, "data", NULL);
+    char *target = path_cat_new(home, "tmp", name, NULL);
+    ext_zip(source, target);
 
-    Mjson *m = mjson_new();
-    jmap_pstring(m, "name", name);
-    return cgi_ok(m);
-  }
+    // Map[Js]
+    Map *m = map_new(free);
+    map_put(m, "name", js_ws_new(name));
+    cgi_ok(m);
+
+    free(d);
+    free(name);
+    free(source);
+    free(target);
+    map_free(m);
 
   // -------------------------------------------------_------ restoreStart
-  if (str_eq(rq, "restoreStart")) {
+  } else if (str_eq(rq, "restoreStart")) {
     clear_tmp();
-    LckFile *lck = file_wopen(path_cat(home, "tmp", "back.zip", NULL));
+    char *path = path_cat_new(home, "tmp", "back.zip", NULL);
+    FileLck *lck = file_wopen(path);
     file_close(lck);
-    return cgi_ok(mjson_new());
-  }
+    cgi_empty();
+    free(path);
 
   // ------------------------------------------------------- restoreAppend
-  if (str_eq(rq, "restoreAppend")) {
-    LckFile *lck = file_aopen(path_cat(home, "tmp", "back.zip", NULL));
-    file_write_bin(lck, b64_decode_bytes(jmap_gstring(mrq, "data")));
+  } else if (str_eq(rq, "restoreAppend")) {
+    CGI_GET_STR(data, rqm, "data");
+    Bytes *bs_data = b64_decode_bytes_new(data);
+
+    char *path = path_cat_new(home, "tmp", "back.zip", NULL);
+    FileLck *lck = file_aopen(path);
+    file_write_bin(lck, bs_data);
     file_close(lck);
-    return cgi_ok(mjson_new());
-  }
+    cgi_empty();
+
+    free(data);
+    bytes_free(bs_data);
+    free(path);
 
   // -------------------------------------------_------------ restoreAbort
-  if (str_eq(rq, "restoreAbort")) {
+  } else if (str_eq(rq, "restoreAbort")) {
     clear_tmp();
-    return cgi_ok(mjson_new());
-  }
+    cgi_empty();
 
   // ---------------------------------------------------------- restoreEnd
-  if (str_eq(rq, "restoreEnd")) {
+  } else if (str_eq(rq, "restoreEnd")) {
     char *fail = unzip(app_name, data_version);
 
     if (!*fail) {
-      char *data = path_cat(home, "data", NULL);
+      char *data = path_cat_new(home, "data", NULL);
+      char *tmp_data = path_cat_new(home, "tmp", "data", NULL);
       to_trash();
       file_del(data);
-      file_rename(path_cat(home, "tmp", "data", NULL), data);
+      file_rename(tmp_data, data);
       clear_tmp();
+      free(data);
+      free(tmp_data);
     }
 
-    Mjson *m = mjson_new();
-    jmap_pstring(m, "fail", fail);
-    return cgi_ok(m);
-  }
+    // Map[Js]
+    Map *m = map_new(free);
+    map_put(m, "fail", js_ws_new(fail));
+    cgi_ok(m);
+
+    map_free(m);
 
   // ------------------------------------------------------- autorestore
-  if (str_eq(rq, "autorestore")) {
-    char *file = jmap_gstring(mrq, "file");
+  } else if (str_eq(rq, "autorestore")) {
+    CGI_GET_STR(file, rqm, "file")
     to_trash();
 
-    file_del(path_cat(home, "data", NULL));
-    ext_unzip(
-      path_cat(home, "backups", file, NULL),
-      home
-    );
+    char *datad = path_cat_new(home, "data", NULL);
+    char *backupsd = path_cat_new(home, "backups", file, NULL);
+    file_del(datad);
+    ext_unzip(backupsd, home);
 
-    return cgi_ok(mjson_new());
-  }
+    cgi_empty();
+
+    free(file);
+    free(datad);
+    free(backupsd);
 
   // ------------------------------------------------------- logout
-  if (str_eq(rq, "logout")) {
-    ext_zip(
-      path_cat(home, "data", NULL),
-      path_cat(home, "backups", str_printf("%s.zip", mk_date()), NULL)
-    );
+  } else if (str_eq(rq, "logout")) {
+    char *datad = path_cat_new(home, "data", NULL);
+    char *d = mk_date_new();
+    char *file = str_f_new("%s.zip", d);
+    char *backupsd = path_cat_new(home, "backups", file, NULL);
+
+    ext_zip(datad, backupsd);
     filter_backups();
-    return cgi_ok(mjson_new());
-  }
+
+    free(datad);
+    free(d);
+    free(file);
+    free(backupsd);
 
   // --------------------------------------------------------- lists
-  if (str_eq(rq, "lists")) {
-    Mjson *m = mjson_new();
-    jmap_parray(m, "backups", (Arr *)read_backups(), (TO_JSON)json_wstring);
-    jmap_parray(m, "trash", (Arr *)read_trash(), (TO_JSON)json_wstring);
-    return cgi_ok(m);
-  }
+  } else if (str_eq(rq, "lists")) {
+    // Arr[char]
+    Arr *backups = read_backups_new();
+    // Arr[char]
+    Arr *trash = read_trash_new();
+    // Map[Js]
+    Map *m = map_new(free);
+    map_put(m, "backups", arr_to_js_new(backups, (FTO)js_ws_new));
+    map_put(m, "trash", arr_to_js_new(trash, (FTO)js_ws_new));
+    cgi_ok(m);
+
+    arr_free(backups);
+    arr_free(trash);
+    map_free(m);
 
   // ---------------------------------------------------------- clearTrash
-  if (str_eq(rq, "clearTrash")) {
-    char *path = path_cat(home, "trash", NULL);
+  } else if (str_eq(rq, "clearTrash")) {
+    char *path = path_cat_new(home, "trash", NULL);
     file_del(path);
     file_mkdir(path);
-    return cgi_ok(mjson_new());
-  }
+    return cgi_empty();
+    free(path);
 
   // -------------------------------------------------------- restoreTrash
-  if (str_eq(rq, "restoreTrash")) {
-    char *source = path_cat(home, "trash", jmap_gstring(mrq, "file"), NULL);
+  } else if (str_eq(rq, "restoreTrash")) {
+    CGI_GET_STR(file, rqm, "file");
+
+    char *source = path_cat_new(home, "trash", file, NULL);
 
     if (!file_exists(source)) {
-      return cgi_error(str_printf("Trash back '%s' not found", source));
+      char *msg = str_f_new("Trash back '%s' not found", source);
+      cgi_error(msg);
+      free(msg);
+    } else {
+      to_trash();
+      char *ddata = path_cat_new(home, "data", NULL);
+      file_del(ddata);
+      ext_unzip(source, home);
+
+      cgi_empty();
+
+      free(ddata);
     }
 
-    to_trash();
-    file_del(path_cat(home, "data", NULL));
-    ext_unzip(source, home);
+    free(source);
+    free(file);
+  } else FAIL(str_f_new("'%s': Unknown request in backups", rq));
 
-    return cgi_ok(mjson_new());
-  }
-
-  THROW("") "'%s': Unknown request in backups", rq _THROW
-  // Unreacheable
-  return NULL;
+  free(rq);
 }

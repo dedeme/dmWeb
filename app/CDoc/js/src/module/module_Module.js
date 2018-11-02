@@ -15,12 +15,17 @@ module_Module = class {
    */
   static readNameBk (line, ix) {
     while (--ix >= 0) {
-      if (/\w|\d/.test(line.charAt(ix))) {
+      if (/\w|\d|\)/.test(line.charAt(ix))) {
         break;
       }
     }
     if (ix === -1) {
       return "???";
+    }
+    if (line[ix] === ")") {
+      line = line.substring(0, ix);
+      ix = line.lastIndexOf(")");
+      return this.readNameBk(line.substring(0, ix) + " ;", ix);
     }
     const end = ix + 1;
     while (--ix >= 0) {

@@ -18,11 +18,6 @@ const captchaAuthStore = "${app}__captcha";
 const captchaChpassStore = "${app}__captchaCh";
 
 const settingsPageId = "settings";
-const dataPageId = "data";
-
-const ibexGroupId = "ibex";
-const selGroupId = "sel";
-const allGroupId = "all";
 
 /** Main page. */
 export default class Main {
@@ -39,7 +34,8 @@ export default class Main {
      * @private
      * @type {!Client}
      */
-    this._client = new Client(app, () => {
+    this._client = new Client(true, app, () => {
+      this._dom = new Dom(self);
       new Expired(self).show();
     });
 
@@ -47,13 +43,20 @@ export default class Main {
      * @private
      * @type {Object<string, string>}
      */
-    this._conf = null;
+    this._model = null;
 
     /**
      * @private
      * @type {Array<string>}
      */
-    this._families = null;
+    this._fgroups = null;
+
+    /**
+     * @private
+     * @type {Object<string, string>}
+     */
+    this._constants = null;
+
   }
 
   /** @return {!Dom} Container for DOM objects. */
@@ -67,58 +70,55 @@ export default class Main {
   }
 
   /** @return {!Object<string, string>} Configuration data. */
-  get conf () {
-    if (this._conf === null) {
-      throw new Error("Conf has not been initialized");
+  get model () {
+    if (this._model === null) {
+      throw new Error("Model has not been initialized");
     }
-    return this._conf;
+    return this._model;
   }
 
-  /** @return {Array<string>} Families name */
-  get families () {
-    if (this._families === null) {
-      throw new Error("Families has not been initialized");
+  /** @return {!Array<string>} Sorted fleas groups. */
+  get fgroups () {
+    if (this._fgroups === null) {
+      throw new Error("'fgroups' has not been initialized");
     }
-    return this._families;
+    return this._fgroups;
+  }
+
+  /** @return {!Object<string, string>} Fleas constants data. */
+  get constants () {
+    if (this._constants === null) {
+      throw new Error("'constants' has not been initialized");
+    }
+    return this._constants;
   }
 
   async run () {
     const self = this;
 
     const data = {
-      "page": "main",
+      "source": "main",
       "rq": "getDb"
     };
     const rp = await self._client.send(data);
 
-    this._conf = rp["conf"];
-    this._families = rp["families"];
+    self._model = rp["db"];
+    self._fgroups = rp["fgroups"];
+    self._constants = rp["constants"];
 
-    if (this._conf["lang"] === "es") I18n.es();
+    if (self._model["lang"] === "es") I18n.es();
     else I18n.en();
 
-    const page = this._conf["page"];
-    const family = this._conf["family"];
-    if (page === dataPageId) {
-      const allData = {};
-      for (let i = 0; i < 10; ++i) {
-        const data = {
-          "page": "main",
-          "rq": "getData",
-          "family": family === "" ? this._families[0] : family,
-          "part": String(i)
-        };
-        const rp = await self._client.send(data);
-        const d = rp["data"];
-        for (const k of Object.keys(d)) {
-          allData[k] = d[k];
-        }
-      }
-      new Data(self, family, allData).show();
+    self._dom = new Dom(self);
+
+    const page = self._model["tmenu"];
+
+    if (self.fgroups.indexOf(page) !== -1) {
+      new Data(self, page, self._model["lmenu"]).show();
     } else if (page === settingsPageId) {
       new Settings(self).show();
     } else {
-      throw("Page '" + page + "' is unknown");
+      new Settings(self).show();
     }
   }
 
@@ -139,7 +139,7 @@ export default class Main {
   /** @return {Promise} */
   async bye () {
     const rq = {
-      "page": "main",
+      "source": "main",
       "rq": "logout"
     };
     await this.client.send(rq);
@@ -147,16 +147,17 @@ export default class Main {
   }
 
   /**
-   * @param {string} page Page to go
-   * @param {string} family Fleas family
+   * @param {string} tmenu Top menu option.
+   * @param {string} lmenu Left menu option.
+   *    In tmenu 'settings' its value is "".
    * @return {Promise}
    */
-  async go (page, family) {
+  async go (tmenu, lmenu) {
     const rq = {
-      "page": "main",
+      "source": "main",
       "rq": "setMenu",
-      "targetPage": page,
-      "family": family
+      "tmenu": tmenu,
+      "lmenu": lmenu
     };
     await this.client.send(rq);
     this.run();
@@ -194,26 +195,6 @@ export default class Main {
   /** @return {string} Id of settings page */
   static get settingsPageId () {
     return settingsPageId;
-  }
-
-  /** @return {string} Id of update page */
-  static get dataPageId () {
-    return dataPageId;
-  }
-
-  /** @return {string} */
-  static get ibexGroupId () {
-    return ibexGroupId;
-  }
-
-  /** @return {string} */
-  static get selGroupId () {
-    return selGroupId;
-  }
-
-  /** @return {string} */
-  static get allGroupId () {
-    return allGroupId;
   }
 
 }

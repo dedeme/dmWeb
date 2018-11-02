@@ -33,7 +33,7 @@ export default class Chpass {
   async changePass (pass, newPass, f) {
     const main = this._main;
     const rq = {
-      "page": "chpass",
+      "source": "chpass",
       "user": main.client.user(),
       "pass": Client.crypPass(pass),
       "newPass": Client.crypPass(newPass)

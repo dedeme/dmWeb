@@ -3,48 +3,58 @@
 
 #include "conf.h"
 #include "dmc/cgi.h"
-#include "dmc/ct/Mjson.h"
 
 static char *relative_path = "data/conf.db";
 
-static char *path = NULL;
+static char *path_null = NULL;
 
 void conf_init(void) {
-  path = path_cat(cgi_home(), relative_path, NULL);
-  if (!file_exists(path)) {
-    Mjson *m = mjson_new();
-    jmap_pstring(m, "lang", "en");
-    jmap_pstring(m, "page", "settings");
-    jmap_pstring(m, "family", "");
-    file_write(path, (char *)json_wobject(m));
+  path_null = path_cat_new(cgi_home(), relative_path, NULL);
+  if (!file_exists(path_null)) {
+    // Map[Js]
+    Map *m = map_new(free);
+    map_put(m, "lang", js_ws_new("en"));
+    map_put(m, "tmenu", js_ws_new("settings"));
+    map_put(m, "lmenu", js_ws_new(""));
+    Js *js = js_wo_new(m);
+    file_write(path_null, (char *)js);
+    map_free(m);
+    free(js);
   }
 }
 
-Json *conf_get(void) {
-  if (!path) {
-    exc_illegal_state("'data/conf.db' has not been initialized");
-  }
-
-  return (Json *)file_read(path);
+void conf_end(void) {
+  free(path_null);
 }
 
-void conf_set_lang(char *lang) {
-  if (!path) {
-    exc_illegal_state("'data/conf.db' has not been initialized");
-  }
+Js *conf_get_new(void) {
+  if (!path_null) FAIL("'data/conf.db' has not been initialized")
 
-  Mjson *m = json_robject(conf_get());
-  jmap_pstring(m, "lang", lang);
-  file_write(path, (char *)json_wobject(m));
+  return (Js *)file_read_new(path_null);
 }
 
-void conf_set_menu(char *page, char *family) {
-  if (!path) {
-    exc_illegal_state("'data/conf.db' has not been initialized");
-  }
+void conf_set(const char *field, const char *value) {
+  if (!path_null) FAIL("'data/conf.db' has not been initialized")
 
-  Mjson *m = json_robject(conf_get());
-  jmap_pstring(m, "page", page);
-  jmap_pstring(m, "family", family);
-  file_write(path, (char *)json_wobject(m));
+  Js *js = conf_get_new();
+  // Map[Js]
+  Map *m = js_ro_new(js);
+  map_put(m, field, js_ws_new(value));
+  Js *newjs = js_wo_new(m);
+  file_write(path_null, (char *)newjs);
+  map_free(m);
+  free(js);
+  free(newjs);
+}
+
+void conf_set_lang(const char *lang) {
+  conf_set("lang", lang);
+}
+
+void conf_set_tmenu(const char *option) {
+  conf_set("tmenu", option);
+}
+
+void conf_set_lmenu(const char *option) {
+  conf_set("lmenu", option);
 }

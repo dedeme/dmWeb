@@ -5,10 +5,13 @@
   #define CORE_BACKUPS_H
 
 #include "dmc/std.h"
-#include "dmc/cgi.h"
-#include "dmc/ct/Mjson.h"
 
 ///
-CgiRp *backups_process(char *app_name, char *data_version, Mjson *rq);
+void backups_process(
+  const char *app_name,
+  const char *data_version,
+  // Map[Js]
+  Map *rq
+);
 
 #endif

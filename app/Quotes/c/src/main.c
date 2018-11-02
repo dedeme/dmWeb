@@ -23,7 +23,7 @@ static char *app_name = "Quotes";
 static char *data_version = "201809";
 static char *app_dir = "dmcgi/Quotes";
 static time_t expiration = 3600;
-static int max_quotes = 550;
+static int max_quotes = 750;
 
 static void app_init(void) {
 	char *dir = path_cat(cgi_home(), "data", NULL);

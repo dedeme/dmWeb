@@ -3,13 +3,11 @@
 
 #include "main.h"
 #include "conf.h"
-#include "dmc/Date.h"
+#include "dmc/date.h"
 #include "dmc/cgi.h"
 #include "dmc/ext.h"
 #include "dmc/b64.h"
 #include "dmc/cryp.h"
-#include "dmc/ct/Ajson.h"
-#include "dmc/ct/Mjson.h"
 #include "core/backups.h"
 #include "core/chpass.h"
 #include "core/settings.h"
@@ -20,150 +18,182 @@ static char *app_dir = "dmcgi/Dummy";
 static time_t expiration = 3600;
 
 static void app_init(void) {
-	char *dir = path_cat(cgi_home(), "data", NULL);
+  void mkdir(const char *name) {
+    char *f = path_cat_new(cgi_home(), name, NULL);
+    file_mkdir(f);
+    free(f);
+  }
+
+	char *dir = path_cat_new(cgi_home(), "data", NULL);
 
   if (!file_exists(dir)) {
     file_mkdir(dir);
-    char *version = str_printf(
+    char *version = str_f_new(
         "%s\nData version: %s\n", app_name, data_version);
-    char *fversion = path_cat(dir, "version.txt", NULL);
+    char *fversion = path_cat_new(dir, "version.txt", NULL);
     file_write(fversion, version);
-    file_mkdir(path_cat(cgi_home(), "tmp", NULL));
-    file_mkdir(path_cat(cgi_home(), "trash", NULL));
-    file_mkdir(path_cat(cgi_home(), "backups", NULL));
+    free(version);
+    free(fversion);
+
+    mkdir("tmp");
+    mkdir("trash");
+    mkdir("backups");
   }
+
+  free(dir);
 }
 
 // ____________
 // Main process
 // TTTTTTTTTTTT
 
-static CgiRp *main_process(char *session_id, Mjson *rqm) {
-  char *rq = jmap_gstring(rqm, "rq");
+// 'rqm' is Map[Js]
+static void main_process(const char *session_id, Map *rqm) {
+  CGI_GET_STR(rq, rqm, "rq")
 
   // ---------------------------------------------------------- logout
   if (str_eq(rq, "logout")) {
     backups_process(app_name, data_version, rqm);
-    return cgi_del_session(session_id);
-  }
+    cgi_del_session(session_id);
 
   // ----------------------------------------------------------- getDb
-  if (str_eq(rq, "getDb")) {
-    Mjson *m = mjson_new();
-    mjson_put(m, "db", conf_get());
-    return cgi_ok(m);
-  }
+  } else if (str_eq(rq, "getDb")) {
+    // Map[Js]
+    Map *m = map_new(free);
+    map_put(m, "db", conf_get_new());
+    cgi_ok(m);
+    map_free(m);
 
   // --------------------------------------------------------- setMenu
-  if (str_eq(rq, "setMenu")) {
-    char *option = jmap_gstring(rqm, "option");
+  } else if (str_eq(rq, "setMenu")) {
+    CGI_GET_STR(option, rqm, "option")
     conf_set_menu(option);
-    return cgi_ok(mjson_new());
-  }
+    cgi_empty();
+    free(option);
 
   // ---------------------------------------------------------- error!
-  THROW("") "'%s': Unknown main request", rq _THROW
-  // Unreacheable
-  return NULL;
+  } else FAIL(str_f_new("Unknown request '%s'", rq))
+
+  free(rq);
 }
 
 // ______________
 // Commun process
 // TTTTTTTTTTTTTT
 
-static CgiRp *app_process(char *session_id, Mjson *rqm) {
-  char *page = jmap_gstring(rqm, "page");
+// 'rqm' is Map[Js]
+static void app_process(const char *session_id, Map *rqm) {
+  CGI_GET_STR(source, rqm, "source")
 
   // ------------------------------------------------------- Main page
-  if (str_eq(page, "main")) {
-    return main_process(session_id, rqm);
-  }
+  if (str_eq(source, "main")) {
+    main_process(session_id, rqm);
 
   // ---------------------------------------------------- Backups page
-  if (str_eq(page, "backups")) {
-    return backups_process(app_name, data_version, rqm);
-  }
+  } else if (str_eq(source, "backups")) {
+    backups_process(app_name, data_version, rqm);
 
   // ----------------------------------------------------- Chapss page
-  if (str_eq(page, "chpass")) {
-    return chpass_process(rqm);
-  }
+  } else if (str_eq(source, "chpass")) {
+    chpass_process(rqm);
 
   // --------------------------------------------------- Settings page
-  if (str_eq(page, "settings")) {
-    return settings_process(rqm);
-  }
+  } else if (str_eq(source, "settings")) {
+    settings_process(rqm);
 
   // ---------------------------------------------------------- error!
-  THROW("") "'%s': Unknown page request", page _THROW
-  // Unreacheable
-  return NULL;
+  } else FAIL(str_f_new("Unknown source '%s'", source))
+
+  free(source);
 }
 
-
-static void send (CgiRp *rp) {
-  puts ((char *) rp);
-}
 
 int main (int argc, char **argv) {
-  exc_init();
-  TRY {
-    if (argc != 2) {
-      THROW("") "argc must be 2" _THROW
-    }
+  if (argc != 2) FAIL("argc must be 2")
 
-    cgi_init(app_dir, expiration);
-    app_init();
-    conf_init();
+  cgi_init(app_dir, expiration);
+  app_init();
+  conf_init();
 
-    char *rq = argv[1];
-    int ix = str_cindex(rq, ':');
-    //............................................................. CONNECTION
-    if (ix == -1) {
-      cgi_set_key(rq);
-      send(cgi_connect(rq));
-      return;
-    }
-    //......................................................... AUTHENTICATION
-    if (ix == 0) {
-      char *key = cryp_key(app_name, cgi_klen());
-      cgi_set_key(key);
+  char *rq = argv[1];
+  int ix = str_cindex(rq, ':');
+  //............................................................. CONNECTION
+  if (ix == -1) {
+    cgi_set_key(rq);
+    cgi_connect(rq);
 
-      char *data = cryp_decryp(key, rq + 1);
-      Achar *parts = str_csplit(data, ':');
-      send(cgi_authentication(
-        achar_get(parts, 0),
-        achar_get(parts, 1),
-        *achar_get(parts, 2) == '1'
-      ));
-      return; }
-    //............................................................ NORMAL DATA
-    char *session_id = str_sub(rq, 0, ix);
+  //......................................................... AUTHENTICATION
+  } else if (ix == 0) {
+    char *key = str_new(app_name);
+    cryp_key(&key, cgi_klen());
+    cgi_set_key(key);
+
+    char *data = str_new(rq + 1);
+    cryp_decryp(&data, key);
+    free(key);
+    // Arr[char]
+    Arr *parts = str_csplit_new(data, ':');
+    free(data);
+    cgi_authentication(
+      arr_get(parts, 0),
+      arr_get(parts, 1),
+      *((char *)arr_get(parts, 2)) == '1'
+    );
+    arr_free(parts);
+
+  //............................................................ NORMAL DATA
+  } else {
+    char *session_id = str_new(rq);
+    str_left(&session_id, ix);
     char *key;
-    char *connectionId;
-    cgi_get_session_data(&key, &connectionId, session_id);
+    char *connection_id;
+    cgi_get_session_data(&key, &connection_id, session_id);
+
+    void send_expired(void) {
+      cgi_set_key("nosession");
+      cgi_expired();
+      free(key);
+      free(connection_id);
+      free(session_id);
+    }
 
     if (!*key) {
-      cgi_set_key("nosession");
-      send(cgi_expired());
-      return;
+      send_expired();
+      cgi_end();
+      return 0;
     }
 
     cgi_set_key(key);
-    Mjson *m = json_robject((Json *)cryp_decryp(key, str_sub_end(rq, ix + 1)));
-    if (
-      mjson_has_key(m, "connectionId") &&
-      !str_eq(connectionId, jmap_gstring(m, "connectionId"))
-    ) {
-      cgi_set_key("nosession");
-      send(cgi_expired());
-      return;
+    char *data = str_new(rq);
+    str_right(&data, ix + 1);
+    cryp_decryp(&data, key);
+
+    // Map[Js]
+    Map *m = js_ro_new((Js *)data);
+    free(data);
+    Js *conn_id_js = map_get_null(m, "connectionId");
+    if (conn_id_js) {
+      char *conn_id = js_rs_new(conn_id_js);
+      if (!str_eq(conn_id, connection_id)) {
+        map_free(m);
+        free(conn_id);
+        send_expired();
+        cgi_end();
+        return 0;
+      }
+      free(conn_id);
     }
 
-    send(app_process(session_id, m));
-  } CATCH (e) {
-    puts (e);
-  }_TRY
+    free(key);
+    free(connection_id);
+
+    app_process(session_id, m);
+
+    map_free(m);
+    free(session_id);
+  }
+
+  cgi_end();
 
   return 0;
 }

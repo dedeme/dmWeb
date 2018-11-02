@@ -3,18 +3,20 @@
 
 #include "core/settings.h"
 #include "conf.h"
+#include "dmc/cgi.h"
 
-CgiRp *settings_process(Mjson *mrq) {
-  char *rq = jmap_gstring(mrq, "rq");
+// 'mrq' is Map[Js]
+void settings_process(Map *mrq) {
+  CGI_GET_STR(rq, mrq, "rq")
 
   if (str_eq(rq, "setLang")) {
-    char *lang = jmap_gstring(mrq, "lang");
+    CGI_GET_STR(lang, mrq, "lang")
     conf_set_lang(lang);
-    return cgi_ok(mjson_new());
+    cgi_empty();
+    free(lang);
+  } else {
+    FAIL(str_f_new("'%s': Unknown 'rq' in settings", rq))
   }
 
-  THROW("") "'%s': Unknown request in settings", rq _THROW
-  // Unreacheable
-  return NULL;
-
+  free(rq);
 }

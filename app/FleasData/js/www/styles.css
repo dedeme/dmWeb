@@ -19,58 +19,38 @@ TABLE.main {
   border : 0px;
   width : 100%
 }
-TABLE.sudoku {
+TABLE.data {
   border-collapse : collapse;
   background-color : rgb(250, 250, 250);
   border : 1px solid rgb(110,130,150);
 }
 TABLE.border {border: 1px solid rgb(110,130,150);}
 
-TD.lastL {
-  background-color : rgb(250, 250, 250);
-  border : 1px solid rgb(110,130,150);
-  border-right : none;
-  text-align : left;
-}
-
-TD.lastR {
-  background-color : rgb(250, 250, 250);
-  border : 1px solid rgb(110,130,150);
-  border-left : none;
-  text-align : right;
-}
-
 TD.menu {
   border: 1px solid rgb(110,130,150);
   background-color: rgb(250, 250, 250);
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+TD.number {
+  border: 1px solid rgb(110,130,150);
+  background-color: rgb(250, 250, 250);
+  text-align: right;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+TD.header {
+  border: 1px solid rgb(110,130,150);
+  background-color: rgb(220, 220, 220);
+  text-align: center;
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
 TD {font-family: sans;font-size: 14px;
   margin-right: 5px; margin-left: 5px;}
-
-TD.lsudoku {
-  font-family: monospace;font-size: 10px;
-  padding-top:3px;
-  padding-left:6px;
-  padding-bottom:3px;
-  padding-right:6px;
-  border-top : 1px solid rgb(110,130,150);
-  border-left : 1px solid rgb(110,130,150);
-  border-bottom : 1px solid rgb(110,130,150);
-  border-right : 1px solid rgb(110,130,150);
-}
-
-TD.bsudoku {
-  font-family: monospace;font-size: 20px;
-  padding-top:3px;
-  padding-left:10px;
-  padding-bottom:4px;
-  padding-right:10px;
-  border-top : 1px solid rgb(110,130,150);
-  border-left : 1px solid rgb(110,130,150);
-  border-bottom : 1px solid rgb(110,130,150);
-  border-right : 1px solid rgb(110,130,150);
-}
 
 SPAN.menu {
   font-size: 20px;
