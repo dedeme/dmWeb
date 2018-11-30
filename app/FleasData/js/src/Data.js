@@ -84,7 +84,7 @@ export default class Data {
 
       return s1 === s2
         ? assetsSort(r1, r2)
-        : s1 > s2 ? 1 : -1
+        : Number(s1.replace("-", ".")) - Number(s2.replace("-", "."))
       ;
     };
 

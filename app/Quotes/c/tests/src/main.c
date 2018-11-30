@@ -12,9 +12,9 @@ int main (int argc, char **argv) {
   sys_init("Quotes2_test");
   db_init(sys_home());
 
-//  finanzas_tests_run();
-//  invertia_tests_run();
-  infomercados_tests_run();
+  finanzas_tests_run();
+  invertia_tests_run();
+//  infomercados_tests_run();
 
   return 0;
 }

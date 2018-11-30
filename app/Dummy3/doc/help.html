@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="" >
+<head>
+  <title>Dummy3-help</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel='stylesheet' href='http://localhost/notes.css' type='text/css' />
+</head>
+<body>
+<h1>Haskell client-server applications</h1>
+<hr>
+
+<!--_____________________-->
+<h2>1. Copy Dummy3 directory</h2>
+<!--TTTTTTTTTTTTTTTTTTTTT-->
+
+<h3>Example:</h3>
+<p>We copy <tt>Dummy3</tt> as <tt>MyMarket</tt></p>
+
+<!--________________________________-->
+<h2>2. In main directory </h2>
+<!--TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT-->
+
+<ul>
+<li>Remove <tt>doc</tt> directory </li>
+<li>Change name of <tt>Dummy3.geany</tt> (e.g. <tt>MyMarket.geany</tt>)</li>
+<li>Change page name in <i>Construir -> Establecer commandos de construcción ->
+    Browser</i></li>
+<li>Run geany file and change <tt>Project / Properties</tt></li>
+</ul>
+
+<!--________________________________-->
+<h2>3. In<tt> <big>server</big></tt></h2>
+<!--TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT-->
+<ul>
+<li>Remove directory <tt>h</tt></li>
+<li>Open a console in main directory (e.g. <tt>MyMarket</tt>) and type:
+  <table><tr><td class="frame">
+    stack new h new-template
+  </td></tr></table>
+  </li>
+<li>Remove files <tt>h.cabal</tt>, <tt>Changelog.md</tt> and
+    <tt>README.md</tt></li>
+<li>Change license for <tt>Dummy3/h/LICENSE</tt></li>
+<li>In <tt>h/stack.yaml</tt> set dependencies:
+  <table><tr><td class="frame">
+    packages:<br>
+    - .<br>
+    - /dm/dmH/lib/libdmh<br>
+    - /dm/dmH/lib/libmarketh<br>
+  </td></tr></table>
+  </li>
+<li>Modify <tt>h/package.yaml</tt></li>
+<li>Substitute <tt>h/app</tt> and <tt>h/src</tt> for that in <tt>Dummy3</tt>
+<li>Modify <tt>h/src/Global.hs</tt> with application data</li>
+<li>Compile</li>
+</ul>
+
+<!--________________________________-->
+<h2>4. In<tt> <big>client</big></tt></h2>
+<!--TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT-->
+
+<ul>
+<li>Delete symbolic lynk <tt>tmp</tt></li>
+<li>Empty directory <tt>js/www/js</tt></li>
+<li>
+  Change title in <tt>js/www/index-clean.html</tt> and
+  <tt>js/www/index-closure.html</tt>
+</li>
+<li>Update dependencies.</li>
+<li>Change application name and version in <tt>js/src/Main.js</tt>
+</ul>
+<!--___________-->
+<h2>5. In<tt> <big>www</big></tt></h2>
+<!--TTTTTTTTTTT-->
+
+<p> Make a symbolic link to <tt>client/www</tt> with application name (e.g.
+    <tt> MyMarket</tt> -> <tt>client/www</tt>)</p>
+
+<!--____________-->
+<h2>6. In<tt> <big>wwwcgi</big></tt></h2>
+<!--TTTTTTTTTTTT-->
+
+<ul>
+<li>Make a symbolic link in <tt>wwwcgi/dmcgi/bin</tt> to executable<br>
+ (e.g. <tt>MyMarket</tt> ->
+ <tt>h/.stack-work/install/x86_64-linux/lts-12.19/8.4.4/bin/MyMarket</tt>)
+  </li>
+<li>Set a link in <tt>wwwcgi/dmcgi/ccgi.sh</tt></li>
+</ul>
+
+<!--____________-->
+<h2>7. Steps end </h2>
+<!--TTTTTTTTTTTT-->
+
+<ul>
+  <li>In editor run <i>Compile All</i></li>
+  <li>Visit localhost page launching <i>Browser</i>.</li>
+  <li> If application uses a <tt>tmp</tt> directory, make a symbolic link to
+    <tt>wwwcgi/dmcgi/APP_NAME/tmp</tt>. For example, from <tt>MiMarket/www</tt>
+    write:
+    <table><tr><td class="frame">
+      ln -s /dm/wwwcgi/dmcgi/MyMarket/tmp tmp
+      </td></tr></table></li>
+</ul>
+
+<hr>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>
