@@ -55,18 +55,19 @@ export default class WserverId {
     }
     const now = Date.now();
     const data = {
-      "page": "servers",
+      "source": "wserverId",
       "rq": "testCode",
       "serverId": this._serverId,
       "code": code
     };
     const rp = await this._main.client.sendAsync(data);
-    if (rp["ok"]) {
+    const e = rp["error"];
+    if (e === "") {
       const dif = new Dec((Date.now() - now) / 1000, 3);
       this._icon.removeAll().add(Ui.img("well"));
       this._msg.removeAll().text(`${dif.toEu()} secs.`);
     } else {
-      this._icon.removeAll().add(Ui.img("error"));
+      this._icon.removeAll().add(Ui.img("error").att("title", e));
     }
   }
 
@@ -76,7 +77,7 @@ export default class WserverId {
       return;
     }
     const data = {
-      "page": "servers",
+      "source": "wserverId",
       "rq": "setCode",
       "serverId": this._serverId,
       "nickId": this._nickId,

@@ -49,7 +49,10 @@ const translator = (() => {
     return ps[0] + ":" + ps[1] + ":" + ps[2] + ":" +
       ps[4] + ":" + ps[5] + ":" + ps[6] + ":false";
   };
-  const infomercados = (tx) => {
+  const yahoo = (tx) => {
+    const months = ["ene.", "feb.", "mar.", "abr.", "may.", "jun.",
+      "jul.", "ago.", "sep.", "oct.", "nov.", "dic."];
+    months.forEach((m, i) => tx = tx.replace(` ${m} `, `/${i}/`));
     const ps = format(
       (date) => {
         const ps = date.split("/");
@@ -58,7 +61,7 @@ const translator = (() => {
       tx, ",", "."
     ).split(":");
     return ps[0] + ":" + ps[1] + ":" + ps[4] + ":" +
-      ps[2] + ":" + ps[3] + ":" + ps[5] + ":false";
+      ps[2] + ":" + ps[3] + ":" + ps[6] + ":false";
   };
   const invertia = (tx) => {
     const ps = format(
@@ -82,8 +85,8 @@ const translator = (() => {
         .add($("td").add($("button").text("Finanzas").on("click", () => {
           ed2.value(finanzas(ed1.value())).e.select();
         })))
-        .add($("td").add($("button").text("Infomercados").on("click", () => {
-          ed2.value(infomercados(ed1.value())).e.select();
+        .add($("td").add($("button").text("Yahoo").on("click", () => {
+          ed2.value(yahoo(ed1.value())).e.select();
         })))
         .add($("td").add($("button").text("Invertia").on("click", () => {
           ed2.value(invertia(ed1.value())).e.select();
@@ -112,7 +115,7 @@ export default class Issues {
   async moreIssues (search) {
     const self = this;
     const data = {
-      "page": "issues",
+      "source": "issues",
       "rq": "nextIssue"
     };
     const rp = await self._main.client.send(data);
@@ -121,7 +124,7 @@ export default class Issues {
       search.removeAll().add($("span").text(_("There are no more issues")));
     } else {
       const data = {
-        "page": "nicks",
+        "source": "wnick",
         "rq": "issue",
         "id": nickId,
         "menu": Main.issuesPageId
@@ -170,7 +173,7 @@ export default class Issues {
   async server (nickId) {
     const self = this;
     const data = {
-      "page": "issues",
+      "source": "issues",
       "rq": "serverIdCodes",
       "id": nickId
     };
@@ -201,7 +204,7 @@ export default class Issues {
 
   async qissues (nickId) {
     const data = {
-      "page": "issues",
+      "source": "issues",
       "rq": "qissue",
       "id": nickId
     };
@@ -228,7 +231,7 @@ export default class Issues {
    */
   async show () {
     const data = {
-      "page": "issues",
+      "source": "issues",
       "rq": "idata"
     };
     const rp = await this._main.client.send(data);

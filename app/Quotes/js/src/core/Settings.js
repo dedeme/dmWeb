@@ -29,7 +29,7 @@ export default class Settings {
   async setLang (lang) {
     const main = this._main;
     const rq = {
-      "page": "settings",
+      "source": "settings",
       "rq": "setLang",
       "lang": lang
     };

@@ -16,13 +16,14 @@ import Issues from "./Issues.js";
 import Servers from "./Servers.js";
 
 const app = "Quotes";
-const version = "201809";
+const version = "201811";
 const langStore = "${app}__lang";
 const captchaAuthStore = "${app}__captcha";
 const captchaChpassStore = "${app}__captchaCh";
 
 const settingsPageId = "settings";
 const backupsPageId = "backups";
+
 const nicksPageId = "nicks";
 const editPageId = "edit";
 const issuesPageId = "issues";
@@ -74,45 +75,40 @@ export default class Main {
 
   async run () {
     const self = this;
-
-    function hub (page) {
-      switch (page) {
-      case nicksPageId:
-        new Nicks(self).show();
-        break;
-      case editPageId:
-        new Edit(self).show();
-        break;
-      case issuesPageId:
-        new Issues(self).show();
-        break;
-      case serversPageId:
-        new Servers(self).show();
-        break;
-      case backupsPageId: {
-        new Backups(self).show();
-        break;
-      }
-      case settingsPageId:
-        new Settings(self).show();
-        break;
-      default:
-        throw("Page '" + page + "' is unknown");
-      }
-    }
-
     const data = {
-      "page": "main",
+      "source": "main",
       "rq": "getDb"
     };
     const rp = await self._client.send(data);
-    self._model = rp["db"];
+    this._model = rp["db"];
 
-    if (self._model["lang"] === "es") I18n.es();
+    if (this._model["lang"] === "es") I18n.es();
     else I18n.en();
 
-    const page = self._model["menu"];
-    hub(page);
+    const page = this._model["menu"];
+    switch (page) {
+    case nicksPageId:
+      new Nicks(self).show();
+      break;
+    case editPageId:
+      new Edit(self).show();
+      break;
+    case issuesPageId:
+      new Issues(self).show();
+      break;
+    case serversPageId:
+      new Servers(self).show();
+      break;
+    case backupsPageId: {
+      new Backups(self).show();
+      break;
+    }
+    case settingsPageId:
+      new Settings(self).show();
+      break;
+    default:
+      throw("Source '" + page + "' is unknown");
+    }
   }
 
   async start () {
@@ -132,7 +128,7 @@ export default class Main {
   /** @return {Promise} */
   async bye () {
     const rq = {
-      "page": "main",
+      "source": "main",
       "rq": "logout"
     };
     await this.client.send(rq);
@@ -145,7 +141,7 @@ export default class Main {
    */
   async go (page) {
     const rq = {
-      "page": "main",
+      "source": "main",
       "rq": "setMenu",
       "option": page
     };
@@ -192,24 +188,25 @@ export default class Main {
     return backupsPageId;
   }
 
-  /** @return {string} Id of Nicks page */
+  /** @return {string} Id of nicks page */
   static get nicksPageId () {
     return nicksPageId;
   }
 
-  /** @return {string} Id of Edit page */
+  /** @return {string} Id of edit page */
   static get editPageId () {
     return editPageId;
   }
 
-  /** @return {string} Id of Issues page */
+  /** @return {string} Id of issues page */
   static get issuesPageId () {
     return issuesPageId;
   }
 
-  /** @return {string} Id of Servers page */
+  /** @return {string} Id of servers page */
   static get serversPageId () {
     return serversPageId;
   }
+
 
 }

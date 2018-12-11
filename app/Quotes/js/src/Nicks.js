@@ -36,12 +36,12 @@ export default class Nicks {
       const wait = new Promise(resolve => {
         setTimeout(async () => {
           const data = {
-            "page": "edit",
+            "source": "edit",
             "rq": "download",
             "id": wnick.id,
           };
           const rp = await this._main.client.sendAsync(data);
-          wnick.download(rp["ok"]);
+          wnick.download(rp["error"]);
           resolve();
         }, 200);
       });
@@ -56,7 +56,7 @@ export default class Nicks {
       wnick.wait();
       const id = wnick.id;
       const data = {
-        "page": "edit",
+        "source": "edit",
         "rq": "check",
         "id": id
       };
@@ -104,7 +104,7 @@ export default class Nicks {
     const addNick = async () => {
       const nick = input.value().trim();
       const data = {
-        "page": "nicks",
+        "source": "nicks",
         "rq": "new",
         "nick": nick
       };
@@ -154,7 +154,7 @@ export default class Nicks {
    */
   async show () {
     const data = {
-      "page": "nicks",
+      "source": "nicks",
       "rq": "idata"
     };
     const rp = await this._main.client.send(data);

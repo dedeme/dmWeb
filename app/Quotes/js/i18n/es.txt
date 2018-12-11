@@ -15,36 +15,39 @@
 # src/core/Backups.js: 54
 '%0' can not be read = '%0' no puede ser leido
 
-# src/core/Backups.js: 206
+# src/core/Backups.js: 210
 '%0' is an empty file = '%0' es un archivo vacío
 
 # src/wgs/Wquotes.js: 174
-# src/core/Chpass.js: 72
+# src/core/Chpass.js: 71
 # src/core/Auth.js: 50
 Accept = Aceptar
 
-# src/core/Backups.js: 208
-# src/core/Backups.js: 246
-# src/core/Backups.js: 256
+# src/core/Backups.js: 212
+# src/core/Backups.js: 250
+# src/core/Backups.js: 260
 All the data will be replaced = ¡ATENCIÓN!. Todos los datos serán reemplazados.\n¿Continuar?
 
-# src/core/Backups.js: 231
+# src/core/Backups.js: 235
 Automatic Backups = Copias automáticas
 
 # src/core/Dom.js: 80
 Backs = Copias
 
-# src/core/Backups.js: 197
+# src/core/Backups.js: 201
 Backup file is missing = No se ha indicado el archivo de backup
 
-# src/core/Backups.js: 265
+# src/core/Backups.js: 89
+Backup successfully restored = Copia de seguridad restaurada
+
+# src/core/Backups.js: 269
 Backups = Copias de seguridad
 
 # src/Issues.js: 191
 Browser = Navegador
 
 # src/wgs/Wquotes.js: 173
-# src/core/Chpass.js: 76
+# src/core/Chpass.js: 75
 Cancel = Cancelar
 
 # src/core/Settings.js: 65
@@ -58,14 +61,14 @@ Change Password = Cambiar la contraseña
 # src/Edit.js: 125
 Check = Prueba
 
-# src/core/Chpass.js: 192
+# src/core/Chpass.js: 191
 # src/core/Auth.js: 176
 Check gray squares = Marcar los cuadrados grises
 
-# src/core/Backups.js: 239
+# src/core/Backups.js: 243
 Clear = Eliminar
 
-# src/core/Backups.js: 236
+# src/core/Backups.js: 240
 Clear trash? = ¿Vaciar la papelera?
 
 # src/core/Expired.js: 44
@@ -74,16 +77,16 @@ Click %0 to continue. = Hacer click %0 para continuar.
 # src/wgs/Wquotes.js: 277
 Close = Cerrar
 
-# src/core/Chpass.js: 148
+# src/core/Chpass.js: 147
 Confirm password = Confirmar la contraseña
 
-# src/core/Chpass.js: 106
+# src/core/Chpass.js: 105
 Confirm password is missing = Falta la confirmación de la contraseña
 
-# src/core/Chpass.js: 136
+# src/core/Chpass.js: 135
 Current password = Contraseña actual
 
-# src/core/Chpass.js: 94
+# src/core/Chpass.js: 93
 Current password is missing = Falta indicar la contraseña actual
 
 # src/wgs/Wquotes.js: 275
@@ -101,7 +104,7 @@ Done = Hecho
 
 # src/Nicks.js: 133
 # src/Edit.js: 121
-# src/core/Backups.js: 268
+# src/core/Backups.js: 272
 Download = Descarga
 
 # src/wgs/Wquotes.js: 219
@@ -115,7 +118,7 @@ Extra quote in %0 = Cotización sobrante en %0
 # src/Edit.js: 67
 Fail downloading quotes = Fallo descargando cotizaciones
 
-# src/core/Chpass.js: 177
+# src/core/Chpass.js: 176
 Fail trying to change password = Fallo intentando cambiar la contraseña
 
 # src/core/Backups.js: 85
@@ -125,9 +128,9 @@ Fail unzipping backup = Fallo descomprimiendo la copia de seguridad
 File %0 empty or not found = Archivo %0 sin datos o no encontrado
 
 # src/core/Backups.js: 87
-File is not a Selectividad backup = El archivo no es una copia de seguridad de Selectividad
+File is not a %0 backup = El archivo no es una copia de seguridad de %0
 
-# src/core/Chpass.js: 90
+# src/core/Chpass.js: 89
 # src/core/Auth.js: 103
 Grey squares checks are wrong = Las casillas grises están mal marcadas
 
@@ -141,14 +144,14 @@ Issues = Problemas
 # src/core/Auth.js: 138
 Keep connected = Mantenerse conectado
 
-# src/core/Chpass.js: 212
+# src/core/Chpass.js: 211
 # src/core/Auth.js: 196
 Login = Identificación
 
 # src/core/Bye.js: 40
 Logout-message = <p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>
 
-# src/core/Backups.js: 173
+# src/core/Backups.js: 177
 Make backup = Hacer copia
 
 # src/wgs/Wquotes.js: 278
@@ -171,13 +174,13 @@ Mult. = Mult.
 # src/Nicks.js: 128
 New nick = Nuevo nick
 
-# src/core/Chpass.js: 142
+# src/core/Chpass.js: 141
 New password = Nueva contraseña
 
-# src/core/Chpass.js: 112
+# src/core/Chpass.js: 111
 New password and confirm password do not match = La nueva contraseña y su confirmación no coinciden
 
-# src/core/Chpass.js: 100
+# src/core/Chpass.js: 99
 New password is missing = Falta indicar la nueva contraseña
 
 # src/core/Dom.js: 70
@@ -190,7 +193,7 @@ No issues detected = Ningún problema detectado
 # src/Issues.js: 147
 No nick was selected = No se ha seleccionado ningún nick
 
-# src/core/Backups.js: 201
+# src/core/Backups.js: 205
 Only one file can be selected = Sólo se puede seleccionar un archivo
 
 # src/wgs/Wquotes.js: 276
@@ -202,7 +205,7 @@ Password = Contraseña
 # src/core/Auth.js: 81
 Password is missing = Falta indicar la contraseña
 
-# src/core/Chpass.js: 46
+# src/core/Chpass.js: 45
 Password successfully changed = La contraseña se cambió correctamente
 
 # src/data/Issue.js: 38
@@ -217,10 +220,10 @@ Quotes have wrong format = Las cotizaciones tiene un formato inválido
 # src/wgs/Wquotes.js: 76
 Quotes updated = Cotizaciones actualizadas
 
-# src/core/Backups.js: 273
+# src/core/Backups.js: 277
 Restore = Restauración
 
-# src/core/Backups.js: 193
+# src/core/Backups.js: 197
 Restore backup = Restaurar copia
 
 # src/wgs/Wquotes.js: 192
@@ -276,7 +279,7 @@ There is an issue:\n%0\nForce modification? = Hay un problema:\n%0\n¿Forzar la 
 # src/Issues.js: 78
 Translator = Traductor
 
-# src/core/Backups.js: 234
+# src/core/Backups.js: 238
 Trash = Papelera
 
 # src/core/Auth.js: 118

@@ -34,7 +34,7 @@ export default class Edit {
 
   async modify (nickId, nickName) {
     const data = {
-      "page": "edit",
+      "source": "edit",
       "rq": "modify",
       "nickId": nickId,
       "nickName": nickName
@@ -53,18 +53,19 @@ export default class Edit {
     this._status.removeAll()
       .add($("img").att("src", "img/wait.gif").style("vertical-align:bottom"));
     const data = {
-      "page": "edit",
+      "source": "edit",
       "rq": "download",
       "id": id,
     };
     const rp = await this._main.client.send(data);
-    if (rp["ok"]) {
+    const e = rp["error"];
+    if (e === "") {
       this._main.run();
     } else {
       this._status.removeAll()
         .add(Ui.img("error")
           .style("vertical-align:bottom")
-          .att("title", _("Fail downloading quotes"))
+          .att("title", _args(_("Fail downloading quotes:\n%0"), e))
         );
     }
   }
@@ -74,7 +75,7 @@ export default class Edit {
     self._status.removeAll()
       .add($("img").att("src", "img/wait.gif").style("vertical-align:bottom"));
     const data = {
-      "page": "edit",
+      "source": "edit",
       "rq": "check",
       "id": id
     };
@@ -87,7 +88,7 @@ export default class Edit {
       self._status.removeAll()
         .add(Ui.link(async () => {
           const data = {
-            "page": "nicks",
+            "source": "nicks",
             "rq": "issue",
             "id": id,
             "menu": Main.issuesPageId
@@ -166,7 +167,7 @@ export default class Edit {
    */
   async show () {
     const data = {
-      "page": "edit",
+      "source": "edit",
       "rq": "idata"
     };
     const rp = await this._main.client.send(data);

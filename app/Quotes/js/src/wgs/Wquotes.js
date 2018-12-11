@@ -42,7 +42,7 @@ export default class Wquotes {
 
   async selAux (nickId) {
     const data = {
-      "page": "edit",
+      "source": "wquotes",
       "rq": "nickQuotes",
       "id": nickId,
     };
@@ -64,15 +64,15 @@ export default class Wquotes {
       .join("\n")
     ;
     const data = {
-      "page": "edit",
+      "source": "wquotes",
       "rq": "modifyQuotes",
       "id": this._nickId,
       "quotes": qs,
     };
     const rp = await this._main.client.send(data);
     const issue = Issue.fromJson(rp["issue"]);
-    this._editor1.value(rp["quotes"]);
     if (issue.type === Issue.NONE) {
+      this._editor1.value(rp["quotes"]);
       alert(_("Quotes updated"));
     } else if (issue.type === Issue.EXISTS) {
       alert(_("Wrong data"));
@@ -80,7 +80,7 @@ export default class Wquotes {
       _args(_("There is an issue:\n%0\nForce modification?"), issue.msg)
     )) {
       const data = {
-        "page": "edit",
+        "source": "wquotes",
         "rq": "modifyForce",
         "id": this._nickId,
         "quotes": qs,
@@ -108,7 +108,7 @@ export default class Wquotes {
       .join("\n")
     ;
     const data = {
-      "page": "edit",
+      "source": "wquotes",
       "rq": "checkQuotes",
       "id": this._nickId,
       "quotes": qs,
@@ -144,8 +144,8 @@ export default class Wquotes {
 
   async split (qs) {
     const data = {
-      "page": "edit",
-      "rq": "saveQuotes",
+      "source": "wquotes",
+      "rq": "modifyForce",
       "id": this._nickId,
       "quotes": qs,
     };
@@ -168,7 +168,7 @@ export default class Wquotes {
     const seeBt = $("button")
       .att("id", "seeBt")
       .text(_("See"))
-      .setStyle("width", "50px")
+      .setStyle("width", "70px")
     ;
     const cancelBt = $("button").text(_("Cancel"));
     const acceptBt = $("button").text(_("Accept"));
@@ -230,11 +230,14 @@ export default class Wquotes {
       splitBt.disabled(true);
     });
     doneBt.on("click", () => {
+      /*
       doneBt.disabled(true);
       modifyBt.disabled(true);
       this._editor1.disabled(true);
       editBt.disabled(false);
       splitBt.disabled(false);
+      */
+      this._main.run();
     });
     modifyBt.on("click", () => {
       self.modify();

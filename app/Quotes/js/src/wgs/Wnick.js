@@ -51,7 +51,7 @@ export default class Wnick {
     } else {
       self._checkDiv.removeAll().add(Ui.link(async () => {
         const data = {
-          "page": "nicks",
+          "source": "wnick",
           "rq": "issue",
           "id": self._nick.id,
           "menu": Main.issuesPageId
@@ -63,16 +63,17 @@ export default class Wnick {
   }
 
   /**
-   * @param {boolean} value
+   * @param {string} error
    * @return {void}
    */
-  download (value) {
+  download (error) {
     const self = this;
-    if (value) {
+    if (error === "") {
       self._checkDiv.removeAll().add(Ui.img("well"));
     } else {
       self._checkDiv.removeAll().add(
-        Ui.img("error").att("title", _("Fail downloading quotes"))
+        Ui.img("error")
+          .att("title", _args(_("Fail downloading quotes:\n%0"), error))
       );
     }
   }
@@ -85,7 +86,7 @@ export default class Wnick {
   /** @private */
   async setModel (id) {
     const data = {
-      "page": "nicks",
+      "source": "wnick",
       "rq": "setModel",
       "id": id
     };
@@ -99,7 +100,7 @@ export default class Wnick {
       return;
     }
     const data = {
-      "page": "nicks",
+      "source": "wnick",
       "rq": "del",
       "id": id
     };
@@ -111,7 +112,7 @@ export default class Wnick {
   async setIsIbex (id, value) {
     const self = this;
     const data = {
-      "page": "nicks",
+      "source": "wnick",
       "rq": "setIsIbex",
       "id": id,
       "value": value
@@ -132,7 +133,7 @@ export default class Wnick {
   async setIsSel (id, value) {
     const self = this;
     const data = {
-      "page": "nicks",
+      "source": "wnick",
       "rq": "setIsSel",
       "id": id,
       "value": value
@@ -152,7 +153,7 @@ export default class Wnick {
   /** @private */
   async edit (id) {
     const data = {
-      "page": "nicks",
+      "source": "wnick",
       "rq": "edit",
       "id": id,
       "menu": Main.editPageId

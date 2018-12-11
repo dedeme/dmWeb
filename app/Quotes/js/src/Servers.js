@@ -26,7 +26,7 @@ export default class Servers {
 
   async go (server) {
     const data = {
-      "page": "servers",
+      "source": "servers",
       "rq": "setSelServer",
       "name": server
     };
@@ -96,7 +96,7 @@ export default class Servers {
   async show () {
     const self = this;
     const data = {
-      "page": "servers",
+      "source": "servers",
       "rq": "idata"
     };
     const rp = await self._main.client.send(data);
@@ -104,7 +104,6 @@ export default class Servers {
     const selServer = rp["selServer"];
     const nicks = rp["nicks"].map(n => Nick.fromJson(n));
     nicks.sort((n1, n2) => n1.nick.localeCompare(n2.nick));
-
     const codes = [];
 
     const total = nicks.length;
@@ -118,12 +117,12 @@ export default class Servers {
     const sh = async it => {
       if (it.has) {
         const data = {
-          "page": "servers",
+          "source": "servers",
           "rq": "nickCode",
           "serverId": selServer,
           "nickId": it.value.id
         };
-        const rp = await self._main.client.sendAsync(data);
+        const rp = await self._main.client.send(data);
         codes.push(rp["code"]);
         ++ix;
         bar.setStyle("width", `${Math.floor(ix * 100 / total)}%`);

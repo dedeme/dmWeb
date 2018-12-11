@@ -30,7 +30,7 @@ export default class Backups {
    */
   async backupDownload (action) {
     const data = {
-      "page": "backups",
+      "source": "backups",
       "rq": "backup"
     };
     const rp = await this._main.client.send(data);
@@ -53,7 +53,7 @@ export default class Backups {
     reader.onerror = async () => {
       alert(_args(_("'%0' can not be read"), file.name));
       const data = {
-        "page": "backups",
+        "source": "backups",
         "rq": "restoreAbort"
       };
       await client.send(data);
@@ -65,7 +65,7 @@ export default class Backups {
         progress(start);
         if (bindata.length > 0) {
           const data = {
-            "page": "backups",
+            "source": "backups",
             "rq": "restoreAppend",
             "data": B64.encodeBytes(bindata)
           };
@@ -76,15 +76,19 @@ export default class Backups {
         } else {
           progress(file.size);
           const data = {
-            "page": "backups",
+            "source": "backups",
             "rq": "restoreEnd"
           };
           const rp = await client.send(data);
           const fail = rp["fail"];
-          if (fail === "restore:unzip") {
+          if (fail.startsWith("restore:unzip")) {
             alert(_("Fail unzipping backup"));
-          } else if (fail === "restore:version") {
-            alert(_("File is not a Selectividad backup"));
+          } else if (fail.startsWith("restore:version")) {
+            alert(_args(_("File is not a %0 backup"), Main.app));
+          } else if (fail === "") {
+            alert(_("Backup successfully restored"));
+          } else {
+            alert(fail);
           }
           main.run();
         }
@@ -97,7 +101,7 @@ export default class Backups {
     }
 
     const data = {
-      "page": "backups",
+      "source": "backups",
       "rq": "restoreStart"
     };
     await client.send(data);
@@ -108,7 +112,7 @@ export default class Backups {
   async clearTrash () {
     const main = this._main;
     const data = {
-      "page": "backups",
+      "source": "backups",
       "rq": "clearTrash"
     };
     await main.client.send(data);
@@ -122,7 +126,7 @@ export default class Backups {
   async autorestore (f) {
     const main = this._main;
     const data = {
-      "page": "backups",
+      "source": "backups",
       "rq": "autorestore",
       "file": f
     };
@@ -137,7 +141,7 @@ export default class Backups {
   async restoreTrash (f) {
     const main = this._main;
     const data = {
-      "page": "backups",
+      "source": "backups",
       "rq": "restoreTrash",
       "file": f
     };
@@ -285,7 +289,7 @@ export default class Backups {
   async show () {
     const self = this;
     const rq = {
-      "page": "backups",
+      "source": "backups",
       "rq": "lists"
     };
     const rp = await self._main.client.send(rq);
