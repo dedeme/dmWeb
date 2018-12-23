@@ -8,8 +8,7 @@ module Data.Servers.Yahoo (Yahoo (..)) where
 import Control.Exception
 import Data.List
 import Text.Printf
-import qualified Data.ByteString.Lazy.Char8 as C8
-import Network.HTTP.Conduit (simpleHttp)
+import qualified Data.Servers.Reader as Reader
 import qualified Dm.Date as Date
 import qualified Dm.Ext as Ext
 import Data.Server (Server)
@@ -173,8 +172,7 @@ instance Server Yahoo where
                       code code
 
   read a code = do
-    bs <- simpleHttp $ Sv.uri a code
-    let html = C8.unpack bs
+    html <- Reader.read $ Sv.uri a code
     case fdrop html "\"historical-prices\"" of
       Nothing -> return $ Left "'historical-prices' not found"
       Just h -> case fdrop h "<tbody" of

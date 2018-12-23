@@ -13,8 +13,8 @@ module MyMarket
       Income
       Profits # Dividends and similar
       Fees    # Direct broker fees, out of operations
-      Pdif   # Correction positive (+ cash)
-      Ndif   # Correction negative (- cash)
+      Pdif    # Correction positive (+ cash)
+      Ndif    # Correction negative (- cash)
       InitialCapital
       InitialCash
       InitialStock

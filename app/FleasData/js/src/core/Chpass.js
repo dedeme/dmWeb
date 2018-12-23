@@ -45,7 +45,7 @@ export default class Chpass {
       alert(_("Password successfully changed"));
       main.run();
     } else {
-      main.go(Main.settingsPageId, "");
+      main.go(Main.settingsPageId, "", "");
     }
   }
 

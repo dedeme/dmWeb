@@ -15,11 +15,15 @@ Accept = Aceptar
 # src/core/Backups.js: 256
 All the data will be replaced = ¡ATENCIÓN!. Todos los datos serán reemplazados.\n¿Continuar?
 
+# src/Bests.js: 82
 # src/Data.js: 231
 Assets = Patrimonio
 
 # src/core/Backups.js: 231
 Automatic Backups = Backups automáticos
+
+# src/Bests.js: 85
+Average = Media
 
 # src/core/Backups.js: 197
 Backup file is missing = No se ha indicado el archivo de backup
@@ -27,9 +31,11 @@ Backup file is missing = No se ha indicado el archivo de backup
 # src/core/Backups.js: 265
 Backups = Copias de seguridad
 
+# src/Bests.js: 80
 # src/Data.js: 213
 Buy Str. = Banda cs.
 
+# src/Bests.js: 83
 # src/Data.js: 241
 Buys = Cs.
 
@@ -61,16 +67,16 @@ Confirm password = Confirmar la contraseña
 # src/core/Chpass.js: 105
 Confirm password is missing = Falta la confirmación de la contraseña
 
-# src/Create.js: 29
-# src/Create.js: 30
-Create = Crear
-
 # src/core/Chpass.js: 135
 Current password = Contraseña actual
 
 # src/core/Chpass.js: 93
 Current password is missing = Falta indicar la contraseña actual
 
+# src/Bests.js: 77
+Date = Fecha
+
+# src/Bests.js: 79
 # src/Data.js: 203
 Days = Días
 
@@ -93,6 +99,7 @@ Grey squares checks are wrong = Las casillas grises están mal marcadas
 # src/core/Dom.js: 42
 Help & Credits = Ayuda & créditos
 
+# src/Bests.js: 78
 # src/Data.js: 193
 Id = Id
 
@@ -119,7 +126,7 @@ New password and confirm password do not match = La nueva contraseña y su confi
 New password is missing = Falta indicar la nueva contraseña
 
 # src/Data.js: 183
-Nº = Nª
+Nº = Nº
 
 # src/core/Backups.js: 201
 Only one file can be selected = Sólo se puede seleccionar un archivo
@@ -133,31 +140,32 @@ Password is missing = Falta indicar la contraseña
 # src/core/Chpass.js: 45
 Password successfully changed = La contraseña se cambió correctamente
 
+# src/Bests.js: 86
+R.S.D. = D.T.R.
+
 # src/core/Backups.js: 273
 Restore = Restauración
 
 # src/core/Backups.js: 193
 Restore backup = Restaurar copia
 
+# src/Bests.js: 81
 # src/Data.js: 223
 Sell Str. = Banda vs.
 
+# src/Bests.js: 84
 # src/Data.js: 251
 Sells = Vs.
 
 # src/core/Expired.js: 42
 Session is expired. = La sesión ha expirado.
 
-# src/core/Dom.js: 75
+# src/core/Dom.js: 76
 # src/core/Settings.js: 81
 Settings = Configuración
 
 # src/core/Backups.js: 234
 Trash = Papelera
-
-# src/Update.js: 29
-# src/Update.js: 30
-Update = Actualizar
 
 # src/core/Auth.js: 118
 User = Usuario
@@ -165,6 +173,7 @@ User = Usuario
 # src/core/Auth.js: 77
 User name is missing = Falta indicar el nombre del usuario
 
+# src/Bests.js: 54
 # src/Data.js: 65
 Without data = Sin datos
 

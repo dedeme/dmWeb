@@ -13,6 +13,7 @@
 #include "core/settings.h"
 #include "DEFS.h"
 #include "data.h"
+#include "bests.h"
 
 static char *app_name = "FleasData";
 static char *data_version = "201810";
@@ -139,6 +140,10 @@ static void app_process(const char *session_id, Map *rqm) {
   // ------------------------------------------------------- Data page
   } else if (str_eq(source, "Data")) {
     data_process(rqm);
+
+  // ------------------------------------------------------ Bests page
+  } else if (str_eq(source, "Bests")) {
+    bests_process(rqm);
 
   // ---------------------------------------------------------- error!
   } else FAIL(str_f_new("Unknown source '%s'", source))

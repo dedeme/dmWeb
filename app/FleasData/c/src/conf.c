@@ -16,6 +16,7 @@ void conf_init(void) {
     map_put(m, "lang", js_ws_new("en"));
     map_put(m, "tmenu", js_ws_new("settings"));
     map_put(m, "lmenu", js_ws_new(""));
+    map_put(m, "fgroup", js_ws_new(""));
     Js *js = js_wo_new(m);
     file_write(path_null, (char *)js);
     map_free(m);
@@ -57,4 +58,8 @@ void conf_set_tmenu(const char *option) {
 
 void conf_set_lmenu(const char *option) {
   conf_set("lmenu", option);
+}
+
+void conf_set_fgroup(const char *option) {
+  conf_set("fgroup", option);
 }

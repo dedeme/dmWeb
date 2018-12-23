@@ -171,7 +171,7 @@ export default class Data {
           .add($("td").style("text-align:left")
             .add(d === date
               ? $("span").html("<b>" + d + "</b>")
-              : Ui.link(() => main.go(fgroup, d)).klass("link").html(d)))))
+              : Ui.link(() => main.go(fgroup, d, "")).klass("link").html(d)))))
     ;
 
     const mainTdRight = $("div");

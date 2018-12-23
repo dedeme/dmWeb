@@ -55,9 +55,9 @@ export default class Dom {
   show (page, o) {
     const main = this._main;
 
-    function entry (id, target, subtarget) {
+    function entry (id, target, lmenu, fgroup) {
       return Ui.link(() => {
-        main.go(target, subtarget);
+        main.go(target, lmenu, fgroup);
       })
         .klass(target === page ? "frame" : "link").html(id);
     }
@@ -67,12 +67,13 @@ export default class Dom {
 
     const lopts = main.fgroups.map(
       (g, i) => (i === 0)
-        ? entry(g, g, main.model["lmenu"])
-        : $("span").add(separator()).add(entry(g, g, main.model["lmenu"]))
+        ? entry(g, g, main.model["lmenu"], main.model["fgroup"])
+        : $("span").add(separator())
+          .add(entry(g, g, main.model["lmenu"], main.model["fgroup"]))
     );
 
     const ropts = [
-      entry(_("Settings"), Main.settingsPageId, ""),
+      entry(_("Settings"), Main.settingsPageId, "", ""),
       separator(),
       Ui.link(() => {
         main.bye();

@@ -8,8 +8,7 @@ module Data.Servers.Invertia (Invertia (..)) where
 import Control.Exception
 import Data.List
 import Text.Printf
-import qualified Data.ByteString.Lazy.Char8 as C8
-import Network.HTTP.Conduit (simpleHttp)
+import qualified Data.Servers.Reader as Reader
 import qualified Dm.Date as Date
 import qualified Dm.Ext as Ext
 import Data.Server (Server)
@@ -172,8 +171,7 @@ instance Server Invertia where
             "-/empresa/%s") code
 
   read a code = do
-    bs <- simpleHttp $ Sv.uri a code
-    let html = C8.unpack bs
+    html <- Reader.read $ Sv.uri a code
     case fdrop html "table-data" of
       Nothing -> return $ Left "'table-data' not found"
       Just h -> case ftake h "</tbody>" of

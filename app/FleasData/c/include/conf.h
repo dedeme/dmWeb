@@ -33,4 +33,7 @@ void conf_set_tmenu(const char *option);
 /// [conf_set_lmenu] sets option in left menu.
 void conf_set_lmenu(const char *option);
 
+/// [conf_set_fgroup] sets option in left menu of bests.
+void conf_set_fgroup(const char *option);
+
 #endif

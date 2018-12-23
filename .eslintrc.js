@@ -98,7 +98,9 @@ module.exports = {
             "error"
         ],
         "brace-style": [
-            "error"
+            "error",
+            "1tbs",
+            {"allowSingleLine": true}
         ],
         "comma-spacing": [
             "error"

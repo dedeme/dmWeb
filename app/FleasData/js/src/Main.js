@@ -10,6 +10,7 @@ import Bye from "./core/Bye.js";
 import {I18n} from "./I18n.js";
 
 import Data from "./Data.js";
+import Bests from "./Bests.js";
 
 const app = "FleasData";
 const version = "201810";
@@ -17,6 +18,7 @@ const langStore = "${app}__lang";
 const captchaAuthStore = "${app}__captcha";
 const captchaChpassStore = "${app}__captchaCh";
 
+const bestsPageId = "bests";
 const settingsPageId = "settings";
 
 /** Main page. */
@@ -114,7 +116,11 @@ export default class Main {
     const page = self._model["tmenu"];
 
     if (self.fgroups.indexOf(page) !== -1) {
-      new Data(self, page, self._model["lmenu"]).show();
+      if (page === bestsPageId) {
+        new Bests(self, self._model["fgroup"]).show();
+      } else {
+        new Data(self, page, self._model["lmenu"]).show();
+      }
     } else if (page === settingsPageId) {
       new Settings(self).show();
     } else {
@@ -149,15 +155,18 @@ export default class Main {
   /**
    * @param {string} tmenu Top menu option.
    * @param {string} lmenu Left menu option.
-   *    In tmenu 'settings' its value is "".
+   *    If tmenu is different to a fleas group, its value is "".
+   * @param {string} fgroup Left menu oprion.
+   *    If tmenu is different to 'bests', its value is "".
    * @return {Promise}
    */
-  async go (tmenu, lmenu) {
+  async go (tmenu, lmenu, fgroup) {
     const rq = {
       "source": "main",
       "rq": "setMenu",
       "tmenu": tmenu,
-      "lmenu": lmenu
+      "lmenu": lmenu,
+      "fgroup": fgroup
     };
     await this.client.send(rq);
     this.run();
@@ -190,6 +199,11 @@ export default class Main {
   /** @return {string} Key for change pass captcha data store */
   static get captchaChpassStore () {
     return captchaChpassStore;
+  }
+
+  /** @return {string} Id of best page */
+  static get bestsPageId () {
+    return bestsPageId;
   }
 
   /** @return {string} Id of settings page */

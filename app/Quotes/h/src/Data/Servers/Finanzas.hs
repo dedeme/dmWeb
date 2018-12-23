@@ -8,8 +8,7 @@ module Data.Servers.Finanzas (Finanzas (..)) where
 import Control.Exception
 import Data.List
 import Text.Printf
-import qualified Data.ByteString.Lazy.Char8 as C8
-import Network.HTTP.Conduit (simpleHttp)
+import qualified Data.Servers.Reader as Reader
 import qualified Dm.Date as Date
 import Data.Server (Server)
 import qualified Data.Quote as Q
@@ -171,8 +170,7 @@ instance Server Finanzas where
            code
 
   read a code = do
-    bs <- simpleHttp $ Sv.uri a code
-    let html = C8.unpack bs
+    html <- Reader.read $ Sv.uri a code
     case fdrop html "<h2>Hist" of
       Nothing -> return $ Left "'<h2>Hist' not found"
       Just h'' -> case fdrop h'' "<tbody>" of

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 336138ebf86f776aa6e4d86c2eba02bdbed13ed582f55a534eeda2481cb8dac1
+-- hash: c89572fb89f4f28bba92c5fa9ebc6d02eb5a739b326ab25036acf0e7fa663a00
 
 name:           quotes
 version:        2018.11
@@ -37,6 +37,7 @@ library
       Data.Server
       Data.Servers.Finanzas
       Data.Servers.Invertia
+      Data.Servers.Reader
       Data.Servers.Yahoo
       Data.ServersDb
       Edit
