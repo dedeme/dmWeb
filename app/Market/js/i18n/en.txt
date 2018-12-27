@@ -20,8 +20,11 @@
 # src/core/Auth.js: 50
 Accept = Accept
 
-# src/pages/Balance.js: 109
+# src/pages/Balance.js: 116
 Accounting profits: = Accounting profits:
+
+# src/pages/Graphics.js: 112
+All = All
 
 # src/core/Backups.js: 212
 # src/core/Backups.js: 250
@@ -52,13 +55,13 @@ Ammount = Ammount
 # src/core/Dom.js: 71
 Annotations = Annotations
 
-# src/pages/Balance.js: 116
+# src/pages/Balance.js: 123
 Assets = Assets
 
 # src/core/Backups.js: 235
 Automatic Backups = Automatic Backups
 
-# src/core/Dom.js: 77
+# src/core/Dom.js: 79
 Backs = Backups
 
 # src/core/Backups.js: 201
@@ -70,26 +73,28 @@ Backup successfully restored = Backup successfully restored
 # src/core/Backups.js: 269
 Backups = Backups
 
-# src/pages/Balance.js: 112
+# src/pages/Balance.js: 119
 # src/core/Dom.js: 69
 Balance = Balance
 
+# src/pages/Trading.js: 93
 # src/pages/Annotations.js: 113
 # src/pages/Annotations.js: 295
 # src/pages/Annotations.js: 540
 Buy = Buy
 
-# src/pages/Trading.js: 62
+# src/pages/Trading.js: 76
+# src/pages/Trading.js: 97
 Buys = Buys
 
 # src/pages/Annotations.js: 209
 # src/core/Chpass.js: 75
 Cancel = Cancel
 
-# src/pages/Balance.js: 127
+# src/pages/Balance.js: 134
 Capital = Capital
 
-# src/pages/Balance.js: 132
+# src/pages/Balance.js: 139
 Cash = Cash
 
 # src/pages/Annotations.js: 571
@@ -118,9 +123,10 @@ Click %0 to continue. = Click %0 to continue.
 # src/pages/Annotations.js: 527
 Close = Close
 
-# src/pages/Trading.js: 65
-# src/pages/Trading.js: 71
-# src/pages/Balance.js: 168
+# src/pages/Trading.js: 79
+# src/pages/Trading.js: 85
+# src/pages/Trading.js: 91
+# src/pages/Balance.js: 175
 Co. = Co.
 
 # src/core/Chpass.js: 147
@@ -135,7 +141,7 @@ Current password = Current password
 # src/core/Chpass.js: 93
 Current password is missing = 'Current password' is missing
 
-# src/pages/Balance.js: 102
+# src/pages/Balance.js: 109
 Current profits: = Current profits:
 
 # src/pages/Annotations.js: 199
@@ -150,6 +156,9 @@ Current profits: = Current profits:
 # src/pages/Annotations.js: 518
 Date = Date
 
+# src/pages/Trading.js: 92
+Days = Days
+
 # src/pages/Annotations.js: 76
 Delete %0? = Delete %0?
 
@@ -163,7 +172,7 @@ Delete %0? = Delete %0?
 # src/pages/Annotations.js: 505
 Description = Description
 
-# src/pages/Balance.js: 176
+# src/pages/Balance.js: 183
 Dif. = Dif.
 
 # src/pages/Annotations.js: 123
@@ -176,13 +185,13 @@ Diff. + = Diff. +
 # src/pages/Annotations.js: 549
 Diff. - = Diff. -
 
-# src/pages/Balance.js: 161
+# src/pages/Balance.js: 168
 Differences = Differences
 
 # src/core/Backups.js: 272
 Download = Download
 
-# src/pages/Balance.js: 119
+# src/pages/Balance.js: 126
 Equity = Equity
 
 # src/core/Chpass.js: 176
@@ -191,7 +200,7 @@ Fail trying to change password = Fail trying to change password
 # src/core/Backups.js: 85
 Fail unzipping backup = Fail unzipping backup
 
-# src/pages/Balance.js: 145
+# src/pages/Balance.js: 152
 # src/pages/Annotations.js: 122
 # src/pages/Annotations.js: 431
 # src/pages/Annotations.js: 546
@@ -199,6 +208,9 @@ Fees = Fees
 
 # src/core/Backups.js: 87
 File is not a %0 backup = File is not a %0 backup
+
+# src/core/Dom.js: 75
+Graphics = Graphics
 
 # src/core/Chpass.js: 89
 # src/core/Auth.js: 103
@@ -214,6 +226,9 @@ Income = Income
 
 # src/core/Auth.js: 138
 Keep connected = Keep connected
+
+# src/pages/Graphics.js: 110
+Last = Last
 
 # src/core/Chpass.js: 211
 # src/core/Auth.js: 196
@@ -245,6 +260,9 @@ Nicks = Nicks
 # src/core/Backups.js: 205
 Only one file can be selected = Only one file can be selected
 
+# src/pages/Trading.js: 88
+Parameters = Parameters
+
 # src/core/Auth.js: 123
 Password = Password
 
@@ -254,7 +272,7 @@ Password is missing = Password is missing
 # src/core/Chpass.js: 45
 Password successfully changed = Password successfully changed
 
-# src/pages/Balance.js: 172
+# src/pages/Balance.js: 179
 # src/pages/Annotations.js: 240
 # src/pages/Annotations.js: 241
 # src/pages/Annotations.js: 258
@@ -263,8 +281,8 @@ Password successfully changed = Password successfully changed
 # src/pages/Annotations.js: 297
 Price = Price
 
-# src/pages/Balance.js: 98
-# src/pages/Balance.js: 153
+# src/pages/Balance.js: 105
+# src/pages/Balance.js: 160
 # src/pages/Annotations.js: 121
 # src/pages/Annotations.js: 395
 # src/pages/Annotations.js: 545
@@ -276,26 +294,28 @@ Restore = Restore
 # src/core/Backups.js: 197
 Restore backup = Restore backup
 
+# src/pages/Trading.js: 94
 # src/pages/Annotations.js: 113
 # src/pages/Annotations.js: 256
 # src/pages/Annotations.js: 539
 Sell = Sell
 
-# src/pages/Trading.js: 68
-# src/pages/Balance.js: 137
+# src/pages/Trading.js: 82
+# src/pages/Trading.js: 103
+# src/pages/Balance.js: 144
 Sells = Sells
 
 # src/core/Expired.js: 42
 Session is expired. = Session is expired.
 
-# src/core/Dom.js: 79
+# src/core/Dom.js: 81
 # src/core/Settings.js: 81
 Settings = Settings
 
-# src/pages/Trading.js: 66
-# src/pages/Trading.js: 72
-# src/pages/Balance.js: 122
-# src/pages/Balance.js: 164
+# src/pages/Trading.js: 80
+# src/pages/Trading.js: 86
+# src/pages/Balance.js: 129
+# src/pages/Balance.js: 171
 # src/pages/Annotations.js: 238
 # src/pages/Annotations.js: 239
 # src/pages/Annotations.js: 258
@@ -316,13 +336,16 @@ User = User
 # src/core/Auth.js: 77
 User name is missing = User name is missing
 
-# src/pages/Balance.js: 174
+# src/pages/Balance.js: 181
 Value = Value
 
 # src/pages/Annotations.js: 117
 # src/pages/Annotations.js: 361
 # src/pages/Annotations.js: 543
 Withdrawal = Withdrawal
+
+# src/pages/Graphics.js: 19
+Without data = Without data
 
 # src/pages/Trading.js: 43
 Without operations = Without operations

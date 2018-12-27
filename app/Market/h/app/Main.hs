@@ -25,6 +25,7 @@ import qualified Data.Historic as Historic
 import qualified Pages.Balance as Balance
 import qualified Pages.Annotations as Annotations
 import qualified Pages.Trading as Trading
+import qualified Pages.Graphics as Graphics
 import qualified Data.Historic as Historic
 import qualified Global as G
 import qualified Conf as Conf
@@ -69,6 +70,7 @@ appProcess cgi sessionId rq  =
     "balance" -> Balance.process cgi rq -------------------------- Balance page
     "annotations" -> Annotations.process cgi rq -------------- Annotations page
     "trading" -> Trading.process cgi rq -------------------------- Trading page
+    "graphics" -> Graphics.process cgi rq ------------------------ Trading page
     s -> error $ printf "Unknown source '%s'" s
 
 mainHub :: String -> IO ()

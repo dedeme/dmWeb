@@ -32,45 +32,58 @@ path :: String -> String
 path "" = G.path ["data", "Diaries"]
 path year = G.path ["data", "Diaries", year]
 
+data Dr = Dr {id :: Int, ann :: [Ann]}
+
+toJs :: Dr -> JSValue
+toJs (Dr id anns) = Js.wList [Js.wInt id, Js.wList $ map Ann.toJs anns]
+
+fromJs :: JSValue -> Dr
+fromJs js = let [id, anns] = Js.rList js
+            in  Dr (Js.rInt id) (map Ann.fromJs $ Js.rList anns)
+
 -- |@'init'@ - Initializes data base
 init :: IO ()
 init = File.mkDir $ path ""
 
-readJs :: String -> IO JSValue
+readJs :: String -> IO (Int, JSValue)
 readJs year = do
   let p = path year
   ex <- File.exists $ p
   if ex
-  then File.read (path year) >>= return . Js.fromStr
-  else return $ Js.fromStr "[]"
+  then do
+    tx <- File.read (path year)
+    let [id, anns] = Js.rList $ Js.fromStr tx
+    return (Js.rInt id, anns)
+  else return $ (0, Js.fromStr "[]")
 
-read :: String -> IO [Ann]
-read year = readJs year >>= return . map Ann.fromJs . Js.rList
+read :: String -> IO (Int, [Ann])
+read year = do
+  (id, anns) <- readJs year
+  return (id, map Ann.fromJs $ Js.rList anns)
 
-write :: String-> [Ann] -> IO ()
-write year anns =
-  File.write (path year) $ Js.toStr $ Js.wList $ map Ann.toJs anns
+write :: String-> Int -> [Ann] -> IO ()
+write year id anns =
+  File.write (path year) $ Js.toStr $ toJs $ Dr id anns
 
 add2 date a date' a' [] = if date >= date' then [a, a'] else [a', a]
 add2 date a date' a' (a'':anns) =
   if date >= date' then a:a':a'':anns
                    else a':(add2 date a (Ann.date a'') a'' anns)
 
-add1 a date anns =
+add1 id a date anns =
   ad anns
   where
-    ad [] = [Ann.setId 0 a]
-    ad (a':anns) = let id = Ann.id a'
-                   in  add2 date (Ann.setId (id + 1) a) (Ann.date a') a' anns
+    ad [] = [Ann.setId id a]
+    ad (a':anns) = add2 date (Ann.setId id a) (Ann.date a') a' anns
 
 -- |@'add' a@ - Adds an annotation to data base
 add :: Ann -> IO ()
 add a = do
   let date = Ann.date a
   let year = Data.List.take 4 date
-  anns <- Data.Diary.read year
-  let anns' = add1 a date anns
-  write year anns'
+  (id, anns) <- Data.Diary.read year
+  let anns' = add1 id a date anns
+  write year (id + 1) anns'
 
 remove' _ [] = []
 remove' id (a:rest) = if id == (Ann.id a) then rest else a:(remove' id rest)
@@ -79,9 +92,9 @@ remove' id (a:rest) = if id == (Ann.id a) then rest else a:(remove' id rest)
 remove :: Int -> String -> IO ()
 remove id date = do
   let year = Data.List.take 4 date
-  anns <- Data.Diary.read year
+  (idNew, anns) <- Data.Diary.read year
   let anns' = remove' id anns
-  write year anns'
+  write year idNew anns'
 
 -- |@'years'@ - Returns a sorted (before-after) list of diary years
 years :: IO [String]
@@ -96,7 +109,7 @@ take' r n ys = tk r ys
       let len = length r
       if len < n
       then do
-        anns <- Data.Diary.read y
+        (_, anns) <- Data.Diary.read y
         tk (r ++ Prelude.take (n - len) anns) ys
       else
         return r
@@ -108,7 +121,7 @@ take n = do
   take' [] n $ reverse ys
 
 books' (pf, ld) y = do
-  anns <- Data.Diary.read y
+  (_, anns) <- Data.Diary.read y
   return $ foldl' (\(p, l) a -> Ledger.add a p l) (pf, ld) $ reverse anns
 
 -- |@'books'@ - Returns current books: (portfolio, ledger)
@@ -127,7 +140,7 @@ round2 :: Double -> Double
 round2 n = fromIntegral (round (n * 100)) / 100
 
 cash' amm y = do
-  anns <- Data.Diary.read y
+  (_, anns) <- Data.Diary.read y
   return $ foldl' (\a ann -> a + c ann) amm anns
   where
     c (Sell _ _ _ stocks price) =

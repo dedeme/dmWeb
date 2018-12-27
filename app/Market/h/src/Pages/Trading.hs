@@ -86,6 +86,9 @@ updateNicks pfNks p = do
   File.write path $ Js.toStr $ Js.wList $ map toJs nps'
   return nps'
 
+nkpToJs :: (String, Params) -> JSValue
+nkpToJs (n, p) = Js.wList [Js.wString n, Params.toJs p]
+
 buyOrders :: Double -> [String] -> Params -> IO JSValue
 buyOrders cash nks p = do
   conf <- Conf.get
@@ -121,7 +124,8 @@ process cgi rq =
       Cgi.ok cgi [("buys", buys),
 --                  ("pf", Pf.toJs pf),
 --                  ("ledger", Ledger.toJs ld),
---                  ("params", Params.toJs p),
+                  ("params", Params.toJs p),
+                  ("nkps", Js.wList $ map nkpToJs nkps),
 --                  ("pfNicks", Js.wList $ map Js.wString pfNks),
 --                  ("nicks", Js.wList $ map Js.wString nks),
                   ("sells", sellOrders pf sells)]

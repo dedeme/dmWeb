@@ -71,6 +71,8 @@ export default class Dom {
       entry(_("Annotations"), Main.annotationsPageId),
       separator(),
       entry(_("Trading"), Main.tradingPageId),
+      separator(),
+      entry(_("Graphics"), Main.graphicsPageId),
     ];
 
     const ropts = [

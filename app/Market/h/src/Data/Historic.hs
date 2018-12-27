@@ -5,7 +5,8 @@
 
 module Data.Historic (
   Data.Historic.init,
-  write
+  write,
+  Data.Historic.take
   ) where
 
 import Data.List
