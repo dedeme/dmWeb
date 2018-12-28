@@ -51,8 +51,8 @@ export default class Trading {
     const paramTd = (tx, d, b, s) => $("tr")
       .add($("td").klass("nick").html(tx))
       .add($("td").klass("number").html(this.formatN(d, 0)))
-      .add($("td").klass("number").html(this.formatN(b * 100, 2) + "%"))
-      .add($("td").klass("number").html(this.formatN(s * 100, 2) + "%"))
+      .add($("td").klass("number").html(this.formatN(b * 100, 4) + "%"))
+      .add($("td").klass("number").html(this.formatN(s * 100, 4) + "%"))
     ;
 
     const paramTds = data => data.map(

@@ -55,24 +55,34 @@ export default class Balance {
     this._connDiv.removeAll().add(Ui.$("img").att("src", "img/wait2.gif"));
 
     let c = 0;
-    this._portfolio.forEach(async (e) => {
-      const rq = {
-        "source": "balance",
-        "rq": "download",
-        "nick": e[0]
-      };
+    this._portfolio.forEach(e => {
+      setTimeout(async () => {
+        try {
+          const rq = {
+            "source": "balance",
+            "rq": "download",
+            "nick": e[0]
+          };
 
-      const rp = await this._main.client.sendAsync(rq);
-      e[3] = rp["quote"];
+          const rp = await this._main.client.sendAsync(rq);
+          e[3] = rp["quote"];
 
-      if (e[3] < 0) {
-        e[3] = null;
-      }
+          if (e[3] < 0) {
+            e[3] = null;
+          }
 
-      ++c;
+          ++c;
+        } catch (e) {
+          e[3] = null;
+          ++c;
+        }
+      }, 1000);
     });
 
     const tm = setInterval(() => {
+      this._connDiv.removeAll().add(
+        $("div").style("font-size:44px").html(String(c))
+      );
       if (c >= n) {
         clearInterval(tm);
         this._currentProfits = 0;
