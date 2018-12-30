@@ -16,9 +16,12 @@ import qualified Data.Historic as Historic
 import qualified Global as G
 
 process :: Cgi -> [(String, JSValue)] -> IO ()
-process cgi rq =
+process cgi rq = do
   case Cgi.get rq Js.rString "rq" of
     "idata" -> do
       d <- Historic.take 0
       Cgi.ok cgi [("data", Js.wList d)]
+    "removeDuplicate" -> do
+      Historic.removeDuplicate
+      Cgi.empty cgi
     s -> error $ printf "Unknown rq '%s'" s

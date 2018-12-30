@@ -6,7 +6,8 @@
 module Data.Historic (
   Data.Historic.init,
   write,
-  Data.Historic.take
+  Data.Historic.take,
+  removeDuplicate
   ) where
 
 import Data.List
@@ -84,3 +85,11 @@ take 2 = do
 take _ = do
   ys <- years
   take' ys
+
+removeDuplicate :: IO ()
+removeDuplicate = do
+  (y:_) <- years
+  d <- Data.Historic.read y
+  case d of
+    [] -> File.del $ path y
+    (_:rest) -> write' y rest

@@ -55,9 +55,42 @@ export default class Balance {
     this._connDiv.removeAll().add(Ui.$("img").att("src", "img/wait2.gif"));
 
     let c = 0;
-    this._portfolio.forEach(e => {
-      setTimeout(async () => {
+
+    const f = async () => {
+      this._connDiv.removeAll().add(
+        $("div").style("font-size:44px").html(String(c))
+      );
+      if (c === n) {
+        this._currentProfits = this._accountableProfits;
+        this._portfolio.forEach(e => {
+          if (this._currentProfits !== null) {
+            if (e[3] !== null) {
+              this._currentProfits += (e[3] - e[2]) * e[1];
+            } else {
+              this._currentProfits = null;
+            }
+          }
+        });
+        if (this._currentProfits !== null) {
+          const last = {};
+          this._portfolio.forEach(e => {
+            if(e[3] !== null) {
+              last[e[0]] = e[3];
+            }
+          });
+          const rq = {
+            "source": "balance",
+            "rq": "historic",
+            "date": DateDm.now().toBase(),
+            "profits": Math.round(this._currentProfits * 100) / 100,
+            "last": last
+          };
+          this._main.client.send(rq);
+        }
+        this.reload();
+      } else {
         try {
+          const e = this._portfolio[c];
           const rq = {
             "source": "balance",
             "rq": "download",
@@ -72,41 +105,15 @@ export default class Balance {
           }
 
           ++c;
+          f();
         } catch (e) {
           e[3] = null;
           ++c;
+          f();
         }
-      }, 1000);
-    });
-
-    const tm = setInterval(() => {
-      this._connDiv.removeAll().add(
-        $("div").style("font-size:44px").html(String(c))
-      );
-      if (c >= n) {
-        clearInterval(tm);
-        this._currentProfits = 0;
-        this._portfolio.forEach(e => {
-          if (this._currentProfits !== null) {
-            if (e[3] !== null) {
-              this._currentProfits += (e[3] - e[2]) * e[1];
-            } else {
-              this._currentProfits = null;
-            }
-          }
-        });
-        if (this._currentProfits !== null) {
-          const rq = {
-            "source": "balance",
-            "rq": "historic",
-            "date": DateDm.now().toBase(),
-            "profits": Math.round(this._currentProfits * 100) / 100
-          };
-          this._main.client.send(rq);
-        }
-        this.reload();
       }
-    }, 10);
+    };
+    f();
   }
 
   body () {
@@ -235,11 +242,16 @@ export default class Balance {
 
     this._accountableProfits = this._sells + this._fees +
       this._incomes + this._differences;
-    this._currentProfits = null;
+    this._currentProfits = this._accountableProfits;
 
     const pf = rp["pf"];
     this._portfolio = pf.map(e => {
-      e.push(null);
+      if (e[3] <= 0) {
+        e[3] = null;
+        this._currentProfits = null;
+      } else if (this._currentProfits !== null) {
+        this._currentProfits += (e[3] - e[2]) * e[1];
+      }
       return e;
     });
 

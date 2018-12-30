@@ -14,6 +14,7 @@ module Data.Pf (
   nicks,
   removeStocks,
   remove,
+  fill,
   toJs,
   fromJs
 ) where
@@ -27,25 +28,28 @@ import qualified Data.Ann as Ann
 data PfEntry = PfEntry {
   nick :: String,
   stcks :: Int,
-  price :: Double
+  price :: Double,
+  value :: Double
 } deriving (Eq, Show)
 
-entryNew :: String -> Int -> Double -> PfEntry
-entryNew nick stcks price = PfEntry nick stcks price
+entryNew :: String -> Int -> Double -> Double -> PfEntry
+entryNew nick stcks price value = PfEntry nick stcks price value
 
 entryToJs :: PfEntry -> JSValue
 entryToJs e = Js.wList [
     Js.wString $ nick e,
     Js.wInt $ stcks e,
-    Js.wDouble $ price e
+    Js.wDouble $ price e,
+    Js.wDouble $ value e
   ]
 
 entryFromJs :: JSValue -> PfEntry
 entryFromJs js =
-  let [nicksjs, stocksjs, pricejs] = Js.rList js in PfEntry {
+  let [nicksjs, stocksjs, pricejs, valuejs] = Js.rList js in PfEntry {
     nick = Js.rString nicksjs,
     stcks = Js.rInt stocksjs,
-    price = Js.rDouble pricejs
+    price = Js.rDouble pricejs,
+    value = Js.rDouble valuejs
   }
 
 -- | Portfolio type.
@@ -64,57 +68,63 @@ size :: Pf -> Int
 size (Pf pf) = length pf
 
 -- | @'add' nick stocks price pf@ - Adds stocks to /pf/.
-add :: String -> Int -> Double -> Pf -> Pf
-add nick stocks price (Pf pf) =
+add :: String -> Int -> Double -> Double -> Pf -> Pf
+add nick stocks price value (Pf pf) =
   if stocks < 1 then error $ printf "Try of add %d stock to portfolio" stocks
   else case ins [] pf of
-    Nothing -> Pf $ (entryNew nick stocks price):pf
+    Nothing -> Pf $ (entryNew nick stocks price value):pf
     Just p -> Pf p
   where
     ins r [] = Nothing
-    ins r (e@(PfEntry nk st pr):es)
+    ins r (e@(PfEntry nk st pr v):es)
       | nk == nick =
         let vOlds = fromIntegral st * pr
             vNews = fromIntegral stocks * price
             sum = st + stocks
             prc = (vOlds + vNews) / fromIntegral sum
-            eNew = entryNew nick sum prc
+            eNew = entryNew nick sum prc v
         in  Just $ r ++ (eNew:es)
       | otherwise = ins (e:r) es
 
 -- | @'get' pf nick@ - Returns (stocks, price) of /nick/ or Nothing if /nick/
 --                     is not found in /pf/.
 get :: Pf -> String -> Maybe(Int, Double)
-get (Pf pf) nick = case find (\(PfEntry nk _ _) -> nk == nick) pf of
+get (Pf pf) nick = case find (\(PfEntry nk _ _ _) -> nk == nick) pf of
   Nothing -> Nothing
-  Just (PfEntry _ stocks price) -> Just (stocks, price)
+  Just (PfEntry _ stocks price _) -> Just (stocks, price)
 
 -- | @'stocks' pf nick@ - Returns the stocks number of /nick/ or 0 if /nick/
 --                        is not found in /pf/.
 stocks :: Pf -> String -> Int
-stocks (Pf pf) nick = case find (\(PfEntry nk _ _) -> nk == nick) pf of
+stocks (Pf pf) nick = case find (\(PfEntry nk _ _ _) -> nk == nick) pf of
   Nothing -> 0
-  Just (PfEntry _ stcks _) -> stcks
+  Just (PfEntry _ stcks _ _) -> stcks
 
 -- | @'nicks' pf@ - Returns a list with nicks of /pf/.
 nicks :: Pf -> [String]
-nicks (Pf pf) = map (\(PfEntry nk _ _) -> nk) pf
+nicks (Pf pf) = map (\(PfEntry nk _ _ _) -> nk) pf
 
 -- | @'removeStocks' nick stocks pf@ - Removes /stocks/ from /nick/ in /pf/.
 removeStocks :: String -> Int -> Pf -> Pf
 removeStocks nick stocks (Pf pf) = Pf (rm [] pf)
   where
     rm r [] = r
-    rm r ((PfEntry nk st pr):es)
+    rm r ((PfEntry nk st pr v):es)
       | st < stocks =
         error $ printf "Try to remove %d stocks when there are only %d"
                        stocks st
       | st == stocks = r ++ es
-      | otherwise = r ++ ((entryNew nk (st - stocks) pr):es)
+      | otherwise = r ++ ((entryNew nk (st - stocks) pr v):es)
 
 -- | @'remove' nick pf@ - Removes /nick/ from /pf/.
 remove :: String -> Pf -> Pf
-remove nick (Pf pf) = Pf $ filter (\(PfEntry nk _ _) -> nk /= nick) pf
+remove nick (Pf pf) = Pf $ filter (\(PfEntry nk _ _ _) -> nk /= nick) pf
+
+fill :: Pf -> (String, Double) -> Pf
+fill (Pf es) (k, v) = Pf (map f es)
+  where
+    f e@(PfEntry nk st pr _) = if nk == k then PfEntry nk st pr v
+                                          else e
 
 -- | @'toJs' pf@ - Parses /pf/ to JSON.
 toJs :: Pf -> JSValue

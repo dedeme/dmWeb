@@ -27,6 +27,7 @@ import qualified Pages.Annotations as Annotations
 import qualified Pages.Trading as Trading
 import qualified Pages.Graphics as Graphics
 import qualified Data.Historic as Historic
+import qualified Data.Lhistoric as Lhistoric
 import qualified Global as G
 import qualified Conf as Conf
 
@@ -36,7 +37,7 @@ appInit = do
   ex <- File.exists dir
   if ex
     then do
---      Historic.init
+--      Lhistoric.init
       return ()
     else do
       File.mkDir $ G.path ["tmp"]

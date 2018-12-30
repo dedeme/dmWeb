@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c502475a0297783f42505dacb19eaa6bc9dd3ff0abee924be15610098dc24470
+-- hash: a85c0a10d5e16ed82c5617badce98ea74c50e78a36ad7e9eaa9e0344dfc7b57d
 
 name:           market
 version:        2018.12
@@ -34,6 +34,7 @@ library
       Data.Diary
       Data.Historic
       Data.Ledger
+      Data.Lhistoric
       Data.Params
       Data.Pf
       Data.Servers.Finanzas

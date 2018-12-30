@@ -105,8 +105,38 @@ export default class Graphics {
     const data = rp["data"];
     data.reverse();
     const date = DateDm.now().add(-365).toBase();
+    const valueDiv = () => {
+      const tb = $("table").att("align", "center").klass("frame");
+      if (data.length === 0) {
+        tb.add($("tr").$("td").html(_("Without data")));
+        return tb;
+      }
+      const d = data[data.length - 1];
+      tb.add($("tr")
+        .add($("td").html(
+          "<big>" +
+          DateDm.fromStr(d[0]).toString() +
+          " : " +
+          String(d[1]) +
+          "</big>"
+        )));
+      if (data.length === 1 || data[data.length - 2][1] !== d[1]) {
+        return tb;
+      }
+      tb.add($("tr")
+        .add($("td").add(Ui.link(async () => {
+          const rq = {
+            "source": "graphics",
+            "rq": "removeDuplicate"
+          };
+          await this._main.client.send(rq);
+          this.show();
+        }).klass("link").html(_("Remove duplicate")))));
+      return tb;
+    };
     this._main.dom.show(Main.graphicsPageId,
       $("div").style("text-align:center")
+        .add(valueDiv())
         .add($("div").klass("head").html(_("Last")))
         .add(lastGr(data.filter(dv => dv[0] >= date)))
         .add($("div").klass("head").html(_("All")))

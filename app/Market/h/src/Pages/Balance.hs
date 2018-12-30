@@ -12,6 +12,7 @@ import qualified Dm.Cgi as Cgi
 import Dm.Cgi (Cgi)
 import qualified Data.Diary as Diary
 import qualified Data.Historic as Historic
+import qualified Data.Lhistoric as Lhistoric
 import qualified Data.Pf as Pf
 import qualified Data.Ledger as Ledger
 import qualified Data.Servers.Yahoo as Yahoo
@@ -23,7 +24,8 @@ process cgi rq =
   case Cgi.get rq Js.rString "rq" of
     "idata" -> do
       (pf, ld) <- Diary.books
-      Cgi.ok cgi [("pf", Pf.toJs pf),
+      pf' <- Lhistoric.fillPf pf
+      Cgi.ok cgi [("pf", Pf.toJs pf'),
                   ("ledger", Ledger.toJs ld)]
     "download" -> do
       let nick = Cgi.get rq Js.rString "nick"
@@ -34,6 +36,8 @@ process cgi rq =
     "historic" -> do
       let date = Cgi.get rq Js.rString "date"
       let Just profits = lookup "profits" rq
+      let Just last = lookup "last" rq
       Historic.write (date, profits)
+      Lhistoric.write last
       Cgi.empty cgi
     s -> error $ printf "Unknown rq '%s'" s
