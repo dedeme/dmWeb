@@ -108,7 +108,7 @@ export default class Graphics {
     const valueDiv = () => {
       const tb = $("table").att("align", "center").klass("frame");
       if (data.length === 0) {
-        tb.add($("tr").$("td").html(_("Without data")));
+        tb.add($("tr").add($("td").html(_("Without data"))));
         return tb;
       }
       const d = data[data.length - 1];
@@ -117,7 +117,9 @@ export default class Graphics {
           "<big>" +
           DateDm.fromStr(d[0]).toString() +
           " : " +
-          String(d[1]) +
+          (this._main.model["lang"] === "es"
+            ? new Dec(d[1], 2).toEu()
+            : new Dec(d[1], 2).toEn()) +
           "</big>"
         )));
       if (data.length === 1 || data[data.length - 2][1] !== d[1]) {

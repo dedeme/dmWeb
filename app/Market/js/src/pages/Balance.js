@@ -245,6 +245,7 @@ export default class Balance {
     this._currentProfits = this._accountableProfits;
 
     const pf = rp["pf"];
+    pf.sort((row1, row2) => row1[0] > row2[0] ? 1 : -1);
     this._portfolio = pf.map(e => {
       if (e[3] <= 0) {
         e[3] = null;
