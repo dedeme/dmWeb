@@ -31,7 +31,7 @@ const mkCanvas = data => {
     if (v < min) min = v;
   });
   const base = Math.floor(min / 1000) * 1000;
-  const top = Math.floor((max - min + 1000) / 1000) * 1000;
+  const top = Math.ceil((max - min + 1000) / 1000) * 1000;
   const step = top / 4;
 
   ctx.lineWidth = 1;
