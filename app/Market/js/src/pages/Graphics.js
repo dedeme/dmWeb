@@ -10,7 +10,7 @@ import DateDm from "../dmjs/DateDm.js";
 
 const $ = Ui.$;
 
-const mkCanvas = data => {
+const mkCanvas = (data, all) => {
   const cv = $("canvas").att("width", 600).att("height", 200)
     .klass("frame");
   const ctx = cv.e.getContext("2d");
@@ -67,16 +67,36 @@ const mkCanvas = data => {
   ctx.stroke();
   ctx.closePath();
 
+  x = 100.5;
+  let lastD = all ? data[0][0].substring(2, 4) : data[0][0].substring(4, 6);
+  ctx.setLineDash([4, 2]);
+  data.forEach(dv => {
+    const d = all ? dv[0].substring(2, 4) : dv[0].substring(4, 6);
+    if (lastD !== d) {
+      lastD = d;
+      const text = ctx.measureText(d);
+      ctx.fillText(d, x - text.width / 2, 180.5);
+
+      ctx.beginPath();
+      ctx.moveTo(x, 10.5);
+      ctx.lineTo(x, 170.5);
+      ctx.stroke();
+      ctx.closePath();
+    }
+    x += xstep;
+  });
+  ctx.setLineDash([]);
+
   return cv;
 };
 
 const lastGr = data => {
-  const cv = mkCanvas(data);
+  const cv = mkCanvas(data, false);
   return $("div").add(cv);
 };
 
 const allGr = data => {
-  const cv = mkCanvas(data);
+  const cv = mkCanvas(data, true);
   return $("div").add(cv);
 };
 
