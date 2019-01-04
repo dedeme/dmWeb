@@ -13,7 +13,8 @@ import {I18n} from "./I18n.js";
 import Balance from "./pages/Balance.js";
 import Annotations from "./pages/Annotations.js";
 import Trading from "./pages/Trading.js";
-import Graphics from "./pages/Graphics.js";
+import Profits from "./pages/Profits.js";
+import Companies from "./pages/Companies.js";
 
 const app = "Market";
 const version = "201812";
@@ -27,7 +28,8 @@ const backupsPageId = "backups";
 const balancePageId = "balance";
 const annotationsPageId = "annotations";
 const tradingPageId = "trading";
-const graphicsPageId = "graphics";
+const profitsPageId = "profits";
+const companiesPageId = "companies";
 
 /** Main page. */
 export default class Main {
@@ -98,8 +100,11 @@ export default class Main {
     case tradingPageId:
       new Trading(self).show();
       break;
-    case graphicsPageId:
-      new Graphics(self).show();
+    case profitsPageId:
+      new Profits(self).show();
+      break;
+    case companiesPageId:
+      new Companies(self).show();
       break;
     case backupsPageId: {
       new Backups(self).show();
@@ -206,8 +211,13 @@ export default class Main {
   }
 
   /** @return {string} Id of Graphics page */
-  static get graphicsPageId () {
-    return graphicsPageId;
+  static get profitsPageId () {
+    return profitsPageId;
+  }
+
+  /** @return {string} Id of Companies page */
+  static get companiesPageId () {
+    return companiesPageId;
   }
 
 }

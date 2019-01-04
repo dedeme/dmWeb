@@ -1,12 +1,12 @@
 -- Copyright 18-Dic-2018 ºDeme
 -- GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
--- | Last Historic data
+-- | Last quotes data
 
-module Data.Lhistoric (
-  Data.Lhistoric.init,
+module Data.Lquotes (
+  Data.Lquotes.init,
   write,
-  Data.Lhistoric.read,
+  Data.Lquotes.read,
   fillPf
   ) where
 
@@ -19,7 +19,7 @@ import Data.Pf (Pf)
 import qualified Global as G
 
 path :: String
-path = G.path ["data", "lastHistoric.db"]
+path = G.path ["data", "lastQuotes.db"]
 
 -- |@'init'@ - Initializes data base
 init :: IO ()
@@ -29,12 +29,13 @@ init = write $ Js.wMap []
 write :: JSValue -> IO ()
 write = File.write path . Js.toStr
 
--- |@'read'@ - Reads last historica data. It is a map of Double.
+-- |@'read'@ - Reads last historic data. It is a map of Double.
 read :: IO JSValue
 read = File.read path >>= return . Js.fromStr
 
+-- |@'fillPf' pf@ - Fills 'pf' data with last quotes.
 fillPf :: Pf -> IO Pf
 fillPf pf = do
-  lastJs <- Data.Lhistoric.read
+  lastJs <- Data.Lquotes.read
   let last = map (\(k, v) -> (k, Js.rDouble v)) $ Js.rMap lastJs
   return $ foldl' Pf.fill pf last

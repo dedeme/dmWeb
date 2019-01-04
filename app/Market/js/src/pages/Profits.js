@@ -100,8 +100,8 @@ const allGr = data => {
   return $("div").add(cv);
 };
 
-/** Update page. */
-export default class Graphics {
+/** Graphics page. */
+export default class Profits {
   /**
    * @param {!Main} main Main
    */
@@ -118,7 +118,7 @@ export default class Graphics {
    */
   async show () {
     const rq = {
-      "source": "graphics",
+      "source": "profits",
       "rq": "idata"
     };
     const rp = await this._main.client.send(rq);
@@ -148,7 +148,7 @@ export default class Graphics {
       tb.add($("tr")
         .add($("td").add(Ui.link(async () => {
           const rq = {
-            "source": "graphics",
+            "source": "profits",
             "rq": "removeDuplicate"
           };
           await this._main.client.send(rq);
@@ -156,7 +156,7 @@ export default class Graphics {
         }).klass("link").html(_("Remove duplicate")))));
       return tb;
     };
-    this._main.dom.show(Main.graphicsPageId,
+    this._main.dom.show(Main.profitsPageId,
       $("div").style("text-align:center")
         .add(valueDiv())
         .add($("div").klass("head").html(_("Last")))

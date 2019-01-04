@@ -22,12 +22,13 @@ import qualified Core.Chpass as Chpass
 import qualified Core.Backups as Backups
 import qualified Data.Diary as Diary
 import qualified Data.Historic as Historic
+import qualified Data.Lquotes as Lquotes
+import qualified Data.Params as Params
 import qualified Pages.Balance as Balance
 import qualified Pages.Annotations as Annotations
 import qualified Pages.Trading as Trading
-import qualified Pages.Graphics as Graphics
-import qualified Data.Historic as Historic
-import qualified Data.Lhistoric as Lhistoric
+import qualified Pages.Profits as Profits
+import qualified Pages.Companies as Companies
 import qualified Global as G
 import qualified Conf as Conf
 
@@ -46,6 +47,7 @@ appInit = do
       File.write (G.path ["data", "version.txt"]) version
       Diary.init
       Historic.init
+      Params.init
 
 mainProcess :: Cgi -> String -> [(String, JSValue)] -> IO ()
 mainProcess cgi sessionId rq =
@@ -71,7 +73,8 @@ appProcess cgi sessionId rq  =
     "balance" -> Balance.process cgi rq -------------------------- Balance page
     "annotations" -> Annotations.process cgi rq -------------- Annotations page
     "trading" -> Trading.process cgi rq -------------------------- Trading page
-    "graphics" -> Graphics.process cgi rq ------------------------ Trading page
+    "profits" -> Profits.process cgi rq -------------------------- Profits page
+    "companies" -> Companies.process cgi rq -------------------- Companies page
     s -> error $ printf "Unknown source '%s'" s
 
 mainHub :: String -> IO ()

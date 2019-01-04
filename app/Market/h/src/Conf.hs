@@ -27,7 +27,8 @@ get = do
   else
     let d = Js.wMap [("lang", Js.wString "en"),
                      ("menu", Js.wString "settings"),
-                     ("bet", Js.wInt 15000)]
+                     ("bet", Js.wInt 15000),
+                     ("allCos", Js.wBool True)]
     in  do
       File.write path (Js.toStr d)
       return d

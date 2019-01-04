@@ -26,28 +26,6 @@ import qualified Global as G
 nicksDb :: String
 nicksDb = G.quotesBase ++ "/" ++ "nicks.db"
 
-getParams :: IO Params
-getParams = do
-  fleasCf <- File.read (G.fleasDir ++ "/conf.db")
-  let cf = Js.rMap $ Js.fromStr fleasCf
-  let minDays = Cgi.get cf Js.rInt "min_days"
-  let maxDays = Cgi.get cf Js.rInt "max_days"
-  let maxStrips = Cgi.get cf Js.rDouble "max_strip"
-  let bests = G.fleasDir ++ "/bests"
-  ls <- File.dir bests
-  let (db:_) = reverse $ sort ls
-  let path = bests ++ "/" ++ db
-  d <- File.read path
-  let (result:_) = reverse $ Js.rList (Js.fromStr d)
-  let [_, frs, _, _] = Js.rList result
-  let [flea, _ , _, _] = Js.rList frs
-  let [_, ps] = Js.rList flea
-  let [d, bs, ss] = Js.rList ps
-  return $ Params (days (Js.rDouble d) minDays maxDays)
-                  (Js.rDouble bs * maxStrips) (Js.rDouble ss * maxStrips)
-  where
-    days d n x = n + (truncate $ (d * fromIntegral (x - n))::Int)
-
 -- Returns (pfNicks, otherNicks)
 getNicks :: Pf -> IO ([String], [String])
 getNicks pf = do
@@ -67,24 +45,16 @@ getNicks pf = do
 
 updateNicks :: [String] -> Params -> IO [(String, Params)]
 updateNicks pfNks p = do
-  let path = G.path["data", "params.db"]
-  ex <- File.exists path
-  if not ex then File.write path "[]" else return ()
-  js <- File.read path
-  let nps = map
-              (\js -> let [nk, p] = Js.rList js
-                      in  (Js.rString nk, Params.fromJs p))
-              (Js.rList $ Js.fromStr js)
-
-  let ffind nk (nk', _) = nk == nk'
-  let update nk = case find (ffind nk) nps of
-                    Nothing -> (nk, p)
-                    Just np -> np
-  let nps' = map update pfNks
+  let update nk = do
+                    r <- Params.readNickParams nk
+                    case r of
+                      Nothing -> return (nk, p)
+                      Just np -> return np
+  nps <- mapM update pfNks
 
   let toJs (n, p) = Js.wList [Js.wString n, Params.toJs p]
-  File.write path $ Js.toStr $ Js.wList $ map toJs nps'
-  return nps'
+  Params.writeNickParams nps
+  return nps
 
 nkpToJs :: (String, Params) -> JSValue
 nkpToJs (n, p) = Js.wList [Js.wString n, Params.toJs p]
@@ -116,7 +86,7 @@ process cgi rq =
   case Cgi.get rq Js.rString "rq" of
     "idata" -> do
       (pf, ld) <- Diary.books
-      p <- getParams
+      p <- Params.readCurrent
       (pfNks, nks) <- getNicks pf
       buys <- buyOrders (Ledger.cash ld) nks p
       nkps <- updateNicks pfNks p

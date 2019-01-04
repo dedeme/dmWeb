@@ -203,10 +203,10 @@ export default class Balance {
             .add($("span").html(e[0])))
           .add($("td").klass("number2")
             .add($("span").html(this.formatN(e[1], 0))))
-          .add($("td").klass("number2")
+          .add($("td").klass("number")
             .add($("span").html(this.formatN(e[2], 4))))
           .add($("td").klass("number")
-            .add($("span").html(e[3] === null ? "[?]" : this.formatN(e[3], 2))))
+            .add($("span").html(e[3] === null ? "[?]" : this.formatN(e[3], 4))))
           .add($("td").klass("number")
             .add($("span")
               .html(e[3] === null ? "[?]"

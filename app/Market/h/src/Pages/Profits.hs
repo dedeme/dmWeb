@@ -1,9 +1,9 @@
 -- Copyright 27-Dic-2018 ºDeme
 -- GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
--- | Graphics page
+-- | Profits page
 
-module Pages.Graphics (process) where
+module Pages.Profits (process) where
 
 import Data.List
 import Text.Printf

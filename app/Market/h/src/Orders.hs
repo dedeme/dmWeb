@@ -16,10 +16,6 @@ import qualified Global as G
 
 data Op = Buy Double Double | Sell | None
 
-goStart :: [Double] -> [Double]
-goStart [] = []
-goStart ls@(n:ns) = if (n <= 0) then goStart ns else ls
-
 calc :: [Double] -> Params -> Op
 calc closes@(first:before) (Params d bs ss) =
   case drop d closes of
@@ -56,13 +52,14 @@ readCloses nk = do
                  sn = takeWhile (/= ':') s1
              in  read sn
 
+-- |@'buys' nicks ps@ - Returns the list of nicks to buy and their last close.
 buys :: [String] -> Params -> IO [(String, Double)]
 buys nks p = buys' [] nks
   where
     buys' r [] = return $ map fMap $ sortBy fSort r
     buys' r (nk:rest) = do
       closes <- readCloses nk
-      let closes' = goStart closes
+      let closes' = filter (>= 0) closes
       case calc closes' p of
         None -> buys' r rest
         Sell -> buys' r rest
@@ -70,13 +67,14 @@ buys nks p = buys' [] nks
     fSort (_, _, p1) (_, _, p2) = compare p2 p1
     fMap (nk, p, _) = (nk, p)
 
+-- |@'sells' nicksPs@ - returns the list of nicks to sell
 sells :: [(String, Params)] -> IO [String]
 sells nps = sells' [] nps
   where
     sells' r [] = return r
     sells' r ((nk, p):rest) = do
       closes <- readCloses nk
-      let closes' = goStart closes
+      let closes' = filter (>= 0) closes
       case calc closes' p of
         None -> sells' r rest
         Buy _ _ -> sells' r rest
