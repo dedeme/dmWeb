@@ -211,6 +211,7 @@ export default class Balance {
             .add($("span")
               .html(e[3] === null ? "[?]"
                 : this.formatN((e[3] - e[2]) * e[1], 2)))))))
+      .add(Ui.upTop("up"))
     ;
 
   }

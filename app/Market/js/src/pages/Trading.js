@@ -102,6 +102,7 @@ export default class Trading {
           .add($("td").att("colspan", 4).klass("border")
             .html("<i>" + _("Sells") + "</i>")))
         .adds(paramTds(nkps))
+        .add(Ui.upTop("up"))
       )
     ;
   }

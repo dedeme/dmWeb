@@ -182,7 +182,7 @@ quotesStr id = do
 -- | @'writeQuotes' nickName qs@ - Writes /qs/
 writeQuotes :: String -> [Quote] -> IO ()
 writeQuotes nickName qs = do
-  let qs' = intercalate "\n" $ map Quote.toStr qs
+  let qs' = intercalate "\n" $ map Quote.toStr $ take 610 qs
   File.write (G.path ["data", "quotes", nickName ++ ".db"]) qs'
 
 -- | @'updateQuotes' nickId newQs@ - Updates quotes of /nickId/ with quotes

@@ -574,8 +574,8 @@ export default class Annotations { // ---------------------- Class Annotations
                 .add($("td"))))))
         .add($("tr")
           .add($("td").klass("frame")
-            .add(this._historic)))
-      )
+            .add(this._historic))))
+      .add(Ui.upTop("up"))
     ;
   }
 
