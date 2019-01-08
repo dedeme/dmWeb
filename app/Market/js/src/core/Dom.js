@@ -7,6 +7,7 @@ import {_} from "../I18n.js";
 // eslint-disable-next-line
 import Domo from "../dmjs/Domo.js";
 import Ui from "../dmjs/Ui.js";
+import Downloader from "../Wdgs/Downloader.js";
 
 const $ = Ui.$;
 
@@ -89,8 +90,10 @@ export default class Dom {
     ];
 
     const menu = $("table").klass("main").add($("tr")
-      .add($("td")
+      .add($("td").style("white-space: nowrap;width:10px;")
         .adds(lopts))
+      .add($("td").style("text-align:center")
+        .add(new Downloader(this._main).wg))
       .add($("td").style("text-align:right")
         .adds(ropts))
     );

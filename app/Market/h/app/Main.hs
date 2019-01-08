@@ -29,6 +29,7 @@ import qualified Pages.Annotations as Annotations
 import qualified Pages.Trading as Trading
 import qualified Pages.Profits as Profits
 import qualified Pages.Companies as Companies
+import qualified Wdgs.Downloader as Downloader
 import qualified Global as G
 import qualified Conf as Conf
 
@@ -75,6 +76,7 @@ appProcess cgi sessionId rq  =
     "trading" -> Trading.process cgi rq -------------------------- Trading page
     "profits" -> Profits.process cgi rq -------------------------- Profits page
     "companies" -> Companies.process cgi rq -------------------- Companies page
+    "downloader" -> Downloader.process cgi rq --------------- Downloader widget
     s -> error $ printf "Unknown source '%s'" s
 
 mainHub :: String -> IO ()

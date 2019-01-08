@@ -109,7 +109,6 @@ function mkGr (qs) {
 }
 
 function mkGrTd (nick, profits, qs) {
-  console.log(qs);
   const lastQ = qs[qs.length - 1];
   return $("td")
     .add($("table").klass("main")
@@ -203,7 +202,6 @@ export default class Companies {
         const rp = await this._main.client.send(rq);
         const profits = rp["profits"];
         ttProfits += profits;
-        console.log(ttProfits);
         const quotes = rp["quotes"];
         tds.push(mkGrTd(nick, this.formatN(profits), quotes));
         if (tds.length === ncols) {

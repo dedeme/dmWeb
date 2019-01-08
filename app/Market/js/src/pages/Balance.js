@@ -6,13 +6,12 @@ import Main from "../Main.js";
 import {_} from "../I18n.js";
 import Ui from "../dmjs/Ui.js";
 import Dec from "../dmjs/Dec.js";
-import DateDm from "../dmjs/DateDm.js";
 
 const $ = Ui.$;
 
 const balanceSeparator = () => $("td").klass("separator");
 
-/** Update page. */
+/** Balance page. */
 export default class Balance {
   /**
    * @param {!Main} main Main
@@ -36,8 +35,6 @@ export default class Balance {
     this._differences = 0;
 
     this._portfolio = [];
-
-    this._connDiv = $("div");
   }
 
   formatN (n, dec) {
@@ -45,80 +42,8 @@ export default class Balance {
     return this._main.model["lang"] === "es" ? d.toEu() : d.toEn();
   }
 
-  download () {
-    const n = this._portfolio.length;
-    if (n === 0) {
-      this._currentProfits = this._accountableProfits;
-      this.reload();
-      return;
-    }
-    this._connDiv.removeAll().add(Ui.$("img").att("src", "img/wait2.gif"));
-
-    let c = 0;
-
-    const f = async () => {
-      this._connDiv.removeAll().add(
-        $("div").style("font-size:44px").html(String(c))
-      );
-      if (c === n) {
-        this._currentProfits = this._accountableProfits;
-        this._portfolio.forEach(e => {
-          if (this._currentProfits !== null) {
-            if (e[3] !== null) {
-              this._currentProfits += (e[3] - e[2]) * e[1];
-            } else {
-              this._currentProfits = null;
-            }
-          }
-        });
-        if (this._currentProfits !== null) {
-          const last = {};
-          this._portfolio.forEach(e => {
-            if(e[3] !== null) {
-              last[e[0]] = e[3];
-            }
-          });
-          const rq = {
-            "source": "balance",
-            "rq": "historic",
-            "date": DateDm.now().toBase(),
-            "profits": Math.round(this._currentProfits * 100) / 100,
-            "last": last
-          };
-          this._main.client.send(rq);
-        }
-        this.reload();
-      } else {
-        try {
-          const e = this._portfolio[c];
-          const rq = {
-            "source": "balance",
-            "rq": "download",
-            "nick": e[0]
-          };
-
-          const rp = await this._main.client.sendAsync(rq);
-          e[3] = rp["quote"];
-
-          if (e[3] < 0) {
-            e[3] = null;
-          }
-
-          ++c;
-          f();
-        } catch (e) {
-          e[3] = null;
-          ++c;
-          f();
-        }
-      }
-    };
-    f();
-  }
-
   body () {
     return $("div")
-      .add($("div").style("text-align:center").add(this._connDiv))
       .add($("div").klass("head").html(_("Profits")))
       .add($("table").att("align", "center").klass("home")
         .add($("tr")
@@ -218,8 +143,6 @@ export default class Balance {
 
   reload () {
     this._main.dom.show(Main.balancePageId, this.body());
-    this._connDiv.removeAll()
-      .add(Ui.link(() => { this.download() }).add(Ui.img("download")));
   }
 
   /**
