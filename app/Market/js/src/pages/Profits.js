@@ -10,7 +10,11 @@ import DateDm from "../dmjs/DateDm.js";
 
 const $ = Ui.$;
 
-const mkCanvas = (data, all) => {
+const ALL = 0;
+const YEAR = 1;
+const MONTH = 2;
+
+const mkCanvas = (data, type) => {
   const cv = $("canvas").att("width", 600).att("height", 200)
     .klass("frame");
   const ctx = cv.e.getContext("2d");
@@ -68,12 +72,20 @@ const mkCanvas = (data, all) => {
   ctx.closePath();
 
   x = 100.5;
-  let lastD = all ? data[0][0].substring(2, 4) : data[0][0].substring(4, 6);
+  let lastD = type === ALL ? data[0][0].substring(2, 4)
+    : data[0][0].substring(4, 6);
   ctx.setLineDash([4, 2]);
-  data.forEach(dv => {
-    const d = all ? dv[0].substring(2, 4) : dv[0].substring(4, 6);
-    if (lastD !== d) {
-      lastD = d;
+  data.forEach((dv, ix) => {
+    let d = type === ALL ? dv[0].substring(2, 4) : dv[0].substring(4, 6);
+    if (
+      (type !== MONTH && lastD !== d) ||
+      (type === MONTH && ix !== 0 && ix % 5 === 0)
+    ) {
+      if (type === MONTH) {
+        d = dv[0].substring(6, 8);
+      } else {
+        lastD = d;
+      }
       const text = ctx.measureText(d);
       ctx.fillText(d, x - text.width / 2, 180.5);
 
@@ -90,13 +102,18 @@ const mkCanvas = (data, all) => {
   return cv;
 };
 
-const lastGr = data => {
-  const cv = mkCanvas(data, false);
+const lastMonthGr = data => {
+  const cv = mkCanvas(data, MONTH);
+  return $("div").add(cv);
+};
+
+const lastYearGr = data => {
+  const cv = mkCanvas(data, YEAR);
   return $("div").add(cv);
 };
 
 const allGr = data => {
-  const cv = mkCanvas(data, true);
+  const cv = mkCanvas(data, ALL);
   return $("div").add(cv);
 };
 
@@ -159,8 +176,10 @@ export default class Profits {
     this._main.dom.show(Main.profitsPageId,
       $("div").style("text-align:center")
         .add(valueDiv())
-        .add($("div").klass("head").html(_("Last")))
-        .add(lastGr(data.filter(dv => dv[0] >= date)))
+        .add($("div").klass("head").html(_("Last Month")))
+        .add(lastMonthGr(data.slice(-30)))
+        .add($("div").klass("head").html(_("Last Year")))
+        .add(lastYearGr(data.filter(dv => dv[0] >= date)))
         .add($("div").klass("head").html(_("All")))
         .add(allGr(data))
     );

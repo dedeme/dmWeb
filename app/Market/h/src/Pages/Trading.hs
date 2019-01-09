@@ -45,11 +45,25 @@ getNicks pf = do
 
 updateNicks :: [String] -> Params -> IO [(String, Params)]
 updateNicks pfNks p = do
-  let update nk = do
-                    r <- Params.readNickParams nk
-                    case r of
-                      Nothing -> return (nk, p)
-                      Just np -> return np
+  let update nk = if nk == "BBVA" ||
+                     nk == "DIA" ||
+                     nk == "ELE" ||
+                     nk == "IBE" ||
+                     nk == "ITX" ||
+                     nk == "MAP" ||
+                     nk == "MTS" ||
+                     nk == "PSG" ||
+                     nk == "REE" ||
+                     nk == "REP" ||
+                     nk == "SAN" ||
+                     nk == "TEF" ||
+                     nk == "TRE"
+                  then return (nk, p)
+                  else do
+                          r <- Params.readNickParams nk
+                          case r of
+                            Nothing -> return (nk, p)
+                            Just np -> return np
   nps <- mapM update pfNks
 
   let toJs (n, p) = Js.wList [Js.wString n, Params.toJs p]
