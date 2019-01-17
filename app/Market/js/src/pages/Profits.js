@@ -15,6 +15,7 @@ const YEAR = 1;
 const MONTH = 2;
 
 const mkCanvas = (data, type) => {
+  let backg = "#e9e9e9";
   const cv = $("canvas").att("width", 600).att("height", 200)
     .klass("frame");
   const ctx = cv.e.getContext("2d");
@@ -27,6 +28,13 @@ const mkCanvas = (data, type) => {
     return cv;
   }
 
+  if (data[0][1] < data[data.length - 1][1]) {
+    backg = "#e9e9f2";
+  } else if (data[0][1] > data[data.length - 1][1]) {
+    backg = "#f2e9e9";
+  }
+  cv.style("background:" + backg);
+
   let max = data[0][1];
   let min = max;
   data.forEach(dv => {
@@ -34,9 +42,13 @@ const mkCanvas = (data, type) => {
     if (v > max) max = v;
     if (v < min) min = v;
   });
-  const base = Math.floor(min / 1000) * 1000;
-  const top = Math.ceil((max - min + 1000) / 1000) * 1000;
+  const base = Math.floor((min / 1000) - 1) * 1000;
+  const top = Math.ceil(((max - min) / 1000) + 2) * 1000;
   const step = top / 4;
+
+  ctx.fillStyle = "rgba(255, 255, 255)";
+  ctx.fillRect(100.5, 10.5, 490, 160);
+  ctx.fillStyle = "rgba(0, 0, 0)";
 
   ctx.lineWidth = 1;
   ctx.strokeRect(100.5, 10.5, 490, 160);

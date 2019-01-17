@@ -50,16 +50,13 @@ function mkGr (qs) {
     if (v < min) min = v;
   });
   const gap = max / 100;
-  const base = Math.floor(min / gap) * gap;
-  const top = Math.ceil((max - min + gap) / gap) * gap;
+  const base = Math.floor((min / gap) - 1) * gap;
+  const top = Math.ceil(((max - min) / gap) + 2) * gap;
   const step = top / 4;
 
   ctx.fillStyle = "rgba(255, 255, 255)";
   ctx.fillRect(45.5, 5.5, 252, 140);
   ctx.fillStyle = "rgba(0, 0, 0)";
-
-  ctx.lineWidth = 1;
-  ctx.strokeRect(45.5, 5.5, 252, 140);
 
   ctx.font = "10px sans";
   for (let i = 0; i < 5; ++i) {
@@ -92,18 +89,33 @@ function mkGr (qs) {
   ctx.closePath();
 
   x = 45;
+  let bs0 = 0;
   qs.forEach(cs => {
     const v = cs[1];
     const y = 145 - (v - base) * 140 / top;
     if (cs[1] > cs[0]) {
-      ctx.fillStyle = "rgba(0, 129, 255)";
+      if (bs0 === 2) {
+        ctx.fillStyle = "rgba(255, 40, 0)";
+      } else {
+        ctx.fillStyle = "rgba(0, 129, 255)";
+      }
+      bs0 = 1;
     } else if (cs[1] < cs[0]) {
-      ctx.fillStyle = "rgba(255, 40, 0)";
+      if (bs0 === 1) {
+        ctx.fillStyle = "rgba(0, 129, 255)";
+      } else {
+        ctx.fillStyle = "rgba(255, 40, 0)";
+      }
+      bs0 = 2;
     }
+
     ctx.fillRect(x, y, 1, 1);
     ctx.fillStyle = "rgba(0, 0, 0)";
     x += xstep;
   });
+
+  ctx.lineWidth = 1;
+  ctx.strokeRect(45.5, 5.5, 252, 140);
 
   return cv;
 }

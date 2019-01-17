@@ -9,7 +9,8 @@ module Data.Params (
   fromJs,
   Data.Params.init,
   readCurrent,
-  readNickParams,
+  readBase,
+  writeBase,
   readParams,
   writeNickParams
   ) where
@@ -31,6 +32,9 @@ data Params = Params {
 path :: FilePath
 path = G.path["data", "params.db"]
 
+basePath :: FilePath
+basePath = G.path["data", "baseParams.db"]
+
 -- |@'toJs' ps@ - Returns /ps/ JSONized
 toJs :: Params -> JSValue
 toJs (Params d bs ss) = Js.wList[Js.wInt d, Js.wDouble bs, Js.wDouble ss]
@@ -42,7 +46,9 @@ fromJs js = let [d, bs, ss] = Js.rList js
 
 -- |@'init'@ - Initilizes /params.db/
 init :: IO ()
-init = File.write path "[]"
+init = do
+  File.write path "[]"
+  File.write basePath "[]"
 
 -- |@'readCurrent'@ - Returns current parameters
 readCurrent :: IO Params
@@ -67,9 +73,25 @@ readCurrent = do
   where
     days d n x = n + (truncate $ (d * fromIntegral (x - n))::Int)
 
--- |@'readNickParams' nick@ - Returns (nick, parameters) of a sold /nick/
-readNickParams :: String -> IO (Maybe (String, Params))
-readNickParams nick = do
+-- |@'readBase'@ - Returns base parameters
+readBase :: IO Params
+readBase = do
+  pStr <- File.read basePath
+  let pjs = Js.fromStr pStr
+  let ps = Js.rList $ pjs
+  if length ps > 0  then return $ fromJs pjs
+                    else do
+                      ps <- readCurrent
+                      writeBase ps
+                      return ps
+
+-- |@'writeBase' ps@ - Writes base parameters
+writeBase :: Params -> IO()
+writeBase p = File.write basePath $ Js.toStr $ toJs p
+
+-- |@'readParams' nick@ - Returns parameters of a sold /nick/
+readParams :: String -> IO (Maybe Params)
+readParams nick = do
   js <- File.read path
   let nps = map
               (\js -> let [nk, p] = Js.rList js
@@ -77,15 +99,7 @@ readNickParams nick = do
               (Js.rList $ Js.fromStr js)
 
   let ffind nk (nk', _) = nk == nk'
-  return $ find (ffind nick) nps
-
--- |@'readParams' nick@ - Returns parameters of a sold /nick/
-readParams :: String -> IO (Maybe Params)
-readParams nick = do
-  r <- readNickParams nick
-  return $  case r of
-              Nothing -> Nothing
-              Just (_, ps) -> Just ps
+  return $ fmap (\(_, p) -> p) $ find (ffind nick) nps
 
 writeNickParams :: [(String, Params)] -> IO()
 writeNickParams nps = File.write path $ Js.toStr $ Js.wList $

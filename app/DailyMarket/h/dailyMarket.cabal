@@ -1,0 +1,77 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 02a63d1a458c42ebfb4a669ad2a2db4a03f97f351e108b3952d3c2e6e659ffac
+
+name:           dailyMarket
+version:        2019.1
+description:    Please see the README on GitHub at <https://github.com/githubuser/h#readme>
+homepage:       https://github.com/githubuser/h#readme
+bug-reports:    https://github.com/githubuser/h/issues
+author:         ºDeme
+maintainer:     example@example.com
+copyright:      2019 ºDeme
+license:        GPL-3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    LICENSE
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/h
+
+library
+  exposed-modules:
+      Conf
+      Core.Chpass
+      Core.Settings
+      Global
+      Reader
+  other-modules:
+      Paths_dailyMarket
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , bytestring
+    , http-conduit
+    , libdmh
+    , time
+  default-language: Haskell2010
+
+executable DailyMarket
+  main-is: Main.hs
+  other-modules:
+      Paths_dailyMarket
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , bytestring
+    , dailyMarket
+    , http-conduit
+    , libdmh
+    , time
+  default-language: Haskell2010
+
+test-suite DailyMarket_test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_dailyMarket
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , bytestring
+    , dailyMarket
+    , http-conduit
+    , libdmh
+    , time
+  default-language: Haskell2010

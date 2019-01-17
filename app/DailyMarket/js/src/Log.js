@@ -9,7 +9,7 @@ import Ui from "./dmjs/Ui.js";
 const $ = Ui.$;
 
 /** Update page. */
-export default class Update {
+export default class Log {
   /**
    * @param {!Main} main Main
    */
@@ -25,9 +25,9 @@ export default class Update {
    * @return {void}
    */
   show () {
-    this._main.dom.show(Main.updatePageId, $("div").style("text-align:center")
-      .add($("h2").html(_("Update")))
-      .add($("p").att("align", "center").html(_("Update")))
+    this._main.dom.show(Main.logPageId, $("div").style("text-align:center")
+      .add($("h2").html(_("Log")))
+      .add($("p").att("align", "center").html(_("Log")))
     );
   }
 }

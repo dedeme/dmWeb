@@ -46,10 +46,10 @@ getNicks pf = do
 updateNicks :: [String] -> Params -> IO [(String, Params)]
 updateNicks pfNks p = do
   let update nk = do
-                    r <- Params.readNickParams nk
+                    r <- Params.readParams nk
                     case r of
                       Nothing -> return (nk, p)
-                      Just np -> return np
+                      Just p' -> return (nk, p')
   nps <- mapM update pfNks
 
   let toJs (n, p) = Js.wList [Js.wString n, Params.toJs p]
@@ -85,10 +85,18 @@ process :: Cgi -> [(String, JSValue)] -> IO ()
 process cgi rq =
   case Cgi.get rq Js.rString "rq" of
     "idata" -> do
+      conf <- Conf.get
+      let bet = Cgi.get (Js.rMap conf) Js.rDouble "bet"
       (pf, ld) <- Diary.books
-      p <- Params.readCurrent
+      let cash = Ledger.cash ld
       (pfNks, nks) <- getNicks pf
-      buys <- buyOrders (Ledger.cash ld) nks p
+      p <-  if cash - (bet / 3) > bet
+            then Params.readBase
+            else do
+              p <- Params.readCurrent
+              Params.writeBase p
+              return p
+      buys <- buyOrders cash nks p
       nkps <- updateNicks pfNks p
       sells <- Orders.sells nkps
       Cgi.ok cgi [("buys", buys),

@@ -18,6 +18,6 @@ finanzasTest = do
       putStrLn "Test Finanzas:"
 --      mapM_ (putStrLn . Quote.toStr) qs
       putStrLn $ alist [
-          (assert, 253 == length qs)
+          (assert, 254 == length qs)
         ] ++
         "    Finished"

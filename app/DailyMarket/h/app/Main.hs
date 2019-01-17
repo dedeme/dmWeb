@@ -1,4 +1,4 @@
--- Copyright 12-Dic-2018 ºDeme
+-- Copyright 25-Nov-2018 ºDeme
 -- GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 -- | Entry point
@@ -19,43 +19,28 @@ import qualified Dm.Js as Js
 import Dm.Js (JSValue)
 import qualified Core.Settings as Settings
 import qualified Core.Chpass as Chpass
-import qualified Core.Backups as Backups
-import qualified Data.Diary as Diary
-import qualified Data.Historic as Historic
-import qualified Data.Lquotes as Lquotes
-import qualified Data.Params as Params
-import qualified Pages.Balance as Balance
-import qualified Pages.Annotations as Annotations
-import qualified Pages.Trading as Trading
-import qualified Pages.Profits as Profits
-import qualified Pages.Companies as Companies
-import qualified Wdgs.Downloader as Downloader
 import qualified Global as G
 import qualified Conf as Conf
+import qualified Reader as Reader
 
 appInit :: IO ()
 appInit = do
   let dir = G.path ["data"]
   ex <- File.exists dir
   if ex
-    then do
---      Some initialization
+    then
       return ()
     else do
       File.mkDir $ G.path ["tmp"]
       File.mkDir dir
       let version = printf "%s\nData version: %s\n" G.appName G.dataVersion
       File.write (G.path ["data", "version.txt"]) version
-      Diary.init
-      Historic.init
-      Params.init
 
 mainProcess :: Cgi -> String -> [(String, JSValue)] -> IO ()
 mainProcess cgi sessionId rq =
   case Cgi.get rq Js.rString "rq" of
     "logout" -> do ----------------------------------------------------- logout
       Cgi.delSession cgi sessionId
-      Backups.process cgi rq
     "getDb" -> do ------------------------------------------------------- getDb
       d <- Conf.get
       Cgi.ok cgi [("db", d)]
@@ -68,15 +53,9 @@ appProcess :: Cgi -> String -> [(String, JSValue)] -> IO ()
 appProcess cgi sessionId rq  =
   case Cgi.get rq Js.rString "source" of
     "main" -> mainProcess cgi sessionId rq -------------------------- Main page
+    "reader" -> Reader.process cgi rq ----------------------------- Reader page
     "settings" -> Settings.process cgi rq ----------------------- Settings page
     "chpass" -> Chpass.process cgi rq -------------------- Change password page
-    "backups" -> Backups.process cgi rq -------------------------- Backups page
-    "balance" -> Balance.process cgi rq -------------------------- Balance page
-    "annotations" -> Annotations.process cgi rq -------------- Annotations page
-    "trading" -> Trading.process cgi rq -------------------------- Trading page
-    "profits" -> Profits.process cgi rq -------------------------- Profits page
-    "companies" -> Companies.process cgi rq -------------------- Companies page
-    "downloader" -> Downloader.process cgi rq --------------- Downloader widget
     s -> error $ printf "Unknown source '%s'" s
 
 mainHub :: String -> IO ()

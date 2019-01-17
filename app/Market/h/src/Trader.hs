@@ -29,24 +29,41 @@ readCloses nk = do
 
 calc :: Double -> [Double] -> Params -> (Double, [(Double, Double)])
 calc _ [] _ = (0, [])
-calc bet qs@(ref:_) (Params d bs ss) = c 0 [] 0 0 ref qs (drop d qs) False
+calc bet qs@(begin:before) (Params d bs ss) =
+  c' 0 [] 0 0 begin (-1) before (drop d qs) False
   where
+    c' rpr rqs st pr begin ref before after buying =
+      let ref' =  if ref > 0
+                  then
+                    if begin > 0
+                      then
+                        if buying
+                        then if begin < ref then begin else ref
+                        else if begin > ref then begin else ref
+                      else ref
+                  else
+                    if begin > 0 then begin else ref
+      in c rpr rqs st pr ref' before after buying
     c rpr rqs _ _ _ _ [] _ = (rpr, reverse $ take 250 rqs)
     c rpr rqs st pr ref (b:before) (a:after) True =
-      let dif = (a - ref) / ref
-      in  if dif > bs
-          then c rpr ((a, refs b):rqs)(stBuy a) a b before after False
-          else if b < ref
-               then c rpr ((a, refb ref):rqs) st pr b before after True
-               else c rpr ((a, refb ref):rqs) st pr ref before after True
+      if a < 0 || ref < 0
+      then
+        c' rpr rqs st pr b ref before after True
+      else
+        let dif = (a - ref) / ref
+        in  if dif > bs
+            then c' rpr ((a, refb ref):rqs) (stBuy a) a b b before after False
+            else c' rpr ((a, refb ref):rqs) st pr b ref before after True
     c rpr rqs st pr ref (b:before) (a:after) False =
-      let dif = (ref - a) / ref
-      in  if dif > ss
-          then c (rpr + prof st pr a) ((a, refb b):rqs)
-                 0 0 b before after True
-          else if b > ref
-            then c rpr ((a, refs ref):rqs) st pr b before after False
-            else c rpr ((a, refs ref):rqs) st pr ref before after False
+      if a < 0 || ref < 0
+      then
+        c' rpr rqs st pr b ref before after False
+      else
+        let dif = (ref - a) / ref
+        in  if dif > ss
+            then c' (rpr + prof st pr a) ((a, refs ref):rqs)
+                   0 0 b b before after True
+            else c' rpr ((a, refs ref):rqs) st pr b ref before after False
     stBuy pr = truncate $ bet / pr
     refb q = q + q * bs
     refs q = q - q * ss
@@ -61,7 +78,7 @@ calculate nk = do
   let bet = Cgi.get (Js.rMap conf) Js.rDouble "bet"
   paramsMb <- Params.readParams nk
   params <- case paramsMb of
-              Nothing -> Params.readCurrent
+              Nothing -> Params.readBase
               Just ps -> return ps
   qs <- readCloses nk
   return $ toJs bet $ calc bet (filter (>= 0) qs) params
