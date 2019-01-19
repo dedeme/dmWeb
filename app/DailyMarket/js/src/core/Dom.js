@@ -7,6 +7,8 @@ import {_} from "../I18n.js";
 // eslint-disable-next-line
 import Domo from "../dmjs/Domo.js";
 import Ui from "../dmjs/Ui.js";
+import Dec from "../dmjs/Dec.js";
+import Co from "../data/Co.js";
 
 const $ = Ui.$;
 
@@ -21,6 +23,9 @@ export default class Dom {
      * @type {!Main}
      */
     this._main = main;
+
+    /** @private */
+    this._dataSpan = $("span").html("");
   }
 
   /**
@@ -75,6 +80,7 @@ export default class Dom {
     ];
 
     const ropts = [
+      this._dataSpan,
       entry(_("Log"), Main.logPageId),
       separator(),
       entry(_("Settings"), Main.settingsPageId),
@@ -97,6 +103,34 @@ export default class Dom {
         .add(menu)
         .add($("hr"))
         .add(o)
+    );
+
+    this.update();
+  }
+
+  update () {
+    const lang = this._main.model["lang"];
+    const data = this._main.data;
+    const mcos = data.cos;
+    const cos = [...mcos.keys()].map(k => mcos.get(k));
+    const [risk, profits] = Co.allRiskProfits(cos);
+    const server = data.server;
+    let state = data.state;
+
+    function formatN (n) {
+      if (lang === "es") {
+        return new Dec(n, 2).toEu();
+      }
+      return new Dec(n, 2).toEn();
+    }
+    state = state === "active" ? _("Active")
+      : state === "toActive" ? _("To Active")
+        : state === "sleeping" ? _("Sleeping")
+          : _("To Sleeping")
+    ;
+    this._dataSpan.html(
+      "| " + formatN(risk) + " · " + formatN(profits) + " | " +
+      server + " | " + state + " | "
     );
   }
 }

@@ -125,6 +125,12 @@ BUTTON {
   font-family: sans;font-size: 14px;
   padding: 4px;border-radius: 4px;
 }
+.frame4 {
+  background-color: rgb(250, 245, 240);
+  border: 1px solid rgb(110,130,150);
+  font-family: sans;font-size: 14px;
+  padding: 4px;border-radius: 4px;
+}
 
 #hlist {
   max-height:0;

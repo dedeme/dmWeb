@@ -4,9 +4,10 @@
 # src/core/Auth.js: 50
 Accept = Accept
 
-# src/AllCos.js: 29
-# src/AllCos.js: 30
-# src/core/Dom.js: 72
+# src/core/Dom.js: 126
+Active = Active
+
+# src/core/Dom.js: 77
 All CO's = All CO's
 
 # src/core/Chpass.js: 75
@@ -44,7 +45,7 @@ Fail trying to change password = Fail trying to change password
 # src/core/Auth.js: 103
 Grey squares checks are wrong = Grey squares checks are wrong
 
-# src/core/Dom.js: 42
+# src/core/Dom.js: 47
 Help & Credits = Help & Credits
 
 # src/core/Auth.js: 138
@@ -52,7 +53,7 @@ Keep connected = Keep connected
 
 # src/Log.js: 29
 # src/Log.js: 30
-# src/core/Dom.js: 78
+# src/core/Dom.js: 84
 Log = Log
 
 # src/core/Chpass.js: 211
@@ -71,6 +72,12 @@ New password and confirm password do not match = New password and confirm passwo
 # src/core/Chpass.js: 99
 New password is missing = 'New password' is missing
 
+# src/AllCos.js: 104
+Nick = Nick
+
+# src/AllCos.js: 103
+Order by = Order by
+
 # src/core/Auth.js: 123
 Password = Password
 
@@ -80,27 +87,48 @@ Password is missing = Password is missing
 # src/core/Chpass.js: 45
 Password successfully changed = Password successfully changed
 
-# src/Portfolio.js: 30
-# src/Portfolio.js: 31
-# src/core/Dom.js: 70
+# src/Portfolio.js: 33
+# src/Portfolio.js: 34
+# src/core/Dom.js: 75
 Portfolio = Portfolio
 
-# src/Selection.js: 29
-# src/Selection.js: 30
-# src/core/Dom.js: 74
+# src/AllCos.js: 106
+Profits = Profits
+
+# src/AllCos.js: 112
+Reverse = Reverse
+
+# src/AllCos.js: 108
+Risk = Risk
+
+# src/Selection.js: 32
+# src/Selection.js: 33
+# src/core/Dom.js: 79
 Selection = Selection
 
 # src/core/Expired.js: 42
 Session is expired. = Session is expired.
 
-# src/core/Dom.js: 80
+# src/core/Dom.js: 86
 # src/core/Settings.js: 81
 Settings = Settings
 
-# src/Summary.js: 29
-# src/Summary.js: 30
-# src/core/Dom.js: 68
+# src/AllCos.js: 110
+Signal = Signal
+
+# src/core/Dom.js: 128
+Sleeping = Sleeping
+
+# src/Summary.js: 32
+# src/Summary.js: 33
+# src/core/Dom.js: 73
 Summary = Summary
+
+# src/core/Dom.js: 127
+To Active = To Active
+
+# src/core/Dom.js: 129
+To Sleeping = To Sleeping
 
 # src/core/Auth.js: 118
 User = User

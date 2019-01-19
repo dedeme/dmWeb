@@ -2,6 +2,7 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 import Client from "./dmjs/Client.js";
+import Store from "./dmjs/Store.js";
 import Dom from "./core/Dom.js";
 import Expired from "./core/Expired.js";
 import Auth from "./core/Auth.js";
@@ -11,15 +12,14 @@ import {I18n} from "./I18n.js";
 import Data from "./data/Data.js";
 
 import Summary from "./Summary.js";
-import Portfolio from "./Portfolio.js";
-import AllCos from "./AllCos.js";
-import Selection from "./Selection.js";
+import Cos from "./Cos.js";
 import Log from "./Log.js";
 const app = "DailyMarket";
 const version = "201901";
 const langStore = "${app}__lang";
 const captchaAuthStore = "${app}__captcha";
 const captchaChpassStore = "${app}__captchaCh";
+const selStore = "${app}__sel";
 
 const settingsPageId = "settings";
 const summaryPageId = "summary";
@@ -58,6 +58,16 @@ export default class Main {
      * @type {Data}
      */
     this._data = null;
+
+    /**
+     * @private
+     */
+    this._sel = [];
+
+    /**
+     * @private
+     */
+    this._page = null;
   }
 
   /** @return {!Dom} Container for DOM objects. */
@@ -81,22 +91,15 @@ export default class Main {
   async run () {
     const self = this;
 
+    const selVal = Store.take(selStore);
+    this._sel = selVal === null ? [] : JSON.parse(selVal);
+
     let rq = {
       "source": "reader",
       "rq": "read"
     };
     let rp = await this.client.send(rq);
     this.data = new Data(rp);
-
-    console.log(this.data.server);
-    console.log(this.data.state);
-    this.data.log.forEach(e => {
-      console.log(e.msg);
-    });
-    [...this.data.cos.keys()].forEach(k => {
-      console.log(k + " -> " + this.data.cos.get(k).signal);
-    });
-
 
     rq = {
       "source": "main",
@@ -110,18 +113,23 @@ export default class Main {
     else I18n.en();
 
     const page = this._model["menu"];
+    this._page = null;
     switch (page) {
     case summaryPageId:
-      new Summary(self).show();
+      this._page = new Summary(self);
+      this._page.show();
       break;
     case portfolioPageId:
-      new Portfolio(self).show();
+      this._page = new Cos(self, 1);
+      this._page.show();
       break;
     case allCosPageId:
-      new AllCos(self).show();
+      this._page = new Cos(self, 0);
+      this._page.show();
       break;
     case selectionPageId:
-      new Selection(self).show();
+      this._page = new Cos(self, 2);
+      this._page.show();
       break;
     case logPageId:
       new Log(self).show();
@@ -132,6 +140,7 @@ export default class Main {
     default:
       throw("Source '" + page + "' is unknown");
     }
+    this.update();
   }
 
   async start () {
@@ -170,6 +179,54 @@ export default class Main {
     };
     await this.client.send(rq);
     this.run();
+  }
+
+  update () {
+    setInterval(async () => {
+      if (this._page !== null) {
+        const rq = {
+          "source": "reader",
+          "rq": "read"
+        };
+        const rp = await this.client.send(rq);
+        this.data = new Data(rp);
+        this._page.showData();
+      }
+      this._dom.update();
+    }, 15000);
+  }
+
+  /**
+   * @param {string} nick
+   * @return {boolean}
+   */
+  isSel (nick) {
+    return this._sel.findIndex(e => e === nick) !== -1;
+  }
+
+  /**
+   * @param {string} nick
+   * @return {void}
+   */
+  addSel (nick) {
+    if (!this.isSel(nick)) {
+      this._sel.push(nick);
+      Store.put(selStore, JSON.stringify(this._sel));
+      this.run();
+    }
+  }
+
+  /**
+   * @param {string} nick
+   * @return {void}
+   */
+  removeSel (nick) {
+    const ix = this._sel.findIndex(e => e === nick);
+    if (ix !== -1) {
+      this._sel.splice(ix, 1);
+      Store.put(selStore, JSON.stringify(this._sel));
+      this.run();
+    }
   }
 
   // _______

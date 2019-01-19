@@ -9,6 +9,59 @@ import Dec from "../dmjs/Dec.js";
 
 const $ = Ui.$;
 
+const bIn = $("input").att("type", "text");
+const bLa = $("span").klass("frame").html("---");
+
+const sIn = $("input").att("type", "text");
+const sLa = $("span").klass("frame").html("---");
+
+const calc = (type) => {
+  let entry = sIn;
+  let label = sLa;
+  let oEntry = bIn;
+  let oLabel = bLa;
+  if (type === "buy") {
+    entry = bIn;
+    label = bLa;
+    oEntry = sIn;
+    oLabel = sLa;
+  }
+  const f = () => {
+    oEntry.value("");
+    oLabel.html("---");
+    const v = entry.value().trim();
+    let tx = "---";
+    if (v !== "" && Dec.isNumberEu(v)) {
+      if (type === "buy") {
+        tx = new Dec(Dec.newEu(v, 2) * 1.01, 2).toEu();
+      } else {
+        tx = new Dec(Dec.newEu(v, 2) * 0.99, 2).toEu();
+      }
+    }
+    label.removeAll().html(tx);
+  };
+  entry.on("input", f);
+  Ui.changePoint(entry);
+  return $("table").klass(type === "buy" ? "frame4" : "frame3")
+    .add($("tr")
+      .add($("td")
+        .add($("div").klass("head")
+          .html(type === "buy" ? _("Buy") : _("Sell")))))
+    .add($("tr")
+      .add($("td")
+        .add(entry)))
+    .add($("tr")
+      .add($("td")
+        .add($("hr"))))
+    .add($("tr")
+      .add($("td").style("text-align:center")
+        .add(label)));
+};
+
+const buyCalc = () => calc("buy");
+
+const sellCalc = () => calc("sell");
+
 /** Update page. */
 export default class Trading {
   /**
@@ -59,7 +112,15 @@ export default class Trading {
       row => paramTd(row[0], row[1][0], row[1][1], row[1][2])
     );
 
-    this._main.dom.show(Main.tradingPageId, this._body);
+    const table = $("table").klass("main")
+      .add($("tr")
+        .add($("td").style("text-align:left;vertical-align:top")
+          .add(buyCalc()))
+        .add($("td").style("width:90%;text-align:center").add(this._body))
+        .add($("td").style("text-align:right;vertical-align:top")
+          .add(sellCalc())));
+
+    this._main.dom.show(Main.tradingPageId, table);
     this._body.add(Ui.$("img").att("src", "img/wait2.gif"));
     const data = {
       "source": "trading",

@@ -12,6 +12,8 @@ export default class Co {
     this._stocks = entry[2];
     this._price = entry[3];
     this._signal = entry[4];
+    this._lastQ = entry[1].length <= 1 ? null
+      : entry[1][entry[1].length - 1][1];
   }
 
   /** @return {!Array<!Array<number>>} Array<number> is [hour, quote] */
@@ -37,6 +39,25 @@ export default class Co {
     return this._signal;
   }
 
+  /** @return {number} */
+  get profits () {
+    return this._lastQ === null || this._stocks === 0 ? 0
+      : this._stocks * (this._lastQ - this._price);
+  }
+
+  /** @return {number} */
+  get risk () {
+    return this._lastQ === null || this._stocks === 0 ? 0
+      : this._stocks * ((this._signal < 0 ? -this._signal : 0) - this._price);
+  }
+
+  /** @return {number} */
+  get signalRatio () {
+    return (this._lastQ === null) ? 0
+      : this._signal > 0 ? this._lastQ / this._signal
+        : -this._signal / this._lastQ;
+  }
+
   /**
    * @param {!Array<?>} d Entries
    * @return {!Map<String, Co>}
@@ -49,5 +70,19 @@ export default class Co {
     return r;
   }
 
+  /**
+   * Returns sums of riks and profits
+   * @param {!Array<!Co>} cos
+   * @return {!Array<number>} [risk, profits]
+   */
+  static allRiskProfits (cos) {
+    let risk = -10000;
+    let prof = -10000;
+    cos.forEach(co => {
+      risk += co.risk;
+      prof += co.profits;
+    });
+    return [risk, prof];
+  }
 }
 

@@ -4,9 +4,10 @@
 # src/core/Auth.js: 50
 Accept = Aceptar
 
-# src/AllCos.js: 29
-# src/AllCos.js: 30
-# src/core/Dom.js: 72
+# src/core/Dom.js: 126
+Active = Activo
+
+# src/core/Dom.js: 77
 All CO's = Todas las Cías.
 
 # src/core/Chpass.js: 75
@@ -44,7 +45,7 @@ Fail trying to change password = Fallo intentando cambiar la contraseña
 # src/core/Auth.js: 103
 Grey squares checks are wrong = Las casillas grises están mal marcadas
 
-# src/core/Dom.js: 42
+# src/core/Dom.js: 47
 Help & Credits = Ayuda & créditos
 
 # src/core/Auth.js: 138
@@ -52,7 +53,7 @@ Keep connected = Mantenerse conectado
 
 # src/Log.js: 29
 # src/Log.js: 30
-# src/core/Dom.js: 78
+# src/core/Dom.js: 84
 Log = Registro
 
 # src/core/Chpass.js: 211
@@ -71,6 +72,12 @@ New password and confirm password do not match = La nueva contraseña y su confi
 # src/core/Chpass.js: 99
 New password is missing = Falta indicar la nueva contraseña
 
+# src/AllCos.js: 104
+Nick = Nick
+
+# src/AllCos.js: 103
+Order by = Ordenado por
+
 # src/core/Auth.js: 123
 Password = Contraseña
 
@@ -80,27 +87,48 @@ Password is missing = Falta indicar la contraseña
 # src/core/Chpass.js: 45
 Password successfully changed = La contraseña se cambió correctamente
 
-# src/Portfolio.js: 30
-# src/Portfolio.js: 31
-# src/core/Dom.js: 70
+# src/Portfolio.js: 33
+# src/Portfolio.js: 34
+# src/core/Dom.js: 75
 Portfolio = Cartera
 
-# src/Selection.js: 29
-# src/Selection.js: 30
-# src/core/Dom.js: 74
+# src/AllCos.js: 106
+Profits = Beneficios
+
+# src/AllCos.js: 112
+Reverse = Reverso
+
+# src/AllCos.js: 108
+Risk = Riesgo
+
+# src/Selection.js: 32
+# src/Selection.js: 33
+# src/core/Dom.js: 79
 Selection = Selección
 
 # src/core/Expired.js: 42
 Session is expired. = La sesión ha expirado.
 
-# src/core/Dom.js: 80
+# src/core/Dom.js: 86
 # src/core/Settings.js: 81
 Settings = Configuración
 
-# src/Summary.js: 29
-# src/Summary.js: 30
-# src/core/Dom.js: 68
+# src/AllCos.js: 110
+Signal = Señal
+
+# src/core/Dom.js: 128
+Sleeping = Dormido
+
+# src/Summary.js: 32
+# src/Summary.js: 33
+# src/core/Dom.js: 73
 Summary = Resumen
+
+# src/core/Dom.js: 127
+To Active = Activando
+
+# src/core/Dom.js: 129
+To Sleeping = Desactivando
 
 # src/core/Auth.js: 118
 User = Usuario
