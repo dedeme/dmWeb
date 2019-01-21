@@ -14,6 +14,7 @@ import Nicks from "./Nicks.js";
 import Edit from "./Edit.js";
 import Issues from "./Issues.js";
 import Servers from "./Servers.js";
+import Volume from "./Volume.js";
 
 const app = "Quotes";
 const version = "201811";
@@ -28,6 +29,7 @@ const nicksPageId = "nicks";
 const editPageId = "edit";
 const issuesPageId = "issues";
 const serversPageId = "servers";
+const volumePageId = "volume";
 
 /** Main page. */
 export default class Main {
@@ -98,6 +100,9 @@ export default class Main {
       break;
     case serversPageId:
       new Servers(self).show();
+      break;
+    case volumePageId:
+      new Volume(self).show();
       break;
     case backupsPageId: {
       new Backups(self).show();
@@ -208,5 +213,9 @@ export default class Main {
     return serversPageId;
   }
 
+  /** @return {string} Id of volume page */
+  static get volumePageId () {
+    return volumePageId;
+  }
 
 }

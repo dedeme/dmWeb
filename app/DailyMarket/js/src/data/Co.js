@@ -58,6 +58,12 @@ export default class Co {
         : -this._signal / this._lastQ;
   }
 
+  /** @return {number} */
+  get dayRatio () {
+    return (this._lastQ === null) ? 0
+      : (this._lastQ - this._qs[0][1]) / this._qs[0][1];
+  }
+
   /**
    * @param {!Array<?>} d Entries
    * @return {!Map<String, Co>}

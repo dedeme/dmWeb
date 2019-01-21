@@ -23,15 +23,21 @@
 # src/core/Auth.js: 50
 Accept = Accept
 
+# src/Volume.js: 84
+Accepted<br>changes = Accepted<br>changes
+
 # src/core/Backups.js: 212
 # src/core/Backups.js: 250
 # src/core/Backups.js: 260
 All the data will be replaced = ATENTION!: All the data will be replaced.\nContinue?
 
+# src/Volume.js: 60
+All<br>Companies = All<br>Companies
+
 # src/core/Backups.js: 235
 Automatic Backups = Automatic Backups
 
-# src/core/Dom.js: 80
+# src/core/Dom.js: 82
 Backs = Backups
 
 # src/core/Backups.js: 201
@@ -43,7 +49,7 @@ Backup successfully restored = Backup successfully restored
 # src/core/Backups.js: 269
 Backups = Backups
 
-# src/Issues.js: 191
+# src/Issues.js: 194
 Browser = Browser
 
 # src/wgs/Wquotes.js: 173
@@ -57,8 +63,8 @@ Change Language to %0 = Change Language to %0
 Change Password = Change Password
 
 # src/Nicks.js: 137
-# src/wgs/Wquotes.js: 262
-# src/Edit.js: 125
+# src/wgs/Wquotes.js: 265
+# src/Edit.js: 126
 Check = Check
 
 # src/core/Chpass.js: 191
@@ -74,7 +80,7 @@ Clear trash? = Clear trash?
 # src/core/Expired.js: 44
 Click %0 to continue. = Click %0 to continue.
 
-# src/wgs/Wquotes.js: 277
+# src/wgs/Wquotes.js: 280
 Close = Close
 
 # src/core/Chpass.js: 147
@@ -89,21 +95,21 @@ Current password = Current password
 # src/core/Chpass.js: 93
 Current password is missing = 'Current password' is missing
 
-# src/wgs/Wquotes.js: 275
+# src/wgs/Wquotes.js: 278
 Date = Date
 
-# src/wgs/Wnick.js: 179
+# src/wgs/Wnick.js: 180
 Delete = Delete
 
-# src/wgs/Wnick.js: 98
+# src/wgs/Wnick.js: 99
 Delete '%0'? = Delete '%0'?
 
 # src/wgs/Wquotes.js: 220
-# src/Issues.js: 183
+# src/Issues.js: 186
 Done = Done
 
 # src/Nicks.js: 133
-# src/Edit.js: 121
+# src/Edit.js: 122
 # src/core/Backups.js: 272
 Download = Download
 
@@ -114,9 +120,9 @@ Edit = Edit
 # src/data/Issue.js: 40
 Extra quote in %0 = Extra quote in %0
 
-# src/wgs/Wnick.js: 75
-# src/Edit.js: 67
-Fail downloading quotes = Fail downloading quotes
+# src/wgs/Wnick.js: 76
+# src/Edit.js: 68
+Fail downloading quotes:\n%0 = Fail downloading quotes:\n%0
 
 # src/core/Chpass.js: 176
 Fail trying to change password = Fail trying to change password
@@ -137,7 +143,7 @@ Grey squares checks are wrong = Grey squares checks are wrong
 # src/core/Dom.js: 43
 Help & Credits = Help & Credits
 
-# src/Issues.js: 143
+# src/Issues.js: 146
 # src/core/Dom.js: 74
 Issues = Issues
 
@@ -154,18 +160,18 @@ Logout-message = <p>%0 has finished.</p><p><b>Good by!</b></p>
 # src/core/Backups.js: 177
 Make backup = Make backup
 
-# src/wgs/Wquotes.js: 278
+# src/wgs/Wquotes.js: 281
 Max = Max
 
-# src/wgs/Wquotes.js: 279
+# src/wgs/Wquotes.js: 282
 Min = Min
 
-# src/wgs/Wnick.js: 173
-# src/wgs/Wnick.js: 176
+# src/wgs/Wnick.js: 174
+# src/wgs/Wnick.js: 177
 Model = Model
 
 # src/wgs/Wquotes.js: 221
-# src/Edit.js: 114
+# src/Edit.js: 115
 Modify = Modify
 
 # src/wgs/Wquotes.js: 200
@@ -183,21 +189,27 @@ New password and confirm password do not match = New password and confirm passwo
 # src/core/Chpass.js: 99
 New password is missing = 'New password' is missing
 
+# src/Volume.js: 67
+Nick = Nick
+
 # src/core/Dom.js: 70
 Nicks = Nicks
 
 # src/wgs/Wquotes.js: 120
 No issues detected = No issues detected
 
-# src/Edit.js: 159
-# src/Issues.js: 147
+# src/Edit.js: 160
+# src/Issues.js: 150
 No nick was selected = No nick was selected
 
 # src/core/Backups.js: 205
 Only one file can be selected = Only one file can be selected
 
-# src/wgs/Wquotes.js: 276
+# src/wgs/Wquotes.js: 279
 Open = Open
+
+# src/Volume.js: 62
+Order by = Order by
 
 # src/core/Auth.js: 123
 Password = Password
@@ -211,7 +223,7 @@ Password successfully changed = Password successfully changed
 # src/data/Issue.js: 38
 Quote of %0 is missimg = Quote of %0 is missimg
 
-# src/wgs/Wquotes.js: 292
+# src/wgs/Wquotes.js: 295
 Quotes = Quotes
 
 # src/wgs/Wquotes.js: 157
@@ -220,27 +232,36 @@ Quotes have wrong format = Quotes have wrong format
 # src/wgs/Wquotes.js: 76
 Quotes updated = Quotes updated
 
+# src/Volume.js: 87
+Rejected<br>changes = Rejected<br>changes
+
 # src/core/Backups.js: 277
 Restore = Restore
 
 # src/core/Backups.js: 197
 Restore backup = Restore backup
 
+# src/Volume.js: 78
+Reverse = Reverse
+
 # src/wgs/Wquotes.js: 192
 Save split? = Save split?
 
-# src/Issues.js: 151
-# src/Issues.js: 166
+# src/Issues.js: 154
+# src/Issues.js: 169
 Search more issues = Search more issues
 
 # src/wgs/Wquotes.js: 170
 See = See
 
-# src/wgs/Wnick.js: 144
-# src/wgs/Wnick.js: 148
-# src/wgs/Wnick.js: 192
-# src/wgs/Wnick.js: 195
+# src/wgs/Wnick.js: 145
+# src/wgs/Wnick.js: 149
+# src/wgs/Wnick.js: 193
+# src/wgs/Wnick.js: 196
 Selection = Selection
+
+# src/Volume.js: 81
+Selection<br>changes = Selection<br>changes
 
 # src/data/Issue.js: 34
 Server code of %0 is missing = Server code of %0 is missing
@@ -254,29 +275,29 @@ Servers = Servers
 # src/core/Expired.js: 42
 Session is expired. = Session is expired.
 
-# src/core/Dom.js: 82
+# src/core/Dom.js: 84
 # src/core/Settings.js: 81
 Settings = Settings
 
 # src/wgs/Wquotes.js: 223
 Split = Split
 
-# src/wgs/Wquotes.js: 281
+# src/wgs/Wquotes.js: 284
 Status = Status
 
-# src/wgs/WserverId.js: 103
+# src/wgs/WserverId.js: 104
 Test = Test
 
 # src/wgs/WserverIds.js: 45
 Test all = Test all
 
-# src/Issues.js: 121
+# src/Issues.js: 124
 There are no more issues = There are no more issues
 
 # src/wgs/Wquotes.js: 80
 There is an issue:\n%0\nForce modification? = There is an issue:\n%0\nForce modification?
 
-# src/Issues.js: 78
+# src/Issues.js: 81
 Translator = Translator
 
 # src/core/Backups.js: 238
@@ -288,8 +309,15 @@ User = User
 # src/core/Auth.js: 77
 User name is missing = User name is missing
 
-# src/wgs/Wquotes.js: 280
+# src/wgs/Wquotes.js: 283
 Vol = Vol
+
+# src/Volume.js: 73
+Vol. = Vol.
+
+# src/Volume.js: 99
+# src/core/Dom.js: 78
+Volume = Volume
 
 # src/Nicks.js: 84
 # src/Servers.js: 46

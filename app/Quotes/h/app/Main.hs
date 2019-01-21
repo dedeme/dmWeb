@@ -31,6 +31,7 @@ import qualified Wgs.WserverId as WserverId
 import qualified Edit as Edit
 import qualified Wgs.Wquotes as Wquotes
 import qualified Issues as Issues
+import qualified Volume as Volume
 
 appInit :: IO ()
 appInit = do
@@ -74,7 +75,8 @@ appProcess cgi sessionId rq  =
     "wserverId" -> WserverId.process cgi rq ------------------ WserverId widget
     "edit" -> Edit.process cgi rq ----------------------------------- Edit page
     "wquotes" -> Wquotes.process cgi rq ------------------------ Wquotes widget
-    "issues" -> Issues.process cgi rq -- Issues page
+    "issues" -> Issues.process cgi rq ----------------------------- Issues page
+    "volume" -> Volume.process cgi rq ----------------------------- Volume page
     "settings" -> Settings.process cgi rq ----------------------- Settings page
     "chpass" -> Chpass.process cgi rq -------------------- Change password page
     "backups" -> Backups.process cgi rq -------------------------- Backups page

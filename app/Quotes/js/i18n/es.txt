@@ -23,15 +23,21 @@
 # src/core/Auth.js: 50
 Accept = Aceptar
 
+# src/Volume.js: 84
+Accepted<br>changes = Cambios en<br>aceptados
+
 # src/core/Backups.js: 212
 # src/core/Backups.js: 250
 # src/core/Backups.js: 260
 All the data will be replaced = ¡ATENCIÓN!. Todos los datos serán reemplazados.\n¿Continuar?
 
+# src/Volume.js: 60
+All<br>Companies = Todas<br>las compañías
+
 # src/core/Backups.js: 235
 Automatic Backups = Copias automáticas
 
-# src/core/Dom.js: 80
+# src/core/Dom.js: 82
 Backs = Copias
 
 # src/core/Backups.js: 201
@@ -43,7 +49,7 @@ Backup successfully restored = Copia de seguridad restaurada
 # src/core/Backups.js: 269
 Backups = Copias de seguridad
 
-# src/Issues.js: 191
+# src/Issues.js: 194
 Browser = Navegador
 
 # src/wgs/Wquotes.js: 173
@@ -57,8 +63,8 @@ Change Language to %0 = Cambiar el idioma a %0
 Change Password = Cambiar la contraseña
 
 # src/Nicks.js: 137
-# src/wgs/Wquotes.js: 262
-# src/Edit.js: 125
+# src/wgs/Wquotes.js: 265
+# src/Edit.js: 126
 Check = Prueba
 
 # src/core/Chpass.js: 191
@@ -74,7 +80,7 @@ Clear trash? = ¿Vaciar la papelera?
 # src/core/Expired.js: 44
 Click %0 to continue. = Hacer click %0 para continuar.
 
-# src/wgs/Wquotes.js: 277
+# src/wgs/Wquotes.js: 280
 Close = Cerrar
 
 # src/core/Chpass.js: 147
@@ -89,21 +95,21 @@ Current password = Contraseña actual
 # src/core/Chpass.js: 93
 Current password is missing = Falta indicar la contraseña actual
 
-# src/wgs/Wquotes.js: 275
+# src/wgs/Wquotes.js: 278
 Date = Fecha
 
-# src/wgs/Wnick.js: 179
+# src/wgs/Wnick.js: 180
 Delete = Eliminar
 
-# src/wgs/Wnick.js: 98
+# src/wgs/Wnick.js: 99
 Delete '%0'? = ¿Eliminar '%0'?
 
 # src/wgs/Wquotes.js: 220
-# src/Issues.js: 183
+# src/Issues.js: 186
 Done = Hecho
 
 # src/Nicks.js: 133
-# src/Edit.js: 121
+# src/Edit.js: 122
 # src/core/Backups.js: 272
 Download = Descarga
 
@@ -114,9 +120,9 @@ Edit = Editar
 # src/data/Issue.js: 40
 Extra quote in %0 = Cotización sobrante en %0
 
-# src/wgs/Wnick.js: 75
-# src/Edit.js: 67
-Fail downloading quotes = Fallo descargando cotizaciones
+# src/wgs/Wnick.js: 76
+# src/Edit.js: 68
+Fail downloading quotes:\n%0 = Fallo descargando cotizaciones:\n%0
 
 # src/core/Chpass.js: 176
 Fail trying to change password = Fallo intentando cambiar la contraseña
@@ -137,7 +143,7 @@ Grey squares checks are wrong = Las casillas grises están mal marcadas
 # src/core/Dom.js: 43
 Help & Credits = Ayuda & créditos
 
-# src/Issues.js: 143
+# src/Issues.js: 146
 # src/core/Dom.js: 74
 Issues = Problemas
 
@@ -154,18 +160,18 @@ Logout-message = <p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>
 # src/core/Backups.js: 177
 Make backup = Hacer copia
 
-# src/wgs/Wquotes.js: 278
+# src/wgs/Wquotes.js: 281
 Max = Max
 
-# src/wgs/Wquotes.js: 279
+# src/wgs/Wquotes.js: 282
 Min = Min
 
-# src/wgs/Wnick.js: 173
-# src/wgs/Wnick.js: 176
+# src/wgs/Wnick.js: 174
+# src/wgs/Wnick.js: 177
 Model = Modelo
 
 # src/wgs/Wquotes.js: 221
-# src/Edit.js: 114
+# src/Edit.js: 115
 Modify = Modificar
 
 # src/wgs/Wquotes.js: 200
@@ -183,21 +189,27 @@ New password and confirm password do not match = La nueva contraseña y su confi
 # src/core/Chpass.js: 99
 New password is missing = Falta indicar la nueva contraseña
 
+# src/Volume.js: 67
+Nick = Nick
+
 # src/core/Dom.js: 70
 Nicks = Nicks
 
 # src/wgs/Wquotes.js: 120
 No issues detected = Ningún problema detectado
 
-# src/Edit.js: 159
-# src/Issues.js: 147
+# src/Edit.js: 160
+# src/Issues.js: 150
 No nick was selected = No se ha seleccionado ningún nick
 
 # src/core/Backups.js: 205
 Only one file can be selected = Sólo se puede seleccionar un archivo
 
-# src/wgs/Wquotes.js: 276
+# src/wgs/Wquotes.js: 279
 Open = Apertura
+
+# src/Volume.js: 62
+Order by = Ordenado por:
 
 # src/core/Auth.js: 123
 Password = Contraseña
@@ -211,7 +223,7 @@ Password successfully changed = La contraseña se cambió correctamente
 # src/data/Issue.js: 38
 Quote of %0 is missimg = Falta la cotización de %0
 
-# src/wgs/Wquotes.js: 292
+# src/wgs/Wquotes.js: 295
 Quotes = Cotizaciones
 
 # src/wgs/Wquotes.js: 157
@@ -220,27 +232,36 @@ Quotes have wrong format = Las cotizaciones tiene un formato inválido
 # src/wgs/Wquotes.js: 76
 Quotes updated = Cotizaciones actualizadas
 
+# src/Volume.js: 87
+Rejected<br>changes = Cambios en<br>rechazados
+
 # src/core/Backups.js: 277
 Restore = Restauración
 
 # src/core/Backups.js: 197
 Restore backup = Restaurar copia
 
+# src/Volume.js: 78
+Reverse = Reverso
+
 # src/wgs/Wquotes.js: 192
 Save split? = ¿Guardar el split?
 
-# src/Issues.js: 151
-# src/Issues.js: 166
+# src/Issues.js: 154
+# src/Issues.js: 169
 Search more issues = Buscar más problemas
 
 # src/wgs/Wquotes.js: 170
 See = Ver
 
-# src/wgs/Wnick.js: 144
-# src/wgs/Wnick.js: 148
-# src/wgs/Wnick.js: 192
-# src/wgs/Wnick.js: 195
+# src/wgs/Wnick.js: 145
+# src/wgs/Wnick.js: 149
+# src/wgs/Wnick.js: 193
+# src/wgs/Wnick.js: 196
 Selection = Selección
+
+# src/Volume.js: 81
+Selection<br>changes = Cambios en<br>seleccionados
 
 # src/data/Issue.js: 34
 Server code of %0 is missing = Falta el código de servidor de %0
@@ -254,29 +275,29 @@ Servers = Servidores
 # src/core/Expired.js: 42
 Session is expired. = La sesión ha expirado.
 
-# src/core/Dom.js: 82
+# src/core/Dom.js: 84
 # src/core/Settings.js: 81
 Settings = Configuración
 
 # src/wgs/Wquotes.js: 223
 Split = Split
 
-# src/wgs/Wquotes.js: 281
+# src/wgs/Wquotes.js: 284
 Status = Stado
 
-# src/wgs/WserverId.js: 103
+# src/wgs/WserverId.js: 104
 Test = Prueba
 
 # src/wgs/WserverIds.js: 45
 Test all = Probar todos
 
-# src/Issues.js: 121
+# src/Issues.js: 124
 There are no more issues = No hay más problemas
 
 # src/wgs/Wquotes.js: 80
 There is an issue:\n%0\nForce modification? = Hay un problema:\n%0\n¿Forzar la modificación?
 
-# src/Issues.js: 78
+# src/Issues.js: 81
 Translator = Traductor
 
 # src/core/Backups.js: 238
@@ -288,8 +309,15 @@ User = Usuario
 # src/core/Auth.js: 77
 User name is missing = Falta indicar el nombre del usuario
 
-# src/wgs/Wquotes.js: 280
+# src/wgs/Wquotes.js: 283
 Vol = Vol
+
+# src/Volume.js: 73
+Vol. = Vol.
+
+# src/Volume.js: 99
+# src/core/Dom.js: 78
+Volume = Volumen
 
 # src/Nicks.js: 84
 # src/Servers.js: 46

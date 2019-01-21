@@ -41,6 +41,14 @@ BUTTON {
   width:100px;
 }
 
+DIV.head {
+  padding-top:15px;
+  padding-bottom:2px;
+  text-align: center;
+  font-weight:bold;
+  color:#004060;
+}
+
 .title {
   font-size: 24px; text-align: center;
 }

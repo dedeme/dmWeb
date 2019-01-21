@@ -38,6 +38,9 @@ Current password = Contraseña actual
 # src/core/Chpass.js: 93
 Current password is missing = Falta indicar la contraseña actual
 
+# src/Cos.js: 136
+Day = Día
+
 # src/core/Chpass.js: 176
 Fail trying to change password = Fallo intentando cambiar la contraseña
 
@@ -51,8 +54,7 @@ Help & Credits = Ayuda & créditos
 # src/core/Auth.js: 138
 Keep connected = Mantenerse conectado
 
-# src/Log.js: 29
-# src/Log.js: 30
+# src/Log.js: 79
 # src/core/Dom.js: 84
 Log = Registro
 
@@ -72,10 +74,10 @@ New password and confirm password do not match = La nueva contraseña y su confi
 # src/core/Chpass.js: 99
 New password is missing = Falta indicar la nueva contraseña
 
-# src/AllCos.js: 104
+# src/Cos.js: 128
 Nick = Nick
 
-# src/AllCos.js: 103
+# src/Cos.js: 127
 Order by = Ordenado por
 
 # src/core/Auth.js: 123
@@ -87,22 +89,18 @@ Password is missing = Falta indicar la contraseña
 # src/core/Chpass.js: 45
 Password successfully changed = La contraseña se cambió correctamente
 
-# src/Portfolio.js: 33
-# src/Portfolio.js: 34
 # src/core/Dom.js: 75
 Portfolio = Cartera
 
-# src/AllCos.js: 106
+# src/Cos.js: 130
 Profits = Beneficios
 
-# src/AllCos.js: 112
+# src/Cos.js: 138
 Reverse = Reverso
 
-# src/AllCos.js: 108
+# src/Cos.js: 132
 Risk = Riesgo
 
-# src/Selection.js: 32
-# src/Selection.js: 33
 # src/core/Dom.js: 79
 Selection = Selección
 
@@ -113,14 +111,13 @@ Session is expired. = La sesión ha expirado.
 # src/core/Settings.js: 81
 Settings = Configuración
 
-# src/AllCos.js: 110
+# src/Cos.js: 134
 Signal = Señal
 
 # src/core/Dom.js: 128
 Sleeping = Dormido
 
-# src/Summary.js: 32
-# src/Summary.js: 33
+# src/Summary.js: 61
 # src/core/Dom.js: 73
 Summary = Resumen
 

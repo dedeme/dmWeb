@@ -15,6 +15,7 @@ const ORDER_NICK = 0;
 const ORDER_PROFITS = 1;
 const ORDER_RISK = 2;
 const ORDER_SIGNAL = 3;
+const ORDER_DAY = 4;
 
 /** Update page. */
 export default class Cos {
@@ -70,8 +71,10 @@ export default class Cos {
       cos.sort((e1, e2) => e2[1].profits - e1[1].profits);
     } else if (order === ORDER_RISK) {
       cos.sort((e1, e2) => e1[1].risk - e2[1].risk);
-    } else {
+    } else if (order === ORDER_SIGNAL) {
       cos.sort((e1, e2) => e2[1].signalRatio - e1[1].signalRatio);
+    } else {
+      cos.sort((e1, e2) => e2[1].dayRatio - e1[1].dayRatio);
     }
 
     if (this._reverse) {
@@ -107,6 +110,12 @@ export default class Cos {
     this.showData();
   }
 
+  dayOrder () {
+    this._order = ORDER_DAY;
+    this._reverse = false;
+    this.showData();
+  }
+
   reverseOrder () {
     this._reverse = !this._reverse;
     this.showData();
@@ -123,6 +132,8 @@ export default class Cos {
       .add(link(_("Risk"), this.riskOrder.bind(this)))
       .add($("span").html("&nbsp;&nbsp;&nbsp;"))
       .add(link(_("Signal"), this.signalOrder.bind(this)))
+      .add($("span").html("&nbsp;&nbsp;&nbsp;"))
+      .add(link(_("Day"), this.dayOrder.bind(this)))
       .add($("span").html("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"))
       .add(link(_("Reverse"), this.reverseOrder.bind(this)))
     ;
