@@ -119,6 +119,13 @@ export default class ChSmall {
         ? Ui.link(() => { this._main.removeSel(nick) }).add(Ui.img("minus"))
         : Ui.link(() => { this._main.addSel(nick) }).add(Ui.img("plus"))
       )
+      .add($("span").html("&nbsp;&nbsp;"))
+      .add(co.dayRatio > 0
+        ? Ui.img("flag-blue")
+        : co.dayRatio < 0
+          ? Ui.img("flag-red")
+          : Ui.img("flag-black")
+      )
       .add($("span").html("<br>"))
       .add($("span").style("color:" + lcolor)
         .html(formatN(ratio * 100, 2) + "%"))
