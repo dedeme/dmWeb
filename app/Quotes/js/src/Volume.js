@@ -10,6 +10,13 @@ const $ = Ui.$;
 
 const nickTd = $("td").style("text-align:center").html("---");
 const body = $("div");
+const copy = cos => {
+  const r = [];
+  cos.forEach(row => r.push(row));
+  return r;
+};
+const sortByNick = cos => { cos.sort((r1, r2) => r1[1] > r2[1] ? 1 : -1) };
+const sortByVol = cos => { cos.sort((r1, r2) => r2[2] - r1[2]) };
 
 /** Servers page. */
 export default class Volume {
@@ -29,6 +36,9 @@ export default class Volume {
     /** @private */
     this._reverse = false;
 
+    /** @private */
+    this._cache = true;
+
   }
 
   formatN (n) {
@@ -37,6 +47,14 @@ export default class Volume {
   }
 
   mkAll (cos) {
+    if (this._byNick) {
+      sortByNick(cos);
+    } else {
+      sortByVol(cos);
+    }
+    if (this._reverse) {
+      cos.reverse();
+    }
     return cos.map(row =>
       $("tr")
         .add($("td")
@@ -44,6 +62,101 @@ export default class Volume {
             row[0] === "sel" ? "flag1"
               : row[0] === "in" ? "transOn"
                 : "transOff"
+          )))
+        .add($("td").style("text-align:left;")
+          .html(row[1]))
+        .add($("td").style("text-align:right;")
+          .html(this.formatN(row[2])))
+    );
+  }
+
+  mkSel (cos) {
+    sortByVol(cos);
+    let n = 0;
+    cos.forEach(row => { if (row[0] === "sel") ++n; });
+    const cos2 = [];
+    cos.forEach((row, i) => {
+      if (i < n) {
+        if (row[0] !== "sel") {
+          cos2.push(["+", row[1], row[2]]);
+        }
+      } else if (row[0] === "sel") {
+        cos2.push(["-", row[1], row[2]]);
+      }
+    });
+    sortByVol(cos2);
+    return cos2.map(row =>
+      $("tr")
+        .add($("td")
+          .add(Ui.img(
+            row[0] === "+" ? "plus"
+              : "minus"
+          )))
+        .add($("td").style("text-align:left;")
+          .html(row[1]))
+        .add($("td").style("text-align:right;")
+          .html(this.formatN(row[2])))
+    );
+  }
+
+  mkIn (cos) {
+    sortByVol(cos);
+    let ns = 0;
+    let nin = 0;
+    cos.forEach(row => {
+      if (row[0] === "sel")
+        ++ns;
+      if (row[0] === "in")
+        ++nin;
+    });
+    nin += ns;
+    const cos2 = [];
+    cos.forEach((row, i) => {
+      if (i >= ns && i < nin) {
+        if (row[0] !== "in") {
+          cos2.push(["+", row[1], row[2]]);
+        }
+      } else if (row[0] === "in") {
+        cos2.push(["-", row[1], row[2]]);
+      }
+    });
+    sortByVol(cos2);
+    return cos2.map(row =>
+      $("tr")
+        .add($("td")
+          .add(Ui.img(
+            row[0] === "+" ? "plus"
+              : "minus"
+          )))
+        .add($("td").style("text-align:left;")
+          .html(row[1]))
+        .add($("td").style("text-align:right;")
+          .html(this.formatN(row[2])))
+    );
+  }
+
+  mkOut (cos) {
+    sortByVol(cos);
+    let n = 0;
+    cos.forEach(row => { if (row[0] === "out") ++n; });
+    n = cos.length - n;
+    const cos2 = [];
+    cos.forEach((row, i) => {
+      if (i >= n) {
+        if (row[0] !== "out") {
+          cos2.push(["+", row[1], row[2]]);
+        }
+      } else if (row[0] === "out") {
+        cos2.push(["-", row[1], row[2]]);
+      }
+    });
+    sortByVol(cos2);
+    return cos2.map(row =>
+      $("tr")
+        .add($("td")
+          .add(Ui.img(
+            row[0] === "+" ? "plus"
+              : "minus"
           )))
         .add($("td").style("text-align:left;")
           .html(row[1]))
@@ -80,13 +193,13 @@ export default class Volume {
             .add(table().adds(this.mkAll(cos))))
           .add($("td").style("vertical-align: top;")
             .add($("div").klass("head").html(_("Selection<br>changes")))
-            .add(table().adds(this.mkAll(cos))))
+            .add(table().adds(this.mkSel(copy(cos)))))
           .add($("td").style("vertical-align: top;")
             .add($("div").klass("head").html(_("Accepted<br>changes")))
-            .add(table().adds(this.mkAll(cos))))
+            .add(table().adds(this.mkIn(copy(cos)))))
           .add($("td").style("vertical-align: top;")
             .add($("div").klass("head").html(_("Rejected<br>changes")))
-            .add(table().adds(this.mkAll(cos))))))
+            .add(table().adds(this.mkOut(copy(cos)))))))
     ;
   }
 
@@ -110,14 +223,17 @@ export default class Volume {
     let cont = true;
     while (more && cont) {
       nickTd.removeAll()
-        .add($("div").html(nick))
-        .add(Ui.link(() => {
-          alert("Stoped");
-          cont = false;
-        }).klass("link").html("Stop"));
+        .add($("div").html(nick));
+      if (!this._cache) {
+        nickTd
+          .add(Ui.link(() => {
+            alert(_("Stopped"));
+            cont = false;
+          }).klass("link").html("Stop"));
+      }
       const data = {
         "source": "volume",
-        "rq": "row",
+        "rq": this._cache ? "crow" : "row",
         "nick": nick
       };
       const rp = await this._main.client.send(data);
@@ -130,7 +246,11 @@ export default class Volume {
         this.setBody(cos);
       }
     }
-    nickTd.html("---");
+    nickTd.removeAll()
+      .add(Ui.link(() => {
+        this._cache = false;
+        this.show();
+      }).klass("link").html(_("Update")));
   }
 
 }

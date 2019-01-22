@@ -6,6 +6,7 @@ import Main from "./Main.js";
 import {_} from "./I18n.js";
 import Ui from "./dmjs/Ui.js";
 import It from "./dmjs/It.js";
+import Dec from "./dmjs/Dec.js";
 import ChBig from "./ChBig.js";
 
 const $ = Ui.$;
@@ -23,16 +24,36 @@ export default class Summary {
     this._main = main;
 
     /** @private */
+    this._perc = $("div");
+
+    /** @private */
     this._ch = new ChBig(main);
+
+    /** @private */
+    this._charTable = $("table").klass("frame").att("align", "center")
+      .add($("tr")
+        .add($("td")
+          .add(this._ch.wg)));
+
   }
 
   showData () {
+    const self = this;
+    function formatN (n, d) {
+      if (self._main.model["lang"] === "es") {
+        return new Dec(n, d).toEu();
+      }
+      return new Dec(n, d).toEn();
+    }
+
     const mcos = this._main.data.cos;
     const cos = [...mcos.keys()]
       .map(k => mcos.get(k))
       .filter(co => co.stocks > 0);
 
     const hps = [];
+    let start = 0;
+    let end = 1;
     [...It.range(cos[0].qs.length)].forEach(i => {
       let sum = -10000;
       cos.forEach(e => {
@@ -41,15 +62,21 @@ export default class Summary {
         }
       });
       hps.push([cos[0].qs[i][0], sum]);
+      if (i === 0) {
+        start = sum;
+      }
+      end = sum;
     });
-    this._ch.update(hps);
-  }
 
-  chartsTable () {
-    return $("table").klass("frame").att("align", "center")
-      .add($("tr")
-        .add($("td")
-          .add(this._ch.wg())));
+    const ratio = (end - start) / start;
+    this._perc.removeAll()
+      .add($("span").klass("frame").style(
+        "font-size:x-large;color:" +
+        (ratio > 0 ? "#00AAFF" : ratio < 0 ? "#FF8100" : "#000000")
+      ).html(" " + formatN(ratio * 100, 2) + " %"))
+    ;
+
+    this._ch.update(hps);
   }
 
   /**
@@ -57,9 +84,10 @@ export default class Summary {
    */
   show () {
     this._main.dom.show(Main.summaryPageId, $("div").style("text-align:center;")
-      .add($("div").klass("head").style("padding-bottom:4px")
+      .add($("div").klass("head").style("padding-bottom:8px")
         .html(_("Summary")))
-      .add(this.chartsTable())
+      .add(this._perc)
+      .add(this._charTable)
     );
     this.showData();
   }

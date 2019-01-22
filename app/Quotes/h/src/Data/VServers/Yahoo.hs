@@ -12,6 +12,7 @@ import Network.HTTP.Conduit (HttpException)
 import qualified Data.Server as Server
 import qualified Data.ServersDb as ServersDb
 import qualified Data.Servers.Reader as Reader
+import Data.Servers.Yahoo (Yahoo)
 import qualified Data.Nick as Nick
 import Data.Nick (Nick)
 
@@ -21,9 +22,11 @@ failed = (-2)
 extra :: [(String, String)]
 extra = [("CMC", "CMC.MC")]
 
+sv :: Yahoo
+sv = let (sv, _, _) = ServersDb.list in sv
+
 getCode :: Nick -> IO (Maybe String)
 getCode nick = do
-  let (sv, _, _) = ServersDb.list
   nkCds <- ServersDb.nicks $ Server.name sv
   case lookup (Nick.id nick) nkCds of
     Nothing -> return $ lookup (Nick.name nick) extra
@@ -31,7 +34,6 @@ getCode nick = do
 
 readPage :: Nick -> IO (Maybe String)
 readPage nick = do
-  let (sv, _, _) = ServersDb.list
   code <- getCode nick
   case code of
     Nothing -> return Nothing
@@ -125,26 +127,28 @@ row tx =
 
 table :: Int -> Double -> String -> IO Double
 table c vol tx = do
-  case fdrop tx "<tr " of
-    Nothing -> return $ if c > 0 then vol / (fromIntegral c) else 0
-    Just tx' -> case ftake tx' "</tr>" of
-                  Nothing -> return (-1)
-                  Just rowTx -> do
-                    n <- row rowTx
-                    if n <= 0 then table c vol $ tail tx'
-                              else table (c + 1) (vol + n) $ tail tx'
+  if c >= 100
+    then return $ vol / (fromIntegral c)
+    else
+      case fdrop tx "<tr " of
+        Nothing -> return $ if c > 0 then vol / (fromIntegral c) else 0
+        Just tx' -> case ftake tx' "</tr>" of
+                      Nothing -> return failed
+                      Just rowTx -> do
+                        n <- row rowTx
+                        if n <= 0 then table c vol $ tail tx'
+                                  else table (c + 1) (vol + n) $ tail tx'
 
 readVolPage :: String -> IO Double
 readVolPage page =
   case fdrop page "</thead>" of
-    Nothing -> return (-1)
+    Nothing -> return failed
     Just tx -> case ftake tx "</tbody>" of
-      Nothing -> return (-1)
+      Nothing -> return failed
       Just tableTx -> table 0 0 tableTx
 
 readVol :: Nick -> IO Double
 readVol nick = do
-  let (sv, _, _) = ServersDb.list
   page <- readPage nick
   case page of
     Nothing -> return failed

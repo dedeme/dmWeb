@@ -36,7 +36,7 @@ export default class ChBig {
   }
 
   /** @return {!Domo} */
-  wg () {
+  get wg () {
     return this._table;
   }
 
@@ -79,8 +79,11 @@ export default class ChBig {
     const base = Math.floor((min / gap) - 1) * gap;
     const top = Math.ceil(((max - min) / gap) + 2) * gap;
     const step = top / 4;
+    const ratio = (hps[hps.length - 1][1] - hps[0][1]) / hps[0][1];
+    const backg = ratio > 0 ? "#f0f0ff" : ratio < 0 ? "#fff0f0" : "#f9f9f9";
 
-    ctx.fillStyle = "#f9f9f9";
+    this._cv.style("background-color:" + backg);
+    ctx.fillStyle = backg;
     ctx.fillRect(0.5, 0.5, 598, 318);
     ctx.fillStyle = "rgba(255, 255, 255)";
     ctx.fillRect(90.5, 10.5, 504, 280);

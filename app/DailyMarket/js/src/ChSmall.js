@@ -121,11 +121,13 @@ export default class ChSmall {
       )
       .add($("span").html("&nbsp;&nbsp;"))
       .add(co.dayRatio > 0
-        ? Ui.img("flag-blue")
+        ? Ui.img("money_add")
         : co.dayRatio < 0
-          ? Ui.img("flag-red")
-          : Ui.img("flag-black")
+          ? Ui.img("money_delete")
+          : Ui.img("money")
       )
+      .add($("span").style("font-size:small")
+        .html(" " + formatN(co.dayRatio * 100, 2) + "%"))
       .add($("span").html("<br>"))
       .add($("span").style("color:" + lcolor)
         .html(formatN(ratio * 100, 2) + "%"))

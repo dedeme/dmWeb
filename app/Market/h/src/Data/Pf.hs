@@ -109,7 +109,8 @@ removeStocks :: String -> Int -> Pf -> Pf
 removeStocks nick stocks (Pf pf) = Pf (rm [] pf)
   where
     rm r [] = r
-    rm r ((PfEntry nk st pr v):es)
+    rm r (e@(PfEntry nk st pr v):es)
+      | nk /= nick = rm (e:r) es
       | st < stocks =
         error $ printf "Try to remove %d stocks when there are only %d"
                        stocks st

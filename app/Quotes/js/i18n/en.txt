@@ -23,7 +23,7 @@
 # src/core/Auth.js: 50
 Accept = Accept
 
-# src/Volume.js: 84
+# src/Volume.js: 88
 Accepted<br>changes = Accepted<br>changes
 
 # src/core/Backups.js: 212
@@ -31,7 +31,7 @@ Accepted<br>changes = Accepted<br>changes
 # src/core/Backups.js: 260
 All the data will be replaced = ATENTION!: All the data will be replaced.\nContinue?
 
-# src/Volume.js: 60
+# src/Volume.js: 64
 All<br>Companies = All<br>Companies
 
 # src/core/Backups.js: 235
@@ -189,7 +189,7 @@ New password and confirm password do not match = New password and confirm passwo
 # src/core/Chpass.js: 99
 New password is missing = 'New password' is missing
 
-# src/Volume.js: 67
+# src/Volume.js: 71
 Nick = Nick
 
 # src/core/Dom.js: 70
@@ -208,7 +208,7 @@ Only one file can be selected = Only one file can be selected
 # src/wgs/Wquotes.js: 279
 Open = Open
 
-# src/Volume.js: 62
+# src/Volume.js: 66
 Order by = Order by
 
 # src/core/Auth.js: 123
@@ -232,7 +232,7 @@ Quotes have wrong format = Quotes have wrong format
 # src/wgs/Wquotes.js: 76
 Quotes updated = Quotes updated
 
-# src/Volume.js: 87
+# src/Volume.js: 91
 Rejected<br>changes = Rejected<br>changes
 
 # src/core/Backups.js: 277
@@ -241,7 +241,7 @@ Restore = Restore
 # src/core/Backups.js: 197
 Restore backup = Restore backup
 
-# src/Volume.js: 78
+# src/Volume.js: 82
 Reverse = Reverse
 
 # src/wgs/Wquotes.js: 192
@@ -260,7 +260,7 @@ See = See
 # src/wgs/Wnick.js: 196
 Selection = Selection
 
-# src/Volume.js: 81
+# src/Volume.js: 85
 Selection<br>changes = Selection<br>changes
 
 # src/data/Issue.js: 34
@@ -285,6 +285,9 @@ Split = Split
 # src/wgs/Wquotes.js: 284
 Status = Status
 
+# src/Volume.js: 120
+Stopped = Stopped
+
 # src/wgs/WserverId.js: 104
 Test = Test
 
@@ -303,6 +306,9 @@ Translator = Translator
 # src/core/Backups.js: 238
 Trash = Trash
 
+# src/Volume.js: 143
+Update = Update
+
 # src/core/Auth.js: 118
 User = User
 
@@ -312,10 +318,10 @@ User name is missing = User name is missing
 # src/wgs/Wquotes.js: 283
 Vol = Vol
 
-# src/Volume.js: 73
+# src/Volume.js: 77
 Vol. = Vol.
 
-# src/Volume.js: 99
+# src/Volume.js: 103
 # src/core/Dom.js: 78
 Volume = Volume
 

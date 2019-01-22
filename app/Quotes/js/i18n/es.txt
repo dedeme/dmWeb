@@ -23,7 +23,7 @@
 # src/core/Auth.js: 50
 Accept = Aceptar
 
-# src/Volume.js: 84
+# src/Volume.js: 88
 Accepted<br>changes = Cambios en<br>aceptados
 
 # src/core/Backups.js: 212
@@ -31,7 +31,7 @@ Accepted<br>changes = Cambios en<br>aceptados
 # src/core/Backups.js: 260
 All the data will be replaced = ¡ATENCIÓN!. Todos los datos serán reemplazados.\n¿Continuar?
 
-# src/Volume.js: 60
+# src/Volume.js: 64
 All<br>Companies = Todas<br>las compañías
 
 # src/core/Backups.js: 235
@@ -189,7 +189,7 @@ New password and confirm password do not match = La nueva contraseña y su confi
 # src/core/Chpass.js: 99
 New password is missing = Falta indicar la nueva contraseña
 
-# src/Volume.js: 67
+# src/Volume.js: 71
 Nick = Nick
 
 # src/core/Dom.js: 70
@@ -208,7 +208,7 @@ Only one file can be selected = Sólo se puede seleccionar un archivo
 # src/wgs/Wquotes.js: 279
 Open = Apertura
 
-# src/Volume.js: 62
+# src/Volume.js: 66
 Order by = Ordenado por:
 
 # src/core/Auth.js: 123
@@ -232,7 +232,7 @@ Quotes have wrong format = Las cotizaciones tiene un formato inválido
 # src/wgs/Wquotes.js: 76
 Quotes updated = Cotizaciones actualizadas
 
-# src/Volume.js: 87
+# src/Volume.js: 91
 Rejected<br>changes = Cambios en<br>rechazados
 
 # src/core/Backups.js: 277
@@ -241,7 +241,7 @@ Restore = Restauración
 # src/core/Backups.js: 197
 Restore backup = Restaurar copia
 
-# src/Volume.js: 78
+# src/Volume.js: 82
 Reverse = Reverso
 
 # src/wgs/Wquotes.js: 192
@@ -260,7 +260,7 @@ See = Ver
 # src/wgs/Wnick.js: 196
 Selection = Selección
 
-# src/Volume.js: 81
+# src/Volume.js: 85
 Selection<br>changes = Cambios en<br>seleccionados
 
 # src/data/Issue.js: 34
@@ -285,6 +285,9 @@ Split = Split
 # src/wgs/Wquotes.js: 284
 Status = Stado
 
+# src/Volume.js: 120
+Stopped = Detenido
+
 # src/wgs/WserverId.js: 104
 Test = Prueba
 
@@ -303,6 +306,9 @@ Translator = Traductor
 # src/core/Backups.js: 238
 Trash = Papelera
 
+# src/Volume.js: 143
+Update = Actualizar
+
 # src/core/Auth.js: 118
 User = Usuario
 
@@ -312,10 +318,10 @@ User name is missing = Falta indicar el nombre del usuario
 # src/wgs/Wquotes.js: 283
 Vol = Vol
 
-# src/Volume.js: 73
+# src/Volume.js: 77
 Vol. = Vol.
 
-# src/Volume.js: 99
+# src/Volume.js: 103
 # src/core/Dom.js: 78
 Volume = Volumen
 

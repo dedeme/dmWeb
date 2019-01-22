@@ -32,6 +32,7 @@ import qualified Edit as Edit
 import qualified Wgs.Wquotes as Wquotes
 import qualified Issues as Issues
 import qualified Volume as Volume
+import qualified Data.VolDb as VolDb
 
 appInit :: IO ()
 appInit = do
@@ -39,7 +40,7 @@ appInit = do
   ex <- File.exists dir
   if ex
     then do
---      ServersDb.init
+      -- Some initialization
       return ()
     else do
       File.mkDir $ G.path ["tmp"]
