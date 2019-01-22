@@ -19,8 +19,48 @@ import qualified Data.VolDb as VolDb
 
 extraNicks :: [Nick]
 extraNicks = [
-  Nick.new "" "CMC"
-  ]
+                Nick.new "" "ADZ",
+                Nick.new "" "AIR",
+                Nick.new "" "ALB",
+                Nick.new "" "ALNT",
+                Nick.new "" "APAM",
+                Nick.new "" "AZK",
+                Nick.new "" "BAY",
+                Nick.new "" "BDL",
+                Nick.new "" "CAF",
+                Nick.new "" "CBAV",
+                Nick.new "" "CCEP",
+                Nick.new "" "CMC",
+                Nick.new "" "DOM",
+                Nick.new "" "EAT",
+                Nick.new "" "EDR",
+                Nick.new "" "ENO",
+                Nick.new "" "FAE",
+                Nick.new "" "FDR",
+                Nick.new "" "GALQ",
+                Nick.new "" "GCO",
+                Nick.new "" "HIS",
+                Nick.new "" "IBG",
+                Nick.new "" "ISUR",
+                Nick.new "" "LGT",
+                Nick.new "" "MCM",
+                Nick.new "" "NEA",
+                Nick.new "" "NTH",
+                Nick.new "" "PAC",
+                Nick.new "" "PQR",
+                Nick.new "" "PRM",
+                Nick.new "" "PRS",
+                Nick.new "" "QBT",
+                Nick.new "" "R4",
+                Nick.new "" "REN",
+                Nick.new "" "RIO",
+                Nick.new "" "RJF",
+                Nick.new "" "ROVI",
+                Nick.new "" "TLGO",
+                Nick.new "" "TUB",
+                Nick.new "" "VID",
+                Nick.new "" "VOC"
+                ]
 
 nextNick :: [Nick] -> String -> Maybe Nick
 nextNick (n:ns) "" = Just n
@@ -36,13 +76,13 @@ vol nk =  do
   where
     fv nk = do
       r <- Finanzas.readVol nk
-      if r < 0 then Yahoo.readVol nk
+      if r <= 0 then Yahoo.readVol nk
                else return r
 
 vol' :: Nick -> IO Double
 vol' nk = do
   v <- VolDb.read $ Nick.name nk
-  if v < 0  then vol nk
+  if v <= 0  then vol nk
             else return v
 
 row :: Cgi -> String -> Bool -> IO ()

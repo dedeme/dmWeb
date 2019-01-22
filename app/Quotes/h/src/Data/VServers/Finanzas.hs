@@ -20,7 +20,49 @@ failed :: Double
 failed = (-1)
 
 extra :: [(String, String)]
-extra = [("CMC", "coemac")]
+extra = [
+          ("ADZ", "adolfo_dguez"),
+          ("AIR", "airbus-se"),
+          ("ALB", "corp-fi-alba"),
+          ("ALNT", "alantra-part"),
+          ("APAM", "aperam"),
+          ("AZK", "azkoyen"),
+          ("BAY", "bayer-ag"),
+          ("BDL", "baron-de-ley"),
+          ("CAF", "c-a-f"),
+          ("CBAV", "baviera"),
+          ("CCEP", "ccep"),
+          ("CMC", "coemac"),
+          ("DOM", "dominion"),
+          ("EAT", "amrest"),
+          ("EDR", "edreams-odig"),
+          ("ENO", "elecnor"),
+          ("FAE", "faes"),
+          ("FDR", "fluidra"),
+          ("GALQ", "gam"),
+          ("GCO", "gr-c-occiden"),
+          ("HIS", "hispania"),
+          ("IBG", "iberpapel"),
+          ("ISUR", "inm-del-sur"),
+          ("LGT", "lingotes"),
+          ("MCM", "miquel-costa"),
+          ("NEA", "nicol-correa"),
+          ("NTH", "naturhouse"),
+          ("PAC", "europac"),
+          ("PQR", "parques-rdos"),
+          ("PRM", "prim"),
+          ("PRS", "prisa"),
+          ("QBT", "quabit"),
+          ("R4", "renta-4"),
+          ("REN", "renta-corp"),
+          ("RIO", "bo-riojanas"),
+          ("RJF", "reig-jofre"),
+          ("ROVI", "rovi"),
+          ("TLGO", "talgo"),
+          ("TUB", "tubacex"),
+          ("VID", "vidrala"),
+          ("VOC", "vocento")
+          ]
 
 sv :: Finanzas
 sv = let (_, sv, _) = ServersDb.list in sv

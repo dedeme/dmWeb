@@ -105,6 +105,13 @@ export default class ChSmall {
       if (v > max) max = v;
       if (v < min) min = v;
     });
+    if (co.signal > 0) {
+      if (co.signal > max && co.signal < max * 1.02) {
+        max = co.signal * 1.005;
+      }
+    } else if (co.signal < 0 && -co.signal < min && -co.signal > min * 0.98) {
+      min = -co.signal * 0.995;
+    }
     const gap = max / 1000;
     const base = Math.floor((min / gap) - 1) * gap;
     const top = Math.ceil(((max - min) / gap) + 2) * gap;
@@ -183,7 +190,7 @@ export default class ChSmall {
       if (co.signal > 0) {
         ctx.strokeStyle = "rgba(0, 170, 255)";
       } else {
-        ctx.strokeStyle = "rgba(255, 249, 129)";
+        ctx.strokeStyle = "rgba(255, 129, 0)";
       }
       const y = 145.5 - (signalAbs - base) * 140 / top;
       ctx.beginPath();

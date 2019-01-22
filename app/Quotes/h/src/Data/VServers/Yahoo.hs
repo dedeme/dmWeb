@@ -20,7 +20,49 @@ failed :: Double
 failed = (-2)
 
 extra :: [(String, String)]
-extra = [("CMC", "CMC.MC")]
+extra = [
+          ("ADZ", "ADZ.MC"),
+          ("AIR", "AIR.MC"),
+          ("ALB", "ALB.MC"),
+          ("ALNT", "ALNT.MC"),
+          ("APAM", "APAM.MC"),
+          ("AZK", "AZK.MC"),
+          ("BAY", "BAY.MC"),
+          ("BDL", "BDL.MC"),
+          ("CAF", "CAF.MC"),
+          ("CBAV", "CBAV.MC"),
+          ("CCEP", "CCEP.MC"),
+          ("CMC", "CMC.MC"),
+          ("DOM", "DOM.MC"),
+          ("EAT", "EAT.MC"),
+          ("EDR", "EDR.MC"),
+          ("ENO", "ENO.MC"),
+          ("FAE", "FAE.MC"),
+          ("FDR", "FDR.MC"),
+          ("GALQ", "GALQ.MC"),
+          ("GCO", "GCO.MC"),
+          ("HIS", "HIS.MC"),
+          ("IBG", "IBG.MC"),
+          ("ISUR", "ISUR.MC"),
+          ("LGT", "LGT.MC"),
+          ("MCM", "MCM.MC"),
+          ("NEA", "NEA.MC"),
+          ("NTH", "NTH.MC"),
+          ("PAC", "PAC.MC"),
+          ("PQR", "PQR.MC"),
+          ("PRM", "PRM.MC"),
+          ("PRS", "PRS.MC"),
+          ("QBT", "QBT.MC"),
+          ("R4", "R4.MC"),
+          ("REN", "REN.MC"),
+          ("RIO", "RIO.MC"),
+          ("RJF", "RJF.MC"),
+          ("ROVI", "ROVI.MC"),
+          ("TLGO", "TLGO.MC"),
+          ("TUB", "TUB.MC"),
+          ("VID", "VID.MC"),
+          ("VOC", "VOC.MC")
+          ]
 
 sv :: Yahoo
 sv = let (sv, _, _) = ServersDb.list in sv

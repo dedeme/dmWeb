@@ -25,7 +25,7 @@ export default class ChBig {
     this._main = main;
 
     /** @private */
-    this._cv = $("canvas").att("width", 600).att("height", 320).klass("frame");
+    this._cv = $("canvas").att("width", 601).att("height", 320).klass("frame");
 
     /** @private */
     this._table = $("table").klass("main")
@@ -58,7 +58,7 @@ export default class ChBig {
       this._cv.style("background-color:#f9f9f9");
 
       ctx.fillStyle = "rgba(249, 249, 249)";
-      ctx.fillRect(0.5, 0.5, 598, 318);
+      ctx.fillRect(0.5, 0.5, 600, 318);
       ctx.fillStyle = "rgba(255, 255, 255)";
       ctx.fillRect(90.5, 10.5, 504, 280);
       ctx.fillStyle = "rgba(0, 0, 0)";
@@ -84,7 +84,7 @@ export default class ChBig {
 
     this._cv.style("background-color:" + backg);
     ctx.fillStyle = backg;
-    ctx.fillRect(0.5, 0.5, 598, 318);
+    ctx.fillRect(0.5, 0.5, 600, 318);
     ctx.fillStyle = "rgba(255, 255, 255)";
     ctx.fillRect(90.5, 10.5, 504, 280);
     ctx.fillStyle = "rgba(0, 0, 0)";

@@ -223,14 +223,11 @@ export default class Volume {
     let cont = true;
     while (more && cont) {
       nickTd.removeAll()
-        .add($("div").html(nick));
-      if (!this._cache) {
-        nickTd
-          .add(Ui.link(() => {
-            alert(_("Stopped"));
-            cont = false;
-          }).klass("link").html("Stop"));
-      }
+        .add($("div").html(nick))
+        .add(Ui.link(() => {
+          alert(_("Stopped"));
+          cont = false;
+        }).klass("link").html("Stop"));
       const data = {
         "source": "volume",
         "rq": this._cache ? "crow" : "row",
