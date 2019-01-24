@@ -95,11 +95,11 @@ export default class Bests {
                 .text(String(this.calculateDays(Number(r[1][0][1][0])))))
               .add($("td").klass("number")
                 .text(new Dec(
-                  this.calculateStrip(Number(r[1][0][1][1])), 2
+                  this.calculateStrip(Number(r[1][0][1][1])), 4
                 ).toEu() + "%"))
               .add($("td").klass("number")
                 .text(new Dec(
-                  this.calculateStrip(Number(r[1][0][1][2])), 2
+                  this.calculateStrip(Number(r[1][0][1][2])), 4
                 ).toEu() + "%"))
               .add($("td").klass("number")
                 .text(new Dec(Number(r[1][1]), 2).toEu()))

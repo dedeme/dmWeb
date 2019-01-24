@@ -14,6 +14,7 @@ import Dm.Cgi (Cgi)
 import qualified Dm.File as File
 import qualified Data.Diary as Diary
 import qualified Data.Pf as Pf
+import qualified Data.Servers.Yahoo as Yahoo
 import qualified Trader as Trader
 import qualified Conf as Conf
 import qualified Global as G
@@ -46,5 +47,5 @@ process cgi rq = do
     "historic" -> do
       let nick = Cgi.get rq Js.rString "nick"
       rp <- Trader.calculate nick
-      Cgi.ok cgi rp
+      Cgi.ok cgi $ ("url", Js.wString $ Yahoo.uri nick):rp
     s -> error $ printf "Unknown rq '%s'" s

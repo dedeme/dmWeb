@@ -68,6 +68,9 @@ export default class Main {
      * @private
      */
     this._page = null;
+
+    /** @private */
+    this._interval = null;
   }
 
   /** @return {!Dom} Container for DOM objects. */
@@ -98,14 +101,14 @@ export default class Main {
       "source": "reader",
       "rq": "read"
     };
-    let rp = await this.client.send(rq);
+    let rp = await this.client.sendAsync(rq);
     this.data = new Data(rp);
 
     rq = {
       "source": "main",
       "rq": "getDb"
     };
-    rp = await self._client.send(rq);
+    rp = await self._client.sendAsync(rq);
 
     this._model = rp["db"];
 
@@ -163,7 +166,7 @@ export default class Main {
       "source": "main",
       "rq": "logout"
     };
-    await this.client.send(rq);
+    await this.client.sendAsync(rq);
     new Bye(this).show();
   }
 
@@ -177,18 +180,21 @@ export default class Main {
       "rq": "setMenu",
       "option": page
     };
-    await this.client.send(rq);
+    await this.client.sendAsync(rq);
     this.run();
   }
 
   update () {
-    setInterval(async () => {
+    if (this._interval !== null) {
+      clearInterval(this._interval);
+    }
+    this._interval = setInterval(async () => {
       if (this._page !== null) {
         const rq = {
           "source": "reader",
           "rq": "read"
         };
-        const rp = await this.client.send(rq);
+        const rp = await this.client.sendAsync(rq);
         this.data = new Data(rp);
         this._page.showData();
       }

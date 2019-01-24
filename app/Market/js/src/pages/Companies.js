@@ -10,11 +10,13 @@ import Dec from "../dmjs/Dec.js";
 
 const $ = Ui.$;
 
-function led (color) {
+function led (url, color) {
   return $("div")
     .style("padding:5px;" +
            "border: 1px solid #002040;border-radius: 6px;" +
+           "cursor:pointer;" +
            "background: " + color + ";")
+    .on("click", () => { window.open(url) })
   ;
 }
 
@@ -120,13 +122,13 @@ function mkGr (qs) {
   return cv;
 }
 
-function mkGrTd (nick, profits, qs) {
+function mkGrTd (nick, url, profits, qs) {
   const lastQ = qs[qs.length - 1];
   return $("td")
     .add($("table").klass("main")
       .add($("tr")
         .add($("td").style("text-align:left;width:40%").html(nick))
-        .add($("td").add(led(lastQ[1] > lastQ[0] ? "#00AAFF" : "#FF8100")))
+        .add($("td").add(led(url, lastQ[1] > lastQ[0] ? "#00AAFF" : "#FF8100")))
         .add($("td").style("text-align:right;width:40%").html(profits)))
       .add($("tr")
         .add($("td").att("colspan", 3)
@@ -215,7 +217,8 @@ export default class Companies {
         const profits = rp["profits"];
         ttProfits += profits;
         const quotes = rp["quotes"];
-        tds.push(mkGrTd(nick, this.formatN(profits), quotes));
+        const url = rp["url"];
+        tds.push(mkGrTd(nick, url, this.formatN(profits), quotes));
         if (tds.length === ncols) {
           tb.add($("tr").add($("td").att("colspan", ncols).add($("hr"))));
           tb.add($("tr").adds(tds));

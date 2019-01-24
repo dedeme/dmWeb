@@ -58,7 +58,6 @@ extra = [
           ("RIO", "bo-riojanas"),
           ("RJF", "reig-jofre"),
           ("ROVI", "rovi"),
-          ("TLGO", "talgo"),
           ("TUB", "tubacex"),
           ("VID", "vidrala"),
           ("VOC", "vocento")

@@ -3,7 +3,7 @@
 
 -- | Yahoo page
 
-module Data.Servers.Yahoo (quote) where
+module Data.Servers.Yahoo (quote, uri) where
 
 import Control.Exception
 import Text.Printf (printf)
@@ -93,6 +93,7 @@ quote nick = do
   html <- Reader.read $ uri nick
   q html
 
+-- |@'uri' nick@ - Returns the url of nick web page.
 uri :: String -> String
 uri nick = case lookup nick codes of
   Nothing -> "http://localhost"

@@ -58,7 +58,6 @@ extra = [
           ("RIO", "RIO.MC"),
           ("RJF", "RJF.MC"),
           ("ROVI", "ROVI.MC"),
-          ("TLGO", "TLGO.MC"),
           ("TUB", "TUB.MC"),
           ("VID", "VID.MC"),
           ("VOC", "VOC.MC")

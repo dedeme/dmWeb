@@ -56,7 +56,6 @@ extraNicks = [
                 Nick.new "" "RIO",
                 Nick.new "" "RJF",
                 Nick.new "" "ROVI",
-                Nick.new "" "TLGO",
                 Nick.new "" "TUB",
                 Nick.new "" "VID",
                 Nick.new "" "VOC"
