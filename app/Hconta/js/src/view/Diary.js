@@ -294,7 +294,7 @@ view_Diary = class {
         alert(err);
         return;
       }
-      if (sdeb !== scred) {
+      if (new Dec(sdeb, 2).toString() !== new Dec(scred, 2).toString()) {
         alert(_("Debits sum is different from Credits sum"));
         return;
       }

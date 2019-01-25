@@ -75,9 +75,9 @@ const mkCanvas = (data, type) => {
 
   const xstep = Math.floor(490 / (data.length - 1));
   It.range(3).each(i => {
-    ctx.strokeStyle = i === 0 ? "rgba(0, 170, 255)"
+    ctx.strokeStyle = i === 0 ? "rgba(0, 129, 255)"
       : i === 1 ? "rgba(0, 0, 0)"
-        : "rgba(255, 129, 0)";
+        : "rgba(255, 40, 0)";
     let x = 100.5;
     ctx.beginPath();
     ctx.moveTo(x, 170.5 - (data[0][1][i] - base) * 160 / top);
@@ -155,6 +155,10 @@ export default class Profits {
    * @return {Promise}
    */
   async show () {
+    const formatN = n => this._main.model["lang"] === "es"
+      ? new Dec(n, 2).toEu()
+      : new Dec(n, 2).toEn()
+    ;
     const rq = {
       "source": "profits",
       "rq": "idata"
@@ -174,11 +178,13 @@ export default class Profits {
         .add($("td").html(
           "<big>" +
           DateDm.fromStr(d[0]).toString() +
-          " : " +
-          (this._main.model["lang"] === "es"
-            ? new Dec(d[1][0], 2).toEu()
-            : new Dec(d[1][0], 2).toEn()) +
-          "</big>"
+          " : [<font color='0081ff'>" +
+          formatN(d[1][0]) +
+          "</font> | <font color='000000'>" +
+          formatN(d[1][1]) +
+          "</font> | <font color='ff2800'>" +
+          formatN(d[1][2]) +
+          "</font>]</big>"
         )));
       if (data.length === 1 || data[data.length - 2][1] !== d[1]) {
         return tb;

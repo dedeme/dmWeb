@@ -31,7 +31,7 @@ read = do
     rf <- foldM fsum 0 $ Pf.values pf
     File.write path $ Js.toStr $ Js.wList [ Js.wString now,
                                             Js.wDouble pr,
-                                            Js.wDouble rf ]
+                                            Js.wDouble (rf + pr) ]
     return (pr, rf)
   where
     fsum r (nk, st, pr) = do
