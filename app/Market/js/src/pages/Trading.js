@@ -33,9 +33,9 @@ const calc = (type) => {
     let tx = "---";
     if (v !== "" && Dec.isNumberEu(v)) {
       if (type === "buy") {
-        tx = new Dec(Dec.newEu(v, 2) * 1.01, 2).toEu();
+        tx = new Dec(Dec.newEu(v, 2).value * 1.01, 2).toEu();
       } else {
-        tx = new Dec(Dec.newEu(v, 2) * 0.99, 2).toEu();
+        tx = new Dec(Dec.newEu(v, 2).value * 0.99, 2).toEu();
       }
     }
     label.removeAll().html(tx);

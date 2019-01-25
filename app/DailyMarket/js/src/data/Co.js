@@ -48,7 +48,9 @@ export default class Co {
   /** @return {number} */
   get risk () {
     return this._lastQ === null || this._stocks === 0 ? 0
-      : this._stocks * ((this._signal < 0 ? -this._signal : 0) - this._price);
+      : this._stocks *
+        ((this._signal < 0 ? -this._signal : this._lastQ * 0.892407) -
+        this._price);
   }
 
   /** @return {number} */

@@ -1,7 +1,10 @@
 -- Copyright 12-Dic-2018 ºDeme
 -- GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
--- | Entry point
+-- | Entry point.
+--
+--   When PVA or MDF is sold, there is to delete its references in severs
+--   (Data.Servers.Finanzas, etc...) and in Trader (Trader.lastRef)
 
 module Main where
 
@@ -49,6 +52,9 @@ appInit = do
       Diary.init
       Historic.init
       Params.init
+      File.write
+        (G.path ["data", "lastAccPrRf.db"])
+        (Js.toStr $ Js.wList [Js.wString "000000", Js.wDouble 0, Js.wDouble 0])
 
 mainProcess :: Cgi -> String -> [(String, JSValue)] -> IO ()
 mainProcess cgi sessionId rq =

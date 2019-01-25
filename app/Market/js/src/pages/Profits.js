@@ -5,6 +5,7 @@
 import Main from "../Main.js";
 import {_} from "../I18n.js";
 import Ui from "../dmjs/Ui.js";
+import It from "../dmjs/It.js";
 import Dec from "../dmjs/Dec.js";
 import DateDm from "../dmjs/DateDm.js";
 
@@ -28,19 +29,21 @@ const mkCanvas = (data, type) => {
     return cv;
   }
 
-  if (data[0][1] < data[data.length - 1][1]) {
+  if (data[0][1][0] < data[data.length - 1][1][0]) {
     backg = "#e9e9f2";
-  } else if (data[0][1] > data[data.length - 1][1]) {
+  } else if (data[0][1][0] > data[data.length - 1][1][0]) {
     backg = "#f2e9e9";
   }
   cv.style("background:" + backg);
 
-  let max = data[0][1];
+  let max = data[0][1][0];
   let min = max;
-  data.forEach(dv => {
-    const v = dv[1];
-    if (v > max) max = v;
-    if (v < min) min = v;
+  data.forEach(dvs => {
+    It.range(3).each(i => {
+      const v = dvs[1][i];
+      if (v > max) max = v;
+      if (v < min) min = v;
+    });
   });
   const base = Math.floor((min / 1000) - 1) * 1000;
   const top = Math.ceil(((max - min) / 1000) + 2) * 1000;
@@ -71,19 +74,25 @@ const mkCanvas = (data, type) => {
   }
 
   const xstep = Math.floor(490 / (data.length - 1));
-  let x = 100.5;
-  ctx.beginPath();
-  ctx.moveTo(x, 170.5 - (data[0][1] - base) * 160 / top);
-  data.forEach(dv => {
-    const v = dv[1];
-    const y = 170.5 - (v - base) * 160 / top;
-    ctx.lineTo(x, y);
-    x += xstep;
+  It.range(3).each(i => {
+    ctx.strokeStyle = i === 0 ? "rgba(0, 170, 255)"
+      : i === 1 ? "rgba(0, 0, 0)"
+        : "rgba(255, 129, 0)";
+    let x = 100.5;
+    ctx.beginPath();
+    ctx.moveTo(x, 170.5 - (data[0][1][i] - base) * 160 / top);
+    data.forEach(dvs => {
+      const v = dvs[1][i];
+      const y = 170.5 - (v - base) * 160 / top;
+      ctx.lineTo(x, y);
+      x += xstep;
+    });
+    ctx.stroke();
+    ctx.closePath();
   });
-  ctx.stroke();
-  ctx.closePath();
+  ctx.strokeStyle = "rgba(0, 0, 0)";
 
-  x = 100.5;
+  let x = 100.5;
   let lastD = type === ALL ? data[0][0].substring(2, 4)
     : data[0][0].substring(4, 6);
   ctx.setLineDash([4, 2]);
@@ -167,8 +176,8 @@ export default class Profits {
           DateDm.fromStr(d[0]).toString() +
           " : " +
           (this._main.model["lang"] === "es"
-            ? new Dec(d[1], 2).toEu()
-            : new Dec(d[1], 2).toEn()) +
+            ? new Dec(d[1][0], 2).toEu()
+            : new Dec(d[1][0], 2).toEn()) +
           "</big>"
         )));
       if (data.length === 1 || data[data.length - 2][1] !== d[1]) {

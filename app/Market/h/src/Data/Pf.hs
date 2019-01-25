@@ -12,6 +12,7 @@ module Data.Pf (
   get,
   stocks,
   nicks,
+  values,
   removeStocks,
   remove,
   fill,
@@ -103,6 +104,10 @@ stocks (Pf pf) nick = case find (\(PfEntry nk _ _ _) -> nk == nick) pf of
 -- | @'nicks' pf@ - Returns a list with nicks of /pf/.
 nicks :: Pf -> [String]
 nicks (Pf pf) = map (\(PfEntry nk _ _ _) -> nk) pf
+
+-- | @'values' pf@ - Returns a list with (nick, stocks, price)'s of /pf/.
+values :: Pf -> [(String, Int, Double)]
+values (Pf pf) = map (\(PfEntry nk st pr _) -> (nk, st, pr)) pf
 
 -- | @'removeStocks' nick stocks pf@ - Removes /stocks/ from /nick/ in /pf/.
 removeStocks :: String -> Int -> Pf -> Pf

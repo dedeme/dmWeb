@@ -72,8 +72,8 @@ export default class ChSmall {
         .add($("span").html(nick))
         .add($("span").html("&nbsp;&nbsp;"))
         .add(this._main.isSel(nick)
-          ? Ui.link(() => { this._main.removeSel(nick) }).add(Ui.img("minus"))
-          : Ui.link(() => { this._main.addSel(nick) }).add(Ui.img("plus"))
+          ? Ui.link(() => { this._main.removeSel(nick) }).add(Ui.img("unlink"))
+          : Ui.link(() => { this._main.addSel(nick) }).add(Ui.img("link"))
         )
       ;
       this._rightHeader.html("");
@@ -123,8 +123,8 @@ export default class ChSmall {
       .add($("span").html(nick))
       .add($("span").html("&nbsp;&nbsp;"))
       .add(this._main.isSel(nick)
-        ? Ui.link(() => { this._main.removeSel(nick) }).add(Ui.img("minus"))
-        : Ui.link(() => { this._main.addSel(nick) }).add(Ui.img("plus"))
+        ? Ui.link(() => { this._main.removeSel(nick) }).add(Ui.img("unlink"))
+        : Ui.link(() => { this._main.addSel(nick) }).add(Ui.img("link"))
       )
       .add($("span").html("&nbsp;&nbsp;"))
       .add(co.dayRatio > 0

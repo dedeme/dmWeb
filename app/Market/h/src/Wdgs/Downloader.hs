@@ -18,6 +18,7 @@ import qualified Data.Servers.Invertia as Invertia
 import qualified Data.Servers.Finanzas as Finanzas
 import qualified Data.Historic as Historic
 import qualified Data.Lquotes as Lquotes
+import qualified Data.LAccPrRf as LAccPrRf
 
 
 process :: Cgi -> [(String, JSValue)] -> IO ()
@@ -38,7 +39,10 @@ process cgi rq =
       let date = Cgi.get rq Js.rString "date"
       let Just profits = lookup "profits" rq
       let Just last = lookup "last" rq
-      Historic.write (date, profits)
+      (accProfits, ref) <- LAccPrRf.read
+      Historic.write (date, Js.wList [profits,
+                                      Js.wDouble accProfits,
+                                      Js.wDouble ref])
       Lquotes.write last
       Cgi.empty cgi
     s -> error $ printf "Unknown rq '%s'" s

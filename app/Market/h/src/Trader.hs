@@ -3,7 +3,7 @@
 
 -- | Profits calculator
 
-module Trader (calculate) where
+module Trader (calculate, lastRef) where
 
 import qualified Dm.Js as Js
 import Dm.Js (JSValue)
@@ -69,9 +69,10 @@ calc bet qs@(begin:before) (Params d bs ss) =
     refs q = q - q * ss
     prof st bpr spr = (spr - bpr) * (fromIntegral st)
 
--- |@'calculate' nick@ - Returns an object with next data: {
---                       profits: Double (percentage),
---                       quotes: [[Double (close), Double (ref)]]}
+-- |@'calculate' nick@ - Returns an object whose values are:
+--
+-- * "profits": Double (percentage),
+-- * "quotes": [[Double (close), Double (ref)]]
 calculate :: String -> IO [(String, JSValue)]
 calculate nk = do
   conf <- Conf.get
@@ -88,3 +89,21 @@ calculate nk = do
       ("quotes", Js.wList $ map toJs2 qs)
       ]
     toJs2 (q, ref) = Js.wList [Js.wDouble q, Js.wDouble ref]
+
+-- |@'lastRef' nick@ returns the last risk reference (with strip applied) of
+--                   'nick'
+lastRef :: String -> IO Double
+lastRef nk = do
+  if nk == "PVA" || nk == "MDF"
+  then return 0
+  else do
+    conf <- Conf.get
+    let bet = Cgi.get (Js.rMap conf) Js.rDouble "bet"
+    paramsMb <- Params.readParams nk
+    params <- case paramsMb of
+                Nothing -> Params.readBase
+                Just ps -> return ps
+    qs <- readCloses nk
+    let (_, ls) = calc bet (filter (>= 0) qs) params
+    let ((_, rf):_) = reverse ls
+    return rf
