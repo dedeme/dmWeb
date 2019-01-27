@@ -43,7 +43,7 @@ export default class Edit {
     if (rp["ok"]) {
       this._main.run();
     } else {
-      alert(_args(_("'%0' already exists"), nickName));
+      alert(_args(_("'%0' already exists in nicks or extra"), nickName));
       this._modInput.e.select();
       this._modInput.e.focus();
     }

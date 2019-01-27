@@ -32,6 +32,11 @@ process cgi rq =
       let value = Cgi.get rq Js.rBool "value"
       NicksDb.setSel id value
       Cgi.empty cgi
+    "setIsExtra" -> do --------------------------------------------- setIsExtra
+      let id = Cgi.get rq Js.rString "id"
+      let value = Cgi.get rq Js.rBool "value"
+      NicksDb.setExtra id value
+      Cgi.empty cgi
     "edit" -> do --------------------------------------------------------- edit
       let id = Cgi.get rq Js.rString "id"
       let menu = Cgi.get rq Js.rString "menu"

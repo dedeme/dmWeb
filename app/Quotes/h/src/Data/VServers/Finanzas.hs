@@ -19,59 +19,13 @@ import Data.Nick (Nick)
 failed :: Double
 failed = (-1)
 
-extra :: [(String, String)]
-extra = [
-          ("ADZ", "adolfo_dguez"),
-          ("AIR", "airbus-se"),
-          ("ALB", "corp-fi-alba"),
-          ("ALNT", "alantra-part"),
-          ("APAM", "aperam"),
-          ("AZK", "azkoyen"),
-          ("BAY", "bayer-ag"),
-          ("BDL", "baron-de-ley"),
-          ("CAF", "c-a-f"),
-          ("CBAV", "baviera"),
-          ("CCEP", "ccep"),
-          ("CMC", "coemac"),
-          ("DOM", "dominion"),
-          ("EAT", "amrest"),
-          ("EDR", "edreams-odig"),
-          ("ENO", "elecnor"),
-          ("FAE", "faes"),
-          ("FDR", "fluidra"),
-          ("GALQ", "gam"),
-          ("GCO", "gr-c-occiden"),
-          ("HIS", "hispania"),
-          ("IBG", "iberpapel"),
-          ("ISUR", "inm-del-sur"),
-          ("LGT", "lingotes"),
-          ("MCM", "miquel-costa"),
-          ("NEA", "nicol-correa"),
-          ("NTH", "naturhouse"),
-          ("PAC", "europac"),
-          ("PQR", "parques-rdos"),
-          ("PRM", "prim"),
-          ("PRS", "prisa"),
-          ("QBT", "quabit"),
-          ("R4", "renta-4"),
-          ("REN", "renta-corp"),
-          ("RIO", "bo-riojanas"),
-          ("RJF", "reig-jofre"),
-          ("ROVI", "rovi"),
-          ("TUB", "tubacex"),
-          ("VID", "vidrala"),
-          ("VOC", "vocento")
-          ]
-
 sv :: Finanzas
 sv = let (_, sv, _) = ServersDb.list in sv
 
 getCode :: Nick -> IO (Maybe String)
 getCode nick = do
   nkCds <- ServersDb.nicks $ Server.name sv
-  case lookup (Nick.id nick) nkCds of
-    Nothing -> return $ lookup (Nick.name nick) extra
-    Just c -> return $ Just c
+  return $ lookup (Nick.id nick) nkCds
 
 readPage :: Nick -> IO (Maybe String)
 readPage nick = do

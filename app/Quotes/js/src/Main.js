@@ -30,6 +30,7 @@ const editPageId = "edit";
 const issuesPageId = "issues";
 const serversPageId = "servers";
 const volumePageId = "volume";
+const extraPageId = "extra";
 
 /** Main page. */
 export default class Main {
@@ -90,7 +91,7 @@ export default class Main {
     const page = this._model["menu"];
     switch (page) {
     case nicksPageId:
-      new Nicks(self).show();
+      new Nicks(self, false).show();
       break;
     case editPageId:
       new Edit(self).show();
@@ -103,6 +104,9 @@ export default class Main {
       break;
     case volumePageId:
       new Volume(self).show();
+      break;
+    case extraPageId:
+      new Nicks(self, true).show();
       break;
     case backupsPageId: {
       new Backups(self).show();
@@ -216,6 +220,11 @@ export default class Main {
   /** @return {string} Id of volume page */
   static get volumePageId () {
     return volumePageId;
+  }
+
+  /** @return {string} Id of extra nicks page */
+  static get extraPageId () {
+    return extraPageId;
   }
 
 }

@@ -48,6 +48,7 @@ appInit = do
       Conf.init
       NicksDb.init
       ServersDb.init
+      VolDb.init
       File.mkDir $ G.path ["data", "quotes"]
       let version = printf "%s\nData version: %s\n" G.appName G.dataVersion
       File.write (G.path ["data", "version.txt"]) version

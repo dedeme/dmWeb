@@ -179,7 +179,7 @@ search = do
   nextIssue list
   where
     nextIssue [] = return Nothing
-    nextIssue ((Nick id _ _ _):ns) = do
+    nextIssue ((Nick id _ _ _ _):ns) = do
       issue@(Issue _ tp _) <- check id
       if tp == None then nextIssue ns
                     else return $ Just issue

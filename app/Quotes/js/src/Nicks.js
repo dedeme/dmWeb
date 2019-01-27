@@ -2,7 +2,7 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 import Main from "./Main.js";
-import {_} from "./I18n.js";
+import {_, _args} from "./I18n.js";
 import Ui from "./dmjs/Ui.js";
 import It from "./dmjs/It.js";
 import Nick from "./data/Nick.js";
@@ -11,17 +11,24 @@ import Wnick from "./wgs/Wnick.js";
 
 const $ = Ui.$;
 
-/** Nicks page. */
+/** Nicks - Extra pages. */
 export default class Nicks {
   /**
    * @param {!Main} main Main
+   * @param {boolean} isExtra If page is extra
    */
-  constructor (main) {
+  constructor (main, isExtra) {
     /**
      * @private
      * @type {!Main}
      */
     this._main = main;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this._isExtra = isExtra;
 
     /**
      * @private
@@ -106,13 +113,14 @@ export default class Nicks {
       const data = {
         "source": "nicks",
         "rq": "new",
-        "nick": nick
+        "nick": nick,
+        "isExtra": this._isExtra
       };
       const rp = await this._main.client.send(data);
       if (rp["ok"]) {
         this._main.run();
       } else {
-        alert(`Nick '${nick}' already exists`);
+        alert(_args(_("'%0' already exists in nicks or extra"), nick));
         input.e.focus();
       }
     };
@@ -145,7 +153,10 @@ export default class Nicks {
       .add(this.head(newInput))
       .add(this._wnicks.length === 0 ? this.emptyList() : this.fullEntries())
     ;
-    this._main.dom.show(Main.nicksPageId, w);
+    this._main.dom.show(
+      this._isExtra ? Main.extraPageId : Main.nicksPageId,
+      w
+    );
     newInput.e.focus();
   }
 
@@ -161,6 +172,7 @@ export default class Nicks {
     const model = rp["model"];
     const nicks = rp["nicks"]
       .map(n => Nick.fromJson(n))
+      .filter(n => n.isExtra === this._isExtra)
       .sort((n1, n2) => n1.nick.localeCompare(n2.nick))
     ;
     this._wnicks = nicks.map(n => new Wnick(this._main, model, n));

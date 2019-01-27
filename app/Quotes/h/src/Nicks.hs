@@ -21,7 +21,9 @@ process cgi rq =
         ("model", model),
         ("nicks", nicks)]
     "new" -> do ----------------------------------------------------------- new
-      ok <- NicksDb.add $ Cgi.get rq Js.rString "nick"
+      let nick = Cgi.get rq Js.rString "nick"
+      let isExtra = Cgi.get rq Js.rBool "isExtra"
+      ok <- NicksDb.add nick isExtra
       Cgi.ok cgi [("ok", Js.wBool ok)]
 
     s -> error $ printf "Unknown rq '%s'" s ----------------------------- Error

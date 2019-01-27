@@ -8,11 +8,13 @@ module Data.NicksDb (
   Data.NicksDb.init,
   readJs,
   Data.NicksDb.read,
+  exists,
   add,
   setModel,
   remove,
   setIbex,
   setSel,
+  setExtra,
   setName,
   nickName,
   quotes,
@@ -21,6 +23,7 @@ module Data.NicksDb (
   updateQuotes
   ) where
 
+import Data.Maybe
 import Data.List
 import qualified Dm.File as File
 import qualified Dm.Js as Js
@@ -66,15 +69,22 @@ write (NicksDb nextId model nicks) =
                   Js.wList $ map Nick.toJs nicks
                 ]
 
--- | @'add' nickName@ - Adds a new nick to NicksDb
-add :: String -> IO Bool
-add nick = do
+-- | @'exists' nick@ - Returns true if 'nick' is in data base
+exists :: String -> IO Bool
+exists nick = do
+  NicksDb _ _ nicks <- Data.NicksDb.read
+  return $ isJust $ find (\nk -> Nick.name nk == nick) nicks
+
+-- | @'add' nickName isExtra@ - Adds a new nick to NicksDb
+add :: String -> Bool -> IO Bool
+add nick isExtra = do
   db@(NicksDb id model nicks) <- Data.NicksDb.read
   case find (\nk -> Nick.name nk == nick) nicks of
     Nothing -> do
       let idStr = show id
       let model' = if length nicks == 0 then idStr else model
-      write $ NicksDb (id + 1) model' ((Nick.new idStr nick):nicks)
+      let new = if isExtra then Nick.newExtra else Nick.new
+      write $ NicksDb (id + 1) model' ((new idStr nick):nicks)
       File.write (G.path ["data", "quotes", nick ++ ".db"]) ""
       return True
     Just _ -> return False
@@ -94,7 +104,7 @@ remove id = do
   db@(NicksDb nId model nicks) <- Data.NicksDb.read
   case find (\nk -> Nick.id nk == id) nicks of
     Nothing -> return ()
-    Just (Nick _ name _ _) -> do
+    Just (Nick _ name _ _ _) -> do
       let model' = if id == model then "0" else model
       write $ NicksDb nId model' (filter (\nk -> Nick.id nk /= id) nicks)
       File.del (G.path ["data", "quotes", name ++ ".db"])
@@ -105,9 +115,9 @@ setIbex id value = do
   db@(NicksDb nId model nicks) <- Data.NicksDb.read
   case find (\nk -> Nick.id nk == id) nicks of
     Nothing -> return ()
-    Just (Nick id name _ isSel) -> do
+    Just (Nick id name _ isSel isExtra) -> do
       let nicks' = filter (\nk -> Nick.id nk /= id) nicks
-      write $ NicksDb nId model ((Nick id name value isSel):nicks')
+      write $ NicksDb nId model ((Nick id name value isSel isExtra):nicks')
 
 -- | @'setSel' nickId value@ - Sets field /isSel/ of /nickId/ as /value/
 setSel :: String -> Bool -> IO ()
@@ -115,9 +125,19 @@ setSel id value = do
   db@(NicksDb nId model nicks) <- Data.NicksDb.read
   case find (\nk -> Nick.id nk == id) nicks of
     Nothing -> return ()
-    Just (Nick id name isIbex _) -> do
+    Just (Nick id name isIbex _ isExtra) -> do
       let nicks' = filter (\nk -> Nick.id nk /= id) nicks
-      write $ NicksDb nId model ((Nick id name isIbex value):nicks')
+      write $ NicksDb nId model ((Nick id name isIbex value isExtra):nicks')
+
+-- | @'setExtra' nickId value@ - Sets field /isExtra/ of /nickId/ as /value/
+setExtra :: String -> Bool -> IO ()
+setExtra id value = do
+  db@(NicksDb nId model nicks) <- Data.NicksDb.read
+  case find (\nk -> Nick.id nk == id) nicks of
+    Nothing -> return ()
+    Just (Nick id name isIbex isSel _) -> do
+      let nicks' = filter (\nk -> Nick.id nk /= id) nicks
+      write $ NicksDb nId model ((Nick id name isIbex isSel value):nicks')
 
 -- | @'setName' nickId newName@ - Set field /name/ of /nickId/ as /newName/ and
 --                                rename /name/.db
@@ -126,11 +146,12 @@ setName id newName = do
   db@(NicksDb nId model nicks) <- Data.NicksDb.read
   case find (\nk -> Nick.id nk == id) nicks of
     Nothing -> return False
-    Just (Nick id oldName isIbex isSel) -> do
+    Just (Nick id oldName isIbex isSel isExtra) -> do
       let nicks' = filter (\nk -> Nick.id nk /= id) nicks
       case find (\nk -> Nick.name nk == newName) nicks of
         Nothing -> do
-          write $ NicksDb nId model ((Nick id newName isIbex isSel):nicks')
+          write $ NicksDb nId model
+                          ((Nick id newName isIbex isSel isExtra):nicks')
           File.rename (G.path ["data", "quotes", oldName ++ ".db"])
                       (G.path ["data", "quotes", newName ++ ".db"])
           return True
@@ -141,10 +162,10 @@ setName id newName = do
 nickName :: String -> IO (Either String String)
 nickName id = do
   db@(NicksDb _ _ nicks) <- Data.NicksDb.read
-  case find (\(Nick id' _ _ _) -> id' == id) nicks of
+  case find (\(Nick id' _ _ _ _) -> id' == id) nicks of
     Nothing -> return $ Left $
                           "Company code '" ++ id ++ "' not found in quotes db"
-    Just (Nick _ nick _ _) -> return $ Right nick
+    Just (Nick _ nick _ _ _) -> return $ Right nick
 
 -- quotes management -------------------------------------------------
 

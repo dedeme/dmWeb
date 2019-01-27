@@ -3,11 +3,12 @@
 
 /** Nick */
 export default class Nick {
-  constructor (id, nick, isIbex, isSel) {
+  constructor (id, nick, isIbex, isSel, isExtra) {
     this._id = id;
     this._nick = nick;
     this._isIbex = isIbex;
     this._isSel = isSel;
+    this._isExtra = isExtra;
   }
 
   /** @return {string} */
@@ -30,12 +31,18 @@ export default class Nick {
     return this._isSel;
   }
 
+  /** @return {boolean} */
+  get isExtra () {
+    return this._isExtra;
+  }
+
   static fromJson (serial) {
     return new Nick(
       serial[0],
       serial[1],
       serial[2],
-      serial[3]
+      serial[3],
+      serial[4]
     );
   }
 }

@@ -74,6 +74,7 @@ process cgi rq =
     "modify" -> do -- modify
       let id = Cgi.get rq Js.rString "nickId"
       let name = Cgi.get rq Js.rString "nickName"
+      let nick = Cgi.get rq Js.rString "nick"
       ok <- NicksDb.setName id name
       Cgi.ok cgi [("ok", Js.wBool ok)]
 

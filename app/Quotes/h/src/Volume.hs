@@ -17,50 +17,6 @@ import qualified Data.VServers.Finanzas as Finanzas
 import qualified Data.VServers.Yahoo as Yahoo
 import qualified Data.VolDb as VolDb
 
-extraNicks :: [Nick]
-extraNicks = [
-                Nick.new "" "ADZ",
-                Nick.new "" "AIR",
-                Nick.new "" "ALB",
-                Nick.new "" "ALNT",
-                Nick.new "" "APAM",
-                Nick.new "" "AZK",
-                Nick.new "" "BAY",
-                Nick.new "" "BDL",
-                Nick.new "" "CAF",
-                Nick.new "" "CBAV",
-                Nick.new "" "CCEP",
-                Nick.new "" "CMC",
-                Nick.new "" "DOM",
-                Nick.new "" "EAT",
-                Nick.new "" "EDR",
-                Nick.new "" "ENO",
-                Nick.new "" "FAE",
-                Nick.new "" "FDR",
-                Nick.new "" "GALQ",
-                Nick.new "" "GCO",
-                Nick.new "" "HIS",
-                Nick.new "" "IBG",
-                Nick.new "" "ISUR",
-                Nick.new "" "LGT",
-                Nick.new "" "MCM",
-                Nick.new "" "NEA",
-                Nick.new "" "NTH",
-                Nick.new "" "PAC",
-                Nick.new "" "PQR",
-                Nick.new "" "PRM",
-                Nick.new "" "PRS",
-                Nick.new "" "QBT",
-                Nick.new "" "R4",
-                Nick.new "" "REN",
-                Nick.new "" "RIO",
-                Nick.new "" "RJF",
-                Nick.new "" "ROVI",
-                Nick.new "" "TUB",
-                Nick.new "" "VID",
-                Nick.new "" "VOC"
-                ]
-
 nextNick :: [Nick] -> String -> Maybe Nick
 nextNick (n:ns) "" = Just n
 nextNick [n] nk = Nothing
@@ -87,16 +43,16 @@ vol' nk = do
 row :: Cgi -> String -> Bool -> IO ()
 row cgi nick isCache = do
   db <- NicksDb.read
-  case nextNick (NicksDb.nicks db ++ extraNicks) nick of
+  case nextNick (NicksDb.nicks db) nick of
     Nothing ->
       Cgi.ok cgi [("row", Js.wList []),
                   ("more", Js.wBool False)
                   ]
     Just nk -> do
       let nick = Nick.name nk
-      let tp = case Nick.id nk of
-                  "" -> "out"
-                  _ -> if Nick.isSel nk then "sel" else "in"
+      let tp = if Nick.isExtra nk
+               then "out"
+               else if Nick.isSel nk then "sel" else "in"
       vol <- if isCache then vol' nk else vol nk
       let row = [Js.wString tp, Js.wString nick, Js.wDouble vol]
       Cgi.ok cgi [("row", Js.wList row),

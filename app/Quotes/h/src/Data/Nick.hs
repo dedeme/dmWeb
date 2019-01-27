@@ -6,6 +6,7 @@
 module Data.Nick (
   Nick (..),
   new,
+  newExtra,
   toJs,
   fromJs
   ) where
@@ -18,22 +19,27 @@ data Nick = Nick {
   id :: String,
   name :: String,
   isIbex :: Bool,
-  isSel :: Bool
+  isSel :: Bool,
+  isExtra :: Bool
 }
 
 -- | @'new' id name@ - Creates a new Nick
 new :: String -> String -> Nick
-new id name = Nick id name False False
+new id name = Nick id name False False False
+
+-- | @'newExtra' id name@ - Creates a new extra Nick
+newExtra :: String -> String -> Nick
+newExtra id name = Nick id name False False True
 
 -- | @'toJs' nk@ - Parses /nk/ to JSON.
 toJs :: Nick -> JSValue
-toJs (Nick id name isIbex isSel) = Js.wList [
+toJs (Nick id name isIbex isSel isExtra) = Js.wList [
     Js.wString id, Js.wString name,
-    Js.wBool isIbex, Js.wBool isSel
+    Js.wBool isIbex, Js.wBool isSel, Js.wBool isExtra
   ]
 
 -- | @'fromJs' js@ - Retrieves a Nick JSONized.
 fromJs :: JSValue -> Nick
-fromJs js = let [id, name, isIbex, isSel] = Js.rList js
+fromJs js = let [id, name, isIbex, isSel, isExtra] = Js.rList js
                 in  Nick (Js.rString id) (Js.rString name)
-                         (Js.rBool isIbex) (Js.rBool isSel)
+                         (Js.rBool isIbex) (Js.rBool isSel) (Js.rBool isExtra)

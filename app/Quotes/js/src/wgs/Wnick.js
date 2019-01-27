@@ -109,6 +109,36 @@ export default class Wnick {
   }
 
   /** @private */
+  async toNicks (id, nick) {
+    if (!confirm(_args(_("Send '%0' to Nicks?"), nick))) {
+      return;
+    }
+    const data = {
+      "source": "wnick",
+      "rq": "setIsExtra",
+      "id": id,
+      "value": false
+    };
+    await this._main.client.send(data);
+    this._main.run();
+  }
+
+  /** @private */
+  async toExtra (id, nick) {
+    if (!confirm(_args(_("Send '%0' to Extra?"), nick))) {
+      return;
+    }
+    const data = {
+      "source": "wnick",
+      "rq": "setIsExtra",
+      "id": id,
+      "value": true
+    };
+    await this._main.client.send(data);
+    this._main.run();
+  }
+
+  /** @private */
   async setIsIbex (id, value) {
     const self = this;
     const data = {
@@ -172,33 +202,43 @@ export default class Wnick {
 
     const model = self._isModel
       ? img("star", _("Model"))
-      : Ui.link(() => {
-        self.setModel(nick.id);
-      }).add(limg("star2", _("Model")));
+      : nick.isExtra
+        ? Ui.link(() =>
+          self.del(nick.id, nick.nick)).add(img("delete", _("Delete")))
+        : Ui.link(() => {
+          self.setModel(nick.id);
+        }).add(limg("star2", _("Model")));
 
-    const del = Ui.link(() =>
-      self.del(nick.id, nick.nick)).add(img("delete", _("Delete")));
+    const change = nick.isExtra
+      ? Ui.link(() =>
+        self.toNicks(nick.id, nick.nick)).add(img("plus", _("To Nicks")))
+      : Ui.link(() =>
+        self.toExtra(nick.id, nick.nick)).add(img("minus", _("To Extra")));
 
     const isIbex = nick.isIbex
       ? self._ibexDiv.removeAll().add(Ui.link(() => {
         self.setIsIbex(nick.id, false);
       }).add(img("flag2", "Ibex")))
-      : self._ibexDiv.removeAll().add(Ui.link(() => {
-        self.setIsIbex(nick.id, true);
-      }).add(emptyBt("Ibex")));
+      : nick.isExtra
+        ? self._ibexDiv.removeAll()
+        : self._ibexDiv.removeAll().add(Ui.link(() => {
+          self.setIsIbex(nick.id, true);
+        }).add(emptyBt("Ibex")));
 
     const isSel = nick.isSel
       ? self._selDiv.removeAll().add(Ui.link(() => {
         self.setIsSel(nick.id, false);
       }).add(img("flag1", _("Selection"))))
-      : self._selDiv.removeAll().add(Ui.link(() => {
-        self.setIsSel(nick.id, true);
-      }).add(emptyBt(_("Selection"))));
+      : nick.isExtra
+        ? self._ibexDiv.removeAll()
+        : self._selDiv.removeAll().add(Ui.link(() => {
+          self.setIsSel(nick.id, true);
+        }).add(emptyBt(_("Selection"))));
 
     return $("table")
       .add($("tr")
         .add($("td").add(model))
-        .add($("td").add(del))
+        .add($("td").add(change))
         .add($("td").add(isIbex))
         .add($("td").add(isSel))
         .add($("td").add(Ui.link(() => {
