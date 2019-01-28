@@ -27,7 +27,7 @@ getNicks = do
   return $ Js.wList $ map toJs $ map (mp pf) $ filter f $
     map toNkSel $ Js.rList jsNks
   where
-    toNkSel js  = let [_, nick, _, sel] = Js.rList js
+    toNkSel js  = let [_, nick, _, sel, _] = Js.rList js
                   in  (Js.rString nick, Js.rBool sel)
     f (_, sel) = sel
     mp pf (nick, _) = case Pf.get pf nick of
@@ -47,5 +47,6 @@ process cgi rq = do
     "historic" -> do
       let nick = Cgi.get rq Js.rString "nick"
       rp <- Trader.calculate nick
-      Cgi.ok cgi $ ("url", Js.wString $ Yahoo.uri nick):rp
+      url <- Yahoo.uri nick
+      Cgi.ok cgi $ ("url", Js.wString url):rp
     s -> error $ printf "Unknown rq '%s'" s

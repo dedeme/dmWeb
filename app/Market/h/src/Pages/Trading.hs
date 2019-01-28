@@ -38,7 +38,7 @@ getNicks pf = do
               map nickSel $ Js.rList nks
   return (pfNicks, nicks)
   where
-    nickSel js = let [_, nick, _, sel] = Js.rList js
+    nickSel js = let [_, nick, _, sel, _] = Js.rList js
                  in  (Js.rString nick, Js.rBool sel)
     otherNick pfNicks (nick, sel) = sel && notElem nick pfNicks
     takeNick (nick, _) = nick

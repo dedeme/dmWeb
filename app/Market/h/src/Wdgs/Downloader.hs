@@ -31,9 +31,9 @@ process cgi rq =
                   ("profits", Js.wDouble pfs)]
     "download" -> do
       let nick = Cgi.get rq Js.rString "nick"
-      q0 <- Yahoo.quote nick
-      q1 <- if q0 < 0 then Invertia.quote nick else return q0
-      q2 <- if q1 < 0 then Finanzas.quote nick else return q1
+      q0 <- Invertia.quote nick
+      q1 <- if q0 < 0 then Finanzas.quote nick else return q0
+      q2 <- if q1 < 0 then Yahoo.quote nick else return q1
       Cgi.ok cgi [("quote", Js.wDouble q2)]
     "historic" -> do
       let date = Cgi.get rq Js.rString "date"

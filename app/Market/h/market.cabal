@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 58c3e1b9da8b0729696674f3afa39cefacd9d878d883722e3ab056b3daff02e8
+-- hash: 25548589648b38c2d725e1c6bd05e891283e2c34f14ff6df21cc1819604e7cd5
 
 name:           market
 version:        2018.12
@@ -38,6 +38,7 @@ library
       Data.Lquotes
       Data.Params
       Data.Pf
+      Data.Servers.Codes
       Data.Servers.Finanzas
       Data.Servers.Invertia
       Data.Servers.Reader
