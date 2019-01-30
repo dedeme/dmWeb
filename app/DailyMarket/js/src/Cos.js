@@ -15,7 +15,8 @@ const ORDER_DAY = 0;
 const ORDER_NICK = 1;
 const ORDER_PROFITS = 2;
 const ORDER_RISK = 3;
-const ORDER_SIGNAL = 4;
+const ORDER_BET = 4;
+const ORDER_SIGNAL = 5;
 
 /** Update page. */
 export default class Cos {
@@ -66,13 +67,19 @@ export default class Cos {
 
     const order = this._order;
     if (order === ORDER_DAY) {
-      cos.sort((e1, e2) => e2[1].dayRatio - e1[1].dayRatio);
+      cos.sort((e1, e2) => e2[1].dayProfits === e1[1].dayProfits
+        ? e2[1].dayRatio - e1[1].dayRatio
+        : e2[1].dayProfits - e1[1].dayProfits);
     } else if (order === ORDER_NICK) {
       cos.sort((e1, e2) => e1[0] > e2[0] ? 1 : -1);
     } else if (order === ORDER_PROFITS) {
       cos.sort((e1, e2) => e2[1].profits - e1[1].profits);
     } else if (order === ORDER_RISK) {
       cos.sort((e1, e2) => e1[1].risk - e2[1].risk);
+    } else if (order === ORDER_BET) {
+      cos.sort((e1, e2) =>
+        (e2[1].profits - e2[1].risk) - (e1[1].profits - e1[1].risk)
+      );
     } else {
       cos.sort((e1, e2) => e2[1].signalRatio - e1[1].signalRatio);
     }
@@ -94,6 +101,12 @@ export default class Cos {
 
   profitsOrder () {
     this._order = ORDER_PROFITS;
+    this._reverse = false;
+    this.showData();
+  }
+
+  betOrder () {
+    this._order = ORDER_BET;
     this._reverse = false;
     this.showData();
   }
@@ -133,6 +146,8 @@ export default class Cos {
       .add($("span").html("&nbsp;&nbsp;&nbsp;"))
       .add(link(_("Risk"), this.riskOrder.bind(this)))
       .add($("span").html("&nbsp;&nbsp;&nbsp;"))
+      .add(link(_("Bet"), this.betOrder.bind(this)))
+      .add($("span").html("&nbsp;&nbsp;&nbsp;"))
       .add(link(_("Signal"), this.signalOrder.bind(this)))
       .add($("span").html("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"))
       .add(link(_("Reverse"), this.reverseOrder.bind(this)))
@@ -168,7 +183,13 @@ export default class Cos {
       .add(this.chartsTable())
       .add(Ui.upTop("up"))
     );
-    this.dayOrder();
+    if (this._type === 0) {
+      this.signalOrder();
+    } else if (this._type === 1) {
+      this.betOrder();
+    } else {
+      this.dayOrder();
+    }
   }
 }
 

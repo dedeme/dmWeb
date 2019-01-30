@@ -33,6 +33,7 @@ import qualified Wgs.Wquotes as Wquotes
 import qualified Issues as Issues
 import qualified Volume as Volume
 import qualified Data.VolDb as VolDb
+import qualified Test as Test
 
 appInit :: IO ()
 appInit = do
@@ -79,6 +80,7 @@ appProcess cgi sessionId rq  =
     "wquotes" -> Wquotes.process cgi rq ------------------------ Wquotes widget
     "issues" -> Issues.process cgi rq ----------------------------- Issues page
     "volume" -> Volume.process cgi rq ----------------------------- Volume page
+    "test" -> Test.process cgi rq --------------------------------- Volume page
     "settings" -> Settings.process cgi rq ----------------------- Settings page
     "chpass" -> Chpass.process cgi rq -------------------- Change password page
     "backups" -> Backups.process cgi rq -------------------------- Backups page

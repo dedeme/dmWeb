@@ -36,9 +36,9 @@ export default class ChSmall {
     /** @private */
     this._table = $("table").klass("main")
       .add($("tr")
-        .add($("td").style("text-align:left;")
+        .add($("td").klass("chartLeft")
           .add(this._leftHeader))
-        .add($("td").style("text-align:right;")
+        .add($("td").klass("chartRight")
           .add(this._rightHeader)))
       .add($("tr")
         .add($("td").att("colspan", 2)
@@ -138,12 +138,16 @@ export default class ChSmall {
       .add($("span").html("<br>"))
       .add($("span").style("color:" + lcolor)
         .html(formatN(ratio * 100, 2) + "%"))
+      .add($("span").html(" | "))
+      .add($("span").html(formatN(co.risk, 2)))
     ;
 
     if (co.stocks > 0) {
       this._rightHeader.html(
-        formatN(co.risk, 2) +
-        "<br>" +
+        formatN(co.dayProfits, 2) +
+        "<br><font color='00aa41'>" +
+        formatN(co.profits - co.risk, 2) +
+        "</font> | " +
         formatN(co.profits, 2)
       );
     } else {
@@ -222,7 +226,5 @@ export default class ChSmall {
 
     ctx.lineWidth = 1;
     ctx.strokeRect(45.5, 5.5, 252, 140);
-
   }
-
 }

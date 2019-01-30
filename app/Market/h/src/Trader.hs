@@ -17,15 +17,18 @@ import qualified Orders as Orders
 import qualified Conf as Conf
 import qualified Global as G
 
-readCloses :: String -> IO [Double]
+readCloses :: String -> IO ([String], [Double])
 readCloses nk = do
   qs <- File.read (G.quotesBase ++ "/quotes/" ++ nk ++ ".db")
-  return $ map fMap $ filter (/= "") $ reverse $ lines qs
+  let pairs = filter (\(_, cl) -> cl >= 0)
+                     (map fMap $ filter (/= "") $ reverse $ lines qs)
+  return $ (map (\(d, _) -> d) pairs, map (\(_, cl) -> cl) pairs)
   where
-    fMap s =  let (':':s0) = dropWhile (/= ':') s
+    fMap s =  let d = takeWhile (/= ':') s
+                  (':':s0) = dropWhile (/= ':') s
                   (':':s1) = dropWhile (/= ':') s0
                   cl = takeWhile (/= ':') s1
-              in  read cl
+              in  (d, read cl)
 
 calc :: Double -> [Double] -> Params -> (Double, [(Double, Double)])
 calc _ [] _ = (0, [])
@@ -72,7 +75,7 @@ calc bet qs@(begin:before) (Params d bs ss) =
 -- |@'calculate' nick@ - Returns an object whose values are:
 --
 -- * "profits": Double (percentage),
--- * "quotes": [[Double (close), Double (ref)]]
+-- * "quotes": [[String (date), Double (close), Double (ref)]]
 calculate :: String -> IO [(String, JSValue)]
 calculate nk = do
   conf <- Conf.get
@@ -81,12 +84,13 @@ calculate nk = do
   params <- case paramsMb of
               Nothing -> Params.readBase
               Just ps -> return ps
-  qs <- readCloses nk
-  return $ toJs bet $ calc bet (filter (>= 0) qs) params
+  (ds, qs) <- readCloses nk
+  return $ toJs bet (reverse $ take 250 $ reverse ds) $ calc bet qs params
   where
-    toJs bet (profits, qs) = [
+    toJs bet ds (profits, qs) = [
       ("profits", Js.wDouble (profits / bet)),
-      ("quotes", Js.wList $ map toJs2 qs)
+      ("quotes", Js.wList $ map toJs2 qs),
+      ("dates", Js.wList $ map Js.wString ds)
       ]
     toJs2 (q, ref) = Js.wList [Js.wDouble q, Js.wDouble ref]
 
@@ -94,7 +98,7 @@ calculate nk = do
 --                   'nick'
 lastRef :: String -> IO Double
 lastRef nk = do
-  if nk == "PVA" || nk == "MDF"
+  if nk == "PVA" || nk == "MDF" || nk == "DIA"
   then return 0
   else do
     conf <- Conf.get
@@ -103,7 +107,7 @@ lastRef nk = do
     params <- case paramsMb of
                 Nothing -> Params.readBase
                 Just ps -> return ps
-    qs <- readCloses nk
+    (_, qs) <- readCloses nk
     let (_, ls) = calc bet (filter (>= 0) qs) params
     let ((_, rf):_) = reverse ls
     return rf

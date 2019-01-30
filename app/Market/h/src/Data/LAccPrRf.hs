@@ -28,12 +28,12 @@ read = do
   else do
     (pf, ld) <- Diary.books
     let pr = (capital ld) + (stocks ld) + (cash ld)
-    rf <- foldM fsum 0 $ Pf.values pf
+    rf <- foldM fsum pr $ Pf.values pf
     File.write path $ Js.toStr $ Js.wList [ Js.wString now,
                                             Js.wDouble pr,
-                                            Js.wDouble (rf + pr) ]
+                                            Js.wDouble rf ]
     return (pr, rf)
   where
     fsum r (nk, st, pr) = do
       rk <- Trader.lastRef nk
-      return $ fromIntegral st * (rk - pr)
+      return $ r + fromIntegral st * (rk - pr)

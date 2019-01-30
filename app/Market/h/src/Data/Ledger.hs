@@ -57,7 +57,7 @@ add a pf (Ledger st c cp s f i d) = case a of
   Buy _ _ nk stocks price ->
     let m = round2 $ fromIntegral stocks * price
         fees = round2 $ Fees.app m
-    in  (Pf.add nk stocks price (-1) pf,
+    in  (Pf.add nk stocks price (-1) (-1) pf,
          Ledger (st + m) (c - m - fees) cp s (f + fees) i d)
   Withdrawal _ _ m -> (pf, Ledger st (c - m) (cp + m) s f i d)
   Income _ _ m -> (pf, Ledger st (c + m) (cp - m) s f i d)

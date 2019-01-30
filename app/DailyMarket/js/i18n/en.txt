@@ -10,6 +10,9 @@ Active = Active
 # src/core/Dom.js: 77
 All CO's = All CO's
 
+# src/Cos.js: 149
+Bet = Bet
+
 # src/core/Chpass.js: 75
 Cancel = Cancel
 
@@ -38,7 +41,7 @@ Current password = Current password
 # src/core/Chpass.js: 93
 Current password is missing = 'Current password' is missing
 
-# src/Cos.js: 136
+# src/Cos.js: 141
 Day = Day
 
 # src/core/Chpass.js: 176
@@ -74,10 +77,10 @@ New password and confirm password do not match = New password and confirm passwo
 # src/core/Chpass.js: 99
 New password is missing = 'New password' is missing
 
-# src/Cos.js: 128
+# src/Cos.js: 143
 Nick = Nick
 
-# src/Cos.js: 127
+# src/Cos.js: 140
 Order by = Order by
 
 # src/core/Auth.js: 123
@@ -92,13 +95,13 @@ Password successfully changed = Password successfully changed
 # src/core/Dom.js: 75
 Portfolio = Portfolio
 
-# src/Cos.js: 130
+# src/Cos.js: 145
 Profits = Profits
 
-# src/Cos.js: 138
+# src/Cos.js: 153
 Reverse = Reverse
 
-# src/Cos.js: 132
+# src/Cos.js: 147
 Risk = Risk
 
 # src/core/Dom.js: 79
@@ -111,13 +114,13 @@ Session is expired. = Session is expired.
 # src/core/Settings.js: 81
 Settings = Settings
 
-# src/Cos.js: 134
+# src/Cos.js: 151
 Signal = Signal
 
 # src/core/Dom.js: 128
 Sleeping = Sleeping
 
-# src/Summary.js: 61
+# src/Summary.js: 88
 # src/core/Dom.js: 73
 Summary = Summary
 

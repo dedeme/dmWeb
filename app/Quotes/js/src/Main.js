@@ -15,6 +15,7 @@ import Edit from "./Edit.js";
 import Issues from "./Issues.js";
 import Servers from "./Servers.js";
 import Volume from "./Volume.js";
+import Test from "./Test.js";
 
 const app = "Quotes";
 const version = "201811";
@@ -31,6 +32,7 @@ const issuesPageId = "issues";
 const serversPageId = "servers";
 const volumePageId = "volume";
 const extraPageId = "extra";
+const testPageId = "test";
 
 /** Main page. */
 export default class Main {
@@ -107,6 +109,9 @@ export default class Main {
       break;
     case extraPageId:
       new Nicks(self, true).show();
+      break;
+    case testPageId:
+      new Test(self).show();
       break;
     case backupsPageId: {
       new Backups(self).show();
@@ -225,6 +230,11 @@ export default class Main {
   /** @return {string} Id of extra nicks page */
   static get extraPageId () {
     return extraPageId;
+  }
+
+  /** @return {string} Id of test page */
+  static get testPageId () {
+    return testPageId;
   }
 
 }

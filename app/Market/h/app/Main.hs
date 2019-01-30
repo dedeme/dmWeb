@@ -5,6 +5,8 @@
 --
 --   When PVA or MDF is sold, there is to delete its references in severs
 --   (Data.Servers.Finanzas, etc...) and in Trader (Trader.lastRef)
+--
+--   When DIA is sold, there is to delete it reference in Trader (Trader.lastRef)
 
 module Main where
 

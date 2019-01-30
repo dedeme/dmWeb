@@ -11,6 +11,12 @@ const $ = Ui.$;
 
 const balanceSeparator = () => $("td").klass("separator");
 
+const NICK_ORDER = 0;
+const VALUE_ORDER = 1;
+const PROFITS_ORDER = 2;
+const RISK_ORDER = 3;
+const BET_ORDER = 4;
+
 /** Balance page. */
 export default class Balance {
   /**
@@ -25,6 +31,8 @@ export default class Balance {
 
     this._currentProfits = 0;
     this._accountableProfits = 0;
+    this._riskProfits = 0;
+    this._bet = 0;
 
     this._stocks = 0;
     this._cash = 0;
@@ -35,11 +43,32 @@ export default class Balance {
     this._differences = 0;
 
     this._portfolio = [];
+
+    this._order = NICK_ORDER;
   }
 
   formatN (n, dec) {
     const d = new Dec(n, dec);
     return this._main.model["lang"] === "es" ? d.toEu() : d.toEn();
+  }
+
+  sortf () {
+    return this._order === NICK_ORDER
+      ? (row1, row2) => row1[0] > row2[0] ? 1 : -1
+      : this._order === VALUE_ORDER
+        ? (row1, row2) => row1[3] * row1[1] > row2[3] * row2[1] ? -1 : 1
+        : this._order === PROFITS_ORDER
+          ? (row1, row2) =>
+            (row1[3] - row1[2]) * row1[1] > (row2[3] - row2[2]) * row2[1]
+              ? -1 : 1
+          : this._order === RISK_ORDER
+            ? (row1, row2) =>
+              (row1[4] - row1[2]) * row1[1] > (row2[4] - row2[2]) * row2[1]
+                ? -1 : 1
+            : (row1, row2) =>
+              (row1[3] - row1[4]) * row1[1] > (row2[3] - row2[4]) * row2[1]
+                ? -1 : 1
+    ;
   }
 
   body () {
@@ -48,16 +77,34 @@ export default class Balance {
       .add($("table").att("align", "center").klass("home")
         .add($("tr")
           .add($("td").klass("rlabel")
-            .add($("span").html(_("Current profits:"))))
+            .add($("span").html(_("Current profits") + ":")))
           .add($("td").klass("number")
             .add($("span").html(
-              this._currentProfits === null ? "[?]"
-                : this.formatN(this._currentProfits, 2)))))
+              "<font color='0041aa'>" +
+              (this._currentProfits === null ? "[?]"
+                : this.formatN(this._currentProfits, 2)) +
+              "</font>"))))
         .add($("tr")
           .add($("td").klass("rlabel")
-            .add($("span").html(_("Accounting profits:"))))
+            .add($("span").html(_("Accounting profits") + ":")))
           .add($("td").klass("number")
-            .add($("span").html(this.formatN(this._accountableProfits, 2))))))
+            .add($("span").html(this.formatN(this._accountableProfits, 2)))))
+        .add($("tr")
+          .add($("td").klass("rlabel")
+            .add($("span").html(_("Risk profits") + ":")))
+          .add($("td").klass("number")
+            .add($("span").html(
+              "<font color='aa2800'>" +
+              (this.formatN(this._riskProfits, 2)) +
+              "</font>"))))
+        .add($("tr")
+          .add($("td").klass("rlabel")
+            .add($("span").html(_("Total bet") + ":")))
+          .add($("td").klass("number")
+            .add($("span").html(
+              "<font color='00aa41'>" +
+              (this.formatN(this._bet, 2)) +
+              "</font>")))))
       .add($("div").klass("head").html(_("Balance")))
       .add($("table").att("align", "center").klass("home")
         .add($("tr")
@@ -114,15 +161,52 @@ export default class Balance {
       .add($("table").att("align", "center").klass("home")
         .add($("tr")
           .add($("td").klass("head")
-            .add($("span").html(_("Co."))))
+            .add(Ui.link(() => {
+              this._order = NICK_ORDER;
+              this.reload();
+            }).klass("linkBold").html(_("Co."))))
           .add($("td").klass("head")
             .add($("span").html("Nm.")))
           .add($("td").klass("head")
-            .add($("span").html(_("Price"))))
+            .add($("span").html(_("Buy"))))
           .add($("td").klass("head")
-            .add($("span").html(_("Value"))))
+            .add($("span").html(_("Sell"))))
           .add($("td").klass("head")
-            .add($("span").html(_("Dif.")))))
+            .add(
+              (this._currentProfits === null
+                ? $("span")
+                : Ui.link(() => {
+                  this._order = VALUE_ORDER;
+                  this.reload();
+                }).klass("linkBold")
+              ).html(_("Value"))))
+          .add($("td").klass("head")
+            .add(
+              (this._currentProfits === null
+                ? $("span")
+                : Ui.link(() => {
+                  this._order = PROFITS_ORDER;
+                  this.reload();
+                }).klass("linkBold")
+              ).html(_("Profits"))))
+          .add($("td").klass("head")
+            .add(
+              (this._currentProfits === null
+                ? $("span")
+                : Ui.link(() => {
+                  this._order = RISK_ORDER;
+                  this.reload();
+                }).klass("linkBold")
+              ).html(_("Risk"))))
+          .add($("td").klass("head")
+            .add(
+              (this._currentProfits === null
+                ? $("span")
+                : Ui.link(() => {
+                  this._order = BET_ORDER;
+                  this.reload();
+                }).klass("linkBold")
+              ).html(_("Bet")))))
         .adds(this._portfolio.map(e => $("tr")
           .add($("td").klass("nick")
             .add($("span").html(e[0])))
@@ -135,13 +219,26 @@ export default class Balance {
           .add($("td").klass("number")
             .add($("span")
               .html(e[3] === null ? "[?]"
-                : this.formatN((e[3] - e[2]) * e[1], 2)))))))
+                : this.formatN(e[3] * e[1], 2))))
+          .add($("td").klass("number")
+            .add($("span")
+              .html(e[3] === null ? "[?]"
+                : this.formatN((e[3] - e[2]) * e[1], 2))))
+          .add($("td").klass("number")
+            .add($("span")
+              .html(e[3] === null ? "[?]"
+                : this.formatN((e[4] - e[2]) * e[1], 2))))
+          .add($("td").klass("number")
+            .add($("span")
+              .html(e[3] === null ? "[?]"
+                : this.formatN((e[3] - e[4]) * e[1], 2)))))))
       .add(Ui.upTop("up"))
     ;
 
   }
 
   reload () {
+    this._portfolio.sort(this.sortf());
     this._main.dom.show(Main.balancePageId, this.body());
   }
 
@@ -167,15 +264,18 @@ export default class Balance {
     this._accountableProfits = this._sells + this._fees +
       this._incomes + this._differences;
     this._currentProfits = this._accountableProfits;
+    this._riskProfits = this._accountableProfits;
+    this._bet = 0;
 
     const pf = rp["pf"];
-    pf.sort((row1, row2) => row1[0] > row2[0] ? 1 : -1);
     this._portfolio = pf.map(e => {
       if (e[3] <= 0) {
         e[3] = null;
         this._currentProfits = null;
       } else if (this._currentProfits !== null) {
         this._currentProfits += (e[3] - e[2]) * e[1];
+        this._riskProfits += (e[4] - e[2]) * e[1];
+        this._bet += (e[3] - e[4]) * e[1];
       }
       return e;
     });

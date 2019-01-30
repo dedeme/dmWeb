@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1347ddaa765e6cae2bd6b3ba6b4213ccd7aa231d19e0df690e9e71ea011e189f
+-- hash: 28b0ff83b9fc5f8f4cb0df80380e8321d845cb80d176a3961ece4152b0fdf682
 
 name:           quotes
 version:        2018.11
@@ -48,6 +48,7 @@ library
       Issues
       Nicks
       Servers
+      Test
       Volume
       Wgs.Wnick
       Wgs.Wquotes

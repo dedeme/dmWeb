@@ -78,6 +78,8 @@ export default class Dom {
       entry(_("Volume"), Main.volumePageId),
       separator(),
       entry(_("Extra"), Main.extraPageId),
+      separator(),
+      entry(_("Test"), Main.testPageId)
     ];
 
     const ropts = [

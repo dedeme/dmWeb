@@ -129,7 +129,9 @@ export default class Dom {
           : _("To Sleeping")
     ;
     this._dataSpan.html(
-      "| " + formatN(risk) + " · " + formatN(profits) + " | " +
+      "| " + formatN(risk) + " · " +
+      formatN(profits) + " · <font color='00aa41'>" +
+      formatN(profits - risk) + "</font> | " +
       server + " | " + state + " | "
     );
   }

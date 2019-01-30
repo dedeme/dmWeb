@@ -178,15 +178,20 @@ export default class Profits {
         .add($("td").html(
           "<big>" +
           DateDm.fromStr(d[0]).toString() +
-          " : [<font color='0081ff'>" +
+          " : [<font color='0041aa'>" +
           formatN(d[1][0]) +
           "</font> | <font color='000000'>" +
           formatN(d[1][1]) +
-          "</font> | <font color='ff2800'>" +
+          "</font> | <font color='aa2800'>" +
           formatN(d[1][2]) +
+          "</font> | <font color='00aa41'>" +
+          formatN(d[1][0] - d[1][2]) +
           "</font>]</big>"
         )));
-      if (data.length === 1 || data[data.length - 2][1] !== d[1]) {
+      if (
+        data.length === 1 ||
+        formatN(data[data.length - 2][1][0]) !== formatN(d[1][0])
+      ) {
         return tb;
       }
       tb.add($("tr")

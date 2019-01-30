@@ -16,6 +16,7 @@ import qualified Dm.Js as Js
 import Dm.Js (JSValue)
 import qualified Data.Pf as Pf
 import Data.Pf (Pf)
+import qualified Trader as Trader
 import qualified Global as G
 
 path :: String
@@ -37,5 +38,10 @@ read = File.read path >>= return . Js.fromStr
 fillPf :: Pf -> IO Pf
 fillPf pf = do
   lastJs <- Data.Lquotes.read
-  let last = map (\(k, v) -> (k, Js.rDouble v)) $ Js.rMap lastJs
+
+  last <- mapM fm $ Js.rMap lastJs
   return $ foldl' Pf.fill pf last
+  where
+    fm (nick, v) = do
+      rk <- Trader.lastRef nick
+      return (nick, Js.rDouble v, rk)

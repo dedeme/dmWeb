@@ -49,8 +49,13 @@ export default class Co {
   get risk () {
     return this._lastQ === null || this._stocks === 0 ? 0
       : this._stocks *
-        ((this._signal < 0 ? -this._signal : this._lastQ * 0.892407) -
+        ((this._signal < 0 ? -this._signal : 0) -
         this._price);
+  }
+
+  /** @return {number} */
+  get invest () {
+    return this._stocks * this._price;
   }
 
   /** @return {number} */
@@ -64,6 +69,13 @@ export default class Co {
   get dayRatio () {
     return (this._lastQ === null) ? 0
       : (this._lastQ - this._qs[0][1]) / this._qs[0][1];
+  }
+
+
+  /** @return {number} */
+  get dayProfits () {
+    return (this._lastQ === null) ? 0
+      : this._stocks * (this._lastQ - this._qs[0][1]);
   }
 
   /**
