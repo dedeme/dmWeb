@@ -67,8 +67,7 @@ class Entry {
       return (id + "          ").substring(0, 10);
     }
     const date = DateDm.fromStr(this.date);
-    return "----------\n" +
-      (this.lang === "es" ? date.toString() : date.format("%M/%D/%Y")) +
+    return (this.lang === "es" ? date.toString() : date.format("%M/%D/%Y")) +
       "\n|" +
       formatId("me") +
       " | " +
@@ -85,7 +84,7 @@ class Entry {
       formatId(this.sv3.id) +
       " | " +
       this.sv3.quotes.toString() +
-      "\n";
+      "\n----------\n";
   }
 }
 
@@ -109,27 +108,45 @@ export default class Test {
       .att("readOnly", true);
   }
 
-  showText () {
-    let tx = "";
-    this._issues.forEach(i =>
-      tx += Entry.mk(this._main.model["lang"], i).toString()
-    );
-    this._textArea.value(tx);
+  addText (tx) {
+    this._textArea.value(this._textArea.value() + tx);
+  }
+
+  addIssue (i) {
+    this.addText(Entry.mk(this._main.model["lang"], i).toString());
+  }
+
+  async showText () {
+    let lastNick = "";
+    while (true) {
+      const data = {
+        "source": "test",
+        "rq": "issues",
+        "type": "nicks",
+        "lastNick": lastNick
+      };
+      const rp = await this._main.client.send(data);
+      // one issue is [date, qsMe, sv1, sv2, sv3]
+      lastNick = rp["nick"];
+      if (lastNick === "") {
+        break;
+      }
+      const issues = rp["issues"];
+
+      this.addText(lastNick + ":");
+      if (issues.length === 0) {
+        this.addText(" Ok;\n");
+      } else {
+        this.addText("\n");
+        issues.forEach(i => this.addIssue(i));
+      }
+    }
   }
 
   /**
-   * @return {Promise}
+   * @return {void}
    */
-  async show () {
-    const data = {
-      "source": "test",
-      "rq": "idata",
-      "type": "nicks"
-    };
-    const rp = await this._main.client.send(data);
-    // one issue is [date, qsMe, sv1, sv2, sv3]
-    this._issues = rp["issues"];
-
+  show () {
     this._main.dom.show(
       Main.testPageId,
       $("div").style("text-align: center;")
@@ -141,9 +158,10 @@ export default class Test {
             .html(_("Nicks")))
           .add($("span").html("&nbsp;&nbsp;||&nbsp;&nbsp;"))
           .add(Ui.link(() => alert("Extra")).klass("link")
-            .html(_("Nicks + Extra"))))
-        .add(this._textArea)
+            .html(_("Extra"))))
+        .add(this._textArea.removeAll())
     );
+
     this.showText();
   }
 }

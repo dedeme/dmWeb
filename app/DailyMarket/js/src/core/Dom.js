@@ -26,6 +26,12 @@ export default class Dom {
 
     /** @private */
     this._dataSpan = $("span").html("");
+
+    /** @private */
+    this._lastProfits = 0;
+
+    /** @private */
+    this._lastTick = 8;
   }
 
   /**
@@ -117,22 +123,35 @@ export default class Dom {
     const server = data.server;
     let state = data.state;
 
+    if (state !== "active" || this._lastProfits !== profits) {
+      this._lastTick = 16;
+    } else {
+      this._lastTick -= 2;
+      if (this._lastTick < 0) {
+        this._lastTick = 0;
+      }
+    }
+    this._lastProfits = profits;
+    const ticks = "                · · · · · · · · "
+      .substring(this._lastTick, this._lastTick + 16);
+
     function formatN (n) {
       if (lang === "es") {
         return new Dec(n, 2).toEu();
       }
       return new Dec(n, 2).toEn();
     }
-    state = state === "active" ? _("Active")
+    state = state === "active" ? ticks
       : state === "toActive" ? _("To Active")
         : state === "sleeping" ? _("Sleeping")
           : _("To Sleeping")
     ;
     this._dataSpan.html(
+      state +
       "| " + formatN(risk) + " · " +
       formatN(profits) + " · <font color='00aa41'>" +
       formatN(profits - risk) + "</font> | " +
-      server + " | " + state + " | "
+      server + " | "
     );
   }
 }
