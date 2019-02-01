@@ -18,6 +18,8 @@ const ORDER_RISK = 3;
 const ORDER_BET = 4;
 const ORDER_SIGNAL = 5;
 
+const orderDiv = $("div").style("padding-bottom:8px");
+
 /** Update page. */
 export default class Cos {
   /**
@@ -30,6 +32,7 @@ export default class Cos {
      * @type {!Main}
      */
     this._main = main;
+
     /** @private */
     this._type = type;
 
@@ -45,10 +48,6 @@ export default class Cos {
     this._chs = [...It.range(cos.length)]
       .map(() => new ChSmall(main));
 
-    /**
-     * Array of pairs [nick:string, co:Co]
-     * @private
-     * */
     /** @private */
     this._order = ORDER_DAY;
 
@@ -57,6 +56,8 @@ export default class Cos {
   }
 
   showData () {
+    this.setOrderDiv();
+
     const mcos = this._main.data.cos;
     let cos = [...mcos.keys()].map(k => [k, mcos.get(k)]);
     if (this._type === 1) {
@@ -134,23 +135,30 @@ export default class Cos {
     this.showData();
   }
 
-  orderDiv () {
-    const link = (id, f) => Ui.link(() => f()).klass("link").html(id);
-    return $("div")
+  setOrderDiv () {
+    const o = this._order;
+    const link = (order, id, f) => {
+      if (o === order) {
+        return Ui.link(f)
+          .klass("link").klass("frame").html(id);
+      }
+      return Ui.link(f).klass("link").html(id);
+    };
+    orderDiv.removeAll()
       .add($("span").html(_("Order by") + ":&nbsp;&nbsp;&nbsp;"))
-      .add(link(_("Day"), this.dayOrder.bind(this)))
+      .add(link(ORDER_DAY, _("Day"), this.dayOrder.bind(this)))
       .add($("span").html("&nbsp;&nbsp;&nbsp;"))
-      .add(link(_("Nick"), this.nickOrder.bind(this)))
+      .add(link(ORDER_NICK, _("Nick"), this.nickOrder.bind(this)))
       .add($("span").html("&nbsp;&nbsp;&nbsp;"))
-      .add(link(_("Profits"), this.profitsOrder.bind(this)))
+      .add(link(ORDER_PROFITS, _("Profits"), this.profitsOrder.bind(this)))
       .add($("span").html("&nbsp;&nbsp;&nbsp;"))
-      .add(link(_("Risk"), this.riskOrder.bind(this)))
+      .add(link(ORDER_RISK, _("Risk"), this.riskOrder.bind(this)))
       .add($("span").html("&nbsp;&nbsp;&nbsp;"))
-      .add(link(_("Bet"), this.betOrder.bind(this)))
+      .add(link(ORDER_BET, _("Bet"), this.betOrder.bind(this)))
       .add($("span").html("&nbsp;&nbsp;&nbsp;"))
-      .add(link(_("Signal"), this.signalOrder.bind(this)))
+      .add(link(ORDER_SIGNAL, _("Signal"), this.signalOrder.bind(this)))
       .add($("span").html("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"))
-      .add(link(_("Reverse"), this.reverseOrder.bind(this)))
+      .add(link(-1, _("Reverse"), this.reverseOrder.bind(this)))
     ;
   }
 
@@ -179,7 +187,7 @@ export default class Cos {
         : Main.selectionPageId
     ;
     this._main.dom.show(page, $("div").style("text-align:center;")
-      .add(this.orderDiv().style("padding-bottom:4px"))
+      .add(orderDiv)
       .add(this.chartsTable())
       .add(Ui.upTop("up"))
     );
@@ -190,6 +198,8 @@ export default class Cos {
     } else {
       this.dayOrder();
     }
+
+    this.setOrderDiv();
   }
 }
 
