@@ -7,6 +7,7 @@ import {_} from "./I18n.js";
 import Ui from "./dmjs/Ui.js";
 import It from "./dmjs/It.js";
 import Dec from "./dmjs/Dec.js";
+import Clock from "./dmjs/Clock.js";
 import ChBig from "./ChBig.js";
 
 const $ = Ui.$;
@@ -88,6 +89,11 @@ export default class Summary {
         .html(_("Summary")))
       .add(this._perc)
       .add(this._charTable)
+      .add(new Clock().mkWg().klass("frame")
+        .style(
+          "background:radial-gradient(#000333,#e6f6f6);" +
+          "margin-top: 8px;"
+        ))
     );
     this.showData();
   }

@@ -95,6 +95,22 @@ DIV.separator {
   height:15px;
 }
 
+DIV.enabled {
+  border: 1px solid rgb(110,130,150);
+  font-family: sans;font-size: 14px;
+  padding: 4px;border-radius: 4px;
+  background: #ffffff;
+  color: #000000;
+}
+
+DIV.disabled {
+  border: 1px solid rgb(110,130,150);
+  font-family: sans;font-size: 14px;
+  padding: 4px;border-radius: 4px;
+  background: #f1f1f1;
+  color: #909090;
+}
+
 BUTTON {
   width:100px;
 }
