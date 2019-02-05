@@ -69,12 +69,14 @@ export default class Summary {
       end = sum;
     });
 
-    const ratio = (end - start) / start;
+    const profits = end - start;
+    const ratio = profits / start;
     this._perc.removeAll()
       .add($("span").klass("frame").style(
         "font-size:x-large;color:" +
         (ratio > 0 ? "#00AAFF" : ratio < 0 ? "#FF8100" : "#000000")
-      ).html(" " + formatN(ratio * 100, 2) + " %"))
+      ).html(" " + formatN(ratio * 100, 2) + " % | " +
+        formatN(profits, 2) + " "))
     ;
 
     this._ch.update(hps);

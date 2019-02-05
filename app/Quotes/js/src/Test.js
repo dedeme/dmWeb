@@ -4,91 +4,40 @@
 import Main from "./Main.js";
 import {_} from "./I18n.js";
 import Ui from "./dmjs/Ui.js";
-import DateDm from "./dmjs/DateDm.js";
-import Dec from "./dmjs/Dec.js";
+import It from "./dmjs/It.js";
 
 const $ = Ui.$;
 
-class Quotes {
-  constructor (open, close, max, min) {
-    this.open = open;
-    this.close = close;
-    this.max = max;
-    this.min = min;
-  }
+const COS_NICKS = 0;
+const COS_EXTRA = 1;
 
-  static mk (a) {
-    return new Quotes(a[0], a[1], a[2], a[3]);
-  }
-
-  toString () {
-    function formatN (n) {
-      const s = "        " + new Dec(n, 4).toString();
-      return s.substring(s.length - 10);
-    }
-    return formatN(this.open) + " | " +
-      formatN(this.close) + " | " +
-      formatN(this.max) + " | " +
-      formatN(this.min);
-  }
+function err (msg) {
+  return msg
+    .replace(/_1_/g, _("Ok."))
+    .replace(/_2_/g, _("Error reading local quotes"))
+    .replace(/_3_/g, _("Bad nick Id in Test/readQuotesSvs"))
+    .replace(/_4_/g, _("Extra quote"))
+    .replace(/_5_/g, _("Open"))
+    .replace(/_6_/g, _("Close"))
+    .replace(/_7_/g, _("Maximum"))
+    .replace(/_8_/g, _("Minimum"))
+    .replace(/_9_/g, _("Volume"))
+  ;
 }
 
-class Server {
-  constructor (id, quotes) {
-    this.id = id;
-    this.quotes = quotes;
+function mkMenuTd (sel, tx, f) {
+  if (sel) {
+    return $("td").klass("menu").html(tx);
   }
-
-  static mk (a) {
-    return new Server(a[0], Quotes.mk(a[1]));
-  }
-
+  return $("td").add(Ui.link(f).klass("link").html(tx));
 }
 
-class Entry {
-  constructor (lang, date, me, sv1, sv2, sv3) {
-    this.lang = lang;
-    this.date = date;
-    this.me = me;
-    this.sv1 = sv1;
-    this.sv2 = sv2;
-    this.sv3 = sv3;
+function mkMenu (sel, tx, f) {
+  if (sel) {
+    return $("span").klass("frame").html(tx);
   }
-
-  static mk (lang, a) {
-    return new Entry(
-      lang,
-      a[0], Quotes.mk(a[1]), Server.mk(a[2]), Server.mk(a[3]), Server.mk(a[4])
-    );
-  }
-
-  toString () {
-    function formatId (id) {
-      return (id + "          ").substring(0, 10);
-    }
-    const date = DateDm.fromStr(this.date);
-    return (this.lang === "es" ? date.toString() : date.format("%M/%D/%Y")) +
-      "\n|" +
-      formatId("me") +
-      " | " +
-      this.me.toString() +
-      "|\n|" +
-      formatId(this.sv1.id) +
-      " | " +
-      this.sv1.quotes.toString() +
-      "|\n|" +
-      formatId(this.sv2.id) +
-      " | " +
-      this.sv2.quotes.toString() +
-      "\n|" +
-      formatId(this.sv3.id) +
-      " | " +
-      this.sv3.quotes.toString() +
-      "\n----------\n";
-  }
+  return Ui.link(f).klass("link").html(tx);
 }
-
-// -------------------------------------------------------------------
 
 /** Test page. */
 export default class Test {
@@ -102,45 +51,95 @@ export default class Test {
      */
     this._main = main;
 
-    this._issues = [];
+    this._cosTypeDiv = $("div");
+
+    this._nicksDiv = $("div");
 
     this._textArea = $("textArea").att("cols", 110).att("rows", 30)
       .att("readOnly", true);
+
+    this._cosType = COS_NICKS;
+
+    this._selNick = "";
   }
 
-  addText (tx) {
-    this._textArea.value(this._textArea.value() + tx);
+  async nickIssues (nickId, f) {
+    const rq = {
+      "source": "test",
+      "rq": "issues",
+      "nickId": nickId
+    };
+    const rp = await this._main.client.send(rq);
+    const issues = rp["issues"];
+    this._textArea.value(this._textArea.value() + err(issues));
+    f();
   }
 
-  addIssue (i) {
-    this.addText(Entry.mk(this._main.model["lang"], i).toString());
-  }
+  async setNicks () {
+    const rq = {
+      "source": "test",
+      "rq": this._cosType === COS_NICKS ? "nicks" : "extra"
+    };
+    const rp = await this._main.client.send(rq);
+    const idNicks = rp["idNicks"].sort((iN1, iN2) => iN1[1] > iN2[1] ? 1 : -1);
 
-  async showText () {
-    let lastNick = "";
-    while (true) {
-      const data = {
-        "source": "test",
-        "rq": "issues",
-        "type": "nicks",
-        "lastNick": lastNick
-      };
-      const rp = await this._main.client.send(data);
-      // one issue is [date, qsMe, sv1, sv2, sv3]
-      lastNick = rp["nick"];
-      if (lastNick === "") {
-        break;
+    const tb = $("table").klass("frame2").att("align", "center")
+      .style("border-collapse : collapse;");
+    let n = 0;
+    let tr = $("tr");
+    idNicks.forEach(iN => {
+      const [id, nk] = iN;
+      let border = "border-left: solid 1px;";
+      if (n > 0 && n % 10 === 0) {
+        tb.add(tr);
+        tr = $("tr");
+        border = "";
+      } else if (n === 0) {
+        border = "";
       }
-      const issues = rp["issues"];
-
-      this.addText(lastNick + ":");
-      if (issues.length === 0) {
-        this.addText(" Ok;\n");
-      } else {
-        this.addText("\n");
-        issues.forEach(i => this.addIssue(i));
-      }
+      const td = mkMenuTd(this._selNick === nk, nk, () => {
+        this._textArea.value("");
+        td.removeAll().add(Ui.img("wait.gif"));
+        this.nickIssues(id, this.setNicks.bind(this));
+        this._selNick = nk;
+      }).style("text-align:center;" + border);
+      tr.add(td);
+      ++n;
+    });
+    while (n % 10 !== 0) {
+      tr.add($("td"));
     }
+    tb.add(tr);
+    this._nicksDiv.removeAll().add(tb);
+
+    const td = mkMenuTd(this._selNick === "@", _("All nicks"), () => {
+      this._textArea.value("");
+      td.removeAll().add(Ui.img("wait.gif"));
+      this._selNick = "@";
+      It.from(idNicks).eachSync(
+        (iN) => this.nickIssues.bind(this)(iN[0], () => {}),
+        this.setNicks.bind(this)
+      );
+    }).att("colspan", 10).style("text-align:center;border-top: solid 1px;");
+    tb.add($("tr").add(td));
+  }
+
+  setCosType () {
+    this._cosTypeDiv.removeAll()
+      .add(mkMenu(this._cosType === COS_NICKS, _("Nicks"), () => {
+        this._cosType = COS_NICKS;
+        this.setCosType();
+      }))
+      .add($("span").html("&nbsp;&nbsp;||&nbsp;&nbsp;"))
+      .add(mkMenu(this._cosType === COS_EXTRA, _("Extra"), () => {
+        this._cosType = COS_EXTRA;
+        this.setCosType();
+      }));
+
+    this._selNick = "";
+    this.setNicks();
+
+    this._textArea.value("");
   }
 
   /**
@@ -149,20 +148,27 @@ export default class Test {
   show () {
     this._main.dom.show(
       Main.testPageId,
-      $("div").style("text-align: center;")
-        .add($("div")
-          .add($("h2").html(_("Test"))))
-        .add($("hr"))
-        .add($("div")
-          .add(Ui.link(() => alert("Nicks")).klass("link")
-            .html(_("Nicks")))
-          .add($("span").html("&nbsp;&nbsp;||&nbsp;&nbsp;"))
-          .add(Ui.link(() => alert("Extra")).klass("link")
-            .html(_("Extra"))))
-        .add(this._textArea.removeAll())
+      $("table").att("align", "center")
+        .add($("tr")
+          .add($("td").style("text-align:center")
+            .add($("h2").html(_("Test")))))
+        .add($("tr")
+          .add($("td")
+            .add($("hr"))))
+        .add($("tr")
+          .add($("td").style("text-align:center")
+            .add(this._cosTypeDiv)))
+        .add($("tr")
+          .add($("td")))
+        .add($("tr")
+          .add($("td")
+            .add(this._nicksDiv.removeAll())))
+        .add($("tr")
+          .add($("td")
+            .add(this._textArea.value(""))))
     );
 
-    this.showText();
+    this.setCosType();
   }
 }
 

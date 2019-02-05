@@ -98,7 +98,7 @@ calculate nk = do
 --                   'nick'
 lastRef :: String -> IO Double
 lastRef nk = do
-  if nk == "PVA" || nk == "MDF" || nk == "DIA"
+  if nk == "PVA" || nk == "MDF"
   then return 0
   else do
     conf <- Conf.get
