@@ -23,7 +23,7 @@ let linkTds tp a =
             let ix = col * rows + row in
             if ix >= len then q "td" [][]::ls
             else q "td" [
-              Html ("<a href='#" ^ tp ^ "." ^ a.(ix) ^ "'>" ^ a.(ix) ^ "</a>")
+              Html ("<a href=\"#" ^ tp ^ "." ^ a.(ix) ^ "\">" ^ a.(ix) ^ "</a>")
             ][]::ls
           )
           (It.range 0 cols) |>

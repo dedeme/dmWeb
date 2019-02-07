@@ -52,9 +52,6 @@ appInit = do
       Diary.init
       Historic.init
       Params.init
-      File.write
-        (G.path ["data", "lastAccPrRf.db"])
-        (Js.toStr $ Js.wList [Js.wString "000000", Js.wDouble 0, Js.wDouble 0])
 
 mainProcess :: Cgi -> String -> [(String, JSValue)] -> IO ()
 mainProcess cgi sessionId rq =
