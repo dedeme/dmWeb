@@ -112,92 +112,134 @@ eqq n1 n2 = let df = n1 - n2 in df > -0.0001 && df < 0.0001
 eqv :: Int -> Int -> Bool
 eqv n1 n2 = let df = n1 - n2; l = (n1 + n2) `div` 10 in df > -l && df < l
 
-issuesf5 :: Quote -> Quote -> Maybe String
-issuesf5 (Quote _ o c mx mn v _) (Quote _ o1 c1 mx1 mn1 v1 _) =
-  if eqq o o1
-  then if eqq c c1
-       then if eqq mx mx1
-            then if eqq mn mn1
-                 then if eqv v v1
-                      then Nothing
-                      else Just issue9
-                 else Just issue8
-            else Just issue7
-       else Just issue6
-  else Just issue5
+selOkDb :: [Double] -> (Double, Double)
+selOkDb [q, q1, q2, q3] =
+  if eqq q1 q2 || eqq q1 q3 then (q, q1)
+  else if eqq q2 q3 then (q, q2)
+  else if eqq q q1 || eqq q q2 || eqq q q3 then (q, q)
+  else (q, q1)
+selOkDb [q, q1, q2] =
+  if eqq q1 q2 then (q, q1)
+  else if eqq q q1 || eqq q q2 then (q, q)
+  else (q, q1)
+selOkDb [q, q1] = (q, q1)
 
-issuesf4 :: Quote -> Quote -> Quote -> Maybe String
-issuesf4 q q1 q2 =
-  case issuesf5 q q1 of
-    Nothing -> Nothing
-    e -> case issuesf5 q q2 of
-                Nothing -> Nothing
-                _ -> e
+selOkInt :: [Int] -> (Int, Int)
+selOkInt [q, q1, q2, q3] =
+  if eqv q1 q2 || eqv q1 q3 then (q, q1)
+  else if eqv q2 q3 then (q, q2)
+  else if eqv q q1 || eqv q q2 || eqv q q3 then (q, q)
+  else (q, q1)
+selOkInt [q, q1, q2] =
+  if eqv q1 q2 then (q, q1)
+  else if eqv q q1 || eqv q q2 then (q, q)
+  else (q, q1)
+selOkInt [q, q1] = (q, q1)
 
-issuesf3 :: Quote -> Quote -> Quote -> Quote -> Maybe String
-issuesf3 q q1 q2 q3 =
-  case issuesf5 q1 q2 of
-    Nothing -> issuesf5 q q1
-    _ -> case issuesf5 q1 q3 of
-      Nothing -> issuesf5 q q1
-      _ -> case issuesf5 q2 q3 of
-        Nothing -> issuesf5 q q2
-        _ -> case issuesf4 q q1 q2 of
-          Nothing -> Nothing
-          e -> case issuesf5 q q3 of
-            Nothing -> Nothing
-            _ -> e
-
-issuesf21 :: Quote -> Maybe Quote -> Maybe Quote -> Maybe String
-issuesf21 q q1' q2' =
-  case q1' of
-    Nothing ->
-      case q2' of
-        Nothing -> Just issue4
-        Just q2 -> issuesf5 q q2
-    Just q1 ->
-      case q2' of
-        Nothing -> issuesf5 q q1
-        Just q2 -> issuesf4 q q1 q2
-
-issuesf2 :: Quote -> Maybe Quote -> Maybe Quote -> Maybe Quote -> Maybe String
-issuesf2 (Quote _ _ _ _ _ _ True) _ _ _ = Nothing
-issuesf2 q q1' q2' q3' =
-  case q1' of
-    Nothing -> issuesf21 q q2' q3'
-    Just q1 ->
-      case q2' of
-        Nothing -> issuesf21 q q1' q3'
-        Just q2 ->
-          case q3' of
-            Nothing -> issuesf21 q q1' q2'
-            Just q3 -> issuesf3 q q1 q2 q3
-
-issuesf1 :: [Quote] -> [Quote] -> [Quote] -> [Quote] -> Maybe String
-issuesf1 qs qs1 qs2 qs3 = iss Nothing qs qs1 qs2 qs3
+update :: String -> Quote -> IO ()
+update nkId q@(Quote d _ _ _ _ _ _) = do
+  Right nk <- NicksDb.nickName nkId
+  Right qs <- NicksDb.quotes nkId
+  NicksDb.writeQuotes nk $ fix [] qs
   where
-    iss r [] qs1 qs2 qs3 = r
-    iss r (q:qs) qs1 qs2 qs3 =
+    fix r [] = reverse r
+    fix r (q'@(Quote d' _ _ _ _ _ _):qs) = if d' == d then fix (q:r) qs
+                                                      else fix (q':r) qs
+
+issuesf2 :: String -> Quote -> Maybe Quote -> Maybe Quote -> Maybe Quote ->
+            IO (Maybe String)
+issuesf2 _ (Quote _ _ _ _ _ _ True) _ _ _ = return Nothing
+issuesf2 nkId q q1 q2 q3 = do
+  let auto = nkId /= ""
+  let qs = q:(ff [] [q1, q2, q3])
+  let (o, o') = selOkDb $ map (getDb 'o') qs
+  if eqq o o'
+  then do
+    let (o, o') = selOkDb $ map (getDb 'c') qs
+    if eqq o o'
+    then do
+      let (o, o') = selOkDb $ map (getDb 'x') qs
+      if eqq o o'
+      then do
+        let (o, o') = selOkDb $ map (getDb 'n') qs
+        if eqq o o'
+        then do
+          let (o, o') = selOkInt $ map getVol qs
+          if eqv o o'
+          then return Nothing
+          else  if auto
+                then do
+                  let q' = q {vol = o'}
+                  update nkId q'
+                  issuesf2 nkId q' q1 q2 q3
+                else return $ Just issue9
+        else  if auto
+              then do
+                let q' = q {Data.Quote.min = o'}
+                update nkId q'
+                issuesf2 nkId q' q1 q2 q3
+              else return $ Just issue8
+      else  if auto
+            then do
+              let q' = q {Data.Quote.max = o'}
+              update nkId q'
+              issuesf2 nkId q' q1 q2 q3
+            else return $ Just issue7
+    else  if auto
+          then do
+            let q' = q {close = o'}
+            update nkId q'
+            issuesf2 nkId q' q1 q2 q3
+          else return $ Just issue6
+  else  if auto
+        then do
+          let q' = q {open = o'}
+          update nkId q'
+          issuesf2 nkId q' q1 q2 q3
+        else return $ Just issue5
+  where
+    ff r [] = reverse r
+    ff r (q:qs) = case q of
+                    Nothing -> ff r qs
+                    Just q' -> ff (q':r) qs
+    getDb tp (Quote _ o c mx mn _ _) = case tp of
+                                        'o' -> o
+                                        'c' -> c
+                                        'x' -> mx
+                                        _ -> mn
+    getVol (Quote _ _ _ _ _ v _) = v
+
+issuesf1 :: String -> [Quote] -> [Quote] -> [Quote] -> [Quote] ->
+            IO (Maybe String)
+issuesf1 nkId qs qs1 qs2 qs3 = iss Nothing qs qs1 qs2 qs3
+  where
+    iss r [] qs1 qs2 qs3 = return r
+    iss r (q:qs) qs1 qs2 qs3 = do
       let (q1, qs1') = qextract q qs1
-          (q2, qs2') = qextract q qs2
-          (q3, qs3') = qextract q qs3
-      in  case issuesf2 q q1 q2 q3 of
-            Nothing -> iss r qs qs1' qs2' qs3'
-            Just e ->
-              let svnames = ServersDb.listNames
-                  msg = Quote.toStr q ++ " [" ++ e ++ "]\n" ++
-                          toStr q1 ++ " - " ++ svnames !! 0 ++ "\n" ++
-                          toStr q2 ++ " - " ++ svnames !! 1 ++ "\n" ++
-                          toStr q3 ++ " - " ++ svnames !! 2 ++ "\n"
-              in  case r of
-                    Nothing -> iss (Just msg) qs qs1' qs2' qs3'
-                    Just e' -> iss (Just $ e' ++ "\n" ++ msg) qs qs1' qs2' qs3'
+      let (q2, qs2') = qextract q qs2
+      let (q3, qs3') = qextract q qs3
+      issues <- case (q1, q2, q3) of
+                  (Nothing, Nothing, Nothing) ->
+                    if Quote.error q then return Nothing
+                                     else return $ Just issue4
+                  _ -> issuesf2 nkId q q1 q2 q3
+      case issues of
+        Nothing -> iss r qs qs1' qs2' qs3'
+        Just e ->
+          let svnames = ServersDb.listNames
+              msg = Quote.toStr q ++ " [" ++ e ++ "]\n" ++
+                      toStr q1 ++ " - " ++ svnames !! 0 ++ "\n" ++
+                      toStr q2 ++ " - " ++ svnames !! 1 ++ "\n" ++
+                      toStr q3 ++ " - " ++ svnames !! 2 ++ "\n"
+          in  case r of
+                Nothing -> iss (Just msg) qs qs1' qs2' qs3'
+                Just e' -> iss (Just $ e' ++ "\n" ++ msg) qs qs1' qs2' qs3'
     toStr q' = case q' of
                 Nothing -> "--------:-1:-1:-1:-1:-1:missing"
                 Just q'' -> Quote.toStr q''
 
-issuesf :: String -> IO (Maybe String)
-issuesf nk = do
+issuesf :: Bool -> String -> IO (Maybe String)
+issuesf auto nk = do
   qsMe' <- readQuotesMe nk
   case qsMe' of
     Left e -> return $ Just e
@@ -205,7 +247,8 @@ issuesf nk = do
       eqsSvs' <- readQuotesSvs nk
       case eqsSvs' of
         Left e -> return $ Just e
-        Right [qs1, qs2, qs3] -> return $ issuesf1 qsMe qs1 qs2 qs3
+        Right [qs1, qs2, qs3] ->
+          issuesf1 (if auto then nk else "") qsMe qs1 qs2 qs3
 
 process :: Cgi -> [(String, JSValue)] -> IO ()
 process cgi rq =
@@ -230,8 +273,9 @@ process cgi rq =
       Cgi.ok cgi [("idNicks", Js.wList idNicks)]
     "issues" -> do  ---------------------------------------------------- issues
       let nickId = Cgi.get rq Js.rString "nickId"
+      let autocorrection = Cgi.get rq Js.rBool "autocorrection"
       Right nick <- NicksDb.nickName nickId
-      iss' <- issuesf nickId
+      iss' <- issuesf autocorrection nickId
       let issues = case iss' of
                       Nothing -> nick ++ ": " ++ issue1 ++ "\n"
                       Just iss -> nick ++ ":\n" ++ iss ++ "\n"

@@ -75,7 +75,7 @@ export default class Summary {
       .add($("span").klass("frame").style(
         "font-size:x-large;color:" +
         (ratio > 0 ? "#00AAFF" : ratio < 0 ? "#FF8100" : "#000000")
-      ).html(" " + formatN(ratio * 100, 2) + " % | " +
+      ).html(" " + formatN(ratio * 100, 2) + "% | " +
         formatN(profits, 2) + " "))
     ;
 

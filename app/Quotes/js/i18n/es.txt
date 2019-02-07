@@ -9,8 +9,9 @@
 # src/data/Issue.js: 42
 %0: Difference +- 20% in %1 = %0: Diferencia +-20% en %1
 
+# src/Nicks.js: 123
 # src/Edit.js: 46
-'%0' already exists = '%0' ya existe
+'%0' already exists in nicks or extra = '%0' ya existe en Nicks o Extra
 
 # src/core/Backups.js: 54
 '%0' can not be read = '%0' no puede ser leido
@@ -23,21 +24,30 @@
 # src/core/Auth.js: 50
 Accept = Aceptar
 
-# src/Volume.js: 88
+# src/Volume.js: 198
 Accepted<br>changes = Cambios en<br>aceptados
+
+# src/Test.js: 100
+All %0 = Todos %0
+
+# src/Test.js: 137
+All nicks = Todos los nicks
 
 # src/core/Backups.js: 212
 # src/core/Backups.js: 250
 # src/core/Backups.js: 260
 All the data will be replaced = ¡ATENCIÓN!. Todos los datos serán reemplazados.\n¿Continuar?
 
-# src/Volume.js: 64
+# src/Volume.js: 174
 All<br>Companies = Todas<br>las compañías
+
+# src/Test.js: 163
+Autocorrection = Autocorrección
 
 # src/core/Backups.js: 235
 Automatic Backups = Copias automáticas
 
-# src/core/Dom.js: 82
+# src/core/Dom.js: 86
 Backs = Copias
 
 # src/core/Backups.js: 201
@@ -48,6 +58,9 @@ Backup successfully restored = Copia de seguridad restaurada
 
 # src/core/Backups.js: 269
 Backups = Copias de seguridad
+
+# src/Test.js: 18
+Bad nick Id in Test/readQuotesSvs = Incorrecto nick Id en Test/readQuotesSvs
 
 # src/Issues.js: 194
 Browser = Navegador
@@ -62,7 +75,7 @@ Change Language to %0 = Cambiar el idioma a %0
 # src/core/Settings.js: 72
 Change Password = Cambiar la contraseña
 
-# src/Nicks.js: 137
+# src/Nicks.js: 145
 # src/wgs/Wquotes.js: 265
 # src/Edit.js: 126
 Check = Prueba
@@ -81,6 +94,7 @@ Clear trash? = ¿Vaciar la papelera?
 Click %0 to continue. = Hacer click %0 para continuar.
 
 # src/wgs/Wquotes.js: 280
+# src/Test.js: 21
 Close = Cerrar
 
 # src/core/Chpass.js: 147
@@ -98,7 +112,7 @@ Current password is missing = Falta indicar la contraseña actual
 # src/wgs/Wquotes.js: 278
 Date = Fecha
 
-# src/wgs/Wnick.js: 180
+# src/wgs/Wnick.js: 207
 Delete = Eliminar
 
 # src/wgs/Wnick.js: 99
@@ -108,7 +122,7 @@ Delete '%0'? = ¿Eliminar '%0'?
 # src/Issues.js: 186
 Done = Hecho
 
-# src/Nicks.js: 133
+# src/Nicks.js: 141
 # src/Edit.js: 122
 # src/core/Backups.js: 272
 Download = Descarga
@@ -116,6 +130,16 @@ Download = Descarga
 # src/wgs/Wquotes.js: 219
 # src/core/Dom.js: 72
 Edit = Editar
+
+# src/Test.js: 17
+Error reading local quotes = Error leyendo cotizaciones locales
+
+# src/Test.js: 158
+# src/core/Dom.js: 80
+Extra = Extra
+
+# src/Test.js: 19
+Extra quote = Contización sobrante
 
 # src/data/Issue.js: 40
 Extra quote in %0 = Cotización sobrante en %0
@@ -163,11 +187,17 @@ Make backup = Hacer copia
 # src/wgs/Wquotes.js: 281
 Max = Max
 
+# src/Test.js: 22
+Maximum = Máximo
+
 # src/wgs/Wquotes.js: 282
 Min = Min
 
-# src/wgs/Wnick.js: 174
-# src/wgs/Wnick.js: 177
+# src/Test.js: 23
+Minimum = Mínimo
+
+# src/wgs/Wnick.js: 204
+# src/wgs/Wnick.js: 210
 Model = Modelo
 
 # src/wgs/Wquotes.js: 221
@@ -177,7 +207,7 @@ Modify = Modificar
 # src/wgs/Wquotes.js: 200
 Mult. = Mult.
 
-# src/Nicks.js: 128
+# src/Nicks.js: 136
 New nick = Nuevo nick
 
 # src/core/Chpass.js: 141
@@ -189,9 +219,10 @@ New password and confirm password do not match = La nueva contraseña y su confi
 # src/core/Chpass.js: 99
 New password is missing = Falta indicar la nueva contraseña
 
-# src/Volume.js: 71
+# src/Volume.js: 181
 Nick = Nick
 
+# src/Test.js: 153
 # src/core/Dom.js: 70
 Nicks = Nicks
 
@@ -202,13 +233,17 @@ No issues detected = Ningún problema detectado
 # src/Issues.js: 150
 No nick was selected = No se ha seleccionado ningún nick
 
+# src/Test.js: 16
+Ok. = Ok.
+
 # src/core/Backups.js: 205
 Only one file can be selected = Sólo se puede seleccionar un archivo
 
 # src/wgs/Wquotes.js: 279
+# src/Test.js: 20
 Open = Apertura
 
-# src/Volume.js: 66
+# src/Volume.js: 176
 Order by = Ordenado por:
 
 # src/core/Auth.js: 123
@@ -232,7 +267,7 @@ Quotes have wrong format = Las cotizaciones tiene un formato inválido
 # src/wgs/Wquotes.js: 76
 Quotes updated = Cotizaciones actualizadas
 
-# src/Volume.js: 91
+# src/Volume.js: 201
 Rejected<br>changes = Cambios en<br>rechazados
 
 # src/core/Backups.js: 277
@@ -241,7 +276,7 @@ Restore = Restauración
 # src/core/Backups.js: 197
 Restore backup = Restaurar copia
 
-# src/Volume.js: 82
+# src/Volume.js: 192
 Reverse = Reverso
 
 # src/wgs/Wquotes.js: 192
@@ -254,14 +289,20 @@ Search more issues = Buscar más problemas
 # src/wgs/Wquotes.js: 170
 See = Ver
 
-# src/wgs/Wnick.js: 145
-# src/wgs/Wnick.js: 149
-# src/wgs/Wnick.js: 193
-# src/wgs/Wnick.js: 196
+# src/wgs/Wnick.js: 175
+# src/wgs/Wnick.js: 179
+# src/wgs/Wnick.js: 231
+# src/wgs/Wnick.js: 236
 Selection = Selección
 
-# src/Volume.js: 85
+# src/Volume.js: 195
 Selection<br>changes = Cambios en<br>seleccionados
+
+# src/wgs/Wnick.js: 128
+Send '%0' to Extra? = ¿Enviar '%0' a Extra?
+
+# src/wgs/Wnick.js: 113
+Send '%0' to Nicks? = ¿Enviar '%0' a Nicks?
 
 # src/data/Issue.js: 34
 Server code of %0 is missing = Falta el código de servidor de %0
@@ -275,7 +316,7 @@ Servers = Servidores
 # src/core/Expired.js: 42
 Session is expired. = La sesión ha expirado.
 
-# src/core/Dom.js: 84
+# src/core/Dom.js: 88
 # src/core/Settings.js: 81
 Settings = Configuración
 
@@ -285,10 +326,12 @@ Split = Split
 # src/wgs/Wquotes.js: 284
 Status = Stado
 
-# src/Volume.js: 120
+# src/Volume.js: 228
 Stopped = Detenido
 
 # src/wgs/WserverId.js: 104
+# src/Test.js: 183
+# src/core/Dom.js: 82
 Test = Prueba
 
 # src/wgs/WserverIds.js: 45
@@ -300,13 +343,19 @@ There are no more issues = No hay más problemas
 # src/wgs/Wquotes.js: 80
 There is an issue:\n%0\nForce modification? = Hay un problema:\n%0\n¿Forzar la modificación?
 
+# src/wgs/Wnick.js: 216
+To Extra = A Extra
+
+# src/wgs/Wnick.js: 214
+To Nicks = A Nicks
+
 # src/Issues.js: 81
 Translator = Traductor
 
 # src/core/Backups.js: 238
 Trash = Papelera
 
-# src/Volume.js: 143
+# src/Volume.js: 250
 Update = Actualizar
 
 # src/core/Auth.js: 118
@@ -318,14 +367,15 @@ User name is missing = Falta indicar el nombre del usuario
 # src/wgs/Wquotes.js: 283
 Vol = Vol
 
-# src/Volume.js: 77
+# src/Volume.js: 187
 Vol. = Vol.
 
-# src/Volume.js: 103
+# src/Volume.js: 213
+# src/Test.js: 24
 # src/core/Dom.js: 78
 Volume = Volumen
 
-# src/Nicks.js: 84
+# src/Nicks.js: 91
 # src/Servers.js: 46
 Without nicks = Sin nicks
 
