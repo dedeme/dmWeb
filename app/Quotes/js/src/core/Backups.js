@@ -6,6 +6,7 @@ import B64 from "../dmjs/B64.js";
 import Main from "../Main.js";
 import {_, _args} from "../I18n.js";
 import Ui from "../dmjs/Ui.js";
+import Wrule from "../wgs/Wrule.js";
 
 const $ = Ui.$;
 
@@ -265,20 +266,14 @@ export default class Backups {
 
     main.dom.show("backups", $("table")
       .style("width:100%;text-align:center")
-      .add($("tr").add($("td").att("colspan", 2)
-        .html("<b>" + _("Backups") + "<b>")))
       .add($("tr")
-        .add($("td").style("width:5px;white-space: nowrap;text-align:right")
-          .html(_("Download")))
-        .add($("td").add($("hr"))))
+        .add(Wrule.mkBig(_("Download"))))
       .add(download())
       .add($("tr")
-        .add($("td").style("width:5px;white-space: nowrap;text-align:right")
-          .html(_("Restore")))
-        .add($("td").add($("hr"))))
+        .add(Wrule.mkBig(_("Restore"))))
       .add(upload())
       .add($("tr")
-        .add($("td").att("colspan", 2).add($("hr"))))
+        .add($("td").add($("hr"))))
       .add(lists())
     );
   }

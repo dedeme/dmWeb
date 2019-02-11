@@ -109,7 +109,7 @@ export default class Test {
       return td;
     };
 
-    const tb = $("table").klass("frame2").att("align", "center")
+    const tb = $("table").klass("frame3").att("align", "center")
       .style("border-collapse : collapse;");
     let n = 0;
     let tr = $("tr").add(tdAll(0));
@@ -178,12 +178,6 @@ export default class Test {
     this._main.dom.show(
       Main.testPageId,
       $("table").att("align", "center")
-        .add($("tr")
-          .add($("td").style("text-align:center")
-            .add($("h2").html(_("Test")))))
-        .add($("tr")
-          .add($("td")
-            .add($("hr"))))
         .add($("tr")
           .add($("td").style("text-align:center")
             .add(this._cosTypeDiv)))

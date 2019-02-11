@@ -34,6 +34,8 @@ import qualified Issues as Issues
 import qualified Volume as Volume
 import qualified Data.VolDb as VolDb
 import qualified Test as Test
+import qualified Data.DailyDb as DailyDb
+import qualified Daily as Daily
 
 appInit :: IO ()
 appInit = do
@@ -42,6 +44,7 @@ appInit = do
   if ex
     then do
       -- Some initialization
+--      DailyDb.init
       return ()
     else do
       File.mkDir $ G.path ["tmp"]
@@ -53,6 +56,7 @@ appInit = do
       File.mkDir $ G.path ["data", "quotes"]
       let version = printf "%s\nData version: %s\n" G.appName G.dataVersion
       File.write (G.path ["data", "version.txt"]) version
+      DailyDb.init
 
 mainProcess :: Cgi -> String -> [(String, JSValue)] -> IO ()
 mainProcess cgi sessionId rq =
@@ -81,6 +85,7 @@ appProcess cgi sessionId rq  =
     "issues" -> Issues.process cgi rq ----------------------------- Issues page
     "volume" -> Volume.process cgi rq ----------------------------- Volume page
     "test" -> Test.process cgi rq --------------------------------- Volume page
+    "daily" -> Daily.process cgi rq -------------------------------- daily page
     "settings" -> Settings.process cgi rq ----------------------- Settings page
     "chpass" -> Chpass.process cgi rq -------------------- Change password page
     "backups" -> Backups.process cgi rq -------------------------- Backups page

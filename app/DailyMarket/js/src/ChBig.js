@@ -79,8 +79,8 @@ export default class ChBig {
     const base = Math.floor((min / gap) - 1) * gap;
     const top = Math.ceil(((max - min) / gap) + 2) * gap;
     const step = top / 4;
-    const ratio = (hps[hps.length - 1][1] - hps[0][1]) / hps[0][1];
-    const backg = ratio > 0 ? "#f0f0ff" : ratio < 0 ? "#fff0f0" : "#f9f9f9";
+    const dif = hps[hps.length - 1][1] - hps[0][1];
+    const backg = dif > 0 ? "#f0f0ff" : dif < 0 ? "#fff0f0" : "#f9f9f9";
 
     this._cv.style("background-color:" + backg);
     ctx.fillStyle = backg;

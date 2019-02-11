@@ -81,13 +81,14 @@ calculate nk = do
   conf <- Conf.get
   let bet = Cgi.get (Js.rMap conf) Js.rDouble "bet"
   paramsMb <- Params.readParams nk
-  params <- case paramsMb of
+  params@(Params days _ _) <- case paramsMb of
               Nothing -> Params.readBase
               Just ps -> return ps
   (ds, qs) <- readCloses nk
-  return $ toJs bet (reverse $ take 250 $ reverse ds) $ calc bet qs params
+  return $ toJs days bet (reverse $ take 250 $ reverse ds) $ calc bet qs params
   where
-    toJs bet ds (profits, qs) = [
+    toJs days bet ds (profits, qs) = [
+      ("paramsDays", Js.wInt days),
       ("profits", Js.wDouble (profits / bet)),
       ("quotes", Js.wList $ map toJs2 qs),
       ("dates", Js.wList $ map Js.wString ds)

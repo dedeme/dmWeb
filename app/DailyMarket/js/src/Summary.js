@@ -69,8 +69,13 @@ export default class Summary {
       end = sum;
     });
 
+    let startAssets = 0;
+    if (cos[0].qs.length > 0) {
+      cos.forEach(e => { startAssets += e.stocks * e.qs[0][1] });
+    }
+
     const profits = end - start;
-    const ratio = profits / start;
+    const ratio = profits / startAssets;
     this._perc.removeAll()
       .add($("span").klass("frame").style(
         "font-size:x-large;color:" +

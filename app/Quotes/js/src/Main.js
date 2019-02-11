@@ -16,6 +16,7 @@ import Issues from "./Issues.js";
 import Servers from "./Servers.js";
 import Volume from "./Volume.js";
 import Test from "./Test.js";
+import Daily from "./Daily.js";
 
 const app = "Quotes";
 const version = "201811";
@@ -33,6 +34,7 @@ const serversPageId = "servers";
 const volumePageId = "volume";
 const extraPageId = "extra";
 const testPageId = "test";
+const dailyPageId = "daily";
 
 /** Main page. */
 export default class Main {
@@ -112,6 +114,9 @@ export default class Main {
       break;
     case testPageId:
       new Test(self).show();
+      break;
+    case dailyPageId:
+      new Daily(self).show();
       break;
     case backupsPageId: {
       new Backups(self).show();
@@ -235,6 +240,11 @@ export default class Main {
   /** @return {string} Id of test page */
   static get testPageId () {
     return testPageId;
+  }
+
+  /** @return {string} Id of daily page */
+  static get dailyPageId () {
+    return dailyPageId;
   }
 
 }

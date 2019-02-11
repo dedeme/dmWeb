@@ -235,7 +235,7 @@ issuesf1 nkId qs qs1 qs2 qs3 = iss Nothing qs qs1 qs2 qs3
                 Nothing -> iss (Just msg) qs qs1' qs2' qs3'
                 Just e' -> iss (Just $ e' ++ "\n" ++ msg) qs qs1' qs2' qs3'
     toStr q' = case q' of
-                Nothing -> "--------:-1:-1:-1:-1:-1:missing"
+                Nothing -> "--------:-1:-1:-1:-1:-1:true"
                 Just q'' -> Quote.toStr q''
 
 issuesf :: Bool -> String -> IO (Maybe String)

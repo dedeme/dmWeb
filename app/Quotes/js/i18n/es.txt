@@ -13,10 +13,10 @@
 # src/Edit.js: 46
 '%0' already exists in nicks or extra = '%0' ya existe en Nicks o Extra
 
-# src/core/Backups.js: 54
+# src/core/Backups.js: 55
 '%0' can not be read = '%0' no puede ser leido
 
-# src/core/Backups.js: 210
+# src/core/Backups.js: 211
 '%0' is an empty file = '%0' es un archivo vacío
 
 # src/wgs/Wquotes.js: 174
@@ -33,9 +33,9 @@ All %0 = Todos %0
 # src/Test.js: 137
 All nicks = Todos los nicks
 
-# src/core/Backups.js: 212
-# src/core/Backups.js: 250
-# src/core/Backups.js: 260
+# src/core/Backups.js: 213
+# src/core/Backups.js: 251
+# src/core/Backups.js: 261
 All the data will be replaced = ¡ATENCIÓN!. Todos los datos serán reemplazados.\n¿Continuar?
 
 # src/Volume.js: 174
@@ -44,20 +44,17 @@ All<br>Companies = Todas<br>las compañías
 # src/Test.js: 163
 Autocorrection = Autocorrección
 
-# src/core/Backups.js: 235
+# src/core/Backups.js: 236
 Automatic Backups = Copias automáticas
 
-# src/core/Dom.js: 86
+# src/core/Dom.js: 88
 Backs = Copias
 
-# src/core/Backups.js: 201
+# src/core/Backups.js: 202
 Backup file is missing = No se ha indicado el archivo de backup
 
-# src/core/Backups.js: 89
+# src/core/Backups.js: 90
 Backup successfully restored = Copia de seguridad restaurada
-
-# src/core/Backups.js: 269
-Backups = Copias de seguridad
 
 # src/Test.js: 18
 Bad nick Id in Test/readQuotesSvs = Incorrecto nick Id en Test/readQuotesSvs
@@ -84,10 +81,10 @@ Check = Prueba
 # src/core/Auth.js: 176
 Check gray squares = Marcar los cuadrados grises
 
-# src/core/Backups.js: 243
+# src/core/Backups.js: 244
 Clear = Eliminar
 
-# src/core/Backups.js: 240
+# src/core/Backups.js: 241
 Clear trash? = ¿Vaciar la papelera?
 
 # src/core/Expired.js: 44
@@ -96,6 +93,9 @@ Click %0 to continue. = Hacer click %0 para continuar.
 # src/wgs/Wquotes.js: 280
 # src/Test.js: 21
 Close = Cerrar
+
+# src/Daily.js: 334
+Companies = Compañías
 
 # src/core/Chpass.js: 147
 Confirm password = Confirmar la contraseña
@@ -109,11 +109,20 @@ Current password = Contraseña actual
 # src/core/Chpass.js: 93
 Current password is missing = Falta indicar la contraseña actual
 
+# src/core/Dom.js: 80
+Daily = Diario
+
+# src/Daily.js: 332
+Daily Data Servers = Servidores de datos diarios
+
 # src/wgs/Wquotes.js: 278
 Date = Fecha
 
 # src/wgs/Wnick.js: 207
 Delete = Eliminar
+
+# src/Daily.js: 162
+Delete %0? = ¿Eliminar %0?
 
 # src/wgs/Wnick.js: 99
 Delete '%0'? = ¿Eliminar '%0'?
@@ -124,18 +133,18 @@ Done = Hecho
 
 # src/Nicks.js: 141
 # src/Edit.js: 122
-# src/core/Backups.js: 272
+# src/core/Backups.js: 270
 Download = Descarga
 
 # src/wgs/Wquotes.js: 219
-# src/core/Dom.js: 72
+# src/core/Dom.js: 74
 Edit = Editar
 
 # src/Test.js: 17
 Error reading local quotes = Error leyendo cotizaciones locales
 
 # src/Test.js: 158
-# src/core/Dom.js: 80
+# src/core/Dom.js: 72
 Extra = Extra
 
 # src/Test.js: 19
@@ -151,13 +160,13 @@ Fail downloading quotes:\n%0 = Fallo descargando cotizaciones:\n%0
 # src/core/Chpass.js: 176
 Fail trying to change password = Fallo intentando cambiar la contraseña
 
-# src/core/Backups.js: 85
+# src/core/Backups.js: 86
 Fail unzipping backup = Fallo descomprimiendo la copia de seguridad
 
 # src/data/Issue.js: 36
 File %0 empty or not found = Archivo %0 sin datos o no encontrado
 
-# src/core/Backups.js: 87
+# src/core/Backups.js: 88
 File is not a %0 backup = El archivo no es una copia de seguridad de %0
 
 # src/core/Chpass.js: 89
@@ -168,7 +177,7 @@ Grey squares checks are wrong = Las casillas grises están mal marcadas
 Help & Credits = Ayuda & créditos
 
 # src/Issues.js: 146
-# src/core/Dom.js: 74
+# src/core/Dom.js: 76
 Issues = Problemas
 
 # src/core/Auth.js: 138
@@ -181,7 +190,7 @@ Login = Identificación
 # src/core/Bye.js: 40
 Logout-message = <p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>
 
-# src/core/Backups.js: 177
+# src/core/Backups.js: 178
 Make backup = Hacer copia
 
 # src/wgs/Wquotes.js: 281
@@ -207,6 +216,20 @@ Modify = Modificar
 # src/wgs/Wquotes.js: 200
 Mult. = Mult.
 
+# src/Daily.js: 205
+# src/Daily.js: 245
+Name = Nombre
+
+# src/Daily.js: 62
+Name is duplicated = El nombre está duplicado
+
+# src/Daily.js: 57
+Name is missing = Falta el nombre
+
+# src/Daily.js: 196
+# src/Daily.js: 238
+New = Nuevo
+
 # src/Nicks.js: 136
 New nick = Nuevo nick
 
@@ -219,12 +242,16 @@ New password and confirm password do not match = La nueva contraseña y su confi
 # src/core/Chpass.js: 99
 New password is missing = Falta indicar la nueva contraseña
 
+# src/Daily.js: 294
 # src/Volume.js: 181
 Nick = Nick
 
 # src/Test.js: 153
 # src/core/Dom.js: 70
 Nicks = Nicks
+
+# src/Daily.js: 312
+No Selected = No seleccionadas
 
 # src/wgs/Wquotes.js: 120
 No issues detected = Ningún problema detectado
@@ -236,7 +263,7 @@ No nick was selected = No se ha seleccionado ningún nick
 # src/Test.js: 16
 Ok. = Ok.
 
-# src/core/Backups.js: 205
+# src/core/Backups.js: 206
 Only one file can be selected = Sólo se puede seleccionar un archivo
 
 # src/wgs/Wquotes.js: 279
@@ -270,10 +297,10 @@ Quotes updated = Cotizaciones actualizadas
 # src/Volume.js: 201
 Rejected<br>changes = Cambios en<br>rechazados
 
-# src/core/Backups.js: 277
+# src/core/Backups.js: 273
 Restore = Restauración
 
-# src/core/Backups.js: 197
+# src/core/Backups.js: 198
 Restore backup = Restaurar copia
 
 # src/Volume.js: 192
@@ -288,6 +315,9 @@ Search more issues = Buscar más problemas
 
 # src/wgs/Wquotes.js: 170
 See = Ver
+
+# src/Daily.js: 310
+Selected = Seleccionadas
 
 # src/wgs/Wnick.js: 175
 # src/wgs/Wnick.js: 179
@@ -310,14 +340,13 @@ Server code of %0 is missing = Falta el código de servidor de %0
 # src/wgs/WserverIds.js: 42
 Server codes = Códigos de servidor
 
-# src/core/Dom.js: 76
+# src/core/Dom.js: 84
 Servers = Servidores
 
 # src/core/Expired.js: 42
 Session is expired. = La sesión ha expirado.
 
-# src/core/Dom.js: 88
-# src/core/Settings.js: 81
+# src/core/Dom.js: 90
 Settings = Configuración
 
 # src/wgs/Wquotes.js: 223
@@ -326,12 +355,11 @@ Split = Split
 # src/wgs/Wquotes.js: 284
 Status = Stado
 
-# src/Volume.js: 228
+# src/Volume.js: 227
 Stopped = Detenido
 
 # src/wgs/WserverId.js: 104
-# src/Test.js: 183
-# src/core/Dom.js: 82
+# src/core/Dom.js: 78
 Test = Prueba
 
 # src/wgs/WserverIds.js: 45
@@ -352,11 +380,19 @@ To Nicks = A Nicks
 # src/Issues.js: 81
 Translator = Traductor
 
-# src/core/Backups.js: 238
+# src/core/Backups.js: 239
 Trash = Papelera
 
-# src/Volume.js: 250
+# src/Daily.js: 206
+# src/Daily.js: 246
+URL = URL
+
+# src/Volume.js: 249
 Update = Actualizar
+
+# src/Daily.js: 70
+# src/Daily.js: 136
+Url is missing = Falta la Url
 
 # src/core/Auth.js: 118
 User = Usuario
@@ -370,9 +406,8 @@ Vol = Vol
 # src/Volume.js: 187
 Vol. = Vol.
 
-# src/Volume.js: 213
 # src/Test.js: 24
-# src/core/Dom.js: 78
+# src/core/Dom.js: 82
 Volume = Volumen
 
 # src/Nicks.js: 91

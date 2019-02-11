@@ -69,17 +69,19 @@ export default class Dom {
     const lopts = [
       entry(_("Nicks"), Main.nicksPageId),
       separator(),
+      entry(_("Extra"), Main.extraPageId),
+      separator(),
       entry(_("Edit"), Main.editPageId),
       separator(),
       entry(_("Issues"), Main.issuesPageId),
       separator(),
-      entry(_("Servers"), Main.serversPageId),
+      entry(_("Test"), Main.testPageId),
+      separator(),
+      entry(_("Daily"), Main.dailyPageId),
       separator(),
       entry(_("Volume"), Main.volumePageId),
       separator(),
-      entry(_("Extra"), Main.extraPageId),
-      separator(),
-      entry(_("Test"), Main.testPageId)
+      entry(_("Servers"), Main.serversPageId)
     ];
 
     const ropts = [

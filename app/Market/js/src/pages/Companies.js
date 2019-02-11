@@ -136,10 +136,11 @@ function mkGr (qs) {
  * @param {!ModalBox} box
  * @param {!Domo} div
  * @param {string} nick
+ * @param {number} refDay
  * @param {!Array<string>} ds
  * @param {!Array<!Array<number>>} qs
  */
-function mkGrBig (box, div, nick, ds, qs) {
+function mkGrBig (box, div, nick, refDay, ds, qs) {
   const bt = $("button").html("Close");
 
   let backg = "#e9e9e9";
@@ -210,6 +211,20 @@ function mkGrBig (box, div, nick, ds, qs) {
     }
     x += xstep;
   });
+
+  x = 90.5;
+  ctx.setLineDash([4, 2]);
+  It.range(qs.length).each(i => {
+    if (i === refDay) {
+      ctx.beginPath();
+      ctx.moveTo(x, 290.5);
+      ctx.lineTo(x, 10);
+      ctx.stroke();
+      ctx.closePath();
+    }
+    x += xstep;
+  });
+  ctx.setLineDash([]);
 
   x = 90.5;
   ctx.beginPath();
@@ -358,6 +373,7 @@ export default class Companies {
           "nick": nick
         };
         const rp = await this._main.client.send(rq);
+        const paramsDays = rp["paramsDays"];
         const profits = rp["profits"];
         ttProfits += profits;
         const dates = rp["dates"];
@@ -366,7 +382,9 @@ export default class Companies {
         tds.push(
           mkGrTd(nick, url, this.formatN(profits), quotes)
             .on("click", () => {
-              mkGrBig(box, div, nick, dates, quotes);
+              mkGrBig(
+                box, div, nick, quotes.length - paramsDays - 1, dates, quotes
+              );
               box.show(true);
             })
         );

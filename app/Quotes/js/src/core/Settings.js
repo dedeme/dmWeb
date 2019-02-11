@@ -78,7 +78,7 @@ export default class Settings {
     ];
 
     main.dom.show("settings", $("div").style("text-align:center")
-      .add($("h2").html(_("Settings")))
+      .add($("br"))
       .add($("table").att("align", "center").add($("tr").add($("td")
         .klass("frame")
         .adds(opts))))

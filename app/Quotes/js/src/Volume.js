@@ -210,7 +210,6 @@ export default class Volume {
     this._main.dom.show(
       Main.volumePageId,
       $("div")
-        .add($("h2").style("text-align: center;").html(_("Volume")))
         .add($("table").att("align", "center").klass("frame")
           .add($("tr").add(nickTd)))
         .add(body)
