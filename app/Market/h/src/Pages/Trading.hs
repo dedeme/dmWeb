@@ -90,14 +90,15 @@ process cgi rq =
       (pf, ld) <- Diary.books
       let cash = Ledger.cash ld
       (pfNks, nks) <- getNicks pf
+      pBase <- Params.readBase
       p <-  if cash - (bet / 3) > bet
-            then Params.readBase
+            then return pBase
             else do
               p <- Params.readCurrent
               Params.writeBase p
               return p
       buys <- buyOrders cash nks p
-      nkps <- updateNicks pfNks p
+      nkps <- updateNicks pfNks pBase
       sells <- Orders.sells nkps
       Cgi.ok cgi [("buys", buys),
 --                  ("pf", Pf.toJs pf),

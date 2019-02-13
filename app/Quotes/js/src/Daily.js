@@ -335,6 +335,7 @@ export default class Daily {
         .add(this.cosDiv())
         .add(Ui.upTop("up"))
     );
+
   }
 }
 

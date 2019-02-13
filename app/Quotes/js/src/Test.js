@@ -130,6 +130,7 @@ export default class Test {
     });
     while (n % 10 !== 0) {
       tr.add($("td"));
+      ++n;
     }
     tb.add(tr);
     this._nicksDiv.removeAll().add(tb);

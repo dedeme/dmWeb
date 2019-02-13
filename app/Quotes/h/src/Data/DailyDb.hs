@@ -75,13 +75,13 @@ readDb = do
   writeDb db
   return db
   where
-  update cos nks newCo = rm [] (add cos nks newCo) nks
+  update cos nks newCo = rm [] (add [] cos nks newCo) nks
 
-  add cos [] _ = cos
-  add cos ((Nick _ nm _ sel _):nks) newCo =
+  add r _ [] _ = r
+  add r cos ((Nick _ nm _ sel _):nks) newCo =
     case lookup nm cos of
-      Nothing -> add ((nm, (sel, newCo)):cos) nks newCo
-      _ -> add cos nks newCo
+      Nothing -> add ((nm, (sel, newCo)):r) cos nks newCo
+      Just (_, d) -> add ((nm, (sel, d)):r) cos nks newCo
 
   rm r [] nks = r
   rm r (co@(k, v):cos) nks =
