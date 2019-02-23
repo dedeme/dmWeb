@@ -4,8 +4,10 @@
 /// Index page.
 module pages.pindex;
 
-load es.dm.all;
+load es.dm.std;
 load es.dm.json;
+{lines, dir, directory?} = load es.dm.file;
+{error} = load es.dm.exc;
 cgi = load es.dm.cgi;
 
 db = load data.db;
@@ -27,7 +29,7 @@ indexTree = load data.indexTree;
     esac,
 
   readHelp path =
-    {close, lst} = file.lines path;
+    {close, lst} = lines path;
     case
       map strTrim lst |>
       takeWhile (_ l = not (strStarts? l "module")) |>
@@ -62,7 +64,7 @@ indexTree = load data.indexTree;
               None ()
             fi
          fi);
-       l = map fmap (file.dir path) |> filter (_ o = not (none? o)) |>
+       l = map fmap (dir path) |> filter (_ o = not (none? o)) |>
            map optGet;
        {id, help = (None ()), entry = sortBy fsort l});
     Some (get' path ""),
@@ -70,7 +72,7 @@ indexTree = load data.indexTree;
   getIndex rq =
     pname = rstring rq["path"];
     case find (_ mp = mp.id == pname) (db.getPaths ()) of
-    path::_: if file.directory? path.path
+    path::_: if directory? path.path
              then getIndex' path.path
              else None ()
              fi;
@@ -84,7 +86,7 @@ indexTree = load data.indexTree;
       "setMenu":
         db.setMenu (rstring rq["option"]);
         cgi.okEmpty ();
-    s: throw (exc.error "Request '\(s)' is unknown in pindex page.")
+    s: throw (error "Request '\(s)' is unknown in pindex page.")
     esac,
 }
 

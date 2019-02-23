@@ -4,15 +4,19 @@
 /// Module page.
 module pages.mod;
 
-load es.dm.all;
+load es.dm.std;
 load es.dm.json;
+load es.dm.buf;
+{mkBuf, addBuf, bufToStr} = load es.dm.buf;
+{onlyName, name} = load es.dm.path;
+{dir, readAll} = load es.dm.file;
 cgi = load es.dm.cgi;
 db = load data.db;
 eval= load yeti.lang.compiler.eval;
 md = load data.moduleData;
 
 typedef txT = {
-    bf is bufT,
+    bf is buf,
     s is string,
     i is number
   };
@@ -42,7 +46,7 @@ typedef treeRsT = {
 
   lenFKey2 = strLength fKey2;
 
-  add tx s = (buf.add tx.bf s; tx);
+  add tx s = (addBuf tx.bf s; tx);
 
   sub tx i = strSlice tx.s tx.i i;
 
@@ -53,7 +57,7 @@ typedef treeRsT = {
   indexOf tx s = sindex' s tx.i tx.s;
 
   format s = (
-    tx = {bf = buf.mk(), s, i = 0};
+    tx = {bf = mkBuf(), s, i = 0};
     tx = move tx (optGet (indexOf tx "<body>") + 6);
 
     ix = optGet (indexOf tx "</h2>") + 5;
@@ -68,7 +72,7 @@ typedef treeRsT = {
         tx = move tx i;
         move tx (optGet (indexOf tx "</div>") + 6);
       esac;
-    html2 = (buf.toStr tx.bf) ^ (strRight tx.s tx.i);
+    html2 = (bufToStr tx.bf) ^ (strRight tx.s tx.i);
     {html1, html2});
 
   mkEntry entry tx id
@@ -180,12 +184,12 @@ typedef treeRsT = {
 
       case indexOf tx fKey of
       None (): {tree = if entry.tp == "" then ls else entry::ls fi,
-                html2 = (buf.toStr tx.bf) ^ (strRight tx.s tx.i)};
+                html2 = (bufToStr tx.bf) ^ (strRight tx.s tx.i)};
       Some i: mk1 i ls tx
       esac);
 
     mk0 {tp = "", enums = [], ms = [], ps = []} []
-        {bf = buf.mk(), s = html, i = 0});
+        {bf = mkBuf(), s = html, i = 0});
 
 {
   process rq =
@@ -202,12 +206,12 @@ typedef treeRsT = {
         modules = array [];
         eval.compileYetiFiles [] [Type (push modules)] [p];
         eval.generateYetiDoc {directory = tmp, modules, error = failWith};
-        case filter (_ d = (path.onlyName d.name) != "index") (file.dir tmp) of
+        case filter (_ d = (onlyName d.name) != "index") (dir tmp) of
         d::_: (
-          {html1, html2} = format (file.readAll (tmp ^/ d.name));
+          {html1, html2} = format (readAll (tmp ^/ d.name));
           link = {name = fname, link = "?" ^ allPath ^ "&hp::"};
           {tree, html2} = mkTree html2 allPath;
-          Some {title = path.name fpath, html1, html2, link, tree});
+          Some {title = name fpath, html1, html2, link, tree});
         _: None ();
         esac;
       _: None()

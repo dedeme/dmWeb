@@ -25,7 +25,7 @@ module_Module = class {
     if (line[ix] === ")") {
       line = line.substring(0, ix);
       ix = line.lastIndexOf(")");
-      return this.readNameBk(line.substring(0, ix) + " ;", ix);
+      return module_Module.readNameBk(line.substring(0, ix) + " ;", ix);
     }
     const end = ix + 1;
     while (--ix >= 0) {

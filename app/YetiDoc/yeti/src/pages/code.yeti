@@ -4,14 +4,16 @@
 /// Code page.
 module pages.code;
 
-load es.dm.all;
+load es.dm.std;
+load es.dm.buf;
 load es.dm.json;
+{readAll} = load es.dm.file;
 cgi = load es.dm.cgi;
 db = load data.db;
 hlight = load data.hlight;
 
 typedef txT = {
-    bf is bufT,
+    bf is buf,
     s is string,
     ix is number
   };
@@ -62,7 +64,7 @@ typedef txT = {
 
   mkCode mpath fpath hyper =
     case db.getPaths() |> find (_ mp = mp.id == mpath) of
-    p::_: readCode hyper (file.readAll (p.path ^/ fpath ^ ".yeti"));
+    p::_: readCode hyper (readAll (p.path ^/ fpath ^ ".yeti"));
     _: None ()
     esac;
 

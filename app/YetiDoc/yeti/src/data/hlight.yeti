@@ -7,7 +7,8 @@ module data.hlight;
 
 import java.lang.Character;
 
-load es.dm.all;
+load es.dm.std;
+{mkBuf, addBuf, bufToStr} = load es.dm.buf;
 
 (
   reserved = " " ^
@@ -162,19 +163,19 @@ load es.dm.all;
 {
 colorize tx =
   len = strLength tx;
-  bf = buf.mk ();
+  bf = mkBuf ();
   col i =
-    if i >= len then buf.toStr bf;
+    if i >= len then bufToStr bf;
     else
       ftypes = [
         mark, lineComment, blockComment, singleQuotes, doubleQuotes, num, ident
       ];
       case processTypes tx i len ftypes of
       None (): (
-        buf.add bf (strChar tx i);
+        addBuf bf (strChar tx i);
         col (i + 1));
       Some {result, ix}:
-        buf.add bf result;
+        addBuf bf result;
         col ix
       esac
     fi;

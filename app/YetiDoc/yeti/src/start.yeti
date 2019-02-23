@@ -2,9 +2,13 @@ module start;
 
 import java.lang.Throwable;
 
-load es.dm.all;
 load const;
 cgi = load es.dm.cgi;
+
+load es.dm.std;
+{exists?, mkdir} = load es.dm.file;
+{error, print} = load es.dm.exc;
+{key, decryp} = load es.dm.cryp;
 
 db = load data.db;
 menuPath = load data.menuPath;
@@ -19,11 +23,11 @@ dataDir = appDir ^/ "data";
 /* functions ------------------------------------------------------ */
 
 init () =
-  if file.exists? dataDir then
+  if exists? dataDir then
     // db.create (cgi.home ()) versionText;
     db.init (cgi.home ());
   else
-    file.mkdir dataDir;
+    mkdir dataDir;
     db.create (cgi.home ()) (versionText ())
   fi;
 
@@ -39,7 +43,7 @@ process sessionId rq =
         "paths": db.getPaths () |> wlist menuPath.toJson
       ];
     "bye": cgi.delSession sessionId;
-    s: throw (exc.error "Request '\(s)' is unknown in main.rq")
+    s: throw (error "Request '\(s)' is unknown in main.rq")
   esac);
 
 hub sessionId rq =
@@ -51,14 +55,14 @@ hub sessionId rq =
    "module": mod.process rq;
    "code": code.process rq;
    "changePass": chpass.process rq;
-   s: throw (exc.error "Page '\(s)' is unknown"); cgi.okEmpty();
+   s: throw (error "Page '\(s)' is unknown"); cgi.okEmpty();
    esac);
 
 /* main ----------------------------------------------------------- */
 
 main args =
   try
-    cgi.mk appName appDir appExpiration "Yeti doc interesting key";
+    cgi.cgiInit appName appDir appExpiration "Yeti doc interesting key";
     init ();
     load es.dm.std;
     case args of
@@ -68,9 +72,9 @@ main args =
         cgi.setKey rq;
         cgi.send (cgi.connect rq);
       Some 0: // ...............................................AUTHENTICATION
-        key = cryp.key (cgi.klen ()) (cgi.appName ());
+        key = key (cgi.klen ()) (cgi.appName ());
         cgi.setKey key;
-        a = array (strRight rq 1 |> cryp.decryp key |> csplit ':');
+        a = array (strRight rq 1 |> decryp key |> csplit ':');
         rp = cgi.authenticate a[0] a[1] (a[2] == "1");
         cgi.send rp;
      Some i: // ...................................................NORMAL DATA
@@ -81,7 +85,7 @@ main args =
         Some {comKey, conId}:
           load es.dm.json;
           cgi.setKey comKey;
-          obj = cryp.decryp comKey data |> jsOfStr |> robject;
+          obj = decryp comKey data |> jsOfStr |> robject;
           if "connectionId" in obj
           then
             if rstring obj["connectionId"] == conId
@@ -93,10 +97,10 @@ main args =
           fi
         esac
       esac);
-    a: throw (exc.error "Sys.argv has \(length a) parameters and must have 1")
+    a: throw (error "Sys.argv has \(length a) parameters and must have 1")
     esac;
   catch Throwable ex:
-    exc.print ex;
+    print ex;
   yrt;
 
 class Main

@@ -5,7 +5,7 @@
 
 module data.moduleData;
 
-load es.dm.all;
+load es.dm.std;
 load es.dm.json;
 
 typedef t = {

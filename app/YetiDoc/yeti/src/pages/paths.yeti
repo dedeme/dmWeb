@@ -4,8 +4,9 @@
 /// Paths page.
 module pages.paths;
 
-load es.dm.all;
+load es.dm.std;
 load es.dm.json;
+{error} = load es.dm.exc;
 cgi = load es.dm.cgi;
 
 db = load data.db;
@@ -59,7 +60,7 @@ menuPath = load data.menuPath;
         jsToStr |>
         db.setPaths;
       cgi.okEmpty ();
-    s: throw (exc.error "Request '\(s)' is unknown in paths page.")
+    s: throw (error "Request '\(s)' is unknown in paths page.")
     esac,
 }
 
