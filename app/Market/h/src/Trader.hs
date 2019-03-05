@@ -17,83 +17,83 @@ import qualified Orders as Orders
 import qualified Conf as Conf
 import qualified Global as G
 
-readCloses :: String -> IO ([String], [Double])
+readCloses :: String -> IO ([String], [Double], [Double])
 readCloses nk = do
   qs <- File.read (G.quotesBase ++ "/quotes/" ++ nk ++ ".db")
-  let pairs = filter (\(_, cl) -> cl >= 0)
+  let ls = filter (\(_, op, cl) -> op >= 0 && cl >= 0)
                      (map fMap $ filter (/= "") $ reverse $ lines qs)
-  return $ (map (\(d, _) -> d) pairs, map (\(_, cl) -> cl) pairs)
+  return $ (
+    map (\(d, _, _) -> d) ls,
+    map (\(_, op, _) -> op) ls,
+    map (\(_, _, cl) -> cl) ls)
   where
     fMap s =  let d = takeWhile (/= ':') s
                   (':':s0) = dropWhile (/= ':') s
+                  op = takeWhile (/= ':') s0
                   (':':s1) = dropWhile (/= ':') s0
                   cl = takeWhile (/= ':') s1
-              in  (d, read cl)
+              in  (d, read op, read cl)
 
-calc :: Double -> [Double] -> Params -> (Double, [(Double, Double)])
-calc _ [] _ = (0, [])
-calc bet qs@(begin:before) (Params d bs ss) =
-  c' 0 [] 0 0 begin (-1) before (drop d qs) False
+calc :: Double -> [Double] -> [Double] -> Params -> Double ->
+        (Double, [(Double, Double)], [(Bool, Int, Double)])
+calc bet opens closes@(c:_) (Params start step) force =
+  cl (0, [], []) (0, 0) True (c * (1 - start)) opens closes
   where
-    c' rpr rqs st pr begin ref before after buying =
-      let ref' =  if ref > 0
-                  then
-                    if begin > 0
-                      then
-                        if buying
-                        then if begin < ref then begin else ref
-                        else if begin > ref then begin else ref
-                      else ref
-                  else
-                    if begin > 0 then begin else ref
-      in c rpr rqs st pr ref' before after buying
-    c rpr rqs _ _ _ _ [] _ = (rpr, reverse $ take 250 rqs)
-    c rpr rqs st pr ref (b:before) (a:after) True =
-      if a < 0 || ref < 0
-      then
-        c' rpr rqs st pr b ref before after True
-      else
-        let dif = (a - ref) / ref
-        in  if dif > bs
-            then c' rpr ((a, refb ref):rqs) (stBuy a) a b b before after False
-            else c' rpr ((a, refb ref):rqs) st pr b ref before after True
-    c rpr rqs st pr ref (b:before) (a:after) False =
-      if a < 0 || ref < 0
-      then
-        c' rpr rqs st pr b ref before after False
-      else
-        let dif = (ref - a) / ref
-        in  if dif > ss
-            then c' (rpr + prof st pr a) ((a, refs ref):rqs)
-                   0 0 b b before after True
-            else c' rpr ((a, refs ref):rqs) st pr b ref before after False
-    stBuy pr = truncate $ bet / pr
-    refb q = q + q * bs
-    refs q = q - q * ss
-    prof st bpr spr = (spr - bpr) * (fromIntegral st)
+  cl :: (Double, [(Double, Double)], [(Bool, Int, Double)]) ->
+        (Int, Double) -> Bool -> Double -> [Double] -> [Double] ->
+        (Double, [(Double, Double)], [(Bool, Int, Double)])
+  cl (profits, ls, hs) _ _ _ [] _ =
+    (profits, reverse $ take 250 ls, reverse hs)
+  cl (profits, ls, hs) acc@(stocks, price) toSell ref (o:os) (c:cs)  =
+    if toSell
+    then
+      let ref' = ref + (c - ref) * step
+          ls' = (c, ref'):ls in
+        if c < ref'
+        then
+          let q = case os of [] -> c; (o':_) -> o'
+              hs' = (True, stocks, q):hs
+          in  cl (profits + fromIntegral stocks * (q - price), ls', hs') (0, 0)
+              False (c * (1 + start)) os cs
+        else
+          cl (profits, ls', hs) acc True ref' os cs
+    else
+      let ref' = ref - (ref - c) * step
+          ls' = (c, ref'):ls in
+        if c > ref' || c == force
+        then
+          case os of
+          [] -> cl (profits, ls', hs) acc True (c * (1 - start)) os cs
+          (o':_) ->
+            let stocks = truncate(bet / c)
+                hs' = (False, stocks, o'):hs
+            in  cl (profits, ls', hs') (stocks, o')
+                   True (c * (1 - start)) os cs
+        else
+          cl (profits, ls', hs) acc False ref' os cs
 
 -- |@'calculate' nick@ - Returns an object whose values are:
 --
 -- * "profits": Double (percentage),
--- * "quotes": [[String (date), Double (close), Double (ref)]]
+-- * "quotes": [[Double (close), Double (ref)]]
+-- * "dates": [String(date)]
 calculate :: String -> IO [(String, JSValue)]
 calculate nk = do
   conf <- Conf.get
   let bet = Cgi.get (Js.rMap conf) Js.rDouble "bet"
-  paramsMb <- Params.readParams nk
-  params@(Params days _ _) <- case paramsMb of
-              Nothing -> Params.readBase
-              Just ps -> return ps
-  (ds, qs) <- readCloses nk
-  return $ toJs days bet (reverse $ take 250 $ reverse ds) $ calc bet qs params
+  params <- Params.readBase
+  (ds, os, cs) <- readCloses nk
+  return $ toJs bet (reverse $ take 250 $ reverse ds) $
+    calc bet os cs params (G.force nk)
   where
-    toJs days bet ds (profits, qs) = [
-      ("paramsDays", Js.wInt days),
+    toJs bet ds (profits, qs, hs) = [
       ("profits", Js.wDouble (profits / bet)),
       ("quotes", Js.wList $ map toJs2 qs),
+      ("historic", Js.wList $ map toJs3 hs),
       ("dates", Js.wList $ map Js.wString ds)
       ]
     toJs2 (q, ref) = Js.wList [Js.wDouble q, Js.wDouble ref]
+    toJs3 (isSell, s, p) = Js.wList [Js.wBool isSell, Js.wInt s, Js.wDouble p]
 
 -- |@'lastRef' nick@ returns the last risk reference (with strip applied) of
 --                   'nick'
@@ -104,11 +104,8 @@ lastRef nk = do
   else do
     conf <- Conf.get
     let bet = Cgi.get (Js.rMap conf) Js.rDouble "bet"
-    paramsMb <- Params.readParams nk
-    params <- case paramsMb of
-                Nothing -> Params.readBase
-                Just ps -> return ps
-    (_, qs) <- readCloses nk
-    let (_, ls) = calc bet (filter (>= 0) qs) params
+    params <- Params.readBase
+    (_, os, cs) <- readCloses nk
+    let (_, ls, _) = calc bet os cs params (G.force nk)
     let ((_, rf):_) = reverse ls
     return rf

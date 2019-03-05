@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 25548589648b38c2d725e1c6bd05e891283e2c34f14ff6df21cc1819604e7cd5
+-- hash: 0948f4832d9fd0644abebfc5ce7836538ee14a21b59b2f3423f2f47552e391e8
 
 name:           market
 version:        2018.12
@@ -45,6 +45,7 @@ library
       Data.Servers.Yahoo
       Fees
       Global
+      Log
       Orders
       Pages.Annotations
       Pages.Balance

@@ -43,19 +43,6 @@ getNicks pf = do
     otherNick pfNicks (nick, sel) = sel && notElem nick pfNicks
     takeNick (nick, _) = nick
 
-updateNicks :: [String] -> Params -> IO [(String, Params)]
-updateNicks pfNks p = do
-  let update nk = do
-                    r <- Params.readParams nk
-                    case r of
-                      Nothing -> return (nk, p)
-                      Just p' -> return (nk, p')
-  nps <- mapM update pfNks
-
-  let toJs (n, p) = Js.wList [Js.wString n, Params.toJs p]
-  Params.writeNickParams nps
-  return nps
-
 nkpToJs :: (String, Params) -> JSValue
 nkpToJs (n, p) = Js.wList [Js.wString n, Params.toJs p]
 
@@ -90,21 +77,19 @@ process cgi rq =
       (pf, ld) <- Diary.books
       let cash = Ledger.cash ld
       (pfNks, nks) <- getNicks pf
-      pBase <- Params.readBase
-      p <-  if cash - (bet / 3) > bet
-            then return pBase
-            else do
-              p <- Params.readCurrent
-              Params.writeBase p
-              return p
+      p' <- Params.readCurrent
+      pOk <- Orders.bought pfNks p'
+      p <- if pOk
+        then do
+          Params.writeBase p'
+          return p'
+        else Params.readBase
       buys <- buyOrders cash nks p
-      nkps <- updateNicks pfNks pBase
-      sells <- Orders.sells nkps
+      sells <- Orders.sells pfNks p
       Cgi.ok cgi [("buys", buys),
 --                  ("pf", Pf.toJs pf),
 --                  ("ledger", Ledger.toJs ld),
                   ("params", Params.toJs p),
-                  ("nkps", Js.wList $ map nkpToJs nkps),
 --                  ("pfNicks", Js.wList $ map Js.wString pfNks),
 --                  ("nicks", Js.wList $ map Js.wString nks),
                   ("sells", sellOrders pf sells)]

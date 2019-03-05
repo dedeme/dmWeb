@@ -27,13 +27,19 @@ void conf_set(const char *field, const char *value);
 /// [conf_set_lang] sets the field 'lang' of data base.
 void conf_set_lang(const char *lang);
 
-/// [conf_set_tmenu] sets option in top menu.
-void conf_set_tmenu(const char *option);
+/// [conf_set_menu] sets the field 'menu' of data base.
+void conf_set_menu(const char *option);
 
-/// [conf_set_lmenu] sets option in left menu.
-void conf_set_lmenu(const char *option);
+/// Returns the selected model for Bests page.
+Js *conf_get_bests_model_new();
 
-/// [conf_set_fgroup] sets option in left menu of bests.
-void conf_set_fgroup(const char *option);
+/// Sets the selected model for Bests page.
+void conf_set_bests_model(const char *option);
+
+/// Returns the selected model for Charts page.
+Js *conf_get_charts_model_new();
+
+/// Sets the selected model for Charts page.
+void conf_set_charts_model(const char *option);
 
 #endif

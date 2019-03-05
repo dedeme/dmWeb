@@ -8,15 +8,15 @@
 #include "dmc/ext.h"
 #include "dmc/b64.h"
 #include "dmc/cryp.h"
-#include "core/backups.h"
 #include "core/chpass.h"
 #include "core/settings.h"
-#include "DEFS.h"
-#include "data.h"
-#include "bests.h"
+#include "pages/bests.h"
+#include "pages/results.h"
+#include "pages/charts.h"
+#include "io.h"
 
 static char *app_name = "FleasData";
-static char *data_version = "201810";
+static char *data_version = "201902";
 static char *app_dir = "dmcgi/FleasData";
 static time_t expiration = 3600;
 
@@ -46,34 +46,6 @@ static void app_init(void) {
   free(dir);
 }
 
-// Returns a sorted Arr[Js] serialized to Js
-static Js *fgroups_new(void) {
-  // Arr[char]
-  Arr *ajs = arr_new(free);
-  // Arr[char]
-  Arr *fs = file_dir_new(FLEAS_DIR);
-  arr_sort(fs, (FGREATER)str_greater);
-  EACH(fs, char, f)
-    char *path = path_cat_new(FLEAS_DIR, f, NULL);
-    if (file_is_directory(path)) {
-      arr_push(ajs, js_ws_new(f));
-    }
-    free(path);
-  _EACH
-  arr_free(fs);
-  Js *r = js_wa_new(ajs);
-  arr_free(ajs);
-  return r;
-}
-
-// Returns constants map
-static Js *constants_new(void) {
-  char *f = path_cat_new(FLEAS_DIR, "conf.db", NULL);
-  Js *r = (Js *)file_read_new(f);
-  free(f);
-  return r;
-}
-
 // ____________
 // Main process
 // TTTTTTTTTTTT
@@ -84,7 +56,6 @@ static void main_process(const char *session_id, Map *rqm) {
 
   // ---------------------------------------------------------- logout
   if (str_eq(rq, "logout")) {
-    backups_process(app_name, data_version, rqm);
     cgi_del_session(session_id);
 
   // ----------------------------------------------------------- getDb
@@ -92,20 +63,16 @@ static void main_process(const char *session_id, Map *rqm) {
     // Map[Js]
     Map *m = map_new(free);
     map_put(m, "db", conf_get_new());
-    map_put(m, "fgroups", fgroups_new());
-    map_put(m, "constants", constants_new());
+    map_put(m, "fmodels", io_fmodels_new());
     cgi_ok(m);
     map_free(m);
 
   // --------------------------------------------------------- setMenu
   } else if (str_eq(rq, "setMenu")) {
-    CGI_GET_STR(tmenu, rqm, "tmenu")
-    CGI_GET_STR(lmenu, rqm, "lmenu")
-    conf_set_tmenu(tmenu);
-    conf_set_lmenu(lmenu);
+    CGI_GET_STR(option, rqm, "option")
+    conf_set_menu(option);
     cgi_empty();
-    free(tmenu);
-    free(lmenu);
+    free(option);
 
   // ---------------------------------------------------------- error!
   } else FAIL(str_f_new("Unknown request '%s'", rq))
@@ -125,10 +92,6 @@ static void app_process(const char *session_id, Map *rqm) {
   if (str_eq(source, "main")) {
     main_process(session_id, rqm);
 
-  // ---------------------------------------------------- Backups page
-  } else if (str_eq(source, "backups")) {
-    backups_process(app_name, data_version, rqm);
-
   // ----------------------------------------------------- Chapss page
   } else if (str_eq(source, "chpass")) {
     chpass_process(rqm);
@@ -137,13 +100,17 @@ static void app_process(const char *session_id, Map *rqm) {
   } else if (str_eq(source, "settings")) {
     settings_process(rqm);
 
-  // ------------------------------------------------------- Data page
-  } else if (str_eq(source, "Data")) {
-    data_process(rqm);
-
   // ------------------------------------------------------ Bests page
-  } else if (str_eq(source, "Bests")) {
+  } else if (str_eq(source, "bests")) {
     bests_process(rqm);
+
+  // ---------------------------------------------------- Results page
+  } else if (str_eq(source, "results")) {
+    results_process(rqm);
+
+  // ----------------------------------------------------- Charts page
+  } else if (str_eq(source, "charts")) {
+    charts_process(rqm);
 
   // ---------------------------------------------------------- error!
   } else FAIL(str_f_new("Unknown source '%s'", source))

@@ -10,6 +10,7 @@ import Ui from "../dmjs/Ui.js";
 import It from "../dmjs/It.js";
 import Dec from "../dmjs/Dec.js";
 import ModalBox from "../dmjs/ModalBox.js";
+import Operations from "../Wdgs/Operations.js";
 
 const $ = Ui.$;
 
@@ -277,17 +278,42 @@ function mkGrBig (box, div, nick, refDay, ds, qs) {
   });
 }
 
-function mkGrTd (nick, url, profits, qs) {
+function mkGrTd (box, div, nick, url, profits, ds, qs, hs) {
   const lastQ = qs[qs.length - 1];
   return $("td")
     .add($("table").klass("main")
       .add($("tr")
         .add($("td").style("text-align:left;width:40%").html(nick))
         .add($("td").add(led(url, lastQ[1] > lastQ[0] ? "#00AAFF" : "#FF8100")))
-        .add($("td").style("text-align:right;width:40%").html(profits)))
+        .add($("td").style("text-align:right;width:40%")
+          .add($("span")
+            .html(
+              new Dec(profits * 100, 2).toEu() + "%&nbsp;&nbsp;"
+            ))
+          .add(Ui.img(profits < 0 ? "loose" : "win")
+            .style("vertical-align:top;")
+            .on("click", () => {
+              const bt = $("button").html("Close");
+              div.removeAll()
+                .add($("div").style("text-align:center").html(nick))
+                .add(new Operations(hs).wg())
+                .add($("hr"))
+                .add(bt);
+              bt.on("click", () => {
+                box.show(false);
+              });
+              box.show(true);
+            }))))
       .add($("tr")
         .add($("td").att("colspan", 3)
-          .add(mkGr(qs)))))
+          .add(mkGr(qs)
+            .setStyle("cursor", "pointer")
+            .on("click", () => {
+              mkGrBig(
+                box, div, nick, qs.length, ds, qs
+              );
+              box.show(true);
+            })))))
   ;
 }
 
@@ -373,21 +399,15 @@ export default class Companies {
           "nick": nick
         };
         const rp = await this._main.client.send(rq);
-        const paramsDays = rp["paramsDays"];
         const profits = rp["profits"];
         ttProfits += profits;
         const dates = rp["dates"];
         const quotes = rp["quotes"];
         const url = rp["url"];
-        tds.push(
-          mkGrTd(nick, url, this.formatN(profits), quotes)
-            .on("click", () => {
-              mkGrBig(
-                box, div, nick, quotes.length - paramsDays - 1, dates, quotes
-              );
-              box.show(true);
-            })
-        );
+        const historic = rp["historic"];
+        tds.push(mkGrTd(
+          box, div, nick, url, profits, dates, quotes, historic
+        ));
         if (tds.length === ncols) {
           tb.add($("tr").add($("td").att("colspan", ncols).add($("hr"))));
           tb.add($("tr").adds(tds));

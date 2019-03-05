@@ -73,7 +73,7 @@ const mkCanvas = (data, type) => {
     ctx.setLineDash([]);
   }
 
-  const xstep = Math.floor(490 / (data.length - 1));
+  const xstep = 488 / (data.length - 1);
   It.range(3).each(i => {
     ctx.strokeStyle = i === 0 ? "rgba(0, 129, 255)"
       : i === 1 ? "rgba(0, 0, 0)"
@@ -84,7 +84,7 @@ const mkCanvas = (data, type) => {
     data.forEach(dvs => {
       const v = dvs[1][i];
       const y = 170.5 - (v - base) * 160 / top;
-      ctx.lineTo(x, y);
+      ctx.lineTo(Math.floor(x) + 0.5, y);
       x += xstep;
     });
     ctx.stroke();
@@ -107,12 +107,13 @@ const mkCanvas = (data, type) => {
       } else {
         lastD = d;
       }
+      const x2 = Math.floor(x) + 0.5;
       const text = ctx.measureText(d);
-      ctx.fillText(d, x - text.width / 2, 180.5);
+      ctx.fillText(d, x2 - text.width / 2, 180.5);
 
       ctx.beginPath();
-      ctx.moveTo(x, 10.5);
-      ctx.lineTo(x, 170.5);
+      ctx.moveTo(x2, 10.5);
+      ctx.lineTo(x2, 170.5);
       ctx.stroke();
       ctx.closePath();
     }

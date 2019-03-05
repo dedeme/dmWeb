@@ -9,17 +9,19 @@ import Settings from "./core/Settings.js";
 import Bye from "./core/Bye.js";
 import {I18n} from "./I18n.js";
 
-import Data from "./Data.js";
-import Bests from "./Bests.js";
+import Bests from "./pages/Bests.js";
+import Charts from "./pages/Charts.js";
+import Results from "./pages/Results.js";
 
 const app = "FleasData";
-const version = "201810";
+const version = "201902";
 const langStore = "${app}__lang";
 const captchaAuthStore = "${app}__captcha";
 const captchaChpassStore = "${app}__captchaCh";
 
-const bestsPageId = "bests";
 const settingsPageId = "settings";
+const bestsPageId = "best";
+const chartsPageId = "charts";
 
 /** Main page. */
 export default class Main {
@@ -37,7 +39,6 @@ export default class Main {
      * @type {!Client}
      */
     this._client = new Client(true, app, () => {
-      this._dom = new Dom(self);
       new Expired(self).show();
     });
 
@@ -45,20 +46,13 @@ export default class Main {
      * @private
      * @type {Object<string, string>}
      */
-    this._model = null;
+    this._conf = null;
 
     /**
      * @private
      * @type {Array<string>}
      */
-    this._fgroups = null;
-
-    /**
-     * @private
-     * @type {Object<string, string>}
-     */
-    this._constants = null;
-
+    this._fmodels = null;
   }
 
   /** @return {!Dom} Container for DOM objects. */
@@ -72,27 +66,19 @@ export default class Main {
   }
 
   /** @return {!Object<string, string>} Configuration data. */
-  get model () {
-    if (this._model === null) {
+  get conf () {
+    if (this._conf === null) {
       throw new Error("Model has not been initialized");
     }
-    return this._model;
+    return this._conf;
   }
 
-  /** @return {!Array<string>} Sorted fleas groups. */
-  get fgroups () {
-    if (this._fgroups === null) {
-      throw new Error("'fgroups' has not been initialized");
+  /** @return {!Array<string>} Flea model names. */
+  get fmodels () {
+    if (this._fmodels === null) {
+      throw new Error("'fmodels' has not been initialized");
     }
-    return this._fgroups;
-  }
-
-  /** @return {!Object<string, string>} Fleas constants data. */
-  get constants () {
-    if (this._constants === null) {
-      throw new Error("'constants' has not been initialized");
-    }
-    return this._constants;
+    return this._fmodels;
   }
 
   async run () {
@@ -104,27 +90,31 @@ export default class Main {
     };
     const rp = await self._client.send(data);
 
-    self._model = rp["db"];
-    self._fgroups = rp["fgroups"];
-    self._constants = rp["constants"];
+    this._conf = rp["db"];
+    this._fmodels = rp["fmodels"];
+    this._fmodels.sort();
 
-    if (self._model["lang"] === "es") I18n.es();
+    if (this._conf["lang"] === "es") I18n.es();
     else I18n.en();
 
-    self._dom = new Dom(self);
+    const page = this._conf["menu"];
 
-    const page = self._model["tmenu"];
-
-    if (self.fgroups.indexOf(page) !== -1) {
-      if (page === bestsPageId) {
-        new Bests(self, self._model["fgroup"]).show();
+    switch (page) {
+    case bestsPageId:
+      new Bests(self).show();
+      break;
+    case chartsPageId:
+      new Charts(self).show();
+      break;
+    case settingsPageId:
+      new Settings(self).show();
+      break;
+    default:
+      if (this._fmodels.indexOf(page) !== -1) {
+        new Results(self, page).show();
       } else {
-        new Data(self, page, self._model["lmenu"]).show();
+        new Settings(self).show();
       }
-    } else if (page === settingsPageId) {
-      new Settings(self).show();
-    } else {
-      new Settings(self).show();
     }
   }
 
@@ -153,20 +143,14 @@ export default class Main {
   }
 
   /**
-   * @param {string} tmenu Top menu option.
-   * @param {string} lmenu Left menu option.
-   *    If tmenu is different to a fleas group, its value is "".
-   * @param {string} fgroup Left menu oprion.
-   *    If tmenu is different to 'bests', its value is "".
+   * @param {string} page Page to go
    * @return {Promise}
    */
-  async go (tmenu, lmenu, fgroup) {
+  async go (page) {
     const rq = {
       "source": "main",
       "rq": "setMenu",
-      "tmenu": tmenu,
-      "lmenu": lmenu,
-      "fgroup": fgroup
+      "option": page
     };
     await this.client.send(rq);
     this.run();
@@ -201,14 +185,19 @@ export default class Main {
     return captchaChpassStore;
   }
 
-  /** @return {string} Id of best page */
+  /** @return {string} Id of settings page */
+  static get settingsPageId () {
+    return settingsPageId;
+  }
+
+  /** @return {string} Id of update page */
   static get bestsPageId () {
     return bestsPageId;
   }
 
-  /** @return {string} Id of settings page */
-  static get settingsPageId () {
-    return settingsPageId;
+  /** @return {string} Id of create page */
+  static get chartsPageId () {
+    return chartsPageId;
   }
 
 }

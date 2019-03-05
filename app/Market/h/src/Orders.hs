@@ -5,7 +5,8 @@
 
 module Orders (
   buys,
-  sells
+  sells,
+  bought
   )where
 
 import Data.List
@@ -16,55 +17,23 @@ import qualified Global as G
 
 data Op = Buy Double Double | Sell | None
 
-calc :: [Double] -> Params -> Op
-calc closes@(begin:before) (Params d bs ss) =
-  case drop d closes of
-    [] -> None
-    after -> cl' before after begin (-1) False
+calc :: [Double] -> Params -> Double -> (Op, Bool)
+calc closes@(c:_) (Params start step) force =
+  cl None True (c * (1 - start)) closes
   where
-    cl' before after begin ref buying =
-      let ref' =  if ref > 0
-                  then
-                    if begin > 0
-                      then
-                        if buying
-                        then if begin < ref then begin else ref
-                        else if begin > ref then begin else ref
-                      else ref
-                  else
-                    if begin > 0 then begin else ref
-      in cl before after ref' buying
-    cl _ [a] ref buying = cl0 a ref buying
-    cl (b:before) (a:after) ref True =
-      if a < 0 || ref < 0
-      then
-        cl' before after b ref True
-      else
-        let dif = (a - ref) / ref
-        in  if dif > bs then cl' before after b b False
-                        else cl' before after b ref True
-    cl (b:before) (a:after) ref False =
-      if a < 0 || ref < 0
-      then
-        cl' before after b ref False
-      else
-        let dif = (ref - a) / ref
-        in  if dif > ss then cl' before after b b True
-                        else cl' before after b ref False
-    cl0 close ref True =
-      if close < 0 || ref < 0
-      then None
-      else
-        let dif = (close - ref) / ref
-        in  if dif > bs then Buy close dif
-                        else None
-    cl0 close ref False =
-      if close < 0 || ref < 0
-      then None
-      else
-        let dif = (ref - close) / ref
-        in  if dif > ss then Sell
-                        else None
+  cl op toSell _ [] = (op, toSell)
+  cl op toSell ref (c:cs) =
+    if toSell
+    then
+      let ref' = ref + (c - ref) * step in
+        if c < ref'
+        then cl Sell False (c * (1 + start)) cs
+        else cl None True ref' cs
+    else
+      let ref' = ref - (ref - c) * step in
+        if c > ref' || c == force
+        then cl (Buy c ((c - ref') / ref')) True (c * (1 - start)) cs
+        else cl None False ref' cs
 
 readCloses :: String -> IO [Double]
 readCloses nk = do
@@ -84,22 +53,32 @@ buys nks p = buys' [] nks
     buys' r (nk:rest) = do
       closes <- readCloses nk
       let closes' = filter (>= 0) closes
-      case calc closes' p of
-        None -> buys' r rest
-        Sell -> buys' r rest
-        Buy price ponderation -> buys' ((nk, price, ponderation):r) rest
-    fSort (_, _, p1) (_, _, p2) = compare p2 p1
+      case calc closes' p (G.force nk) of
+        (None, _) -> buys' r rest
+        (Sell, _) -> buys' r rest
+        (Buy price ponderation, _) -> buys' ((nk, price, ponderation):r) rest
+    fSort (_, _, p1) (_, _, p2) = compare p1 p2
     fMap (nk, p, _) = (nk, p)
 
 -- |@'sells' nicksPs@ - returns the list of nicks to sell
-sells :: [(String, Params)] -> IO [String]
-sells nps = sells' [] nps
+sells :: [String] -> Params -> IO [String]
+sells nks ps = sells' [] nks
   where
     sells' r [] = return r
-    sells' r ((nk, p):rest) = do
+    sells' r (nk:rest) = do
       closes <- readCloses nk
       let closes' = filter (>= 0) closes
-      case calc closes' p of
-        None -> sells' r rest
-        Buy _ _ -> sells' r rest
-        Sell -> sells' (nk:r) rest
+      case calc closes' ps (-2) of
+        (None, _) -> sells' r rest
+        (Buy _ _, _) -> sells' r rest
+        (Sell, _) -> sells' (nk:r) rest
+
+-- |@'bought' ps@ - Rerturns True if every nick is bought
+bought :: [String] -> Params -> IO Bool
+bought nicks ps = f nicks
+  where
+  f [] = return True
+  f (nk:nks) = do
+    closes <- readCloses nk
+    let (_, toSell) = calc (filter (>= 0) (init closes)) ps (G.force nk)
+    if toSell then f nks else return False

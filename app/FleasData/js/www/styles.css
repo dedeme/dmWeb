@@ -41,6 +41,14 @@ TD.number {
   padding-right: 4px;
 }
 
+TD.param {
+  border: 1px solid rgb(110,130,150);
+  background-color: rgb(240, 245, 250);
+  text-align: right;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
 TD.header {
   border: 1px solid rgb(110,130,150);
   background-color: rgb(220, 220, 220);
@@ -83,6 +91,11 @@ BUTTON {
 }
 .frame3 {
   background-color: rgb(240, 245, 250);
+  border: 1px solid rgb(110,130,150);
+  font-family: sans;font-size: 14px;
+  padding: 4px;border-radius: 4px;
+}
+.GrFrame {
   border: 1px solid rgb(110,130,150);
   font-family: sans;font-size: 14px;
   padding: 4px;border-radius: 4px;

@@ -55,7 +55,7 @@ export default class Settings {
   show () {
     const self = this;
     const main = self._main;
-    const lang = main.model["lang"];
+    const lang = main.conf["lang"];
 
     const langDiv = $("div")
       .add(Ui.link(() => {

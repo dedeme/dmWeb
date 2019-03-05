@@ -25,7 +25,7 @@ export default class Update {
    * @return {void}
    */
   show () {
-    this._main.dom.show("settings", $("div").style("text-align:center")
+    this._main.dom.show(Main.updatePageId, $("div").style("text-align:center")
       .add($("h2").html(_("Update")))
       .add($("p").att("align", "center").html(_("Update")))
     );

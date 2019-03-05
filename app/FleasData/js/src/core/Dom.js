@@ -55,9 +55,9 @@ export default class Dom {
   show (page, o) {
     const main = this._main;
 
-    function entry (id, target, lmenu, fgroup) {
+    function entry (id, target) {
       return Ui.link(() => {
-        main.go(target, lmenu, fgroup);
+        main.go(target);
       })
         .klass(target === page ? "frame" : "link").html(id);
     }
@@ -65,15 +65,22 @@ export default class Dom {
       return $("span").html(" · ");
     }
 
-    const lopts = main.fgroups.map(
-      (g, i) => (i === 0)
-        ? entry(g, g, main.model["lmenu"], main.model["fgroup"])
-        : $("span").add(separator())
-          .add(entry(g, g, main.model["lmenu"], main.model["fgroup"]))
-    );
+    const lopts = [];
+    main.fmodels.forEach((m, i) => {
+      if (i === 0) {
+        lopts.push(entry(m, m));
+      } else {
+        lopts.push(separator());
+        lopts.push(entry(m, m));
+      }
+    });
 
     const ropts = [
-      entry(_("Settings"), Main.settingsPageId, "", ""),
+      entry(_("Bests"), Main.bestsPageId),
+      separator(),
+      entry(_("Charts"), Main.chartsPageId),
+      $("span").html(" | "),
+      entry(_("Settings"), Main.settingsPageId),
       separator(),
       Ui.link(() => {
         main.bye();

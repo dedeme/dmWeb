@@ -191,13 +191,7 @@ export default class Cos {
       .add(this.chartsTable())
       .add(Ui.upTop("up"))
     );
-    if (this._type === 0) {
-      this.signalOrder();
-    } else if (this._type === 1) {
-      this.betOrder();
-    } else {
-      this.dayOrder();
-    }
+    this.signalOrder();
 
     this.setOrderDiv();
   }
