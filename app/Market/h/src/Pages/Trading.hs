@@ -30,7 +30,7 @@ nicksDb = G.quotesBase ++ "/" ++ "nicks.db"
 getNicks :: Pf -> IO ([String], [String])
 getNicks pf = do
 --  let pfNicks = Pf.nicks pf
-  let pfNicks = filter (\n -> (n /= "MDF") && (n /= "PVA")) $ Pf.nicks pf
+  let pfNicks = filter (\n -> n /= "PVA") $ Pf.nicks pf
   jsNks <- File.read nicksDb
   let [_, _, nks] = Js.rList $ Js.fromStr jsNks
   let nicks = map takeNick $
@@ -51,7 +51,7 @@ buyOrders cash nks p = do
   conf <- Conf.get
   let bet = Cgi.get (Js.rMap conf) Js.rDouble "bet"
   buys <- Orders.buys nks p
-  let nkSts = buyStocks [] bet (cash - (bet / 3)) buys
+  let nkSts = buyStocks [] bet (cash - G.cashStock) buys
   return $ Js.wList $ map toJs nkSts
   where
     buyStocks r bet cash [] = r
@@ -77,7 +77,7 @@ process cgi rq =
       (pf, ld) <- Diary.books
       let cash = Ledger.cash ld
       (pfNks, nks) <- getNicks pf
-      p' <- Params.readCurrent
+      p' <- Params.readBase
       pOk <- Orders.bought pfNks p'
       p <- if pOk
         then do

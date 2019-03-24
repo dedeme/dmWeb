@@ -7,7 +7,6 @@ import Ui from "../dmjs/Ui.js";
 import It from "../dmjs/It.js";
 import Dec from "../dmjs/Dec.js";
 import ModalBox from "../dmjs/ModalBox.js";
-import {_} from "../I18n.js";
 import Lmenu from "../widgets/Lmenu.js";
 import Chart from "../widgets/Chart.js";
 import Operations from "../widgets/Operations.js";
@@ -106,8 +105,8 @@ export default class Charts {
 
       body.removeAll().add(
         $("div").style("text-align:center")
-          .add(tb)
           .add(rs)
+          .add(tb)
           .add(box.wg)
           .add(Ui.upTop("up"))
       );
@@ -123,6 +122,8 @@ export default class Charts {
 
       let tds = [];
       let ttProfits = 0;
+      let positives = 0;
+      let negatives = 0;
       const ncols = 3;
       It.from(list).eachSync(
         async (nick) => {
@@ -138,6 +139,11 @@ export default class Charts {
           const qs = data[2];
           const hs = data[3];
           ttProfits += profits;
+          if (profits > 0) {
+            ++positives;
+          } else {
+            ++negatives;
+          }
           tds.push(mkGrTd(box, div, nick, profits, qs, hs));
           if (tds.length === ncols) {
             tb.add($("tr").add($("td").att("colspan", ncols).add($("hr"))));
@@ -153,8 +159,13 @@ export default class Charts {
             tb.add($("tr").adds(tds));
             tb.add($("tr").add($("td").att("colspan", ncols).add($("hr"))));
           }
-          rs.html(_("Profits") + ": " +
-            new Dec(ttProfits * 100, 2).toEu() + "%");
+          rs.html(
+            "<img src='img/win.png' style='vertical-align:top'> : " +
+            positives + " | " +
+            "<img src='img/loose.png' style='vertical-align:top'> : " +
+            negatives + " | " +
+            "% : " +
+            new Dec(ttProfits * 100 / (positives + negatives), 2).toEu());
         }
       );
     }

@@ -67,7 +67,7 @@ export default class Test {
 
     this._cosType = COS_NICKS;
 
-    this._autocorrection = false;
+    this._autocorrection = true;
 
     this._selNick = "";
   }

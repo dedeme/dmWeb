@@ -2,7 +2,7 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 //eslint-disable-next-line
-import Main from "../Main.js";
+import SysMain from "./SysMain.js";
 import {_, _args} from "../I18n.js";
 import Ui from "../dmjs/Ui.js";
 import Chpass from "./Chpass.js";
@@ -12,14 +12,14 @@ const $ = Ui.$;
 /** Settings page. */
 export default class Settings {
   /**
-   * @param {!Main} main Main
+   * @param {!SysMain} sysMain Main
    */
-  constructor (main) {
+  constructor (sysMain) {
     /**
      * @private
-     * @type {!Main}
+     * @type {!SysMain}
      */
-    this._main = main;
+    this._sysMain = sysMain;
   }
 
   /**
@@ -27,14 +27,15 @@ export default class Settings {
    * @return {Promise}
    */
   async setLang (lang) {
-    const main = this._main;
+    const sysMain = this._sysMain;
     const rq = {
-      "source": "settings",
+      "module": "sys",
+      "page": "Settings",
       "rq": "setLang",
       "lang": lang
     };
-    await main.client.send(rq);
-    main.run();
+    await sysMain.client.send(rq);
+    sysMain.main.run();
   }
 
   /**
@@ -42,7 +43,7 @@ export default class Settings {
    * @return {void}
    */
   goChangePass () {
-    new Chpass(this._main).show();
+    new Chpass(this._sysMain.main).show();
   }
 
   // ____
@@ -50,16 +51,22 @@ export default class Settings {
   // TTTT
 
   /**
-   * @return {void}
+   * @return {Promise}
    */
-  show () {
-    const self = this;
-    const main = self._main;
-    const lang = main.model["lang"];
+  async show () {
+    const sysMain = this._sysMain;
+    const rq = {
+      "module": "sys",
+      "page": "Settings",
+      "rq": "getLang"
+    };
+    const rp = await sysMain.client.send(rq);
+
+    const lang = rp["lang"];
 
     const langDiv = $("div")
       .add(Ui.link(() => {
-        self.setLang(lang === "es" ? "en" : "es");
+        this.setLang(lang === "es" ? "en" : "es");
       })
         .klass("link").html(_args(
           _("Change Language to %0"),
@@ -67,7 +74,7 @@ export default class Settings {
         )));
     const passDiv = $("div")
       .add(Ui.link(() => {
-        self.goChangePass();
+        this.goChangePass();
       })
         .klass("link").html(_("Change Password")));
 
@@ -77,17 +84,11 @@ export default class Settings {
       passDiv
     ];
 
-    main.dom.show("settings", $("div").style("text-align:center")
-      .add($("br"))
-      .add($("table").att("align", "center")
-        .add($("tr")
-          .add($("td")
-            .klass("frame")
-            .adds(opts))))
-      .add($("h2").style("text-align:center").html(_("Notes")))
-      .add($("iframe")
-        .att("width", 800).att("height", 600)
-        .att("src", "notes.html"))
+    sysMain.dom.show("settings", $("div").style("text-align:center")
+      .add($("div").klass("head").html(_("Settings")))
+      .add($("table").att("align", "center").add($("tr").add($("td")
+        .klass("frame")
+        .adds(opts))))
     );
   }
 }

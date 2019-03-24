@@ -30,16 +30,10 @@ void conf_set_lang(const char *lang);
 /// [conf_set_menu] sets the field 'menu' of data base.
 void conf_set_menu(const char *option);
 
-/// Returns the selected model for Bests page.
-Js *conf_get_bests_model_new();
+/// Returns the selected model for Bests and Charts page.
+Js *conf_get_model_new();
 
-/// Sets the selected model for Bests page.
-void conf_set_bests_model(const char *option);
-
-/// Returns the selected model for Charts page.
-Js *conf_get_charts_model_new();
-
-/// Sets the selected model for Charts page.
-void conf_set_charts_model(const char *option);
+/// Sets the selected model for Bests and Charts page.
+void conf_set_model(const char *option);
 
 #endif

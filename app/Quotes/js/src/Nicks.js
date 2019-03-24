@@ -35,6 +35,24 @@ export default class Nicks {
      * @type {!Array<!Wnick>}
      */
     this._wnicks = [];
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this._total = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this._ibex = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this._sel = 0;
   }
 
   download () {
@@ -127,14 +145,19 @@ export default class Nicks {
     const self = this;
     return $("table").klass("main")
       .add($("tr")
-        .add($("td").style("text-align:left;")
+        .add($("td").style("text-align:left;white-space:nowrap;")
           .add(input)
           .add(self.sep())
           .add($("button")
             .style("width: 150px")
             .att("id", "newBt")
             .html(_("New nick"))
-            .on("click", addNick)))
+            .on("click", addNick))
+          .add($("span")
+            .html(
+              "&nbsp;&nbsp;Total: " + String(this._total) +
+              " (Ibex: " + String(this._ibex) +
+              ", Sel: " + String(this._sel) + ")")))
         .add($("td").style("text-align:right;")
           .add(Ui.link(() => {
             self.download();
@@ -175,6 +198,18 @@ export default class Nicks {
       .filter(n => n.isExtra === this._isExtra)
       .sort((n1, n2) => n1.nick.localeCompare(n2.nick))
     ;
+    this._total = 0;
+    this._ibex = 0;
+    this._sel = 0;
+    nicks.forEach(nk => {
+      ++this._total;
+      if (nk.isIbex) {
+        ++this._ibex;
+      }
+      if (nk.isSel) {
+        ++this._sel;
+      }
+    });
     this._wnicks = nicks.map(n => new Wnick(this._main, model, n));
     this.show2();
   }

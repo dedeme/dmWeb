@@ -60,7 +60,7 @@ export default class ChBig {
       ctx.fillStyle = "rgba(249, 249, 249)";
       ctx.fillRect(0.5, 0.5, 600, 318);
       ctx.fillStyle = "rgba(255, 255, 255)";
-      ctx.fillRect(90.5, 10.5, 504, 280);
+      ctx.fillRect(10.5, 10.5, 504, 280);
       ctx.fillStyle = "rgba(0, 0, 0)";
 
       ctx.lineWidth = 1;

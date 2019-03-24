@@ -16,24 +16,31 @@ import Data.Params (Params (..))
 import qualified Global as G
 
 data Op = Buy Double Double | Sell | None
+  deriving Show
 
 calc :: [Double] -> Params -> Double -> (Op, Bool)
-calc closes@(c:_) (Params start step) force =
-  cl None True (c * (1 - start)) closes
+calc closes@(c:_) (Params step) force =
+  cl None True (c * 0.95) c c c c closes
   where
-  cl op toSell _ [] = (op, toSell)
-  cl op toSell ref (c:cs) =
+  cl op toSell _ _ _ _ _ [] = (op, toSell)
+  cl op toSell ref mm pmm1 pmm2 coq (c:cs) =
     if toSell
     then
       let ref' = ref + (c - ref) * step in
-        if c < ref'
-        then cl Sell False (c * (1 + start)) cs
-        else cl None True ref' cs
+        if c <= ref'
+        then cl Sell False
+                (if  c > coq || mm > pmm2 then mm else pmm2)
+                c mm pmm1 c cs
+        else let mm' = if c > mm then c else mm
+             in  cl None True ref' mm' pmm1 pmm2 coq cs
     else
       let ref' = ref - (ref - c) * step in
-        if c > ref' || c == force
-        then cl (Buy c ((c - ref') / ref')) True (c * (1 - start)) cs
-        else cl None False ref' cs
+        if c >= ref' || c == force
+        then cl (Buy c ((c - ref') / ref')) True
+                (if  c < coq || mm < pmm2 then mm else pmm2)
+                c mm pmm1 c cs
+        else let mm' = if c < mm then c else mm
+             in  cl None False ref' mm' pmm1 pmm2 coq cs
 
 readCloses :: String -> IO [Double]
 readCloses nk = do
@@ -53,7 +60,7 @@ buys nks p = buys' [] nks
     buys' r (nk:rest) = do
       closes <- readCloses nk
       let closes' = filter (>= 0) closes
-      case calc closes' p (G.force nk) of
+      case calc closes' p (-2) of
         (None, _) -> buys' r rest
         (Sell, _) -> buys' r rest
         (Buy price ponderation, _) -> buys' ((nk, price, ponderation):r) rest
@@ -68,7 +75,7 @@ sells nks ps = sells' [] nks
     sells' r (nk:rest) = do
       closes <- readCloses nk
       let closes' = filter (>= 0) closes
-      case calc closes' ps (-2) of
+      case calc closes' ps (G.force nk) of
         (None, _) -> sells' r rest
         (Buy _ _, _) -> sells' r rest
         (Sell, _) -> sells' (nk:r) rest

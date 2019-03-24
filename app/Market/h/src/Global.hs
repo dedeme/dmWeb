@@ -13,6 +13,7 @@ module Global (
   quotesBase,
   fleasDir,
   annLen,
+  cashStock,
 -------
   force
   )where
@@ -48,12 +49,12 @@ fleasDir = "/home/deme/.dmCApp/fleas"
 annLen :: Int
 annLen = 50
 
+-- |@'cashStock'@ - Security stock for cash
+cashStock :: Double
+cashStock = 5000
+
 -- |
 force :: String -> Double
-force "BBVA" = 4.545
-force "MAP" = 2.295
-force "MTS" = 17.32
-force "PSG" = 4.208
-force "REP" = 13.735
-force "SAN" = 3.97
+force "BME" = 25.88
+force "SAN" = 4.4855
 force _ = -2

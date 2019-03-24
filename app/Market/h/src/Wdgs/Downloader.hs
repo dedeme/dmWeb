@@ -39,7 +39,7 @@ process cgi rq =
       let date = Cgi.get rq Js.rString "date"
       let Just profits = lookup "profits" rq
       let Just last = lookup "last" rq
-      (accProfits, ref) <- LAccPrRf.read
+      (accProfits, ref) <- LAccPrRf.readx
       Historic.write (date, Js.wList [profits,
                                       Js.wDouble accProfits,
                                       Js.wDouble ref])

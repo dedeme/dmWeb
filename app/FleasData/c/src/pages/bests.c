@@ -12,12 +12,12 @@ void bests_process(Map *mrq) {
 
   if (str_eq(rq, "getModel")) {
     Map *m = map_new(free);
-    map_put(m, "model", conf_get_bests_model_new());
+    map_put(m, "model", conf_get_model_new());
     cgi_ok(m);
     map_free(m);
   } else if (str_eq(rq, "setModel")) {
     CGI_GET_STR(model, mrq, "model")
-    conf_set_bests_model(model);
+    conf_set_model(model);
     cgi_empty();
     free(model);
   } else if (str_eq(rq, "data")) {

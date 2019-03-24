@@ -3,7 +3,7 @@
 
 -- | Last accountable profits and last risk reference
 
-module Data.LAccPrRf (Data.LAccPrRf.read) where
+module Data.LAccPrRf (Data.LAccPrRf.readx) where
 
 import Control.Monad (foldM)
 import qualified Dm.Date as Date
@@ -16,8 +16,8 @@ import qualified Trader as Trader
 import qualified Global as G
 
 -- |@'read'@- returns (Account profits, Last risk reference (with strip))
-read :: IO (Double, Double)
-read = do
+readx :: IO (Double, Double)
+readx = do
   now <- Date.now
   (pf, ld) <- Diary.books
   let pr = (capital ld) + (stocks ld) + (cash ld)

@@ -89,9 +89,13 @@ export default class Dom {
     ];
 
     const menu = $("table").klass("main").add($("tr")
-      .add($("td")
+      .add($("td").style("padding-right: 5px")
         .adds(lopts))
-      .add($("td").style("text-align:right")
+      .add($("td").style(
+        "text-align:right;white-space: nowrap;" +
+        "border-left: 1px solid #000000;" +
+        "padding-left: 5px;vertical-align:top;"
+      )
         .adds(ropts))
     );
 

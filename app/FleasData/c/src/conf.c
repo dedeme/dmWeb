@@ -15,7 +15,6 @@ void conf_init(void) {
     Map *m = map_new(free);
     map_put(m, "lang", js_ws_new("en"));
     map_put(m, "menu", js_ws_new("settings"));
-    map_put(m, "bestsModel", js_ws_new(""));
     Js *js = js_wo_new(m);
     file_write(path_null, (char *)js);
     map_free(m);
@@ -55,32 +54,18 @@ void conf_set_menu(const char *option) {
   conf_set("menu", option);
 }
 
-Js *conf_get_bests_model_new() {
+Js *conf_get_model_new() {
   Js *js = conf_get_new();
   // Map[Js]
   Map *m = js_ro_new(js);
-  Js *rjs = map_get_null(m, "bestsModel");
+  Js *rjs = map_get_null(m, "model");
   Js *r = rjs ? (Js *) str_new((char *)rjs) : js_ws_new("");
   free(js);
   map_free(m);
   return r;
 }
 
-void conf_set_bests_model(const char *option) {
-  conf_set("bestsModel", option);
+void conf_set_model(const char *option) {
+  conf_set("model", option);
 }
 
-Js *conf_get_charts_model_new() {
-  Js *js = conf_get_new();
-  // Map[Js]
-  Map *m = js_ro_new(js);
-  Js *rjs = map_get_null(m, "chartsModel");
-  Js *r = rjs ? (Js *) str_new((char *)rjs) : js_ws_new("");
-  free(js);
-  map_free(m);
-  return r;
-}
-
-void conf_set_charts_model(const char *option) {
-  conf_set("chartsModel", option);
-}

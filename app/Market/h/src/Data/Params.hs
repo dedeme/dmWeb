@@ -8,7 +8,6 @@ module Data.Params (
   toJs,
   fromJs,
   Data.Params.init,
-  readCurrent,
   readBase,
   writeBase
   ) where
@@ -22,7 +21,6 @@ import qualified Global as G
 
 -- | Annotation type
 data Params = Params {
-  start :: Double,
   step :: Double
 } deriving (Show)
 
@@ -31,12 +29,12 @@ basePath = G.path["data", "baseParams.db"]
 
 -- |@'toJs' ps@ - Returns /ps/ JSONized
 toJs :: Params -> JSValue
-toJs (Params start step) = Js.wList[Js.wDouble start, Js.wDouble step]
+toJs (Params step) = Js.wList[Js.wDouble step]
 
 -- |@'fromJs' js@ - Returns a Params which was JSONized
 fromJs :: JSValue -> Params
-fromJs js = let [start, step] = Js.rList js
-            in  Params (Js.rDouble start) (Js.rDouble step)
+fromJs js = let [step] = Js.rList js
+            in  Params (Js.rDouble step)
 
 -- |@'init'@ - Initilizes /params.db/
 init :: IO ()
@@ -46,9 +44,9 @@ init = do
 -- |@'readCurrent'@ - Returns current parameters
 readCurrent :: IO Params
 readCurrent = do
-  bests <- File.read (G.fleasDir ++ "/_bests/Approx2.db")
+  bests <- File.read (G.fleasDir ++ "/_bests/AppMM1B.db")
   case Js.rList $ Js.fromStr bests of
-    [] -> readBase
+    [] -> return $ Params 1.8752169e-2
     (flea:_) -> let fields = Js.rList flea
                 in  return $ fromJs (fields !! 2)
 
@@ -56,7 +54,9 @@ readCurrent = do
 readBase :: IO Params
 readBase = do
   ps <- File.read basePath
-  return $ fromJs $ Js.fromStr ps
+  case ps of
+    "[]" -> readCurrent
+    _ -> return $ fromJs $ Js.fromStr ps
 
 -- |@'writeBase' ps@ - Writes base parameters
 writeBase :: Params -> IO()

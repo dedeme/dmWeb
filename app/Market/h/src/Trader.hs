@@ -36,41 +36,52 @@ readCloses nk = do
 
 calc :: Double -> [Double] -> [Double] -> Params -> Double ->
         (Double, [(Double, Double)], [(Bool, Int, Double)])
-calc bet opens closes@(c:_) (Params start step) force =
-  cl (0, [], []) (0, 0) True (c * (1 - start)) opens closes
+calc bet opens closes@(c:_) (Params step) force =
+  cl (0, [], []) (0, 0) True (c * 0.95) c c c c opens closes
   where
-  cl :: (Double, [(Double, Double)], [(Bool, Int, Double)]) ->
-        (Int, Double) -> Bool -> Double -> [Double] -> [Double] ->
+  cl :: (Double, [(Double, Double)], [(Bool, Int, Double)]) -> (Int, Double) ->
+        Bool -> Double -> Double -> Double -> Double -> Double ->
+        [Double] -> [Double] ->
         (Double, [(Double, Double)], [(Bool, Int, Double)])
-  cl (profits, ls, hs) _ _ _ [] _ =
+  cl (profits, ls, hs) _ _ _ _ _ _ _ [] _ =
     (profits, reverse $ take 250 ls, reverse hs)
-  cl (profits, ls, hs) acc@(stocks, price) toSell ref (o:os) (c:cs)  =
+  cl (profits, ls, hs) acc@(stocks, price)
+                       toSell ref mm pmm1 pmm2 coq
+                       (o:os) (c:cs)  =
     if toSell
     then
       let ref' = ref + (c - ref) * step
           ls' = (c, ref'):ls in
-        if c < ref'
+        if c <= ref'
         then
           let q = case os of [] -> c; (o':_) -> o'
               hs' = (True, stocks, q):hs
-          in  cl (profits + fromIntegral stocks * (q - price), ls', hs') (0, 0)
-              False (c * (1 + start)) os cs
+              opProf = q * 0.997 - price * 1.003
+          in  cl (profits + fromIntegral stocks * opProf, ls', hs') (0, 0)
+              False
+              (if  c > coq || mm > pmm2 then mm else pmm2)
+              c mm pmm1 c os cs
         else
-          cl (profits, ls', hs) acc True ref' os cs
+          let mm' = if c > mm then c else mm
+          in  cl (profits, ls', hs) acc True ref' mm' pmm1 pmm2 coq os cs
     else
       let ref' = ref - (ref - c) * step
           ls' = (c, ref'):ls in
-        if c > ref' || c == force
+        if c >= ref' || c == force
         then
           case os of
-          [] -> cl (profits, ls', hs) acc True (c * (1 - start)) os cs
+          [] -> cl (profits, ls', hs) acc True
+                    (if c < coq || mm < pmm2 then mm else pmm2)
+                    c mm pmm1 c os cs
           (o':_) ->
             let stocks = truncate(bet / c)
                 hs' = (False, stocks, o'):hs
-            in  cl (profits, ls', hs') (stocks, o')
-                   True (c * (1 - start)) os cs
+            in  cl (profits, ls', hs') (stocks, o') True
+                    (if c < coq || mm < pmm2 then mm else pmm2)
+                    c mm pmm1 c os cs
         else
-          cl (profits, ls', hs) acc False ref' os cs
+          let mm' = if c < mm then c else mm
+          in  cl (profits, ls', hs) acc False ref' mm' pmm1 pmm2 coq os cs
 
 -- |@'calculate' nick@ - Returns an object whose values are:
 --
@@ -99,7 +110,7 @@ calculate nk = do
 --                   'nick'
 lastRef :: String -> IO Double
 lastRef nk = do
-  if nk == "PVA" || nk == "MDF"
+  if nk == "PVA"
   then return 0
   else do
     conf <- Conf.get

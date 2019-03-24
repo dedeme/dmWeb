@@ -374,9 +374,8 @@ export default class Trading {
       );
     };
 
-    const paramTd = (start, stop) => $("tr")
-      .add($("td").klass("number").html(this.formatN(start * 100, 4) + "%"))
-      .add($("td").klass("number").html(this.formatN(stop * 100, 4) + "%"))
+    const paramTd = (step) => $("tr")
+      .add($("td").klass("number").html(this.formatN(step * 100, 4) + "%"))
     ;
 
     const table = $("table").klass("main")
@@ -414,9 +413,8 @@ export default class Trading {
       .add($("div").klass("head").html(_("Parameters")))
       .add($("table").att("align", "center").klass("home")
         .add($("tr")
-          .add($("td").klass("head").html(_("Start")))
-          .add($("td").klass("head").html(_("Stop"))))
-        .add(paramTd(params[0], params[1])))
+          .add($("td").klass("head").html(_("Step"))))
+        .add(paramTd(params[0])))
     ;
   }
 }

@@ -43,6 +43,7 @@ appInit = do
   if ex
     then do
 --      Some initialization
+--      Log.clear
       return ()
     else do
       File.mkDir $ G.path ["tmp"]
