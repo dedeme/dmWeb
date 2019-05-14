@@ -3,8 +3,7 @@
 
 import Captcha from "../dmjs/Captcha.js";
 import Store from "../dmjs/Store.js";
-// eslint-disable-next-line
-import Domo from "../dmjs/Domo.js";
+import Domo from "../dmjs/Domo.js"; //eslint-disable-line
 import Ui from "../dmjs/Ui.js";
 import Main from "../Main.js";
 import {I18n, _} from "../I18n.js";
@@ -24,9 +23,10 @@ export default class Auth {
     this._main = main;
   }
 
-  /**
-   * @return {void}
-   */
+  // VIEW ----------------------------------------
+  // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+
+  /** @return {void} */
   show () {
     const main = this._main;
     const captchaStore = Main.captchaAuthStore;
@@ -35,7 +35,7 @@ export default class Auth {
     else I18n.es();
 
     /** @const {!Domo} */
-    const user = Ui.field("pass");
+    const userIn = Ui.field("pass");
     /** @const {!Domo} */
     const pass = Ui.pass("accept").att("id", "pass");
     /** @const {!Domo} */
@@ -61,7 +61,7 @@ export default class Auth {
         Main.langStore,
         Store.take(Main.langStore) === "en" ? "es" : "en"
       );
-      main.run();
+      main.update();
     };
 
     /**
@@ -82,14 +82,14 @@ export default class Auth {
         return;
       }
 
-      const ok = await main.client.authentication(user, pass, !persistent);
+      const ok = await Main.client.authentication(user, pass, !persistent);
 
       if (ok) {
         captcha.resetCounter();
       } else {
         captcha.incCounter();
       }
-      main.start();
+      main.show();
     };
 
     /**
@@ -103,11 +103,11 @@ export default class Auth {
       accept.on("click", () => {
         if (counter > counterLimit && !captcha.match()) {
           alert(_("Grey squares checks are wrong"));
-          main.run();
+          main.update();
           return;
         }
         faccept(
-          user.value().trim(),
+          userIn.value().trim(),
           pass.value().trim(),
           persistent.checked()
         );
@@ -118,7 +118,7 @@ export default class Auth {
           .add($("td")
             .style("padding: 10px 0px 0px 10px;text-align:right;")
             .html(_("User")))
-          .add($("td").style("padding: 10px 10px 0px 10px;").add(user)),
+          .add($("td").style("padding: 10px 10px 0px 10px;").add(userIn)),
         $("tr")
           .add($("td")
             .style("padding: 10px 0px 0px 10px;text-align:right;")
@@ -199,13 +199,13 @@ export default class Auth {
         .adds(rows);
     }
 
-    main.dom.showRoot(
+    main.view.removeAll().add(
       $("div")
         .add($("div").klass("title").html(
           `&nbsp;<br>${Main.app}<br>&nbsp;`))
         .add($("div").add(body()))
     );
-    user.e.focus();
+    userIn.e.focus();
   }
 }
 

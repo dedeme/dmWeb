@@ -20,11 +20,11 @@ export default class Expired {
     this._main = main;
   }
 
-  /** @return {void} */
+  /**
+   * @return {void}
+   */
   show () {
-    let path = window.location.href;
-    const ix = path.indexOf("?");
-    path = ix === -1 ? path : path.substring(0, ix);
+    const path = Main.urlBase;
     const td = "padding:0px 10px 0px 10px;";
     const link = "<a href='" + path + "'>" + _("here") + "</a>";
     const w = $("div")

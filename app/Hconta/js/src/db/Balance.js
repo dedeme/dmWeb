@@ -1,9 +1,9 @@
 // Copyright 24-Sep-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("db_Balance");
+import It from "../dmjs/It.js";
 
-db_Balance = class {
+export default class db_Balance {
   /**
    * Fields:
    *    id
@@ -82,7 +82,7 @@ db_Balance = class {
    * @return {boolean}
    */
   static validId(id) {
-    return It.from(db_Balance.entries()).containsf(e => e[0] === id);
+    return It.from(db_Balance.entries()).some(e => e[0] === id);
   }
 
   /**

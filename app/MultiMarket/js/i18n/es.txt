@@ -10,13 +10,22 @@
 '%0' is not a positive number = '%0' no es un número positivo
 
 # ORPHAN
+Accepted<br>changes = Cambios en<br>aceptados
+
+# ORPHAN
 Accounting profits = Beneficios contables
 
 # ORPHAN
-All = Todo
+All %0 = Todos %0
 
 # ORPHAN
 All Companies = Todas las empresas
+
+# ORPHAN
+All nicks = Todos los nicks
+
+# ORPHAN
+All<br>Companies = Todas<br>las compañías
 
 # ORPHAN
 Ammount = Cantidad
@@ -28,16 +37,25 @@ Annotations = Asientos
 Assets = Activo
 
 # ORPHAN
+Autocorrection = Autocorrección
+
+# ORPHAN
 Backs = Copias
 
 # ORPHAN
 Backup successfully restored = Copia de seguridad restaurada
 
 # ORPHAN
+Bad nick Id in Test/readQuotesSvs = Incorrecto nick Id en Test/readQuotesSvs
+
+# ORPHAN
 Balance = Balance
 
 # ORPHAN
 Bet = Apuesta
+
+# ORPHAN
+Browser = Navegador
 
 # ORPHAN
 Buy = Compra
@@ -67,6 +85,12 @@ Companies = Empresas
 Current profits = Beneficios reales
 
 # ORPHAN
+Daily = Diario
+
+# ORPHAN
+Daily Data Servers = Servidores de datos diarios
+
+# ORPHAN
 Date = Fecha
 
 # ORPHAN
@@ -88,7 +112,25 @@ Diff. - = Dif. -
 Differences = Diferencias
 
 # ORPHAN
+Documentation = Documentación
+
+# ORPHAN
+Done = Hecho
+
+# ORPHAN
+Edit = Editar
+
+# ORPHAN
 Equity = Pasivo
+
+# ORPHAN
+Error reading local quotes = Error leyendo cotizaciones locales
+
+# ORPHAN
+Extra quote = Contización sobrante
+
+# ORPHAN
+Fail unzipping backup = Fallo descomprimiendo la copia de seguridad
 
 # ORPHAN
 Fees = Comisiones
@@ -100,16 +142,64 @@ File is not a %0 backup = El archivo no es una copia de seguridad de %0
 Income = Ingreso
 
 # ORPHAN
+Issues = Problemas
+
+# ORPHAN
 Last Month = Último mes
 
 # ORPHAN
 Last Year = Último año
 
 # ORPHAN
+Max = Max
+
+# ORPHAN
+Maximum = Máximo
+
+# ORPHAN
+Min = Min
+
+# ORPHAN
+Minimum = Mínimo
+
+# ORPHAN
+Modify = Modificar
+
+# ORPHAN
+Mult. = Mult.
+
+# ORPHAN
+Name = Nombre
+
+# ORPHAN
+Name is duplicated = El nombre está duplicado
+
+# ORPHAN
+Name is missing = Falta el nombre
+
+# ORPHAN
+New = Nuevo
+
+# ORPHAN
 Nick = Nick
 
 # ORPHAN
-Nicks = Nicks
+No Selected = No seleccionadas
+
+# ORPHAN
+No issues detected = Ningún problema detectado
+
+# ORPHAN
+No nick was selected = No se ha seleccionado ningún nick
+
+# ORPHAN
+Ok. = Ok.
+
+# ORPHAN
+Open = Apertura
+
+# ORPHAN
+Order by = Ordenado por:
 
 # ORPHAN
 Parameters = Parámetros
@@ -124,7 +214,22 @@ Price = Precio
 Profits = Beneficios
 
 # ORPHAN
+Quotes = Cotizaciones
+
+# ORPHAN
+Quotes have wrong format = Las cotizaciones tiene un formato inválido
+
+# ORPHAN
+Quotes updated = Cotizaciones actualizadas
+
+# ORPHAN
+Rejected<br>changes = Cambios en<br>rechazados
+
+# ORPHAN
 Remove duplicate = Eliminar repetido
+
+# ORPHAN
+Reverse = Reverso
 
 # ORPHAN
 Risk = Riesgo
@@ -133,13 +238,55 @@ Risk = Riesgo
 Risk profits = Beneficios - riesgo
 
 # ORPHAN
+Save split? = ¿Guardar el split?
+
+# ORPHAN
+Search more issues = Buscar más problemas
+
+# ORPHAN
+See = Ver
+
+# ORPHAN
+Selected = Seleccionadas
+
+# ORPHAN
+Selection<br>changes = Cambios en<br>seleccionados
+
+# ORPHAN
 Sell = Venta
 
 # ORPHAN
 Sells = Ventas
 
 # ORPHAN
+Server codes = Códigos de servidor
+
+# ORPHAN
+Servers = Servidores
+
+# ORPHAN
+Split = Split
+
+# ORPHAN
+Status = Stado
+
+# ORPHAN
 Stocks = Acciones
+
+# ORPHAN
+Stopped = Detenido
+
+# ORPHAN
+Test = Prueba
+
+# ORPHAN
+Test all = Probar todos
+
+# ORPHAN
+There are no more issues = No hay más problemas
+
+# ORPHAN
+There is an issue:\n%0\nForce modification? = Hay un problema:\n%0\n¿Forzar la modificación?
 
 # ORPHAN
 Total bet = Apuesta total
@@ -148,7 +295,28 @@ Total bet = Apuesta total
 Trading = Operaciones
 
 # ORPHAN
+Translator = Traductor
+
+# ORPHAN
+URL = URL
+
+# ORPHAN
+Update = Actualizar
+
+# ORPHAN
+Url is missing = Falta la Url
+
+# ORPHAN
 Value = Valor
+
+# ORPHAN
+Vol = Vol
+
+# ORPHAN
+Vol. = Vol.
+
+# ORPHAN
+Volume = Volumen
 
 # ORPHAN
 Withdrawal = Reintegro
@@ -160,148 +328,247 @@ Without data = Sin datos
 Without operations = Sin operaciones
 
 # ORPHAN
+Wrong data = Datos no válidos
+
+# ORPHAN
 Year close = Cierre del ejercicio
 
-# TO DO
-# src/core/Backups.js: 87
-File is not a Selectividad backup = 
+# src/data/Issue.js: 44
+%0 is greater than 'max' in %1 = %0 es mayor que 'max' en %1
 
-# src/core/Backups.js: 54
+# src/data/Issue.js: 46
+%0 is less than 'min' in %1 = %0 es menor que 'min' en %1
+
+# src/data/Issue.js: 42
+%0: Difference +- 20% in %1 = %0: Diferencia +-20% en %1
+
+# src/sys/Nicks.js: 144
+'%0' already exists in nicks or extra = '%0' ya existe en Nicks o Extra
+
+# src/sys/Backups.js: 62
 '%0' can not be read = '%0' no puede ser leido
 
-# src/core/Backups.js: 206
+# src/sys/Backups.js: 218
 '%0' is an empty file = '%0' es un archivo vacío
 
-# src/sys/Chpass.js: 71
-# src/core/Auth.js: 50
+# src/sys/Chpass.js: 77
+# src/core/Auth.js: 58
 Accept = Aceptar
 
-# src/core/Backups.js: 208
-# src/core/Backups.js: 246
-# src/core/Backups.js: 256
+# src/sys/Home.js: 79
+# src/sys/Home.js: 82
+All = Todo
+
+# src/sys/Backups.js: 220
+# src/sys/Backups.js: 259
+# src/sys/Backups.js: 269
 All the data will be replaced = ¡ATENCIÓN!. Todos los datos serán reemplazados.\n¿Continuar?
 
-# src/core/Backups.js: 231
+# src/sys/Backups.js: 244
 Automatic Backups = Backups automáticos
 
-# src/core/Backups.js: 197
+# src/sys/Backups.js: 209
 Backup file is missing = No se ha indicado el archivo de backup
 
-# src/sys/SysMain.js: 35
-# src/core/Backups.js: 265
+# src/sys/Backups.js: 98
+Backup version is missing = Falta la versión del backup
+
+# src/sys/Backups.js: 96
+Backup version is wrong = La versión del backup es incorrecta
+
+# src/sys/SysMain.js: 49
+# src/sys/Backups.js: 278
 Backups = Copias de seguridad
 
-# src/sys/Chpass.js: 75
+# src/sys/Chpass.js: 81
 Cancel = Cancelar
 
-# src/sys/Settings.js: 72
+# src/sys/Settings.js: 78
 Change Language to %0 = Cambiar el idioma a %0
 
-# src/sys/Settings.js: 79
+# src/sys/Settings.js: 85
 Change Password = Cambiar la contraseña
 
-# src/sys/Chpass.js: 191
-# src/core/Auth.js: 178
+# src/sys/Nicks.js: 171
+Check = Prueba
+
+# src/sys/Chpass.js: 197
+# src/core/Auth.js: 186
 Check gray squares = Marcar los cuadrados grises
 
-# src/core/Backups.js: 239
+# src/sys/Backups.js: 252
 Clear = Eliminar
 
-# src/core/Backups.js: 236
+# src/sys/Backups.js: 249
 Clear trash? = ¿Vaciar la papelera?
 
 # src/core/Expired.js: 47
 Click %0 to continue. = Hacer click %0 para continuar.
 
-# src/sys/Chpass.js: 147
+# src/sys/Chpass.js: 153
 Confirm password = Confirmar la contraseña
 
-# src/sys/Chpass.js: 105
+# src/sys/Chpass.js: 111
 Confirm password is missing = Falta la confirmación de la contraseña
 
-# src/sys/Chpass.js: 135
+# src/sys/Chpass.js: 141
 Current password = Contraseña actual
 
-# src/sys/Chpass.js: 93
+# src/sys/Chpass.js: 99
 Current password is missing = Falta indicar la contraseña actual
 
-# src/core/Backups.js: 268
+# src/sys/Home.js: 183
+Daily Quotes = Cotizaciones del día
+
+# src/sys/wgs/Wnick.js: 205
+Delete = Eliminar
+
+# src/sys/wgs/Wnick.js: 91
+Delete '%0'? = ¿Eliminar '%0'?
+
+# src/sys/Backups.js: 281
+# src/sys/Nicks.js: 167
 Download = Descarga
 
-# src/sys/Chpass.js: 176
+# src/sys/Home.js: 81
+Errors = Errores
+
+# src/sys/SysMain.js: 38
+Extra = Extra
+
+# src/data/Issue.js: 40
+Extra quote in %0 = Cotización sobrante en %0
+
+# src/sys/wgs/Wnick.js: 67
+Fail downloading quotes:\n%0 = Fallo descargando cotizaciones:\n%0
+
+# src/sys/Chpass.js: 182
 Fail trying to change password = Fallo intentando cambiar la contraseña
 
-# src/core/Backups.js: 85
-Fail unzipping backup = Fallo descomprimiendo la copia de seguridad
+# src/data/Issue.js: 36
+File %0 empty or not found = Archivo %0 sin datos o no encontrado
 
-# src/sys/Chpass.js: 89
-# src/core/Auth.js: 105
+# src/sys/Home.js: 186
+Fleas Data = Datos de las pulgas
+
+# src/sys/Chpass.js: 95
+# src/core/Auth.js: 113
 Grey squares checks are wrong = Las casillas grises están mal marcadas
 
-# src/core/Dom.js: 103
+# src/core/Dom.js: 116
 Help & Credits = Ayuda & créditos
 
-# src/sys/SysMain.js: 26
-# src/core/Dom.js: 67
+# src/sys/SysMain.js: 30
+# src/sys/Home.js: 176
 Home = Inicio
 
-# src/core/Auth.js: 140
+# src/core/Auth.js: 148
 Keep connected = Mantenerse conectado
 
-# src/sys/Chpass.js: 211
-# src/core/Auth.js: 198
+# src/sys/Home.js: 75
+Last Day = Último día
+
+# src/sys/Home.js: 77
+Last Week = Última semana
+
+# src/sys/Home.js: 160
+Log = Registro
+
+# src/sys/Chpass.js: 217
+# src/core/Auth.js: 206
 Login = Identificación
 
 # src/core/Bye.js: 40
 Logout-message = <p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>
 
-# src/core/Backups.js: 173
+# src/sys/Backups.js: 185
 Make backup = Hacer copia
 
-# src/sys/Chpass.js: 141
+# src/sys/Home.js: 180
+Market = Mercado
+
+# src/sys/wgs/Wnick.js: 202
+# src/sys/wgs/Wnick.js: 208
+Model = Modelo
+
+# src/sys/Nicks.js: 157
+New nick = Nuevo nick
+
+# src/sys/Chpass.js: 147
 New password = Nueva contraseña
 
-# src/sys/Chpass.js: 111
+# src/sys/Chpass.js: 117
 New password and confirm password do not match = La nueva contraseña y su confirmación no coinciden
 
-# src/sys/Chpass.js: 99
+# src/sys/Chpass.js: 105
 New password is missing = Falta indicar la nueva contraseña
 
-# src/core/Backups.js: 201
+# src/sys/SysMain.js: 34
+Nicks = Nicks
+
+# src/sys/Backups.js: 213
 Only one file can be selected = Sólo se puede seleccionar un archivo
 
-# src/core/Auth.js: 125
+# src/core/Auth.js: 133
 Password = Contraseña
 
-# src/core/Auth.js: 81
+# src/core/Auth.js: 89
 Password is missing = Falta indicar la contraseña
 
-# src/sys/Chpass.js: 45
+# src/sys/Chpass.js: 51
 Password successfully changed = La contraseña se cambió correctamente
 
-# src/core/Backups.js: 273
+# src/data/Issue.js: 38
+Quote of %0 is missimg = Falta la cotización de %0
+
+# src/sys/Backups.js: 286
 Restore = Restauración
 
-# src/core/Backups.js: 193
+# src/sys/Backups.js: 205
 Restore backup = Restaurar copia
+
+# src/sys/wgs/Wnick.js: 172
+# src/sys/wgs/Wnick.js: 176
+# src/sys/wgs/Wnick.js: 231
+# src/sys/wgs/Wnick.js: 236
+Selection = Selección
+
+# src/sys/wgs/Wnick.js: 122
+Send '%0' to Extra? = ¿Enviar '%0' a Extra?
+
+# src/sys/wgs/Wnick.js: 106
+Send '%0' to Nicks? = ¿Enviar '%0' a Nicks?
+
+# src/data/Issue.js: 34
+Server code of %0 is missing = Falta el código de servidor de %0
 
 # src/core/Expired.js: 45
 Session is expired. = La sesión ha expirado.
 
-# src/sys/SysMain.js: 30
-# src/sys/Settings.js: 88
+# src/sys/SysMain.js: 44
+# src/sys/Settings.js: 94
 Settings = Configuración
 
-# src/core/Backups.js: 234
+# src/sys/wgs/Wnick.js: 214
+# src/sys/wgs/Wnick.js: 216
+To Extra = A Extra
+
+# src/sys/wgs/Wnick.js: 212
+To Nicks = A Nicks
+
+# src/sys/Backups.js: 247
 Trash = Papelera
 
-# src/core/Auth.js: 120
+# src/core/Auth.js: 128
 User = Usuario
 
-# src/core/Auth.js: 77
+# src/core/Auth.js: 85
 User name is missing = Falta indicar el nombre del usuario
 
-# src/core/Auth.js: 163
+# src/sys/Nicks.js: 111
+Without nicks = Sin nicks
+
+# src/core/Auth.js: 171
 Wrong password = La contraseña es incorrecta
 
 # src/core/Expired.js: 29

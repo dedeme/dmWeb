@@ -1,14 +1,18 @@
 // Copyright 23-Oct-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("view_Accs");
+import Main from "../Main.js";
+import Ui from "../dmjs/Ui.js";
+import It from "../dmjs/It.js";
+import Dec from "../dmjs/Dec.js";
+import db_Dentry from "../db/Dentry.js";
+import Dom from "../Dom.js";
+import {_} from "../I18n.js";
 
-goog.require("db_Dentry");
+const $ = Ui.$;
+const helpWidth = 250;
 
-{
-  const helpWidth = 250;
-
-view_Accs = class {
+export default class view_Accs {
   /**
    * @param {!Main} control
    */
@@ -27,17 +31,17 @@ view_Accs = class {
     const lang = conf.language();
     const db = control.db();
     const dom = control.dom();
-    const account = conf.accsConf().id();
+    const account = conf.accsConf().id() || "669";
 
     let ix = 1;
     let sum = 0;
-    const accsData = It.from(db.diary()).map(e => {
+    const accsData = [... It.from(db.diary()).map(e => {
         const ammD = It.from(e.debits())
-            .filter(tp => tp.e1().startsWith(account))
-            .reduce(0, (s, tp) => s += tp.e2().value());
+            .filter(tp => tp.e1.startsWith(account))
+            .reduce(0, (s, tp) => s += tp.e2.value);
         const ammH = It.from(e.credits())
-            .filter(tp => tp.e1().startsWith(account))
-            .reduce(0, (s, tp) => s += tp.e2().value());
+            .filter(tp => tp.e1.startsWith(account))
+            .reduce(0, (s, tp) => s += tp.e2.value);
         sum += ammD - ammH;
         return [
           ix++,
@@ -46,7 +50,7 @@ view_Accs = class {
           new Dec(ammH, 2),
           new Dec(sum, 2)
         ]
-      }).to();
+      })];
 
     const planDiv = $("div");
     const listDiv = $("div").style("width:100%");
@@ -170,7 +174,7 @@ view_Accs = class {
     /** @return {void} */
     function monthClick (i) {
       let ix =
-        It.from(db.diary()).takeUntil(e => e.date().month() > i).size() + 1;
+        It.from(db.diary()).takeUntil(e => e.date().month > i).count() + 1;
       ix = previousAnn(ix);
 
       accsIx = ix === -1 ? 0 : ix;
@@ -186,7 +190,7 @@ view_Accs = class {
         ? account.substring(0, 3)
         : account.substring(0, account.length - 1);
       return $("ul").style("list-style:none;padding-left:0px;")
-        .addIt(It.range(1, account.length + 1).map(lg =>
+        .adds([... It.range(1, account.length + 1).map(lg =>
           $("li")
             .html("<a href='#' onclick='return false;'>" +
               Dom.textAdjust(
@@ -194,22 +198,22 @@ view_Accs = class {
               ) + "</a>")
             .add($("ul").att("id", "hlist")
               .style("list-style:none;padding-left:10px;")
-              .addIt(db.subOf(account.substring(0, lg - 1))
-                .sortf((e1, e2) => e1[0] > e2[0] ? 1 : -1)
+              .adds([... db.subOf(account.substring(0, lg - 1))
+                .sort((e1, e2) => e1[0] > e2[0] ? 1 : -1)
                 .map(e =>
                   $("li").add(Ui.link(ev => {
                       changeTo(e[0]);
                     }).klass("link").att("title", e[0])
-                    .html(Dom.textAdjust(e[1], helpWidth - 16))))))))
+                    .html(Dom.textAdjust(e[1], helpWidth - 16))))])))])
         .add($("li").add($("hr")))
-        .addIt(account.length === 5
-          ? It.empty()
-          : db.sub(account)
-            .sortf((e1, e2) => e1[0] > e2[0] ? 1 : -1)
+        .adds(account.length === 5
+          ? []
+          : [... db.sub(account)
+            .sort((e1, e2) => e1[0] > e2[0] ? 1 : -1)
             .map(e =>
               $("li").add(Ui.link(ev => { changeTo(e[0]); })
                 .klass("link").att("title", Dom.accFormat(e[0]))
-                .html(Dom.textAdjust(e[1], helpWidth - 16)))));
+                .html(Dom.textAdjust(e[1], helpWidth - 16))))]);
     }
 
     const mkSubmenu = () => {
@@ -244,7 +248,6 @@ view_Accs = class {
         r.add(separator()).add(
           entry(" " + subacc + " ", group + subgroup + acc + subacc));
       }
-
       r.add(separator());
       return $("div").add(r)
         .add($("p")
@@ -253,15 +256,15 @@ view_Accs = class {
 
     const list = () => {
       const td = () => $("td").klass("frame").style("vertical-align:top;");
-      const tdr = () => td().addStyle("text-align:right");
-      const tdl = () => td().addStyle("text-align:left");
+      const tdr = () => td().setStyle("text-align", "right");
+      const tdl = () => td().setStyle("text-align", "left");
 
-      const data = It.from(accsData)
+      const data = [... It.from(accsData)
         .take(accsIx)
-        .filter(arr => arr[2].value() + arr[3].value() !== 0)
-        .to();
+        .filter(arr => arr[2].value + arr[3].value !== 0)
+        ];
       return $("table").att("align", "center")
-        .addIt(It.from(data)
+        .adds([... It.from(data)
           .drop(data.length - stepList)
           .reverse()
           .map(arr =>
@@ -271,12 +274,12 @@ view_Accs = class {
               .add(tdl().add(Ui.link(ev => {
                   control.goDiary(arr[0]);
                 }).klass("link").html(arr[1].description())))
-              .add(tdr().addStyle("background-color:#f0f0ff;")
-                .html(arr[2].value() === 0 ? "" : dom.decToStr(arr[2])))
-              .add(tdr().addStyle("background-color:#fff0f0;")
-                .html(arr[3].value() === 0 ? "" : dom.decToStr(arr[3])))
+              .add(tdr().setStyle("background-color", "#f0f0ff;")
+                .html(arr[2].value === 0 ? "" : dom.decToStr(arr[2])))
+              .add(tdr().setStyle("background-color", "#fff0f0;")
+                .html(arr[3].value === 0 ? "" : dom.decToStr(arr[3])))
               .add(tdr().html(dom.decToStr(arr[4])))
-          ));
+          )]);
     }
 
     const left = $("td").klass("frame")
@@ -293,16 +296,16 @@ view_Accs = class {
           .add($("td").att("colspan", 3))
           .add($("td").klass("diary").add(Ui.link(ev => {
               upClick();
-            }).addStyle("font-family:monospace").html("&nbsp;\u2191&nbsp;")))
+            }).setStyle("font-family", "monospace").html("&nbsp;\u2191&nbsp;")))
           .add($("td").klass("diary").add(Ui.link(ev => {
               downClick();
-            }).addStyle("font-family:monospace").html("&nbsp;\u2193&nbsp;")))
+            }).setStyle("font-family", "monospace").html("&nbsp;\u2193&nbsp;")))
           .add($("td").klass("diary").add(Ui.link(ev => {
               dupClick();
-            }).addStyle("font-family:monospace").html("\u2191\u2191")))
+            }).setStyle("font-family", "monospace").html("\u2191\u2191")))
           .add($("td").klass("diary").add(Ui.link(ev => {
               ddownClick();
-            }).addStyle("font-family:monospace").html("\u2193\u2193")))
+            }).setStyle("font-family", "monospace").html("\u2193\u2193")))
           .add($("td").klass("diary").add(Ui.link(ev => {
               plusClick();
             }).html("&nbsp;+&nbsp;")))
@@ -360,4 +363,4 @@ view_Accs = class {
     planDiv.add(planHelpf());
     listDiv.add(list());
   }
-}}
+}

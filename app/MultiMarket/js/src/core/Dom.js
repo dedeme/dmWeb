@@ -3,7 +3,6 @@
 
 
 import Main from "../Main.js";
-import SysMain from "../sys/SysMain.js";
 import {_} from "../I18n.js";
 // eslint-disable-next-line
 import Domo from "../dmjs/Domo.js";
@@ -41,36 +40,55 @@ export default class Dom {
     return $("span").text(" · ");
   }
 
+  /** @return {!Domo} */
+  static separator2 () {
+    return $("span").text(" | ");
+  }
+
   /**
    * @param {string} id
    * @param {string} tx
-   * @param {function()} f
+   * @param {function():(void|!Promise)} f
    */
   static mkOption (id, tx, f) {
     return Ui.link(f).att("id", "menu_" + id).text(tx);
   }
 
-  /** Resets menu */
+  /**
+   * Link is formed 'Main.urlBase + "?" + module + "&" + id'
+   * @param {string} id
+   * @param {string} tx
+   * @param {string} module
+   * @return {!Domo}
+   */
+  static mkLink (id, tx, module) {
+    return $("a")
+      .att("href", Main.urlBase + "?" + module + "&" + id)
+      .att("id", id)
+      .text(tx)
+    ;
+  }
+
+  /**
+   * Resets menu
+   * @return {void}
+   */
   resetMenu () {
     this._lopts = [];
     this._ropts = [];
+  }
 
-    this.addRightMenu(Ui.link(this._main.bye.bind(this._main))
+  /** @return {!Domo} */
+  mkClose () {
+    return Ui.link(this._main.bye.bind(this._main))
       .add(Ui.img("cross").style("vertical-align:bottom"))
-    );
-    this.addRightMenu(Dom.separator());
-    this.addRightMenu($("span").html("Dormido"));
-    this.addRightMenu(Dom.separator());
-    this.addRightMenu($("a")
-      .att("href", Main.urlBase + "?" + SysMain.homePageId)
-      .klass("link")
-      .text(_("Home"))
-    );
+    ;
   }
 
   /**
    * Adds a widget to left part of menu. Direction left to rigth
    * @param {!Domo} wd
+   * @return void
    */
   addLeftMenu (wd) {
     this._lopts.push(wd);
@@ -79,6 +97,7 @@ export default class Dom {
   /**
    * Adds a widget to right part of menu. Direction right to left;
    * @param {!Domo} wd
+   * @return void
    */
   addRightMenu (wd) {
     this._ropts.push(wd);

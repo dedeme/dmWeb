@@ -51,10 +51,9 @@ annLen = 50
 
 -- |@'cashStock'@ - Security stock for cash
 cashStock :: Double
-cashStock = 5000
+cashStock = 1000
 
 -- |
 force :: String -> Double
-force "BME" = 25.88
-force "SAN" = 4.4855
+--force "SAN" = 4.4855
 force _ = -2

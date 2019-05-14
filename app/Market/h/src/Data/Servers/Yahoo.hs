@@ -13,7 +13,6 @@ import qualified Data.Servers.Codes as Codes
 codes = do
   cs <- Codes.codes "serverYahoo"
   return $ cs ++ [
-      ("MDF", "MDF.MC"),
       ("PVA", "PVA.MC")
     ]
 

@@ -1,12 +1,18 @@
 // Copyright 24-Sep-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("view_Plan");
+import Main from "../Main.js";
+import It from "../dmjs/It.js";
+import Ui from "../dmjs/Ui.js";
+import Db from "../Db.js";
+import Dom from "../Dom.js";
+import db_Balance from "../db/Balance.js";
+import db_PyG from "../db/PyG.js";
+import {_, _args} from "../I18n.js";
 
-goog.require("db_Balance");
-goog.require("db_PyG");
+const $ = Ui.$;
 
-view_Plan = class {
+export default class view_Plan {
   /**
    * @param {!Main} control
    */
@@ -32,8 +38,8 @@ view_Plan = class {
     let item = conf.planId();
     let lg = item.length;
     if (
-      (lg === 2 && !It.from(db.subgroups()).containsf(s => s[0] === item)) ||
-      (lg === 3 && !It.from(db.accounts()).containsf(a => a[0] === item))
+      (lg === 2 && !It.from(db.subgroups()).some(s => s[0] === item)) ||
+      (lg === 3 && !It.from(db.accounts()).some(a => a[0] === item))
     ) {
       item = "";
       lg = 0;
@@ -47,21 +53,21 @@ view_Plan = class {
     if (lg > 0) {
       group = item.charAt(0);
       title = _("Subgroups");
-      data = It.from(db.subgroups()).filter(s => s[0].charAt(0) === item).to();
+      data = [... It.from(db.subgroups()).filter(s => s[0].charAt(0) === item)];
     }
     if (lg > 1) {
       subgroup = item.charAt(1);
       title = _("Accounts");
-      data = It.from(db.accounts()).filter(a =>
+      data = [... It.from(db.accounts()).filter(a =>
         a[0].substring(0, 2) === item
-      ).to();
+      )];
     }
     if (lg > 2) {
       account = item.charAt(2);
       title = _("Subaccounts");
-      data = It.from(db.subaccounts()).filter(s =>
+      data = [... It.from(db.subaccounts()).filter(s =>
         s[0].substring(0, 3) === item
-      ).to();
+      )];
     }
     data.sort((e1, e2) => e1[0] > e2[0] ? 1 : -1);
 
@@ -95,7 +101,7 @@ view_Plan = class {
             .html("<a href='#' onclick='return false;'>" + gname + "</a>")
             .add($("ul").att("id", "hlist")
               .style("list-style:none;padding-left:10px;")
-              .addIt(It.from(db_Balance.entries()).filter(e =>
+              .adds([... It.from(db_Balance.entries()).filter(e =>
                   db_Balance.groupId(e[0]) === gkey
                 ).map(e => {
                   const ekey = e[0];
@@ -104,7 +110,7 @@ view_Plan = class {
                   return $("li")
                     .add(Ui.link(ev => { groupField.value("B" + ekey); })
                       .klass("link").att("title", "B" + ekey).html(ename2));
-                }))
+                })])
             );
         });
       }
@@ -117,7 +123,7 @@ view_Plan = class {
             .html("<a href='#' onclick='return false;'>" + gname + "</a>")
             .add($("ul").att("id", "hlist")
               .style("list-style:none;padding-left:10px;")
-              .addIt(It.from(db_PyG.entries()).filter(e =>
+              .adds([... It.from(db_PyG.entries()).filter(e =>
                   db_PyG.groupId(e[0]) === gkey
                 ).map(e => {
                   const ekey = e[0];
@@ -126,7 +132,7 @@ view_Plan = class {
                   return $("li")
                     .add(Ui.link(ev => { groupField.value("P" + ekey); })
                       .klass("link").att("title", "P" + ekey).html(ename2));
-                }))
+                })])
             );
         });
       }
@@ -134,10 +140,10 @@ view_Plan = class {
       return  $("td").klass("frame").style("width:350px;vertical-align:top;")
         .add($("p").html("<b>Balance</b>"))
         .add($("ul").style("list-style:none;padding-left:0px;")
-          .addIt(mkBalance()))
+          .adds([... mkBalance()]))
         .add($("p").html("<b>PyG</b>"))
         .add($("ul").style("list-style:none;padding-left:0px;")
-          .addIt(mkPyg()))
+          .adds([... mkPyg()]))
       ;
     }
 
@@ -164,11 +170,11 @@ view_Plan = class {
       return r.add(separator());
     }
 
-    const createdKeys = It.from(data).map(e =>
+    const createdKeys = [... It.from(data).map(e =>
       isSubaccount
       ? e[0].substring(e[0].length - 2)
       : e[0].substring(e[0].length - 1)
-    ).to();
+    )];
     const left = isAccount ? mkLeftHelp() : mkEmptyTd();
 
     let cols = 2;
@@ -176,7 +182,7 @@ view_Plan = class {
     if (isAccount) ++cols;
 
     const selectKey = Ui.select("enterKey",
-      (isSubaccount
+      [... (isSubaccount
         ? It.range(26).map(n => {
             const r = "0" + n;
             return r.substring(r.length - 2);
@@ -192,7 +198,7 @@ view_Plan = class {
         (keyModify !== "" && formatAcc(keyModify) === n)
       ).map(n =>
         (keyModify !== "" && formatAcc(keyModify) === n) ? "+" + n : n
-      ).to()).on("change", ev => { enterName.e().focus(); });
+      )]).on("change", ev => { enterName.e.focus(); });
 
     let tds = [];
     let rows = [];
@@ -225,7 +231,7 @@ view_Plan = class {
               const panns = db.planAnnotations(keyModify);
               if (
                 panns != 0 &&
-                !confirm(_args(_("change of count %0"), panns))
+                !confirm(_args(_("change of count %0"), String(panns)))
               ) {
                 this._keyModify = "";
                 self.show();
@@ -241,7 +247,7 @@ view_Plan = class {
       if (isAccount) {
         tds.push($("td").add(groupField));
       }
-      rows.push($("tr").addIt(It.from(tds)));
+      rows.push($("tr").adds([... It.from(tds)]));
       rows.push($("tr")
         .add($("td").att("colspan", cols)
           .add($("hr").att("height", "1px"))));
@@ -264,7 +270,7 @@ view_Plan = class {
     if (isAccount) {
       tds.push($("td").html(_("Group")));
     }
-    rows.push($("tr").addIt(It.from(tds)));
+    rows.push($("tr").adds([... It.from(tds)]));
     rows.push($("tr")
       .add($("td").att("colspan", cols)
         .add($("hr").att("height", "1px"))));
@@ -300,7 +306,7 @@ view_Plan = class {
             const panns = db.planAnnotations(r[0]);
             if (panns > 0) {
               alert(_args(
-                _("%0 can not be deleted because %1"), r[0], panns));
+                _("%0 can not be deleted because %1"), r[0], String(panns)));
               return
             }
             control.planDel(r[0]);
@@ -319,9 +325,9 @@ view_Plan = class {
       if (isAccount) {
         const isPyG = r[2].charAt(0) === "P";
         const idDescription = isPyG
-          ? It.from(db_PyG.entries()).findFirst(
+          ? It.from(db_PyG.entries()).find(
             e => e[0] === r[2].substring(1))
-          : It.from(db_Balance.entries()).findFirst(
+          : It.from(db_Balance.entries()).find(
             e => e[0] === r[2].substring(1))
 
         const id = idDescription[0];
@@ -342,20 +348,20 @@ view_Plan = class {
           groupField.value(r[2]);
         }
       }
-      rows.push($("tr").addIt(It.from(tds)));
+      rows.push($("tr").adds([... It.from(tds)]));
     });
 
     const right = $("td").style("text-align:center;vertical-align:top;")
       .add($("h2").html(title))
       .add(mkSubmenu())
       .add($("table").att("align", "center").klass("frame")
-        .addIt(It.from(rows)));
+        .adds([... It.from(rows)]));
 
     const table = $("table").klass("main").add($("tr")
       .add(left)
       .add(right));
     control.dom().show("plan", table);
-    enterName.e().focus();
+    enterName.e.focus();
   }
 }
 

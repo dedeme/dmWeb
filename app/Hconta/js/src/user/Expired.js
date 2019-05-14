@@ -1,9 +1,13 @@
 // Copyright 23-Sep-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("user_Expired");
+import Main from "../Main.js";
+import Ui from "../dmjs/Ui.js";
+import {_, _args} from "../I18n.js";
 
-user_Expired = class {
+const $ = Ui.$;
+
+export default class user_Expired {
   /**
    * @param {!Main} control
    */

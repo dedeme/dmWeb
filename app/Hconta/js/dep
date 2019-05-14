@@ -1,48 +1,25 @@
 #!/bin/bash
 
-LIBS="https://github.com/dedeme/dmjsBasic.git dmjsBasic \
-      https://github.com/dedeme/dmjsWidgets.git dmjsWidgets "
-
-# Do not change --------------------------------------------
-
-# Work from libs
-# Variables: GIT, LIB
-clone() {
-  if [ -e tmp ]
-  then
-    rm -fR tmp
-  fi
-  mkdir tmp
-  cd tmp
-  git clone $GIT
-  cd ..
-  if [ -e $LIB ]
-  then
-    rm -fR $LIB
-  fi
-  mv tmp/$LIB/src $LIB
-  rm -fR tmp
-}
-
-if [ ! -e libs ]
+if [ ! -e lib ]
 then
-  mkdir libs
+  mkdir lib
 fi
+cd lib
 
-cd libs
+if [ -e tmp ]
+then
+  rm -fR tmp
+fi
+mkdir tmp
+cd tmp
+git clone https://github.com/dedeme/libdmjs.git
+git clone https://github.com/dedeme/libdmwg.git
+cd ..
 
-GIT=""
-LIB=""
-IX="0"
-for GIT_LIB in $LIBS
-do
-  if [ $IX == "0" ]
-  then
-    GIT=$GIT_LIB
-    IX="1"
-  else
-    LIB=$GIT_LIB
-    clone
-    IX="0"
-  fi
-done
+if [ -e dmjs ]
+then
+  rm -fR dmjs
+fi
+mv tmp/libdmjs/src/dmjs dmjs
+cp -R tmp/libdmwg/src/dmjs/* dmjs
+rm -fR tmp

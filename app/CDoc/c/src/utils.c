@@ -59,7 +59,7 @@ CgiRp *send_paths(Cgi *cgi) {
   }_EACH
 
   Map/*Json*/ *m = map_new();
-  jmap_parray(m, "paths", js_target_paths);
+  map_put(m, "paths", json_warray(js_target_paths));
   return cgi_ok(cgi, m);
 }
 
@@ -194,7 +194,7 @@ CgiRp *send_index_tree(Cgi *cgi, char *path) {
 	}
 
   Map/*Json*/ *m = map_new();
-  jmap_parray(m, "tree", tree);
+  map_put(m, "tree", json_warray(tree));
   return cgi_ok(cgi, m);
 }
 

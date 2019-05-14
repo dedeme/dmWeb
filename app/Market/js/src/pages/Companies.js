@@ -370,8 +370,8 @@ export default class Companies {
     this._main.dom.show(Main.companiesPageId,
       $("div").style("text-align:center")
         .add($("div").add(this.mkLink()))
-        .add(tb)
         .add(rs)
+        .add(tb)
         .add(box.wg)
         .add(Ui.upTop("up"))
     );
@@ -421,6 +421,9 @@ export default class Companies {
           tb.add($("tr").add($("td").att("colspan", ncols).add($("hr"))));
           tb.add($("tr").adds(tds));
           tb.add($("tr").add($("td").att("colspan", ncols).add($("hr"))));
+        }
+        if (list.length > 0) {
+          ttProfits = ttProfits / list.length;
         }
         rs.html(_("Profits") + ": " + this.formatN(ttProfits * 100) + "%");
       }

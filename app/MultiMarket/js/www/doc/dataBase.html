@@ -1,0 +1,169 @@
+<!doctyp html>
+<html>
+  <head>
+  <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+  <meta http-equiv='Pragma' content='no-cache' />
+  <meta name='lang' content='es' />
+  <meta name='author' content='ºDeme.' />
+  <link rel='icon' type='image/png' href='img/favicon.png' />
+  <link rel='stylesheet' href='../styles.css' type='text/css' />
+  <style>
+    code {color: #408060;}
+  </style>
+  </head>
+  <body style="background-color: #fafafb">
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>List</h2>
+
+    <!-------------->
+    <h3>tmp</h3>
+
+    <p><code>data/tmp</code></p>
+
+    <p>Structure:</p>
+    <pre>
+      Directory with temporary files.
+    </pre>
+
+    <!-------------->
+    <h3>backups</h3>
+
+    <p><code>data/backups</code></p>
+
+    <p>Structure:</p>
+    <pre>
+      Directory with a file for each backup.
+      Files has extension ".zip"
+    </pre>
+
+    <!-------------->
+    <h3>trash</h3>
+
+    <p><code>data/trash</code></p>
+
+    <p>Structure:</p>
+    <pre>
+      Directory with a file for each trash-backup.
+      Files has extension ".zip"
+    </pre>
+
+    <!-------------->
+    <h3>nicks.db</h3>
+
+    <p><code>data/nicks.db</code></p>
+
+    <p>Companies list with their qualifications.</p>
+
+    <p>Structure:</p>
+    <pre>
+      [
+        (0) nextId: Int -- Ids generator
+        (1) model: Int -- Id of nick model
+        (2) nicks: [
+          (0) id: Int -- Identifier
+          (1) name: String -- Nick name (e.g. TEF)
+          (2) is_ibex: Boolean
+          (3) is_sel: Boolean
+          (4) is_normal: Boolean -- If false it is an extra nick
+        ]
+      ]</pre>
+
+
+    <!------------>
+    <h3>quotes</h3>
+
+    <p><code>data/quotes</code></p>
+
+    <p>Quotes of companies.</p>
+
+    <p>Structure:</p>
+    <pre>
+      Directory with one file for each company.
+      Files have the name: '<i>nickName</i>.db'.
+      Each file is a number of lines with next structure:
+
+      20190404:39.7000:39.9300:40.2900:39.7000:898111:false
+
+      That is:
+
+      date:open:close:maximum:minimum:volume:manuallyModified</pre>
+
+    <!---------------->
+    <h3>servers.db</h3>
+
+    <p><code>data/servers.db</code></p>
+
+    <p>Urls of historic servers and companies codes.</p>
+
+    <p>Each server must have a implementation in java for each service that
+       it gives: Company, Daily or Historic.</p>
+
+    <ul>
+      <li><i>Company service</i> gives current quote of a company.</li>
+      <li><i>Daily service</i> gives current quote of every company.</li>
+      <li><i>Historic service</i> gives date, open, close, maximum, minimum and
+          volume of last days for each company.</li>
+    </ul>
+
+    <p>Structure:</p>
+    <pre>
+      [
+        nextId: Int -- Ids generator
+        server: [
+          (0) id: Int -- Identifier
+          (1) sort_name: String -- Not more than 5 characters (e.g. "INVER")
+          (2) name: String -- Complete name (e.g. Invertia)
+          (3) company_conf: Opt <b>Rconf</b>
+          (4) daily_conf: Opt <b>Rconf</b>
+          (5) historic_conf: Opt <b>Rconf</b>
+          (6) codes: [
+              (0) nick_id: Int -- Nick identifier
+              (1) code: Opt[String] -- Server code of nick
+            ]
+        ]
+      ]
+      where <b>Rconf</b> is [
+        (0) url: String
+        (1) sel: Boolean - if its value is '1':
+              *company_conf: (only one server allowed) It will be used.
+              *daily_conf: (more than one allowed) It will be used to evaluate
+                           next day operations.
+              *historic_conf: (only one server allowed) Qualified 'vote'
+        (2) is_date_eu: Boolean
+        (3) date_separator: String -- converted to char
+        (4) is_number_eu: Boolean
+        (5) fields_type: String
+              * "" for company_conf (There is one only field)
+              * 'C' (Code) | 'Q' (Quote) combination for daily_conf
+              * 'D' (Date) | 'O' (Open) | 'C' (Close) | 'X' (maXimum) |
+                  'N' (miNimum) | 'V' (Volume) combination for historic_conf
+        (6) table_start: String -- Sequence of codes separates by '|'
+        (7) table_end: String -- Sequence of codes separates by '|'
+        (8) row_start: String -- Sequence of codes separates by '|'
+        (9) row_end: String -- Sequence of codes separates by '|'
+        (10)cols_start: Arr[String] -- A sequence of codes separates by '|' for
+                                       each field.
+        (11)cols_end: Arr[String] -- A sequence of codes separates by '|' for
+                                     each field.
+      ]</pre>
+
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>Dependencies</h2>
+
+    <pre>
+      backups
+      ||- trash [restore, autorestore]
+      |- tmp [make, restore]
+      ---------
+
+      nicks.db
+      ||- quotes [add, remove, modify]
+      |-- servers.db [add, remove]
+      ---------
+    </pre>
+
+  </body>
+</html>

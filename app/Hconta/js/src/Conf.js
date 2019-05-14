@@ -1,11 +1,11 @@
 // Copyright 24-Sep-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("Conf");
+import It from "./dmjs/It.js";
+import DateDm from "./dmjs/DateDm.js";
+import db_PageConf from "./db/PageConf.js";
 
-goog.require("db_PageConf");
-
-Conf = class {
+export default class Conf {
   /**
    * @param {string} language
    * @param {!Array<number>} years
@@ -60,7 +60,7 @@ Conf = class {
 
   /** @return {!Array<number>} A sorted array */
   years () {
-    return It.from(this._years).sort().to();
+    return [... It.from(this._years).sort()];
   }
 
   /** @param {!Array<number>} value */
@@ -150,7 +150,7 @@ Conf = class {
    */
   static restore (serial) {
     if (serial === "") {
-      const year = DateDm.now().year();
+      const year = DateDm.now().year;
       return new Conf("es", [year], year, "settings", "0A", "",
         new db_PageConf("572", 0, 20),
         new db_PageConf("572", 0, 20),

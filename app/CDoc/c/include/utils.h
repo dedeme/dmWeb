@@ -7,6 +7,7 @@
   # define UTILS_H
 
 #include <dmc/Cgi.h>
+#include <dmc/Arr.h>
 
 ///
 CgiRp *send_conf(Cgi *cgi);

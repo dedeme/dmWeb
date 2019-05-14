@@ -14,6 +14,7 @@ import qualified Data.Diary as Diary
 import qualified Data.Lquotes as Lquotes
 import qualified Data.Pf as Pf
 import qualified Data.Ledger as Ledger
+import qualified Data.Params as Params
 
 process :: Cgi -> [(String, JSValue)] -> IO ()
 process cgi rq =
@@ -21,6 +22,8 @@ process cgi rq =
     "idata" -> do
       (pf, ld) <- Diary.books
       pf' <- Lquotes.fillPf pf
+      p <- Params.readBase
       Cgi.ok cgi [("pf", Pf.toJs pf'),
+                  ("params", Params.toJs p),
                   ("ledger", Ledger.toJs ld)]
     s -> error $ printf "Unknown rq '%s'" s

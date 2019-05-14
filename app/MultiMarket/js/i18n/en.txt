@@ -10,13 +10,22 @@
 '%0' is not a positive number = '%0' is not a positive number
 
 # ORPHAN
+Accepted<br>changes = Accepted<br>changes
+
+# ORPHAN
 Accounting profits = Accounting profits
 
 # ORPHAN
-All = All
+All %0 = All %0
 
 # ORPHAN
 All Companies = All Companies
+
+# ORPHAN
+All nicks = All nicks
+
+# ORPHAN
+All<br>Companies = All<br>Companies
 
 # ORPHAN
 Ammount = Ammount
@@ -28,16 +37,25 @@ Annotations = Annotations
 Assets = Assets
 
 # ORPHAN
+Autocorrection = Autocorrection
+
+# ORPHAN
 Backs = Backups
 
 # ORPHAN
 Backup successfully restored = Backup successfully restored
 
 # ORPHAN
+Bad nick Id in Test/readQuotesSvs = Wrong nick Id in Test/readQuotesSvs
+
+# ORPHAN
 Balance = Balance
 
 # ORPHAN
 Bet = Bet
+
+# ORPHAN
+Browser = Browser
 
 # ORPHAN
 Buy = Buy
@@ -67,6 +85,12 @@ Companies = Companies
 Current profits = Current profits
 
 # ORPHAN
+Daily = Daily
+
+# ORPHAN
+Daily Data Servers = Daily Data Servers
+
+# ORPHAN
 Date = Date
 
 # ORPHAN
@@ -88,7 +112,25 @@ Diff. - = Diff. -
 Differences = Differences
 
 # ORPHAN
+Documentation = Documentation
+
+# ORPHAN
+Done = Done
+
+# ORPHAN
+Edit = Edit
+
+# ORPHAN
 Equity = Equity
+
+# ORPHAN
+Error reading local quotes = Error reading local quotes
+
+# ORPHAN
+Extra quote = Extra quote
+
+# ORPHAN
+Fail unzipping backup = Fail unzipping backup
 
 # ORPHAN
 Fees = Fees
@@ -100,16 +142,64 @@ File is not a %0 backup = File is not a %0 backup
 Income = Income
 
 # ORPHAN
+Issues = Issues
+
+# ORPHAN
 Last Month = Last Month
 
 # ORPHAN
 Last Year = Last Year
 
 # ORPHAN
+Max = Max
+
+# ORPHAN
+Maximum = Maximum
+
+# ORPHAN
+Min = Min
+
+# ORPHAN
+Minimum = Minimum
+
+# ORPHAN
+Modify = Modify
+
+# ORPHAN
+Mult. = Mult.
+
+# ORPHAN
+Name = Name
+
+# ORPHAN
+Name is duplicated = Name is duplicated
+
+# ORPHAN
+Name is missing = Name is missing
+
+# ORPHAN
+New = New
+
+# ORPHAN
 Nick = Nick
 
 # ORPHAN
-Nicks = Nicks
+No Selected = No Selected
+
+# ORPHAN
+No issues detected = No issues detected
+
+# ORPHAN
+No nick was selected = No nick was selected
+
+# ORPHAN
+Ok. = Ok.
+
+# ORPHAN
+Open = Open
+
+# ORPHAN
+Order by = Order by
 
 # ORPHAN
 Parameters = Parameters
@@ -124,7 +214,22 @@ Price = Price
 Profits = Profits
 
 # ORPHAN
+Quotes = Quotes
+
+# ORPHAN
+Quotes have wrong format = Quotes have wrong format
+
+# ORPHAN
+Quotes updated = Quotes updated
+
+# ORPHAN
+Rejected<br>changes = Rejected<br>changes
+
+# ORPHAN
 Remove duplicate = Remove duplicate
+
+# ORPHAN
+Reverse = Reverse
 
 # ORPHAN
 Risk = Risk
@@ -133,13 +238,55 @@ Risk = Risk
 Risk profits = Risk profits
 
 # ORPHAN
+Save split? = Save split?
+
+# ORPHAN
+Search more issues = Search more issues
+
+# ORPHAN
+See = See
+
+# ORPHAN
+Selected = Selected
+
+# ORPHAN
+Selection<br>changes = Selection<br>changes
+
+# ORPHAN
 Sell = Sell
 
 # ORPHAN
 Sells = Sells
 
 # ORPHAN
+Server codes = Server codes
+
+# ORPHAN
+Servers = Servers
+
+# ORPHAN
+Split = Split
+
+# ORPHAN
+Status = Status
+
+# ORPHAN
 Stocks = Stocks
+
+# ORPHAN
+Stopped = Stopped
+
+# ORPHAN
+Test = Test
+
+# ORPHAN
+Test all = Test all
+
+# ORPHAN
+There are no more issues = There are no more issues
+
+# ORPHAN
+There is an issue:\n%0\nForce modification? = There is an issue:\n%0\nForce modification?
 
 # ORPHAN
 Total bet = Total bet
@@ -148,7 +295,28 @@ Total bet = Total bet
 Trading = Trading
 
 # ORPHAN
+Translator = Translator
+
+# ORPHAN
+URL = URL
+
+# ORPHAN
+Update = Update
+
+# ORPHAN
+Url is missing = Url is missing
+
+# ORPHAN
 Value = Value
+
+# ORPHAN
+Vol = Vol
+
+# ORPHAN
+Vol. = Vol.
+
+# ORPHAN
+Volume = Volume
 
 # ORPHAN
 Withdrawal = Withdrawal
@@ -160,148 +328,247 @@ Without data = Without data
 Without operations = Without operations
 
 # ORPHAN
+Wrong data = Wrong data
+
+# ORPHAN
 Year close = Year close
 
-# TO DO
-# src/core/Backups.js: 87
-File is not a Selectividad backup = 
+# src/data/Issue.js: 44
+%0 is greater than 'max' in %1 = %0 is greater than 'max' in %1
 
-# src/core/Backups.js: 54
+# src/data/Issue.js: 46
+%0 is less than 'min' in %1 = %0 is less than 'min' in %1
+
+# src/data/Issue.js: 42
+%0: Difference +- 20% in %1 = %0: Difference +- 20% in %1
+
+# src/sys/Nicks.js: 144
+'%0' already exists in nicks or extra = '%0' already exists in Nicks or Extra
+
+# src/sys/Backups.js: 62
 '%0' can not be read = '%0' can not be read
 
-# src/core/Backups.js: 206
+# src/sys/Backups.js: 218
 '%0' is an empty file = '%0' is an empty file
 
-# src/sys/Chpass.js: 71
-# src/core/Auth.js: 50
+# src/sys/Chpass.js: 77
+# src/core/Auth.js: 58
 Accept = Accept
 
-# src/core/Backups.js: 208
-# src/core/Backups.js: 246
-# src/core/Backups.js: 256
+# src/sys/Home.js: 79
+# src/sys/Home.js: 82
+All = All
+
+# src/sys/Backups.js: 220
+# src/sys/Backups.js: 259
+# src/sys/Backups.js: 269
 All the data will be replaced = ATENTION!: All the data will be replaced.\nContinue?
 
-# src/core/Backups.js: 231
+# src/sys/Backups.js: 244
 Automatic Backups = Automatic Backups
 
-# src/core/Backups.js: 197
-Backup file is missing = Backup file is missin
+# src/sys/Backups.js: 209
+Backup file is missing = Backup file is missing
 
-# src/sys/SysMain.js: 35
-# src/core/Backups.js: 265
+# src/sys/Backups.js: 98
+Backup version is missing = Backup version is missing
+
+# src/sys/Backups.js: 96
+Backup version is wrong = Backup version is wrong
+
+# src/sys/SysMain.js: 49
+# src/sys/Backups.js: 278
 Backups = Backups
 
-# src/sys/Chpass.js: 75
+# src/sys/Chpass.js: 81
 Cancel = Cancel
 
-# src/sys/Settings.js: 72
+# src/sys/Settings.js: 78
 Change Language to %0 = Change Language to %0
 
-# src/sys/Settings.js: 79
+# src/sys/Settings.js: 85
 Change Password = Change Password
 
-# src/sys/Chpass.js: 191
-# src/core/Auth.js: 178
+# src/sys/Nicks.js: 171
+Check = Check
+
+# src/sys/Chpass.js: 197
+# src/core/Auth.js: 186
 Check gray squares = Check gray squares
 
-# src/core/Backups.js: 239
+# src/sys/Backups.js: 252
 Clear = Clear
 
-# src/core/Backups.js: 236
+# src/sys/Backups.js: 249
 Clear trash? = Clear trash?
 
 # src/core/Expired.js: 47
 Click %0 to continue. = Click %0 to continue.
 
-# src/sys/Chpass.js: 147
+# src/sys/Chpass.js: 153
 Confirm password = Confirm password
 
-# src/sys/Chpass.js: 105
+# src/sys/Chpass.js: 111
 Confirm password is missing = 'Confirm password' is missing
 
-# src/sys/Chpass.js: 135
+# src/sys/Chpass.js: 141
 Current password = Current password
 
-# src/sys/Chpass.js: 93
+# src/sys/Chpass.js: 99
 Current password is missing = 'Current password' is missing
 
-# src/core/Backups.js: 268
+# src/sys/Home.js: 183
+Daily Quotes = Daily Quotes
+
+# src/sys/wgs/Wnick.js: 205
+Delete = Delete
+
+# src/sys/wgs/Wnick.js: 91
+Delete '%0'? = Delete '%0'?
+
+# src/sys/Backups.js: 281
+# src/sys/Nicks.js: 167
 Download = Download
 
-# src/sys/Chpass.js: 176
+# src/sys/Home.js: 81
+Errors = Errors
+
+# src/sys/SysMain.js: 38
+Extra = Extra
+
+# src/data/Issue.js: 40
+Extra quote in %0 = Extra quote in %0
+
+# src/sys/wgs/Wnick.js: 67
+Fail downloading quotes:\n%0 = Fail downloading quotes:\n%0
+
+# src/sys/Chpass.js: 182
 Fail trying to change password = Fail trying to change password
 
-# src/core/Backups.js: 85
-Fail unzipping backup = Fail unzipping backup
+# src/data/Issue.js: 36
+File %0 empty or not found = File %0 empty or not found
 
-# src/sys/Chpass.js: 89
-# src/core/Auth.js: 105
+# src/sys/Home.js: 186
+Fleas Data = Fleas Data
+
+# src/sys/Chpass.js: 95
+# src/core/Auth.js: 113
 Grey squares checks are wrong = Grey squares checks are wrong
 
-# src/core/Dom.js: 103
+# src/core/Dom.js: 116
 Help & Credits = Help & Credits
 
-# src/sys/SysMain.js: 26
-# src/core/Dom.js: 67
+# src/sys/SysMain.js: 30
+# src/sys/Home.js: 176
 Home = Home
 
-# src/core/Auth.js: 140
+# src/core/Auth.js: 148
 Keep connected = Keep connected
 
-# src/sys/Chpass.js: 211
-# src/core/Auth.js: 198
+# src/sys/Home.js: 75
+Last Day = Last Day
+
+# src/sys/Home.js: 77
+Last Week = Last Week
+
+# src/sys/Home.js: 160
+Log = Log
+
+# src/sys/Chpass.js: 217
+# src/core/Auth.js: 206
 Login = Login
 
 # src/core/Bye.js: 40
 Logout-message = <p>%0 has finished.</p><p><b>Good by!</b></p>
 
-# src/core/Backups.js: 173
+# src/sys/Backups.js: 185
 Make backup = Make backup
 
-# src/sys/Chpass.js: 141
+# src/sys/Home.js: 180
+Market = Market
+
+# src/sys/wgs/Wnick.js: 202
+# src/sys/wgs/Wnick.js: 208
+Model = Model
+
+# src/sys/Nicks.js: 157
+New nick = New nick
+
+# src/sys/Chpass.js: 147
 New password = New password
 
-# src/sys/Chpass.js: 111
+# src/sys/Chpass.js: 117
 New password and confirm password do not match = New password and confirm password do not match
 
-# src/sys/Chpass.js: 99
+# src/sys/Chpass.js: 105
 New password is missing = 'New password' is missing
 
-# src/core/Backups.js: 201
+# src/sys/SysMain.js: 34
+Nicks = Nicks
+
+# src/sys/Backups.js: 213
 Only one file can be selected = Only one file can be selected
 
-# src/core/Auth.js: 125
+# src/core/Auth.js: 133
 Password = Password
 
-# src/core/Auth.js: 81
+# src/core/Auth.js: 89
 Password is missing = Password is missing
 
-# src/sys/Chpass.js: 45
+# src/sys/Chpass.js: 51
 Password successfully changed = Password successfully changed
 
-# src/core/Backups.js: 273
+# src/data/Issue.js: 38
+Quote of %0 is missimg = Quote of %0 is missimg
+
+# src/sys/Backups.js: 286
 Restore = Restore
 
-# src/core/Backups.js: 193
+# src/sys/Backups.js: 205
 Restore backup = Restore backup
+
+# src/sys/wgs/Wnick.js: 172
+# src/sys/wgs/Wnick.js: 176
+# src/sys/wgs/Wnick.js: 231
+# src/sys/wgs/Wnick.js: 236
+Selection = Selection
+
+# src/sys/wgs/Wnick.js: 122
+Send '%0' to Extra? = Send '%0' to Extra?
+
+# src/sys/wgs/Wnick.js: 106
+Send '%0' to Nicks? = Send '%0' to Nicks?
+
+# src/data/Issue.js: 34
+Server code of %0 is missing = Server code of %0 is missing
 
 # src/core/Expired.js: 45
 Session is expired. = Session is expired.
 
-# src/sys/SysMain.js: 30
-# src/sys/Settings.js: 88
+# src/sys/SysMain.js: 44
+# src/sys/Settings.js: 94
 Settings = Settings
 
-# src/core/Backups.js: 234
+# src/sys/wgs/Wnick.js: 214
+# src/sys/wgs/Wnick.js: 216
+To Extra = To Extra
+
+# src/sys/wgs/Wnick.js: 212
+To Nicks = To Nicks
+
+# src/sys/Backups.js: 247
 Trash = Trash
 
-# src/core/Auth.js: 120
+# src/core/Auth.js: 128
 User = User
 
-# src/core/Auth.js: 77
+# src/core/Auth.js: 85
 User name is missing = User name is missing
 
-# src/core/Auth.js: 163
+# src/sys/Nicks.js: 111
+Without nicks = Without nicks
+
+# src/core/Auth.js: 171
 Wrong password = Wrong password
 
 # src/core/Expired.js: 29

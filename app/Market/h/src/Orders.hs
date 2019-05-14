@@ -18,29 +18,39 @@ import qualified Global as G
 data Op = Buy Double Double | Sell | None
   deriving Show
 
+data Co = Co {
+  coToSell :: Bool, -- If is to sell
+  coRef :: Double, -- Current strip reference
+  coMm :: Double, -- Current maximum-minimum
+  coPmm1 :: Double, -- Previous maximum-minimum
+  coPmm2 :: Double, -- Preivious previous maximum-minimum
+  coPc :: Double -- Close of the last position change
+}
+
 calc :: [Double] -> Params -> Double -> (Op, Bool)
 calc closes@(c:_) (Params step) force =
-  cl None True (c * 0.95) c c c c closes
+  cl None (Co True (c * 0.95) c c c c) closes
   where
-  cl op toSell _ _ _ _ _ [] = (op, toSell)
-  cl op toSell ref mm pmm1 pmm2 coq (c:cs) =
+  cl :: Op -> Co -> [Double] -> (Op, Bool)
+  cl op co [] = (op, coToSell co)
+  cl op (Co toSell ref mm pmm1 pmm2 coPc) (c:cs) =
     if toSell
     then
       let ref' = ref + (c - ref) * step in
         if c <= ref'
-        then cl Sell False
-                (if  c > coq || mm > pmm2 then mm else pmm2)
-                c mm pmm1 c cs
+        then let newRef = if c > coPc || mm > pmm2 then mm else pmm2
+             in  cl Sell (Co False newRef c mm pmm1 c) cs
         else let mm' = if c > mm then c else mm
-             in  cl None True ref' mm' pmm1 pmm2 coq cs
+             in  cl None (Co True ref' mm' pmm1 pmm2 coPc) cs
     else
       let ref' = ref - (ref - c) * step in
         if c >= ref' || c == force
-        then cl (Buy c ((c - ref') / ref')) True
-                (if  c < coq || mm < pmm2 then mm else pmm2)
-                c mm pmm1 c cs
+        then let newRef = if c < coPc || mm < pmm2 then mm else pmm2
+             in  cl (Buy c ((c - ref') / ref'))
+                    (Co True newRef c mm pmm1 c)
+                    cs
         else let mm' = if c < mm then c else mm
-             in  cl None False ref' mm' pmm1 pmm2 coq cs
+             in  cl None (Co False ref' mm' pmm1 pmm2 coPc) cs
 
 readCloses :: String -> IO [Double]
 readCloses nk = do

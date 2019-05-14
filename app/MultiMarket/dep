@@ -1,5 +1,7 @@
 #!/bin/bash
 
-cd js
+cd c
+./dep
+cd ../js
 ./dep
 cd ..

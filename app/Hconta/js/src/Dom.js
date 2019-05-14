@@ -1,9 +1,15 @@
 // Copyright 23-Sep-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("Dom");
+import Main from "./Main.js";
+import Ui from "./dmjs/Ui.js";
+import Domo from "./dmjs/Domo.js";
+import Dec from "./dmjs/Dec.js";
+import {_} from "./I18n.js";
 
-Dom = class {
+const $ = Ui.$;
+
+export default class Dom {
   /**
    * @param {!Main} control
    */
@@ -17,7 +23,7 @@ Dom = class {
    * @return {void}
    */
   showRoot (o) {
-    $$("body").next().removeAll().add(
+    $("@body").removeAll().add(
       $("div")
         .add(o)
         .add($("p").html("&nbsp;"))
@@ -57,8 +63,10 @@ Dom = class {
     const menu = $("table").klass("main").add($("tr")
       .add($("td")
         .add(
-          entry(conf.year(), "year")
-            .addStyle(conf.isLastYear() ? "" : "color:#800000")
+          conf.isLastYear()
+            ? entry(conf.year(), "year")
+            : entry(conf.year(), "year")
+              .setStyle("color", "#800000")
         ).add(separator())
         .add(entry(_("Diary"), "diary"))
         .add(separator())
@@ -128,7 +136,7 @@ Dom = class {
    */
   static textWidth (tx) {
     const c = $("canvas");
-    const e = c.e();
+    const e = c.e;
     const ctx = e.getContext("2d");
     ctx.font/**/ = "14px sans";
     return ctx.measureText(tx).width/**/;

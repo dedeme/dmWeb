@@ -263,28 +263,38 @@ static void class(Aclass *classes, char *line, int ix, LckFile *lck) {
 
   AclassAtt *fatts = aclassAtt_new();
   EACH(atts, ClassAtt, a) {
+    bool is_get = str_cindex(classAtt_type(a), 'g') != -1;
     bool is_get_private = is_private(packDoc_doc(classAtt_get_doc(a)));
+    bool is_set = str_cindex(classAtt_type(a), 's') != -1;
     bool is_set_private = is_private(packDoc_doc(classAtt_set_doc(a)));
-    if (!is_get_private || !is_set_private) {
-      if (!is_get_private && !is_set_private) {
+    if (is_get) {
+      if (is_set) {
+        if (!is_get_private && !is_set_private) {
+          aclassAtt_add(fatts, a);
+        } else if (!is_get_private) {
+          aclassAtt_add(fatts, classAtt_new(
+            classAtt_id(a),
+            "g",
+            classAtt_get_doc(a),
+            packDoc_new("", "", "")
+          ));
+        } else if (!is_set_private) {
+          aclassAtt_add(fatts, classAtt_new(
+            classAtt_id(a),
+            "s",
+            packDoc_new("", "", ""),
+            classAtt_get_doc(a)
+          ));
+        }
+      } else {
+        if (!is_get_private) {
+          aclassAtt_add(fatts, a);
+        }
+      }
+    } else {
+      if (!is_set_private) {
         aclassAtt_add(fatts, a);
-        continue;
       }
-      if (is_get_private) {
-        aclassAtt_add(fatts, classAtt_new(
-          classAtt_id(a),
-          "s",
-          packDoc_new("", "", ""),
-          classAtt_set_doc(a)
-        ));
-        continue;
-      }
-      aclassAtt_add(fatts, classAtt_new(
-        classAtt_id(a),
-        "g",
-        classAtt_get_doc(a),
-        packDoc_new("", "", "")
-      ));
     }
   }_EACH
 

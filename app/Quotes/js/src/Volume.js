@@ -36,9 +36,6 @@ export default class Volume {
     /** @private */
     this._reverse = false;
 
-    /** @private */
-    this._cache = true;
-
   }
 
   formatN (n) {
@@ -219,17 +216,12 @@ export default class Volume {
     const cos = [];
     let nick = "";
     let more = true;
-    let cont = true;
-    while (more && cont) {
+    while (more) {
       nickTd.removeAll()
-        .add($("div").html(nick))
-        .add(Ui.link(() => {
-          alert(_("Stopped"));
-          cont = false;
-        }).klass("link").html("Stop"));
+        .add($("div").html(nick));
       const data = {
         "source": "volume",
-        "rq": this._cache ? "crow" : "row",
+        "rq": "row",
         "nick": nick
       };
       const rp = await this._main.client.send(data);
@@ -244,7 +236,6 @@ export default class Volume {
     }
     nickTd.removeAll()
       .add(Ui.link(() => {
-        this._cache = false;
         this.show();
       }).klass("link").html(_("Update")));
   }

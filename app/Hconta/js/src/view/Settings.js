@@ -1,9 +1,13 @@
 // Copyright 24-Sep-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("view_Settings");
+import Main from "../Main.js";
+import Ui from "../dmjs/Ui.js";
+import {_} from "../I18n.js";
 
-view_Settings = class {
+const $ = Ui.$;
+
+export default class view_Settings {
   /**
    * @param {!Main} control
    */

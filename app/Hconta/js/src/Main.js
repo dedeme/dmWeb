@@ -1,27 +1,31 @@
 // Copyright 23-Sep-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("Main");
+import Client from "./dmjs/Client.js";
+import Tp3 from "./dmjs/Tp3.js";
+import B64 from "./dmjs/B64.js";
+import Dec from "./dmjs/Dec.js";
+import It from "./dmjs/It.js";
 
-goog.require("github_dedeme");
-goog.require("I18n");
-goog.require("Dom");
-goog.require("user_Expired");
-goog.require("user_Auth");
-goog.require("user_Chpass");
-goog.require("Conf");
-goog.require("Db");
-goog.require("view_Bye");
-goog.require("view_Year");
-goog.require("view_Diary");
-goog.require("view_Cash");
-goog.require("view_Accs");
-goog.require("view_Summaries");
-goog.require("view_Plan");
-goog.require("view_Backups");
-goog.require("view_Settings");
+import user_Auth from "./user/Auth.js";
+import user_Expired from "./user/Expired.js";
+import user_Chpass from "./user/Chpass.js";
+import view_Cash from "./view/Cash.js";
+import view_Diary from "./view/Diary.js";
+import view_Accs from "./view/Accs.js";
+import view_Bye from "./view/Bye.js";
+import view_Plan from "./view/Plan.js";
+import view_Year from "./view/Year.js";
+import view_Summaries from "./view/Summaries.js";
+import view_Backups from "./view/Backups.js";
+import view_Settings from "./view/Settings.js";
+import db_Dentry from "./db/Dentry.js";
+import Db from "./Db.js";
+import Dom from "./Dom.js";
+import Conf from "./Conf.js";
+import {_, _args, I18n} from "./I18n.js";
 
-Main = class {
+export default class Main {
   constructor () {
     /**
      * @private
@@ -35,6 +39,7 @@ Main = class {
     this._conf = null;
     /** @private */
     this._client = new Client(
+      true,
       Main.app(),
       () => { new user_Expired(this).show(); }
     );
@@ -108,55 +113,56 @@ Main = class {
     return this._trash;
   }
 
-  run () {
+  async run () {
     const self = this;
     const client = self._client;
-    client.connect(ok => {
-      if (ok) {
-        let data = {"rq": "getConf"};
-        client.send(data, rp => {
-          self._conf = Conf.restore(rp["conf"]);
-          const conf = self._conf;
-          conf.language() === "es" ? I18n.es() : I18n.en();
-          let data = {"rq": "getDb", "year": "" + conf.year()};
-          client.send(data, rp => {
-            self._db = Db.restore(rp["db"]);
-            this._backups = rp["backups"];
-            this._trash = rp["trash"];
-            switch(conf.page()) {
-            case "year":
-              new view_Year(self).show();
-              break;
-            case "diary":
-              new view_Diary(self).show();
-              break;
-            case "cash":
-              new view_Cash(self).show();
-              break;
-            case "accs":
-              new view_Accs(self).show();
-              break;
-            case "summaries":
-              new view_Summaries(self).show();
-              break;
-            case "plan":
-              new view_Plan(self).show();
-              break;
-            case "backups":
-              new view_Backups(self).show();
-              break;
-            case "settings":
-              new view_Settings(self).show();
-              break;
-            default:
-              throw("Page '" + conf.page() + "' is unknown");
-            }
-          })
-        });
-      } else {
-        new user_Auth(self, self._client).show();
+    const ok = await client.connect();
+    if (ok) {
+      let data = {"rq": "getConf"};
+      const rp0 = await client.send(data);
+      self._conf = Conf.restore(rp0["conf"]);
+      const conf = self._conf;
+      conf.language() === "es" ? I18n.es() : I18n.en();
+      data = {"rq": "getDb", "year": "" + conf.year()};
+      const rp = await client.send(data);
+      self._db = Db.restore(rp["db"]);
+      self._backups = rp["backups"];
+      self._trash = rp["trash"];
+      switch(conf.page()) {
+      case "year":
+        new view_Year(self).show();
+        break;
+      case "diary":
+        new view_Diary(self).show();
+        break;
+      case "cash":
+        new view_Cash(self).show();
+        break;
+      case "accs":
+        new view_Accs(self).show();
+        break;
+      case "summaries":
+        new view_Summaries(self).show();
+        break;
+      case "plan":
+        new view_Plan(self).show();
+        break;
+      case "backups":
+        new view_Backups(self).show();
+        break;
+      case "settings":
+        new view_Settings(self).show();
+        break;
+      default:
+        throw("Page '" + conf.page() + "' is unknown");
       }
-    });
+    } else {
+      new user_Auth(self, self._client).show();
+    }
+  }
+
+  start () {
+    this.run();
   }
 
   // server ----------------------------
@@ -164,36 +170,39 @@ Main = class {
   /**
    * @private
    * @param {function():void} f
-   * @return {void}
+   * @return {Promise}
    */
-  sendConf (f) {
+  async sendConf (f) {
     const data = {"rq": "setConf", "conf": this.conf().serialize()};
-    this._client.send(data, rp => { f(); });
+    await this._client.send(data);
+    f();
   }
 
   /**
    * @private
    * @param {function():void} f
-   * @return {void}
+   * @return {Promise}
    */
-  sendDb (f) {
+  async sendDb (f) {
     const data = {
       "rq": "setDb",
       "year": "" + this.conf().year(),
       "db": this.db().serialize()
     };
-    this._client.send(data, rp => { f(); });
+    await this._client.send(data);
+    f();
   }
 
   // menu ------------------------------
 
   /**
-   * @return {void}
+   * @return {Promise}
    */
-  bye () {
+  async bye () {
     const self = this;
     const data = {"rq": "logout"};
-    self._client.send(data, rp => { new view_Bye(self).show(); });
+    await self._client.send(data);
+    new view_Bye(self).show();
   }
 
   /**
@@ -218,8 +227,8 @@ Main = class {
     self.sendConf(() => { self.run(); });
   }
 
-  /** @return {void} */
-  closeYear () {
+  /** @return {Promise} */
+  async closeYear () {
     const self = this;
     const year = self.conf().year();
     const closeEntry = self._db.close(year);
@@ -229,13 +238,12 @@ Main = class {
       "year": "" + (year + 1),
       "db": self.db().serialize()
     };
-    this._client.send(data, rp => {
-      const ys = self.conf().years();
-      ys.push(year + 1);
-      self.conf().setYears(ys);
-      self.conf().setYear(year + 1);
-      self.sendConf(() => { self.run(); });
-    });
+    const rp = await this._client.send(data);
+    const ys = self.conf().years();
+    ys.push(year + 1);
+    self.conf().setYears(ys);
+    self.conf().setYear(year + 1);
+    self.sendConf(() => { self.run(); });
   }
 
   // diary -----------------------------
@@ -329,9 +337,9 @@ Main = class {
     const shdiary = {};
     It.from(this._db.diary()).each(e => {
       It.from(e.debits())
-        .map(d => [d.e1(),  new Dec(-d.e2().value(), 2), e.description()]).addIt(
+        .map(d => [d.e1,  new Dec(-d.e2.value, 2), e.description()]).concat(
           It.from(e.credits())
-            .map(c => [c.e1(), c.e2(), e.description()])
+            .map(c => [c.e1, c.e2, e.description()])
       ).each(a => {
         let she = shdiary[a[0]];
         const val = this._dom.decToStr(a[1]);
@@ -345,21 +353,21 @@ Main = class {
           values[val] = 1;
           shdiary[a[0]] = new Tp3(1, descriptions, values);
         } else {
-          let desN = she.e2()[des];
+          let desN = she.e2[des];
           if (desN === undefined) {
             desN = 1;
           } else {
             ++desN;
           }
-          let vN = she.e3()[val];
+          let vN = she.e3[val];
           if (vN === undefined) {
             vN = 1;
           } else {
             ++vN;
           }
-          she.setE1(she.e1() + 1);
-          she.e2()[des] = desN;
-          she.e3()[val] = vN;
+          she = new Tp3(she.e1 + 1, she.e2, she.e3);
+          she.e2[des] = desN;
+          she.e3[val] = vN;
         }
       })
     });
@@ -371,12 +379,12 @@ Main = class {
       if (tp3 === undefined) {
         r[a] = ["", ""];
       } else {
-        const n = tp3.e1() / 2;
-        const descs = tp3.e2();
-        const vs = tp3.e3();
-        const desc = It.keys(descs).findFirst(k => descs[k] > n);
-        const v = It.keys(vs).findFirst(k => vs[k] > n);
-        r[a] = [desc === undefined ? "" : desc, v === undefined ? "" : v];
+        const n = tp3.e1 / 2;
+        const descs = tp3.e2;
+        const vs = tp3.e3;
+        const desc = It.from(Object.keys(descs)).find(k => descs[k] > n);
+        const v = It.from(Object.keys(vs)).find(k => vs[k] > n);
+        r[a] = [desc ? desc : "", v ? v : ""];
       }
     });
     return r;
@@ -606,11 +614,12 @@ Main = class {
    * Downloads a backup
    * @param {function(string):void} action This callback passes the name of
    *  backup file.
-   * @return {void}
+   * @return {Promise}
    */
-  backupDownload (action) {
+  async backupDownload (action) {
     const data = {"rq": "backup"};
-    this._client.send(data, rp => { action(rp["name"]); });
+    const rp = await this._client.send(data);
+    action(rp["name"]);
   }
 
   /**
@@ -618,45 +627,42 @@ Main = class {
    * @param {*} file
    * @param {function(number):void} progress
    */
-  backupRestore (file, progress) {
+  async backupRestore (file, progress) {
     const self = this;
     const step = 25000;
     let start = 0;
 
     const reader = new FileReader();
-    reader.onerror/**/ = evt => {
-      alert(_args(_("'%0' can not be read"), file.name/**/));
+    reader.onerror = async evt => {
+      alert(_args(_("'%0' can not be read"), file.name));
       const data = {"rq": "restoreAbort"};
-      this._client.send(data, () => {
-        new view_Backups(self).show();
-      });
+      await this._client.send(data);
+      new view_Backups(self).show();
     }
-    reader.onloadend/**/ = evt => {
-      if (evt.target/**/.readyState/**/ === FileReader.DONE/**/) { // DONE == 2
-        const bindata = new Uint8Array(evt.target/**/.result/**/);
+    reader.onloadend = async evt => {
+      if (evt.target.readyState === FileReader.DONE) { // DONE == 2
+        const bindata = new Uint8Array(evt.target.result);
         progress(start);
         if (bindata.length > 0) {
           const data = {
             "rq": "restoreAppend",
             "data": B64.encodeBytes(bindata)
           };
-          this._client.send(data, rp => {
-            start += step;
-            var blob = file.slice(start, start + step);
-            reader.readAsArrayBuffer(blob);
-          });
+          const rp = await this._client.send(data);
+          start += step;
+          var blob = file.slice(start, start + step);
+          reader.readAsArrayBuffer(blob);
         } else {
-          progress(file.size/**/);
+          progress(file.size);
           const data = {"rq": "restoreEnd"};
-          this._client.send(data, (rp) => {
-            const fail = rp["fail"];
-            if (fail === "restore:unzip") {
-              alert(_("Fail unzipping backup"));
-            } else if (fail === "restore:version") {
-              alert(_("File is not a Hconta backup"));
-            }
-            self.run();
-          });
+          const rp = await this._client.send(data);
+          const fail = rp["fail"];
+          if (fail === "restore:unzip") {
+            alert(_("Fail unzipping backup"));
+          } else if (fail === "restore:version") {
+            alert(_("File is not a Hconta backup"));
+          }
+          self.run();
         }
       }
     };
@@ -667,42 +673,38 @@ Main = class {
     }
 
     const data = {"rq": "restoreStart"};
-    this._client.send(data, () => {
-      append();
-    });
+    await this._client.send(data);
+    append();
   }
 
-  /** @return {void} */
-  clearTrash () {
+  /** @return {Promise} */
+  async clearTrash () {
     const self = this;
     const data = {"rq": "clearTrash"};
-    this._client.send(data, () => {
-      self.run();
-    });
+    await this._client.send(data);
+    self.run();
   }
 
   /**
    * @param {string} f
-   * @return {void}
+   * @return {Promise}
    */
-  autorestore (f) {
+  async autorestore (f) {
     const self = this;
     const data = {"rq": "autorestore", "file": f};
-    this._client.send(data, () => {
-      self.run();
-    });
+    await this._client.send(data);
+    self.run();
   }
 
   /**
    * @param {string} f
-   * @return {void}
+   * @return {Promise}
    */
-  restoreTrash (f) {
+  async restoreTrash (f) {
     const self = this;
     const data = {"rq": "restoreTrash", "file": f};
-    this._client.send(data, () => {
-      self.run();
-    });
+    await this._client.send(data);
+    self.run();
   }
 
   // settings --------------------------
@@ -727,9 +729,9 @@ Main = class {
    * @param {string} pass
    * @param {string} newPass
    * @param {function(boolean):void} f Function to manage captcha counter.
-   * @return {void}
+   * @return {Promise}
    */
-  changePass (pass, newPass, f) {
+  async changePass (pass, newPass, f) {
     const self = this;
     const data = {
       "rq": "chpass",
@@ -737,16 +739,15 @@ Main = class {
       "pass": Client.crypPass(pass),
       "newPass": Client.crypPass(newPass)
     };
-    self._client.send(data, rp => {
-      const ok = rp["ok"];
-      f(ok);
-      if (ok) {
-        alert(_("Password successfully changed"));
-        self.run();
-      } else {
-        self.changePassPage();
-      }
-    });
+    const rp = await self._client.send(data);
+    const ok = rp["ok"];
+    f(ok);
+    if (ok) {
+      alert(_("Password successfully changed"));
+      self.run();
+    } else {
+      self.changePassPage();
+    }
   }
 
 }

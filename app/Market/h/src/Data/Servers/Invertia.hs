@@ -13,7 +13,6 @@ import qualified Data.Servers.Codes as Codes
 codes = do
   cs <- Codes.codes "serverInvertia"
   return $ cs ++ [
-      ("MDF", "duro-felguera/RV011DUROFEL"),
       ("PVA", "pescanova/RV011PESCANO")
     ]
 

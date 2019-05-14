@@ -20,7 +20,7 @@ CgiRp *app_process(Cgi *cgi, char *session_id, Map/*Json*/ *m) {
     if (!strcmp(rq, "get")) {
       return send_conf(cgi);
     } else if (!strcmp(rq, "set")) {
-      return set_conf(cgi, jmap_garray(m, "conf"));
+      return set_conf(cgi, json_rarray(map_get(m, "conf")));
     } else if (!strcmp(rq, "logout")) {
       return cgi_del_session(cgi, session_id);
     } else {
@@ -34,9 +34,9 @@ CgiRp *app_process(Cgi *cgi, char *session_id, Map/*Json*/ *m) {
     if (!strcmp(rq, "get")) {
       return send_paths(cgi);
     } else if (!strcmp(rq, "setConf")) {
-      return set_conf(cgi, jmap_garray(m, "conf"));
+      return set_conf(cgi, json_rarray(map_get(m, "conf")));
     } else if (!strcmp(rq, "setPaths")) {
-      return set_paths(cgi, jmap_garray(m, "paths"));
+      return set_paths(cgi, json_rarray(map_get(m, "paths")));
     } else if (!strcmp(rq, "chpass")) {
       return cgi_change_pass(
         cgi,

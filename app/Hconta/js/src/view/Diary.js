@@ -1,18 +1,23 @@
 // Copyright 24-Sep-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("view_Diary");
+import Main from "../Main.js";
+import Domo from "../dmjs/Domo.js";
+import Ui from "../dmjs/Ui.js";
+import It from "../dmjs/It.js";
+import Dec from "../dmjs/Dec.js";
+import Tp from "../dmjs/Tp.js";
+import DateDm from "../dmjs/DateDm.js";
+import DatePicker from "../dmjs/DatePicker.js";
+import NumberField from "../dmjs/NumberField.js";
+import db_Dentry from "../db/Dentry.js";
+import Dom from "../Dom.js";
+import {_, _args} from "../I18n.js";
 
-goog.require("github_dedeme.DatePicker");
-goog.require("github_dedeme.NumberField");
-goog.require("db_Dentry");
+const $ = Ui.$;
+const helpWidth = 250;
 
-{
-  const helpWidth = 250;
-  const DatePicker = github_dedeme.DatePicker/**/;
-  const NumberField = github_dedeme.NumberField/**/;
-
-view_Diary = class {
+export default class view_Diary {
   /**
    * @param {!Main} control
    */
@@ -40,8 +45,8 @@ view_Diary = class {
     const dateField = $("input").att("type", "text").klass("frame")
       .style("width:80px;color:#000000;text-align:center;");
     const datePicker = new DatePicker();
-    datePicker.setLang(lang);
-    datePicker.setAction(d => {});
+    datePicker.lang = lang;
+    datePicker.action = d => {};
     const number =  $("input").att("type", "text").klass("frame")
       .style("width:50px;background-color:#f0f0ff;color:#000000;" +
         "text-align:center;")
@@ -73,7 +78,7 @@ view_Diary = class {
     function changeTo (acc) {
       const lg = acc.length
       if (acc.length < 3) {
-        changeTo(db.subOf(acc).next()[0]);
+        changeTo(db.subOf(acc).value[0]);
       } else {
         control.setDiaryId(
           acc,
@@ -118,8 +123,8 @@ view_Diary = class {
             err = _args(_("'%0' is not a number"), cr);
           }
           if (err === "") {
-            sdeb += dom.toDec(db).value();
-            scred += dom.toDec(cr).value();
+            sdeb += dom.toDec(db).value;
+            scred += dom.toDec(cr).value;
           }
         }
       });
@@ -162,7 +167,7 @@ view_Diary = class {
         mkAccEntry()
       ]);
       editDiv.removeAll().add(entry());
-      description.e().focus();
+      description.e.focus();
     }
 
     /** @return {void} */
@@ -186,7 +191,7 @@ view_Diary = class {
       }
       entryRows.splice(len1, 1);
       editDiv.removeAll().add(entry());
-      description.e().focus();
+      description.e.focus();
     }
 
     /**
@@ -233,7 +238,7 @@ view_Diary = class {
         }
         return "";
       }
-      const date = datePicker.date();
+      const date = datePicker.date;
       if (date === null) {
         alert(_("Date is missing"));
         return;
@@ -265,12 +270,12 @@ view_Diary = class {
             if (err === "") {
               if (e[1] !== "") {
                 const dec = dom.toDec(e[1]);
-                sdeb += dec.value();
+                sdeb += dec.value;
                 debits.push(new Tp(e[0].replace(".", ""), dec));
               }
               if (e[2] !== "") {
                 const dec = dom.toDec(e[2]);
-                scred += dec.value();
+                scred += dec.value;
                 credits.push(new Tp(e[3].replace(".", ""), dec));
               }
             }
@@ -278,8 +283,8 @@ view_Diary = class {
         }
       });
       if (err === "") {
-        const accs = It.from(debits).addIt(It.from(credits))
-          .map(tp => tp.e1()).to();
+        const accs = [... It.from(debits).concat(It.from(credits))
+          .map(tp => tp.e1)];
 
         err = It.range(accs.length - 1).reduce("", (s, i) =>
             s !== "" ? s
@@ -327,11 +332,11 @@ view_Diary = class {
 
     /** return {void} */
     function newClick () {
-      datePicker.setDate(
+      datePicker.date =
         db.diary().length > 1
           ? db.diary()[db.diary().length - 1].date()
           : DateDm.now()
-      );
+      ;
       number.value(db.diary().length + 1);
       description.value("");
       entryRows.splice(0, entryRows.length);
@@ -344,7 +349,7 @@ view_Diary = class {
       fieldFocussed = 0;
       fieldFocus(0);
       editDiv.removeAll().add(entry());
-      description.e().focus();
+      description.e.focus();
     }
 
     /** @return {void} */
@@ -411,7 +416,7 @@ view_Diary = class {
 
     /** @return {void} */
     function monthClick (i) {
-      diaryIx = It.from(db.diary()).takeUntil(e => e.date().month() > i).size();
+      diaryIx = It.from(db.diary()).takeUntil(e => e.date().month > i).count();
       control.setDiaryIx(diaryIx, () => {
         listDiv.removeAll().add(list());
       })
@@ -445,7 +450,7 @@ view_Diary = class {
         ? e.debits().length
         : e.credits().length;
 
-      datePicker.setDate(e.date());
+      datePicker.date = e.date();
       number.value(i);
       description.value(e.description());
 
@@ -453,23 +458,23 @@ view_Diary = class {
       It.range(n).each(i => {
         entryRows.push([
           mkAccEntry().html(
-            i < e.debits().length ? Dom.accFormat(e.debits()[i].e1()) : ""
+            i < e.debits().length ? Dom.accFormat(e.debits()[i].e1) : ""
           ),
           mkAmmountEntry(i * 2).value(
-            i < e.debits().length ? dom.decToStr(e.debits()[i].e2()) : ""
+            i < e.debits().length ? dom.decToStr(e.debits()[i].e2) : ""
           ),
           mkAmmountEntry(i * 2 + 1).value(
-            i < e.credits().length ? dom.decToStr(e.credits()[i].e2()) : ""
+            i < e.credits().length ? dom.decToStr(e.credits()[i].e2) : ""
           ),
           mkAccEntry().html(
-            i < e.credits().length ? Dom.accFormat(e.credits()[i].e1()) : ""
+            i < e.credits().length ? Dom.accFormat(e.credits()[i].e1) : ""
           )
         ]);
       });
       fieldFocussed = 0;
       fieldFocus(0);
       editDiv.removeAll().add(entry(i, e.date()));
-      description.e().focus();
+      description.e.focus();
     }
 
     // View ------------------------------------------------
@@ -477,7 +482,7 @@ view_Diary = class {
     const planHelpf = () => {
       const account = conf.diaryConf().id();
       return $("ul").style("list-style:none;padding-left:0px;")
-        .addIt(It.range(1, 4).map(lg =>
+        .adds([... It.range(1, 4).map(lg =>
           $("li")
             .html("<a href='#' onclick='return false;'>" +
               Dom.textAdjust(
@@ -485,20 +490,20 @@ view_Diary = class {
               ) + "</a>")
             .add($("ul").att("id", "hlist")
               .style("list-style:none;padding-left:10px;")
-              .addIt(db.subOf(account.substring(0, lg - 1))
-                .sortf((e1, e2) => e1[0] > e2[0] ? 1 : -1)
+              .adds([... db.subOf(account.substring(0, lg - 1))
+                .sort((e1, e2) => e1[0] > e2[0] ? 1 : -1)
                 .map(e =>
                   $("li").add(Ui.link(ev => {
                       changeTo(e[0]);
                     }).klass("link").att("title", e[0])
-                    .html(Dom.textAdjust(e[1], helpWidth - 16))))))))
+                    .html(Dom.textAdjust(e[1], helpWidth - 16))))])))])
         .add($("li").add($("hr")))
-        .addIt(db.sub(account)
-          .sortf((e1, e2) => e1[0] > e2[0] ? 1 : -1)
+        .adds([... db.sub(account)
+          .sort((e1, e2) => e1[0] > e2[0] ? 1 : -1)
           .map(e =>
             $("li").add(Ui.link(ev => { helpAccountClick(e[0], e[1]); })
               .klass("link").att("title", Dom.accFormat(e[0]))
-              .html(Dom.textAdjust(e[1], helpWidth - 16)))));
+              .html(Dom.textAdjust(e[1], helpWidth - 16))))]);
     }
 
     const mkAccEntry = () => {
@@ -513,7 +518,7 @@ view_Diary = class {
 
     const mkAmmountEntry = (ix) => {
       const amm = new NumberField(lang === "en", "accept");
-      return amm.input().att("type", "text")
+      return amm.input.att("type", "text")
       .style("width:65px").on("focus", ev => { ammountFocus(ix); });
     }
 
@@ -549,14 +554,13 @@ view_Diary = class {
             .add(number)))
         .add($("tr")
           .add($("td").att("colspan", 7).add(description)))
-        .addIt(It.from(entryRows).map(e =>
+        .adds([... It.from(entryRows).map(e =>
           $("tr")
             .add($("td").style("text-align:left;width:5px").add(e[0]))
             .add($("td").att("colspan", 2).style("text-align:left").add(e[1]))
             .add($("td").html("||"))
             .add($("td").att("colspan", 2).style("text-align:right").add(e[2]))
-            .add($("td").style("text-align:right").add(e[3])))
-          )
+            .add($("td").style("text-align:right").add(e[3])))])
         .add($("tr").add($("td").att("colspan", 7).add($("hr"))))
         .add($("tr")
           .add($("td").att("colspan", 7).style("text-align:right")
@@ -566,7 +570,7 @@ view_Diary = class {
             .add($("button").text(_("Accept")).style("width:100px")
               .att("id", "accept")
               .on("click", (ev) => {
-                  const newDate = datePicker.date();
+                  const newDate = datePicker.date;
                   if (lix && newDate !== null && date) {
                     if (newDate.eq(date)) {
                       acceptEntry(lix);
@@ -581,11 +585,11 @@ view_Diary = class {
 
     const list = () => {
       const td = () => $("td").klass("frame").style("vertical-align:top;");
-      const tdr = () => td().addStyle("text-align:right");
-      const tdl = () => td().addStyle("text-align:left");
+      const tdr = () => td().setStyle("text-align", "right");
+      const tdl = () => td().setStyle("text-align", "left");
       let ix = diaryIx;
       return $("table").att("align", "center")
-        .addIt(It.from(db.diary())
+        .adds([... It.from(db.diary())
           .take(diaryIx)
           .drop(diaryIx - stepList)
           .reverse()
@@ -594,34 +598,34 @@ view_Diary = class {
                     ? e.debits().length
                     : e.credits().length;
             const descDentry = $("table").att("align", "center")
-              .addIt(It.range(n).map(i =>
+              .adds([... It.range(n).map(i =>
                 $("tr")
                   .add(td().add(i < e.debits().length
                     ? Ui.link(ev => {
-                        control.goToAcc(e.debits()[i].e1(), lix)
+                        control.goToAcc(e.debits()[i].e1, lix)
                       }).klass("link")
-                        .html(Dom.accFormat(e.debits()[i].e1()))
+                        .html(Dom.accFormat(e.debits()[i].e1))
                     : $("span")))
                   .add(tdr().add(i < e.debits().length
-                    ? $("span").html(dom.decToStr(e.debits()[i].e2()))
+                    ? $("span").html(dom.decToStr(e.debits()[i].e2))
                     : $("span")))
                   .add($("td").html("||"))
                   .add(tdr().add(i < e.credits().length
-                    ? $("span").html(dom.decToStr(e.credits()[i].e2()))
+                    ? $("span").html(dom.decToStr(e.credits()[i].e2))
                     : $("span")))
                   .add(td().add(i < e.credits().length
                     ? Ui.link(ev => {
-                        control.goToAcc(e.credits()[i].e1(), lix)
+                        control.goToAcc(e.credits()[i].e1, lix)
                       }).klass("link")
-                        .html(Dom.accFormat(e.credits()[i].e1()))
+                        .html(Dom.accFormat(e.credits()[i].e1))
                     : $("span")))
-              ));
-            descDentry.e().style/**/.display/**/ = "none";
+              )]);
+            descDentry.e.style.display = "none";
             const lix = ix--;
             const desc = $("div")
               .add(Ui.link(ev => {
-                  descDentry.e().style/**/.display/**/ =
-                    descDentry.e().style/**/.display/**/ === "none"
+                  descDentry.e.style.display =
+                    descDentry.e.style.display === "none"
                       ? "block" : "none";
                 }).klass("link").html(e.description().toString()))
               .add(descDentry);
@@ -642,31 +646,30 @@ view_Diary = class {
               .add(tdl().add(desc))
               .add(tdr().html(dom.decToStr(new Dec(
                 It.from(e.debits())
-                  .reduce(0, (s, tp) => s += tp.e2().value()),
+                  .reduce(0, (s, tp) => s += tp.e2.value),
                 2))))
           })
-        );
+        ]);
     }
 
     const left = $("td").klass("frame")
       .style("width:" + helpWidth + "px;vertical-align:top;white-space:nowrap")
       .add($("p").html("<b>" + _("Most used accounts") + "</b>"))
       .add($("ul").style("list-style:none;padding-left:0px;")
-        .addIt(
-            It.from(mostUsed).map(acc =>
+        .adds(
+            [... It.from(mostUsed).map(acc =>
               $("li").add(Ui.link(ev => {
                   helpAccountClick(
                     acc,
-                    It.from(db.subaccounts()).findFirst(s => s[0] === acc)[1]
+                    It.from(db.subaccounts()).find(s => s[0] === acc)[1]
                   )
                 }).add($("span").klass("link")
                   .att("title", Dom.accFormat(acc)).html(
                     Dom.textAdjust(
-                      It.from(db.subaccounts()).findFirst(s => s[0] === acc)[1],
+                      It.from(db.subaccounts()).find(s => s[0] === acc)[1],
                       helpWidth - 4
                     )
-                ))))
-          ))
+                ))))]))
       .add($("p").html("<b>" + _("Plan") + "</b>"))
       .add(planDiv);
 
@@ -683,16 +686,16 @@ view_Diary = class {
               : $("span").style("color: #800000;").html(_("New"))))
           .add($("td").klass("diary").add(Ui.link(ev => {
               upClick();
-            }).addStyle("font-family:monospace").html("&nbsp;\u2191&nbsp;")))
+            }).setStyle("font-family", "monospace").html("&nbsp;\u2191&nbsp;")))
           .add($("td").klass("diary").add(Ui.link(ev => {
               downClick();
-            }).addStyle("font-family:monospace").html("&nbsp;\u2193&nbsp;")))
+            }).setStyle("font-family", "monospace").html("&nbsp;\u2193&nbsp;")))
           .add($("td").klass("diary").add(Ui.link(ev => {
               dupClick();
-            }).addStyle("font-family:monospace").html("\u2191\u2191")))
+            }).setStyle("font-family", "monospace").html("\u2191\u2191")))
           .add($("td").klass("diary").add(Ui.link(ev => {
               ddownClick();
-            }).addStyle("font-family:monospace").html("\u2193\u2193")))
+            }).setStyle("font-family", "monospace").html("\u2193\u2193")))
           .add($("td").klass("diary").add(Ui.link(ev => {
               plusClick();
             }).html("&nbsp;+&nbsp;")))
@@ -750,4 +753,4 @@ view_Diary = class {
     planDiv.add(planHelpf());
     listDiv.add(list());
   }
-}}
+}

@@ -1,9 +1,15 @@
 // Copyright 24-Sep-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("user_Chpass");
+import Main from "../Main.js";
+import Ui from "../dmjs/Ui.js";
+import It from "../dmjs/It.js";
+import Captcha from "../dmjs/Captcha.js";
+import {_} from "../I18n.js";
 
-user_Chpass = class {
+const $ = Ui.$;
+
+export default class user_Chpass {
   /**
    * @param {!Main} control
    */
@@ -32,7 +38,7 @@ user_Chpass = class {
       .style("width:90px;")
       .value(_("Cancel"));
 
-    const captcha = new github_dedeme.Captcha(captchaStore, 3);
+    const captcha = new Captcha(captchaStore, 3);
 
     function body () {
       const counter = captcha.counter();
@@ -50,7 +56,7 @@ user_Chpass = class {
         if (passv === "") {
           alert(_("Current password is missing"));
           pass.value("");
-          pass.e().focus();
+          pass.e.focus();
           return;
         }
         if (newPassv === "") {
@@ -165,7 +171,7 @@ user_Chpass = class {
               'color:#505050;'
             )
             .html("<big><big><b>" + _("Login") + "</big></big></b>")))
-        .addIt(It.from(rows));
+        .concat(It.from(rows));
 
     }
 
@@ -175,7 +181,7 @@ user_Chpass = class {
           "&nbsp;<br>" + Main.app() + "<br>&nbsp;"))
         .add($("div").add(body()))
     );
-    pass.e().focus();
+    pass.e.focus();
   }
 }
 

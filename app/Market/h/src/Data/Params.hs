@@ -10,7 +10,7 @@ module Data.Params (
   Data.Params.init,
   readBase,
   writeBase
-  ) where
+) where
 
 import Data.List
 import qualified Dm.Js as Js

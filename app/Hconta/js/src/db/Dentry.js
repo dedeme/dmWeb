@@ -1,10 +1,12 @@
 // Copyright 24-Sep-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-/** Diary entry */
-goog.provide("db_Dentry");
+import DateDm from "../dmjs/DateDm.js";
+import Tp from "../dmjs/Tp.js";
+import It from "../dmjs/It.js";
+import Dec from "../dmjs/Dec.js";
 
-db_Dentry = class {
+export default class db_Dentry {
   /**
    * @param {!DateDm} date
    * @param {string} description
@@ -48,8 +50,8 @@ db_Dentry = class {
    * @return {boolean}
    */
   containsAccount (acc) {
-    return It.from(this._debits).containsf(tp => tp.e1() === acc) ||
-      It.from(this._credits).containsf(tp => tp.e1() === acc);
+    return It.from(this._debits).some(tp => tp.e1 === acc) ||
+      It.from(this._credits).some(tp => tp.e1 === acc);
   }
 
   /**
@@ -58,8 +60,8 @@ db_Dentry = class {
    * @return {boolean}
    */
   containsAccountOrGroup (acc) {
-    return It.from(this._debits).containsf(tp => tp.e1().startsWith(acc)) ||
-      It.from(this._credits).containsf(tp => tp.e1().startsWith(acc));
+    return It.from(this._debits).some(tp => tp.e1.startsWith(acc)) ||
+      It.from(this._credits).some(tp => tp.e1.startsWith(acc));
   }
 
   /** @return {!Array<?>} */
@@ -67,8 +69,8 @@ db_Dentry = class {
     return [
       this._date.serialize(),
       this._description,
-      It.from(this._debits).map(tp => [tp.e1(), tp.e2().serialize()]).to(),
-      It.from(this._credits).map(tp => [tp.e1(), tp.e2().serialize()]).to()
+      [... It.from(this._debits).map(tp => [tp.e1, tp.e2.serialize()])],
+      [... It.from(this._credits).map(tp => [tp.e1, tp.e2.serialize()])]
     ];
   }
 
@@ -80,8 +82,8 @@ db_Dentry = class {
     return new db_Dentry(
       DateDm.restore(serial[0]),
       serial[1],
-      It.from(serial[2]).map(arr => new Tp(arr[0], Dec.restore(arr[1]))).to(),
-      It.from(serial[3]).map(arr => new Tp(arr[0], Dec.restore(arr[1]))).to()
+      [... It.from(serial[2]).map(arr => new Tp(arr[0], Dec.restore(arr[1])))],
+      [... It.from(serial[3]).map(arr => new Tp(arr[0], Dec.restore(arr[1])))]
     );
   }
 }

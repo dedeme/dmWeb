@@ -2,9 +2,8 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 /** Configuration of pages Diary, Cash and Accs */
-goog.provide("db_PageConf");
 
-db_PageConf = class {
+export default class db_PageConf {
   /**
    * @param {string} id Account identifier for help or for display (in Accs
    *                    page)

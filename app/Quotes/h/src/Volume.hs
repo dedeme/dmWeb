@@ -15,7 +15,6 @@ import qualified Data.NicksDb as NicksDb
 import qualified Data.Nick as Nick
 import Data.Nick (Nick)
 import Data.Quote (Quote (..))
-import qualified Data.VolDb as VolDb
 
 nextNick :: [Nick] -> String -> Maybe Nick
 nextNick (n:ns) "" = Just n
@@ -24,31 +23,21 @@ nextNick (n0:n1:ns) nk = if nk == (Nick.name n0)  then Just n1
                                                   else nextNick (n1:ns) nk
 
 volume :: Nick -> IO Double
-volume nk =  do
-  v <- fv nk
-  VolDb.write (Nick.name nk) v
-  return v
+volume nk = do
+  quotes <- NicksDb.quotes $ Nick.id nk
+  case quotes of
+    Left _ -> return 0
+    Right qs -> do
+      let (n, sum) = foldl' ffl (0, 0) $ take 100 qs
+      return $ sum / n
   where
-    fv nk = do
-      quotes <- NicksDb.quotes $ Nick.id nk
-      case quotes of
-        Left _ -> return 0
-        Right qs -> do
-          let (n, sum) = foldl' ffl (0, 0) $ take 100 qs
-          return $ sum / n
     ffl (n, sum) (Quote _ _ _ mx mn v _) =
       if (v > 0 && mx > 0 && mn > 0)
       then (n + 1, sum + (fromIntegral v) * (mx + mn) / 2)
       else (n + 1, sum)
 
-volume' :: Nick -> IO Double
-volume' nk = do
-  v <- VolDb.read $ Nick.name nk
-  if v <= 0  then volume nk
-            else return v
-
-row :: Cgi -> String -> Bool -> IO ()
-row cgi nick isCache = do
+row :: Cgi -> String -> IO ()
+row cgi nick = do
   db <- NicksDb.read
   case nextNick (NicksDb.nicks db) nick of
     Nothing ->
@@ -60,7 +49,7 @@ row cgi nick isCache = do
       let tp = if Nick.isExtra nk
                then "out"
                else if Nick.isSel nk then "sel" else "in"
-      vol <- if isCache then volume' nk else volume nk
+      vol <- volume nk
       let row = [Js.wString tp, Js.wString nick, Js.wDouble vol]
       Cgi.ok cgi [("row", Js.wList row),
                   ("more", Js.wBool True)
@@ -70,11 +59,8 @@ row cgi nick isCache = do
 process :: Cgi -> [(String, JSValue)] -> IO ()
 process cgi rq =
   case Cgi.get rq Js.rString "rq" of
-    "crow" -> do  -------------------------------------------------------- crow
-      let nick = Cgi.get rq Js.rString "nick"
-      row cgi nick True
     "row" -> do  ---------------------------------------------------------- row
       let nick = Cgi.get rq Js.rString "nick"
-      row cgi nick False
+      row cgi nick
 
     s -> Prelude.error $ printf "Unknown rq '%s'" s --------------------- Error

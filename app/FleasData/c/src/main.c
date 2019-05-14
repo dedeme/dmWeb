@@ -154,8 +154,7 @@ int main (int argc, char **argv) {
 
   //............................................................ NORMAL DATA
   } else {
-    char *session_id = str_new(rq);
-    str_left(&session_id, ix);
+    char *session_id = str_left_new(rq, ix);
     char *key;
     char *connection_id;
     cgi_get_session_data(&key, &connection_id, session_id);
@@ -175,8 +174,7 @@ int main (int argc, char **argv) {
     }
 
     cgi_set_key(key);
-    char *data = str_new(rq);
-    str_right(&data, ix + 1);
+    char *data = str_right_new(rq, ix + 1);
     cryp_decryp(&data, key);
 
     // Map[Js]

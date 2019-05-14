@@ -1,40 +1,42 @@
 // Copyright 24-Mar-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+// eslint-disable-next-line
 import Client from "../dmjs/Client.js";
+import Domo from "../dmjs/Domo.js"; //eslint-disable-line
+import Ui from "../dmjs/Ui.js";
 import Dom from "../core/Dom.js";
-import Main from "../Main.js";
+import Main from "../Main.js";  //eslint-disable-line
+import Menu from "../wgs/Menu.js";
 import Home from "./Home.js";
+import Nicks from "./Nicks.js";
+import Servers from "./Servers.js";
 import Settings from "./Settings.js";
+import Backups from "./Backups.js";
 import {_} from "../I18n.js";
+
+const $ = Ui.$;
 
 /** Sys Main page. */
 export default class SysMain {
+
   /**
    * @param {!Main} main
    */
   constructor (main) {
-    /**
-     * @private
-     * @type {!Main}
-     */
     this._main = main;
 
-    const dom = main.dom;
-    dom.resetMenu();
-    dom.addLeftMenu(Dom.mkOption(
-      SysMain.homePageId, _("Home"), () => this.go(SysMain.homePageId))
-    );
-    dom.addLeftMenu(Dom.separator());
-    dom.addLeftMenu(Dom.mkOption(
-      SysMain.settingsPageId, _("Settings"),
-      () => this.go(SysMain.settingsPageId)
-    ));
-    dom.addLeftMenu(Dom.separator());
-    dom.addLeftMenu(Dom.mkOption(
-      SysMain.backupsPageId, _("Backups"),
-      () => this.go(SysMain.backupsPageId)
-    ));
+    // MODEL -------
+    // TTTTTTTTTTTTT
+
+
+    // VIEW --------
+    // TTTTTTTTTTTTT
+
+    this._menu = new Menu();
+
+    this._view = $("div");
+
   }
 
   /** @return {!Main} */
@@ -42,9 +44,9 @@ export default class SysMain {
     return this._main;
   }
 
-  /** @return {!Client} */
-  get client () {
-    return this._main.client;
+  /** @return {!Domo} */
+  get view () {
+    return this._view;
   }
 
   /** @return {!Dom} */
@@ -52,21 +54,84 @@ export default class SysMain {
     return this._main.dom;
   }
 
+  // MODEL ---------------------------------------
+  // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+
+
+  // VIEW ----------------------------------------
+  // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+
+  /** @return {void} */
+  show () {
+    const main = this.main;
+    const menu = this._menu;
+
+    menu.addLeft(Menu.mkOption(
+      SysMain.homePageId, _("Home"), () => this.go(SysMain.homePageId))
+    );
+    menu.addLeft(Menu.separator2());
+    menu.addLeft(Menu.mkOption(
+      SysMain.nicksPageId, _("Nicks"), () => this.go(SysMain.nicksPageId))
+    );
+    menu.addLeft(Menu.separator());
+    menu.addLeft(Menu.mkOption(
+      SysMain.serversPageId, _("Servers"), () => this.go(SysMain.serversPageId))
+    );
+
+    menu.addRight(Menu.mkClose(main.bye));
+    menu.addRight(Menu.separator());
+    menu.addRight(Menu.mkOption(
+      SysMain.settingsPageId, _("Settings"),
+      () => this.go(SysMain.settingsPageId)
+    ));
+    menu.addRight(Menu.separator());
+    menu.addRight(Menu.mkOption(
+      SysMain.backupsPageId, _("Backups"),
+      () => this.go(SysMain.backupsPageId)
+    ));
+
+    main.view.removeAll()
+      .add(menu.wg)
+      .add(this.view)
+    ;
+
+    this.update();
+  }
+
+  // CONTROL -------------------------------------
+  // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+
   async run () {
     const rq = {
       "module": "sys",
-      "page": "SysMain",
+      "source": "SysMain",
       "rq": "idata"
     };
+    await Main.client.send(rq);
+  }
 
-    const rp = await this.client.sendAsync(rq);
+  /** @return {!Promise} */
+  async update () {
+    const rq = {
+      "module": "sys",
+      "source": "SysMain",
+      "rq": "idata"
+    };
+    const /** !Object<string, string> */ rp = await Main.client.send(rq);
 
-    const page = rp["page"] || SysMain.homePageId;
+    const /** string */ page = rp["page"] || SysMain.homePageId;
+    this._menu.setSelected(page);
 
     if (page === SysMain.homePageId) {
       new Home(this).show();
+    } else if (page === SysMain.nicksPageId) {
+      new Nicks(this).show();
+    } else if (page === SysMain.serversPageId) {
+      new Servers(this).show();
     } else if (page === SysMain.settingsPageId) {
       new Settings(this).show();
+    } else if (page === SysMain.backupsPageId) {
+      new Backups(this).show();
     } else {
       throw new Error("Unknown page '" + page + "'");
     }
@@ -74,22 +139,42 @@ export default class SysMain {
 
   /**
    * @param {string} page Page to go
-   * @return {Promise}
+   * @return {!Promise}
    */
   async go (page) {
     const rq = {
       "module": "sys",
-      "page": "SysMain",
+      "source": "SysMain",
       "rq": "go",
       "option": page
     };
-    await this.client.send(rq);
-    this.run();
+    await Main.client.send(rq);
+    this.update();
+  }
+
+  // STATIC --------------------------------------
+  // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+
+  /**
+   * @return {string}
+   */
+  static get homePageId () {
+    return "home";
   }
 
   /** @return {string} */
-  static get homePageId () {
-    return "home";
+  static get nicksPageId () {
+    return "nicks";
+  }
+
+  /** @return {string} */
+  static get serversPageId () {
+    return "servers";
+  }
+
+  /** @return {string} */
+  static get editPageId () {
+    return "edit";
   }
 
   /** @return {string} Id of settings page */

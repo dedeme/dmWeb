@@ -1,9 +1,14 @@
 // Copyright 13-Oct-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("view_Year");
+import Main from "../Main.js";
+import Ui from "../dmjs/Ui.js";
+import It from "../dmjs/It.js";
+import {_} from "../I18n.js";
 
-view_Year = class {
+const $ = Ui.$;
+
+export default class view_Year {
   /**
    * @param {!Main} control
    */
@@ -31,7 +36,7 @@ view_Year = class {
       }
       return $("tr").add($("td").att("colspan", 2).style("text-align:center;")
         .add($("table").att("align", "center").add($("tr")
-          .addIt(It.from(conf.years()).map(y => td(y)))
+          .adds([... It.from(conf.years()).map(y => td(y))])
         )));
     }
 

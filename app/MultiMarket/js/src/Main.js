@@ -1,16 +1,15 @@
 // Copyright 23-Mar-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+import Domo from "./dmjs/Domo.js"; //eslint-disable-line
 import Client from "./dmjs/Client.js";
 import Ui from "./dmjs/Ui.js";
 import Dom from "./core/Dom.js";
 import Expired from "./core/Expired.js";
 import Auth from "./core/Auth.js";
-import SysMain from "./sys/SysMain.js";
 import {I18n, _} from "./I18n.js";
-
 import Bye from "./core/Bye.js";
-import Backups from "./core/Backups.js";
+import SysMain from "./sys/SysMain.js";
 
 const app = "MultiMarket";
 const version = "201903";
@@ -20,29 +19,34 @@ const captchaChpassStore = "${app}__captchaCh";
 
 const $ = Ui.$;
 
+let client = null;
+
 /** Main page. */
 export default class Main {
 
   constructor () {
+    // MODEL -------
+    // TTTTTTTTTTTTT
+
     /**
      * @private
      * @type {!Dom}
      */
     this._dom = new Dom(this);
 
-    /**
-     * @private
-     * @type {!Client}
-     */
-    this._client = new Client(true, app, () => {
+    client = new Client(true, app, () => {
       new Expired(this).show();
     });
 
-    /**
-     * @private
-     * @type {Object<string, string>}
-     */
-    this._model = null;
+    // VIEW --------
+    // TTTTTTTTTTTTT
+
+    this._credits = $("a")
+      .att("href", "doc/about.html")
+      .att("target", "blank");
+
+
+    this._view = $("div");
   }
 
   /** @return {!Dom} Main container */
@@ -50,114 +54,114 @@ export default class Main {
     return this._dom;
   }
 
-  /** @return {!Client} Application Client. */
-  get client () {
-    return this._client;
+  /** @return {!Domo} */
+  get view () {
+    return this._view;
   }
 
-  /** @return {!Object<string, string>} Configuration data. */
-  get model () {
-    if (this._model === null) {
-      throw new Error("Model has not been initialized");
-    }
-    return this._model;
+  // MODEL ---------------------------------------
+  // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+
+
+  // VIEW ----------------------------------------
+  // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+
+  /** @private */
+  get wg () {
+    return $("div")
+      .add(this._view)
+      .add($("p").html("&nbsp;"))
+      .add($("hr"))
+      .add($("table").klass("main")
+        .add($("tr")
+          .add($("td").add(this._credits))
+          .add($("td")
+            .style("text-align: right;font-size: 10px;" +
+              "color:#808080;font-size:x-small;")
+            .html(`- © ºDeme. ${Main.app} (${Main.version}) -`))))
+    ;
   }
 
-  async run () {
-    const rq = {
-      "module": ".",
-    };
-
-    const rp = await this.client.sendAsync(rq);
-
-    if (rp["lang"] === "en") {
-      I18n.en();
-    } else {
-      I18n.es();
-    }
-
-    const url = Ui.url();
-    const page = url["0"];
-    if (page === undefined) {
-      new SysMain(this).run();
-    } else {
-      let path = window.location.href;
-      const ix = path.indexOf("?");
-      path = ix === -1 ? path : path.substring(0, ix);
-      location.assign(path);
-    }
-    /*
-    const data = {
-      "source": "main",
-      "rq": "getDb"
-    };
-    const rp = await self._client.send(data);
-
-    this._model = rp["db"];
-
-    if (this._model["lang"] === "es") I18n.es();
-    else I18n.en();
-
-    const page = this._model["menu"];
-    switch (page) {
-    case backupsPageId: {
-      new Backups(self).show();
-      break;
-    }
-    case settingsPageId:
-      new Settings(self).show();
-      break;
-    default:
-      throw("Page '" + page + "' is unknown");
-    }
-    */
+  /** @return {void} */
+  show () {
+    $("@body").removeAll().add(this.wg);
+    this.update();
   }
 
-  async start () {
-    const ok = await this._client.connect();
-    this._client.setPageId();
+  // CONTROL -------------------------------------
+  // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
 
-    if (ok) {
-      this.run();
-    } else {
-      new Auth(this).show();
-    }
-  }
-
-  // __________
-  // Call backs
-  // TTTTTTTTTT
-
-  /** @return {Promise} */
+  /** @return {!Promise} */
   async bye () {
     const rq = {
       "module": "sys",
-      "page": "Menu",
-      "rq": "logout"
+      "source": "SysMain",
+      "rq": "go",
+      "option": SysMain.homePageId
     };
-    await this.client.send(rq);
+    await Main.client.send(rq);
+    const rq2 = {
+      "module": "logout"
+    };
+    await Main.client.send(rq2);
     new Bye(this).show();
   }
 
-  /**
-   * @param {string} page Page to go
-   * @return {Promise}
-   */
-  async go (page) {
-    const rq = {
-      "module": "sys",
-      "page": "Menu",
-      "rq": "go",
-      "option": page
-    };
-    await this.client.send(rq);
-    location.assign(Main.urlBase);
+  /** @return {!Promise} */
+  async update () {
+    const self = this;
+
+    async function go () {
+      const rq = {
+        "module": ".",
+      };
+
+      /** @type {!Object<string, string>} */
+      const rp = await Main.client.rq(rq);
+
+      if (rp["lang"] === "en") {
+        I18n.en();
+      } else {
+        I18n.es();
+      }
+
+      self._credits.html("<small>" + _("Help & Credits") + "</small>");
+
+      const url = Ui.url();
+      const /** string */ module = url["0"] || "sys";
+      if (module === "sys") {
+        new SysMain(self).show();
+      } else if (module === "market") {
+        //      new MarketMain(self).run();
+      } else if (module === "daily") {
+        //      new MarketMain(self).run();
+      } else if (module === "fleas") {
+        //      new MarketMain(self).run();
+      } else {
+        alert("Module '" + module + "' is unknown");
+        location.assign(Main.urlBase);
+      }
+    }
+
+    const url = Ui.url();
+    const /** string */ module = url["0"] || "sys";
+
+    if (module === "sys") {
+      const /** boolean */ ok = await Main.client.connect();
+      if (ok) {
+        go();
+      } else {
+        new Auth(this).show();
+      }
+    } else {
+      go();
+    }
   }
 
-  // _______
-  // statics
-  // TTTTTTT
+  // STATIC --------------------------------------
+  // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
 
+  /** @return {string } */
   static get urlBase () {
     let path = window.location.href;
     const ix = path.indexOf("?");
@@ -190,14 +194,12 @@ export default class Main {
     return captchaChpassStore;
   }
 
-  /** @return {string} Id of settings page */
-  static get settingsPageId () {
-    return "settings";
-  }
-
-  /** @return {string} Id of backups page */
-  static get backupsPageId () {
-    return "backups";
+  /** @return {!Client} */
+  static get client () {
+    if (client === null) {
+      throw new Error("Client is not initialized");
+    }
+    return client;
   }
 
 }

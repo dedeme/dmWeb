@@ -65,7 +65,7 @@ export default class Nicks {
             "rq": "download",
             "id": wnick.id,
           };
-          const rp = await this._main.client.sendAsync(data);
+          const rp = await this._main.client.send(data);
           wnick.download(rp["error"]);
           resolve();
         }, 200);
@@ -85,7 +85,7 @@ export default class Nicks {
         "rq": "check",
         "id": id
       };
-      const rp = await this._main.client.sendAsync(data);
+      const rp = await this._main.client.send(data);
       const i = Issue.fromJson(rp["issue"]);
       if (i.type === Issue.NONE) {
         wnick.check(true, "");

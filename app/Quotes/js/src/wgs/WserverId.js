@@ -60,7 +60,7 @@ export default class WserverId {
       "serverId": this._serverId,
       "code": code
     };
-    const rp = await this._main.client.sendAsync(data);
+    const rp = await this._main.client.send(data);
     const e = rp["error"];
     if (e === "") {
       const dif = new Dec((Date.now() - now) / 1000, 3);

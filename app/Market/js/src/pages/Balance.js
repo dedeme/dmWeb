@@ -16,6 +16,25 @@ const VALUE_ORDER = 1;
 const PROFITS_ORDER = 2;
 const RISK_ORDER = 3;
 const BET_ORDER = 4;
+const DAYS_ORDER = 5;
+
+function fprofits (stocks, buy, current) {
+  return (current - buy) * stocks;
+}
+
+function frisk (stocks, buy, ref) {
+  return (ref - buy) * stocks;
+}
+
+function fbet (stocks, current, ref) {
+  return (current - ref) * stocks;
+}
+
+function fdays (buy, current, ref, inc) {
+  return current <= ref
+    ? ref > buy ? Infinity : -Infinity
+    : (ref - buy) / ((current - ref) * inc);
+}
 
 /** Balance page. */
 export default class Balance {
@@ -33,6 +52,7 @@ export default class Balance {
     this._accountableProfits = 0;
     this._riskProfits = 0;
     this._bet = 0;
+    this._inc = 0.018;
 
     this._stocks = 0;
     this._cash = 0;
@@ -44,12 +64,14 @@ export default class Balance {
 
     this._portfolio = [];
 
-    this._order = NICK_ORDER;
+    this._order = DAYS_ORDER;
   }
 
   formatN (n, dec) {
     const d = new Dec(n, dec);
-    return this._main.model["lang"] === "es" ? d.toEu() : d.toEn();
+    return n === Infinity || n > 99999 ? "∞"
+      : n === -Infinity || n < -99999 ? "-∞"
+        : this._main.model["lang"] === "es" ? d.toEu() : d.toEn();
   }
 
   sortf () {
@@ -65,9 +87,14 @@ export default class Balance {
             ? (row1, row2) =>
               (row1[4] - row1[2]) * row1[1] > (row2[4] - row2[2]) * row2[1]
                 ? -1 : 1
-            : (row1, row2) =>
-              (row1[3] - row1[4]) * row1[1] > (row2[3] - row2[4]) * row2[1]
-                ? -1 : 1
+            : this._order === BET_ORDER
+              ? (row1, row2) =>
+                (row1[3] - row1[4]) * row1[1] > (row2[3] - row2[4]) * row2[1]
+                  ? -1 : 1
+              : (row1, row2) =>
+                fdays(row1[2], row1[3], row1[4], this._inc) >
+                  fdays(row2[2], row2[3], row2[4], this._inc)
+                  ? -1 : 1
     ;
   }
 
@@ -206,7 +233,16 @@ export default class Balance {
                   this._order = BET_ORDER;
                   this.reload();
                 }).klass("linkBold")
-              ).html(_("Bet")))))
+              ).html(_("Bet"))))
+          .add($("td").klass("head")
+            .add(
+              (this._currentProfits === null
+                ? $("span")
+                : Ui.link(() => {
+                  this._order = DAYS_ORDER;
+                  this.reload();
+                }).klass("linkBold")
+              ).html(_("Days")))))
         .adds(this._portfolio.map(e => $("tr")
           .add($("td").klass("nick")
             .add($("span").html(e[0])))
@@ -220,18 +256,22 @@ export default class Balance {
             .add($("span")
               .html(e[3] === null ? "[?]"
                 : this.formatN(e[3] * e[1], 2))))
-          .add($("td").klass("number")
+          .add($("td").klass("number") // Profits
             .add($("span")
               .html(e[3] === null ? "[?]"
-                : this.formatN((e[3] - e[2]) * e[1], 2))))
-          .add($("td").klass("number")
+                : this.formatN(fprofits(e[1], e[2], e[3]), 2))))
+          .add($("td").klass("number") // Risk
             .add($("span")
               .html(e[3] === null ? "[?]"
-                : this.formatN((e[4] - e[2]) * e[1], 2))))
-          .add($("td").klass("number")
+                : this.formatN(frisk(e[1], e[2], e[4]), 2))))
+          .add($("td").klass("number") // Bet
             .add($("span")
               .html(e[3] === null ? "[?]"
-                : this.formatN((e[3] - e[4]) * e[1], 2)))))))
+                : this.formatN(fbet(e[1], e[3], e[4]), 2))))
+          .add($("td").klass("number") // Days
+            .add($("span")
+              .html(e[3] === null ? "[?]"
+                : this.formatN(fdays(e[2], e[3], e[4], this._inc), 0)))))))
       .add(Ui.upTop("up"))
     ;
 
@@ -279,6 +319,8 @@ export default class Balance {
       }
       return e;
     });
+
+    this._inc = rp["params"][0];
 
     this.reload();
   }

@@ -43,9 +43,6 @@ getNicks pf = do
     otherNick pfNicks (nick, sel) = sel && notElem nick pfNicks
     takeNick (nick, _) = nick
 
-nkpToJs :: (String, Params) -> JSValue
-nkpToJs (n, p) = Js.wList [Js.wString n, Params.toJs p]
-
 buyOrders :: Double -> [String] -> Params -> IO JSValue
 buyOrders cash nks p = do
   conf <- Conf.get

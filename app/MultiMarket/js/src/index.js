@@ -3,9 +3,13 @@
 
 import Main from "./Main.js";
 
-/** Application entry. */
+/**
+ * Application entry.
+ * @return {void}
+ */
 export function main () {
-  new Main().start();
+  new Main().show();
 }
 
+/** @type {!Object<string, function():void>} */
 window["main"] = main;

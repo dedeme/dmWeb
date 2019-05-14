@@ -1,9 +1,14 @@
 // Copyright 23-Oct-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("view_Backups");
+import Main from "../Main.js";
+import Ui from "../dmjs/Ui.js";
+import It from "../dmjs/It.js";
+import {_, _args} from "../I18n.js";
 
-view_Backups = class {
+const $ = Ui.$;
+
+export default class view_Backups {
   /**
    * @param {!Main} control
    */
@@ -94,23 +99,23 @@ view_Backups = class {
           .add($("tr")
             .add($("td").klass("frame").style("vertical-align:top")
               .add($("table")
-                .addIt(It.from(control.backups()).sort().reverse().map(f =>
+                .adds([... It.from(control.backups()).sort().reverse().map(f =>
                   $("tr").add($("td")
                     .add(Ui.link(ev => {
                         if (confirm(_("All the data will be replaced"))) {
                           control.autorestore(f);
                         }
-                      }).klass("link").html(f)))))))
+                      }).klass("link").html(f))))])))
             .add($("td"))
             .add($("td").klass("frame").style("vertical-align:top")
               .add($("table")
-                .addIt(It.from(control.trash()).sort().reverse().map(f =>
+                .adds([... It.from(control.trash()).sort().reverse().map(f =>
                   $("tr").add($("td")
                     .add(Ui.link(ev => {
                         if (confirm(_("All the data will be replaced"))) {
                           control.restoreTrash(f);
                         }
-                      }).klass("link").html(f))))))))));
+                      }).klass("link").html(f))))]))))));
     }
 
     control.dom().show("backups", $("table")

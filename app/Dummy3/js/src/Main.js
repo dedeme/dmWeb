@@ -104,7 +104,6 @@ export default class Main {
 
   async start () {
     const ok = await this._client.connect();
-    this._client.setPageId();
     if (ok) {
       this.run();
     } else {

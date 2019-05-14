@@ -1,11 +1,17 @@
 // Copyright 23-Sep-2017 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("user_Auth");
+import Main from "../Main.js";
+import Domo from "../dmjs/Domo.js";
+import Ui from "../dmjs/Ui.js";
+import It from "../dmjs/It.js";
+import Store from "../dmjs/Store.js";
+import Captcha from "../dmjs/Captcha.js";
+import {_, I18n} from "../I18n.js";
 
-goog.require("github_dedeme.Captcha");
+const $ = Ui.$;
 
-user_Auth = class {
+export default class user_Auth {
   /**
    * @param {!Main} control
    */
@@ -38,8 +44,8 @@ user_Auth = class {
       .att("id", "accept")
       .value(_("Accept"));
 
-    /** @type {github_dedeme.Captcha} */
-    let captcha = new github_dedeme.Captcha(captchaStore, 3);
+    /** @type {Captcha} */
+    let captcha = new Captcha(captchaStore, 3);
 
     /**
      * Change selected language
@@ -48,16 +54,16 @@ user_Auth = class {
     const changeLanguage = (ev) => {
       Store.put(
         Main.langStore(),
-        Store.get(Main.langStore()) === "en" ? "es" : "en"
+        Store.take(Main.langStore()) === "en" ? "es" : "en"
       );
       control.run();
     }
 
     /**
      * Accept button pressed
-     * @type {function(string, string, boolean):void}
+     * @type {function(string, string, boolean):Promise}
      */
-    const faccept = (user, pass, persistent) => {
+    const faccept = async (user, pass, persistent) => {
       if (user == "") {
         alert(_("User name is missing"));
         return;
@@ -66,14 +72,13 @@ user_Auth = class {
         alert(_("Password is missing"));
         return;
       }
-      this._client.authentication(user, pass, !persistent, (ok) => {
-        if (ok) {
-          captcha.resetCounter();
-        } else {
-          captcha.incCounter();
-        }
-        control.run();
-      })
+      const ok = await this._client.authentication(user, pass, !persistent);
+      if (ok) {
+        captcha.resetCounter();
+      } else {
+        captcha.incCounter();
+      }
+      control.run();
     }
 
     /**
@@ -125,7 +130,7 @@ user_Auth = class {
               .add($("tr")
                 .add($("td")
                   .add(Ui.link(changeLanguage).att("class", "link")
-                    .html(Store.get(
+                    .html(Store.take(
                       Main.langStore()) === "en" ? "ES" : "EN")))
                 .add($("td").att("align", "right").add(accept)))))
       ];
@@ -180,11 +185,11 @@ user_Auth = class {
               'color:#505050;'
             )
             .html("<big><big><b>" + _("Login") + "</big></big></b>")))
-        .addIt(It.from(rows));
+        .adds(rows);
     }
 
 
-    Store.get(Main.langStore()) === "en" ? I18n.en() : I18n.es();
+    Store.take(Main.langStore()) === "en" ? I18n.en() : I18n.es();
 
     control.dom().showRoot(
       $("div")
@@ -192,7 +197,7 @@ user_Auth = class {
           "&nbsp;<br>" + Main.app() + "<br>&nbsp;"))
         .add($("div").add(body()))
     );
-    user.e().focus();
+    user.e.focus();
   }
 }
 

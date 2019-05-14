@@ -6,7 +6,7 @@
 #include <gc.h>
 #include "dmc/Date.h"
 #include "dmc/str.h"
-#include "dmc/Cgi.h"
+#include "dmc/cgi.h"
 #include "dmc/path.h"
 #include "dmc/file.h"
 #include "dmc/Json.h"
@@ -34,7 +34,7 @@ static char *mk_date2() {
   return str_printf("%s-%ld", date_format(t, "%Y%m%d"), t);
 }
 
-static void hconta_init(Cgi *cgi) {
+static void hconta_init(void) {
 	char *dir = path_cat(app_dir, "data", NULL);
 
   if (!file_exists(dir)) {
@@ -50,7 +50,7 @@ static void hconta_init(Cgi *cgi) {
   }
 }
 
-static Ajson *read_backups(Cgi *cgi) {
+static Ajson *read_backups() {
   Achar *fs = file_dir(path_cat(app_dir, "backups", NULL));
 
   Ajson *rs = ajson_new();
@@ -60,7 +60,7 @@ static Ajson *read_backups(Cgi *cgi) {
 	return rs;
 }
 
-static void filter_backups(Cgi *cgi) {
+static void filter_backups() {
   Date t0 = date_now();
   Date t1 = date_add(t0, -7);
   Date t2 = date_new(date_day(t0), date_month(t0), date_year(t0) - 1);
@@ -90,7 +90,7 @@ static void filter_backups(Cgi *cgi) {
   }_EACH
 }
 
-static Ajson *read_trash(Cgi *cgi) {
+static Ajson *read_trash() {
   Achar *fs = file_dir(path_cat(app_dir, "trash", NULL));
 
   Ajson *rs = ajson_new();
@@ -101,20 +101,20 @@ static Ajson *read_trash(Cgi *cgi) {
 	return rs;
 }
 
-static void to_trash(Cgi *cgi) {
+static void to_trash() {
   ext_zip(
     path_cat(app_dir, "data", NULL),
     path_cat(app_dir, "trash", str_printf("%s.zip", mk_date2()), NULL)
   );
 }
 
-static void clear_tmp(Cgi *cgi) {
+static void clear_tmp() {
   char *dir = path_cat(app_dir, "tmp", NULL);
   file_del(dir);
   file_mkdir(dir);
 }
 
-char *unzip(Cgi *cgi) {
+char *unzip() {
   char *fail = "";
   TRY {
     ext_unzip(
@@ -144,7 +144,7 @@ char *unzip(Cgi *cgi) {
   }
 }
 
-static CgiRp *app_process(Cgi *cgi, char *session_id, Mjson *rqm) {
+static CgiRp *app_process(char *session_id, Mjson *rqm) {
   char *home = app_dir;
   char *rq = jmap_gstring(rqm, "rq");
   // ------------------------------------------------------- getConf
@@ -157,7 +157,7 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Mjson *rqm) {
 
     Mjson *m = mjson_new();
     jmap_pstring(m, "conf", data);
-    return cgi_ok(cgi, m);
+    return cgi_ok(m);
 
   // ------------------------------------------------------- setConf
   } else if (str_eq(rq, "setConf")) {
@@ -167,7 +167,7 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Mjson *rqm) {
     );
 
     Mjson *m = mjson_new();
-    return cgi_ok(cgi, m);
+    return cgi_ok(m);
 
   // ------------------------------------------------------- getDb
   } else if (str_eq(rq, "getDb")) {
@@ -181,9 +181,9 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Mjson *rqm) {
 
     Mjson *m = mjson_new();
     mjson_put(m, "db", json_wstring(data));
-    mjson_put(m, "backups", json_warray(read_backups(cgi)));
-    mjson_put(m, "trash", json_warray(read_trash(cgi)));
-    return cgi_ok(cgi, m);
+    mjson_put(m, "backups", json_warray(read_backups()));
+    mjson_put(m, "trash", json_warray(read_trash()));
+    return cgi_ok(m);
 
   // ------------------------------------------------------- setDb
   } else if (str_eq(rq, "setDb")) {
@@ -195,11 +195,11 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Mjson *rqm) {
     );
 
     Mjson *m = mjson_new();
-    return cgi_ok(cgi, m);
+    return cgi_ok(m);
 
   // ------------------------------------------------------- printExercise
   } else if (str_eq(rq, "printExercisxxxxe")) {
-    clear_tmp(cgi);
+    clear_tmp();
     ext_pdf(
       jmap_gstring(rqm, "tx"),
       path_cat(home, "tmp", "exercise.pdf", NULL),
@@ -207,12 +207,11 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Mjson *rqm) {
     );
 
     Mjson *m = mjson_new();
-    return cgi_ok(cgi, m);
+    return cgi_ok(m);
 
   // ------------------------------------------------------- chpass
   } else if (str_eq(rq, "chpass")) {
     return cgi_change_pass(
-      cgi,
       jmap_gstring(rqm, "user"),
       jmap_gstring(rqm, "pass"),
       jmap_gstring(rqm, "newPass")
@@ -220,7 +219,7 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Mjson *rqm) {
 
   // ------------------------------------------------------- backup
   } else if (str_eq(rq, "backup")) {
-    clear_tmp(cgi);
+    clear_tmp();
 
     char *name = str_printf("Hconta%s.zip", mk_date());
     ext_zip(
@@ -230,18 +229,18 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Mjson *rqm) {
 
     Mjson *m = mjson_new();
     jmap_pstring(m, "name", name);
-    return cgi_ok(cgi, m);
+    return cgi_ok(m);
 
   // ------------------------------------------------------- restoreStart
   } else if (str_eq(rq, "restoreStart")) {
-    clear_tmp(cgi);
+    clear_tmp();
 
     LckFile *lck;
     lck = file_wopen(path_cat(home, "tmp", "back.zip", NULL));
     file_close(lck);
 
     Mjson *m = mjson_new();
-    return cgi_ok(cgi, m);
+    return cgi_ok(m);
 
   // ------------------------------------------------------- restoreAppend
   } else if (str_eq(rq, "restoreAppend")) {
@@ -251,34 +250,34 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Mjson *rqm) {
     file_close(lck);
 
     Mjson *m = mjson_new();
-    return cgi_ok(cgi, m);
+    return cgi_ok(m);
 
   // ------------------------------------------------------- restoreAbort
   } else if (str_eq(rq, "restoreAbort")) {
-    clear_tmp(cgi);
+    clear_tmp();
 
     Mjson *m = mjson_new();
-    return cgi_ok(cgi, m);
+    return cgi_ok(m);
 
   // ------------------------------------------------------- restoreEnd
   } else if (str_eq(rq, "restoreEnd")) {
-    char *fail = unzip(cgi);
+    char *fail = unzip();
 
     if (!*fail) {
       char *data = path_cat(home, "data", NULL);
-      to_trash(cgi);
+      to_trash();
       file_del(data);
       file_rename(path_cat(home, "tmp", "data", NULL), data);
-      clear_tmp(cgi);
+      clear_tmp();
     }
 
     Mjson *m = mjson_new();
     jmap_pstring(m, "fail", fail);
-    return cgi_ok(cgi, m);
+    return cgi_ok(m);
 
   // ------------------------------------------------------- autorestore
   } else if (str_eq(rq, "autorestore")) {
-    to_trash(cgi);
+    to_trash();
 
     file_del(path_cat(home, "data", NULL));
     ext_unzip(
@@ -287,7 +286,7 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Mjson *rqm) {
     );
 
     Mjson *m = mjson_new();
-    return cgi_ok(cgi, m);
+    return cgi_ok(m);
 
   // ------------------------------------------------------- clearTrash
   } else if (str_eq(rq, "clearTrash")) {
@@ -296,22 +295,22 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Mjson *rqm) {
     file_mkdir(path);
 
     Mjson *m = mjson_new();
-    return cgi_ok(cgi, m);
+    return cgi_ok(m);
 
   // ------------------------------------------------------- restoreTrash
   } else if (str_eq(rq, "restoreTrash")) {
     char *source = path_cat(home, "trash", jmap_gstring(rqm, "file"), NULL);
 
     if (!file_exists(source)) {
-      return cgi_error(cgi, str_printf("Trash back '%s' not found", source));
+      return cgi_error(str_printf("Trash back '%s' not found", source));
     }
 
-    to_trash(cgi);
+    to_trash();
     file_del(path_cat(home, "data", NULL));
     ext_unzip(source, home);
 
     Mjson *m = mjson_new();
-    return cgi_ok(cgi, m);
+    return cgi_ok(m);
 
   // ------------------------------------------------------- logout
   } else if (str_eq(rq, "logout")) {
@@ -320,13 +319,13 @@ static CgiRp *app_process(Cgi *cgi, char *session_id, Mjson *rqm) {
       path_cat(home, "backups", str_printf("%s.zip", mk_date()), NULL)
     );
 
-    filter_backups(cgi);
+    filter_backups();
 
-    return cgi_del_session(cgi, session_id);
+    return cgi_del_session(session_id);
 
   // ------------------------------------------------------- error!
   } else {
-    return cgi_error(cgi, str_printf("'%s': Unknown request", rq));
+    return cgi_error(str_printf("'%s': Unknown request", rq));
   }
 }
 
@@ -336,24 +335,23 @@ int main (int argc, char **argv) {
     if (argc != 2) {
       THROW("") "argc must be 2" _THROW
     }
-    Cgi *cgi = cgi_new(app_dir, expiration);
+    cgi_init(app_dir, expiration);
 
-    hconta_init(cgi);
+    hconta_init();
 
     char *rq = argv[1];
     int ix = str_cindex(rq, ':');
     CgiRp *rp;
     if (ix == -1) { //............................................. CONNECTION
-      cgi_set_key(cgi, rq);
-      rp = cgi_connect(cgi, rq);
+      cgi_set_key(rq);
+      rp = cgi_connect(rq);
    } else if (ix == 0) { //................................... AUTHENTICATION
       char *key = cryp_key(app_name, cgi_klen());
-      cgi_set_key(cgi, key);
+      cgi_set_key(key);
 
       char *data = cryp_decryp(key, rq + 1);
       Achar *parts = str_csplit(data, ':');
       rp = cgi_authentication(
-        cgi,
         achar_get(parts, 0),
         achar_get(parts, 1),
         *achar_get(parts, 2) == '1'
@@ -362,13 +360,13 @@ int main (int argc, char **argv) {
       char *session_id = str_sub(rq, 0, ix);
       char *key;
       char *connectionId;
-      cgi_get_session_data(&key, &connectionId, cgi, session_id);
+      cgi_get_session_data(&key, &connectionId, session_id);
 
       if (!*key) {
-        cgi_set_key(cgi, "nosession");
-        rp = cgi_expired(cgi);
+        cgi_set_key("nosession");
+        rp = cgi_expired();
       } else {
-        cgi_set_key(cgi, key);
+        cgi_set_key(key);
         Mjson *m = json_robject(
           (Json *)cryp_decryp(key, str_sub_end(rq, ix + 1))
         );
@@ -376,10 +374,10 @@ int main (int argc, char **argv) {
           mjson_has_key(m, "connectionId") &&
           str_cmp(connectionId, jmap_gstring(m, "connectionId"))
         ) {
-          cgi_set_key(cgi, "nosession");
-          rp = cgi_expired(cgi);
+          cgi_set_key("nosession");
+          rp = cgi_expired();
         } else {
-          rp = app_process(cgi, session_id, m);
+          rp = app_process(session_id, m);
         }
       }
     }

@@ -1,0 +1,37 @@
+// Copyright 06-May-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+#ifndef DATA_NICK_H
+  #define DATA_NICK_H
+
+#include "dmc/async.h"
+
+/*--*/
+
+///
+typedef struct Nick_Nick Nick;
+
+///
+Nick *nick_new(int id, char *name);
+
+///
+int nick_id(Nick *this);
+
+///
+char *nick_name(Nick *this);
+
+///
+int nick_is_sel(Nick *this);
+
+///
+void nick_set_is_sel(Nick *this, int value);
+
+///
+Js *nick_to_js(Nick *this);
+
+///
+Nick *nick_from_js(Js *js);
+
+/*--*/
+
+#endif

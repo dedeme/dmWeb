@@ -101,14 +101,14 @@ export default class Main {
       "source": "reader",
       "rq": "read"
     };
-    let rp = await this.client.sendAsync(rq);
+    let rp = await this.client.send(rq);
     this.data = new Data(rp);
 
     rq = {
       "source": "main",
       "rq": "getDb"
     };
-    rp = await self._client.sendAsync(rq);
+    rp = await self._client.send(rq);
 
     this._model = rp["db"];
 
@@ -148,7 +148,6 @@ export default class Main {
 
   async start () {
     const ok = await this._client.connect();
-    this._client.setPageId();
     if (ok) {
       this.run();
     } else {
@@ -166,7 +165,7 @@ export default class Main {
       "source": "main",
       "rq": "logout"
     };
-    await this.client.sendAsync(rq);
+    await this.client.send(rq);
     new Bye(this).show();
   }
 
@@ -180,7 +179,7 @@ export default class Main {
       "rq": "setMenu",
       "option": page
     };
-    await this.client.sendAsync(rq);
+    await this.client.send(rq);
     this.run();
   }
 
@@ -194,7 +193,7 @@ export default class Main {
           "source": "reader",
           "rq": "read"
         };
-        const rp = await this.client.sendAsync(rq);
+        const rp = await this.client.send(rq);
         this.data = new Data(rp);
         this._page.showData();
       }
