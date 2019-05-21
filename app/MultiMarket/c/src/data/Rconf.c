@@ -9,7 +9,7 @@
   sel: bool
   is_date_eu: bool
   date_separator: char
-  is_number_eu: bool
+  is_iso_number: bool
   fields_type: char *
   table_start: char *
   table_end: char *
@@ -25,7 +25,7 @@ struct Rconf_Rconf{
   int sel;
   int is_date_eu;
   char date_separator;
-  int is_number_eu;
+  int is_iso_number;
   char *fields_type;
   char *table_start;
   char *table_end;
@@ -51,8 +51,8 @@ char rconf_date_separator(Rconf *this) {
   return this->date_separator;
 }
 
-int rconf_is_number_eu(Rconf *this) {
-  return this->is_number_eu;
+int rconf_is_iso_number(Rconf *this) {
+  return this->is_iso_number;
 }
 
 char *rconf_fields_type(Rconf *this) {
@@ -90,7 +90,7 @@ Js *rconf_to_js(Rconf *this) {
   arr_push(js, js_wb(this->sel));
   arr_push(js, js_wb(this->is_date_eu));
   arr_push(js, js_wi((int)this->date_separator));
-  arr_push(js, js_wb(this->is_number_eu));
+  arr_push(js, js_wb(this->is_iso_number));
   arr_push(js, js_ws(this->fields_type));
   arr_push(js, js_ws(this->table_start));
   arr_push(js, js_ws(this->table_end));
@@ -110,14 +110,14 @@ Rconf *rconf_from_js(Js *js) {
   this->sel = js_rb(*p++);
   this->is_date_eu = js_rb(*p++);
   this->date_separator = (char)js_ri(*p++);
-  this->is_number_eu = js_rb(*p++);
+  this->is_iso_number = js_rb(*p++);
   this->fields_type = js_rs(*p++);
   this->table_start = js_rs(*p++);
   this->table_end = js_rs(*p++);
   this->row_start = js_rs(*p++);
   this->row_end = js_rs(*p++);
-  this->cols_start = arr_from_js(*p++, (FFROM)js_ws);
-  this->cols_end = arr_from_js(*p++, (FFROM)js_ws);
+  this->cols_start = arr_from_js(*p++, (FFROM)js_rs);
+  this->cols_end = arr_from_js(*p++, (FFROM)js_rs);
   return this;
 }
 

@@ -16,15 +16,13 @@ ServerCode: serial
 
 Server: serial
   id: int
-  short_name: char *
+  @short_name: char *
   ---
-  name: char *: short_name
+  @name: char *: short_name
   #Opt[Rconf]
-  company_conf: Opt - Rconf: opt_empty()
+  @daily_conf: Opt - Rconf: opt_empty()
   #Opt[Rconf]
-  daily_conf: Opt - Rconf: opt_empty()
-  #Opt[Rconf]
-  historic_conf: Opt - Rconf: opt_empty()
+  @historic_conf: Opt - Rconf: opt_empty()
   #Arr[ServerCode]
   codes: Arr - ServerCode: make_codes()
 */
@@ -87,7 +85,6 @@ struct Server_Server{
   int id;
   char *short_name;
   char *name;
-  Opt *company_conf;
   Opt *daily_conf;
   Opt *historic_conf;
   Arr *codes;
@@ -98,7 +95,6 @@ Server *server_new(int id, char *short_name) {
   this->id = id;
   this->short_name = short_name;
   this->name = short_name;
-  this->company_conf = opt_empty();
   this->daily_conf = opt_empty();
   this->historic_conf = opt_empty();
   this->codes = make_codes();
@@ -113,20 +109,32 @@ char *server_short_name(Server *this) {
   return this->short_name;
 }
 
+void server_set_short_name(Server *this, char *value) {
+  this->short_name = value;
+}
+
 char *server_name(Server *this) {
   return this->name;
 }
 
-Opt *server_company_conf(Server *this) {
-  return this->company_conf;
+void server_set_name(Server *this, char *value) {
+  this->name = value;
 }
 
 Opt *server_daily_conf(Server *this) {
   return this->daily_conf;
 }
 
+void server_set_daily_conf(Server *this, Opt *value) {
+  this->daily_conf = value;
+}
+
 Opt *server_historic_conf(Server *this) {
   return this->historic_conf;
+}
+
+void server_set_historic_conf(Server *this, Opt *value) {
+  this->historic_conf = value;
 }
 
 Arr *server_codes(Server *this) {
@@ -139,10 +147,6 @@ Js *server_to_js(Server *this) {
   arr_push(js, js_wi((int)this->id));
   arr_push(js, js_ws(this->short_name));
   arr_push(js, js_ws(this->name));
-  arr_push(js, opt_is_empty(this->company_conf)
-    ? js_wn()
-    : rconf_to_js(opt_get(this->company_conf))
-  );
   arr_push(js, opt_is_empty(this->daily_conf)
     ? js_wn()
     : rconf_to_js(opt_get(this->daily_conf))
@@ -163,10 +167,6 @@ Server *server_from_js(Js *js) {
   this->id = js_ri(*p++);
   this->short_name = js_rs(*p++);
   this->name = js_rs(*p++);
-  this->company_conf = js_is_null(*p)
-      ? p++? opt_empty(): NULL
-      : opt_new(rconf_from_js(*p++))
-  ;
   this->daily_conf = js_is_null(*p)
       ? p++? opt_empty(): NULL
       : opt_new(rconf_from_js(*p++))
@@ -175,7 +175,7 @@ Server *server_from_js(Js *js) {
       ? p++? opt_empty(): NULL
       : opt_new(rconf_from_js(*p++))
   ;
-  this->codes = arr_from_js(*p++, (FFROM)serverCode_to_js);
+  this->codes = arr_from_js(*p++, (FFROM)serverCode_from_js);
   return this;
 }
 

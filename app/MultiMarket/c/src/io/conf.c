@@ -53,4 +53,21 @@ void conf_set_nick_sel_id (int id) {
   write("nickSelId", js_wi(id));
 }
 
+int conf_server_sel_id (void) {
+  return js_ri(opt_oget(map_get(read(), "serverSelId"), js_wi(-1)));
+}
+
+void conf_set_server_sel_id (int id) {
+  write("serverSelId", js_wi(id));
+}
+
+char *conf_server_tab (void) {
+  return js_rs(opt_oget(map_get(read(), "serverTab"), js_ws("")));
+}
+
+/// Set name of selected tab in sys_page->servers
+void conf_set_server_tab (char *tab_name) {
+  write("serverTab", js_ws(tab_name));
+}
+
 

@@ -63,9 +63,7 @@
         (2) nicks: [
           (0) id: Int -- Identifier
           (1) name: String -- Nick name (e.g. TEF)
-          (2) is_ibex: Boolean
-          (3) is_sel: Boolean
-          (4) is_normal: Boolean -- If false it is an extra nick
+          (2) is_sel: Boolean
         ]
       ]</pre>
 
@@ -96,11 +94,10 @@
 
     <p>Urls of historic servers and companies codes.</p>
 
-    <p>Each server must have a implementation in java for each service that
-       it gives: Company, Daily or Historic.</p>
+    <p>Each server must have a implementation for each service that
+       it gives: Daily or Historic.</p>
 
     <ul>
-      <li><i>Company service</i> gives current quote of a company.</li>
       <li><i>Daily service</i> gives current quote of every company.</li>
       <li><i>Historic service</i> gives date, open, close, maximum, minimum and
           volume of last days for each company.</li>
@@ -114,7 +111,6 @@
           (0) id: Int -- Identifier
           (1) sort_name: String -- Not more than 5 characters (e.g. "INVER")
           (2) name: String -- Complete name (e.g. Invertia)
-          (3) company_conf: Opt <b>Rconf</b>
           (4) daily_conf: Opt <b>Rconf</b>
           (5) historic_conf: Opt <b>Rconf</b>
           (6) codes: [
@@ -126,7 +122,6 @@
       where <b>Rconf</b> is [
         (0) url: String
         (1) sel: Boolean - if its value is '1':
-              *company_conf: (only one server allowed) It will be used.
               *daily_conf: (more than one allowed) It will be used to evaluate
                            next day operations.
               *historic_conf: (only one server allowed) Qualified 'vote'
@@ -134,7 +129,6 @@
         (3) date_separator: String -- converted to char
         (4) is_number_eu: Boolean
         (5) fields_type: String
-              * "" for company_conf (There is one only field)
               * 'C' (Code) | 'Q' (Quote) combination for daily_conf
               * 'D' (Date) | 'O' (Open) | 'C' (Close) | 'X' (maXimum) |
                   'N' (miNimum) | 'V' (Volume) combination for historic_conf

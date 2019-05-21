@@ -7,6 +7,7 @@
 #include "io.h"
 #include "DEFS.h"
 #include "server.h"
+#include "scheduler.h"
 
 #include "io/log.h"
 #include "io/conf.h"
@@ -57,8 +58,10 @@ int main (int argc, char *argv[]) {
     Iserver *sv = iserver_new(PORT);
 
     pthread_t *server_th = async_thread((FPROC)server_run, sv);
+    pthread_t *scheduler_th = async_thread((FPROC)scheduler_run, NULL);
 
     async_join(server_th);
+    async_join(scheduler_th);
 
     iserver_close(sv);
   } else if (str_eq(argv[1], "stop")) {

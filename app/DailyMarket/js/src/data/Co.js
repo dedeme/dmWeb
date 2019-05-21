@@ -49,7 +49,7 @@ export default class Co {
   get risk () {
     return this._lastQ === null || this._stocks === 0 ? 0
       : this._stocks *
-        ((this._signal < 0 ? -this._signal : 0) -
+        ((this._signal < 0 ? -this._signal : this._lastQ) -
         this._price);
   }
 
@@ -96,8 +96,8 @@ export default class Co {
    * @return {!Array<number>} [risk, profits]
    */
   static allRiskProfits (cos) {
-    let risk = -10000;
-    let prof = -10000;
+    let risk = 0;
+    let prof = 0;
     cos.forEach(co => {
       risk += co.risk;
       prof += co.profits;

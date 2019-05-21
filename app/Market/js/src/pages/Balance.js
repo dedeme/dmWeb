@@ -31,9 +31,14 @@ function fbet (stocks, current, ref) {
 }
 
 function fdays (buy, current, ref, inc) {
-  return current <= ref
+  const r = current <= ref
     ? ref > buy ? Infinity : -Infinity
     : (ref - buy) / ((current - ref) * inc);
+  return r === Infinity || r > 999
+    ? Infinity
+    : r === -Infinity || r < -999
+      ? -Infinity
+      : r;
 }
 
 /** Balance page. */
@@ -69,8 +74,8 @@ export default class Balance {
 
   formatN (n, dec) {
     const d = new Dec(n, dec);
-    return n === Infinity || n > 99999 ? "∞"
-      : n === -Infinity || n < -99999 ? "-∞"
+    return n === Infinity ? "∞"
+      : n === -Infinity ? "-∞"
         : this._main.model["lang"] === "es" ? d.toEu() : d.toEn();
   }
 

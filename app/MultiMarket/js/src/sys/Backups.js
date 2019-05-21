@@ -333,7 +333,7 @@ export default class Backups {
     this._backups = rp["backups"];
     this._trash = rp["trash"];
 
-    this._sysMain.dom.show(SysMain.backupsPageId, this.wg);
+    this._sysMain.view.removeAll().add(this.wg);
   }
 
 }

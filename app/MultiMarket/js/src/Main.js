@@ -4,7 +4,6 @@
 import Domo from "./dmjs/Domo.js"; //eslint-disable-line
 import Client from "./dmjs/Client.js";
 import Ui from "./dmjs/Ui.js";
-import Dom from "./core/Dom.js";
 import Expired from "./core/Expired.js";
 import Auth from "./core/Auth.js";
 import {I18n, _} from "./I18n.js";
@@ -28,12 +27,6 @@ export default class Main {
     // MODEL -------
     // TTTTTTTTTTTTT
 
-    /**
-     * @private
-     * @type {!Dom}
-     */
-    this._dom = new Dom(this);
-
     client = new Client(true, app, () => {
       new Expired(this).show();
     });
@@ -47,11 +40,6 @@ export default class Main {
 
 
     this._view = $("div");
-  }
-
-  /** @return {!Dom} Main container */
-  get dom () {
-    return this._dom;
   }
 
   /** @return {!Domo} */

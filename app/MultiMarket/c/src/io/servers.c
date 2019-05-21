@@ -40,7 +40,7 @@ Servers *servers_from_js(Js *js) {
   Js **p = (Js **)arr_start(a);
   Servers *this = MALLOC(Servers);
   this->next_id = js_ri(*p++);
-  this->list = arr_from_js(*p++, (FFROM)server_to_js);
+  this->list = arr_from_js(*p++, (FFROM)server_from_js);
   return this;
 }
 
@@ -54,6 +54,9 @@ static char *fservers (void) {
 }
 
 static Servers *read (void) {
+//  EXC_IO("'servers.db' was not initialized");
+//  puts(file_read(fservers()));
+//  return NULL;
   return servers_from_js((Js *)file_read(fservers()));
 }
 
@@ -78,7 +81,27 @@ void servers_init (void) {
 
 // Arr[Server]
 Arr *servers_list (void) {
-  return read()->list;
+   return read()->list;
+}
+
+// servers is Arr[Server]
+static int id_index (Arr *servers, int id) {
+  EACH_IX(servers, Server, sv, ix)
+    if (server_id(sv) == id) {
+      return ix;
+    }
+  _EACH
+  return -1;
+}
+
+// servers is Arr[Server]
+static int short_name_index (Arr *servers, char *short_name) {
+  EACH_IX(servers, Server, sv, ix)
+    if (server_short_name(sv) == short_name) {
+      return ix;
+    }
+  _EACH
+  return -1;
 }
 
 int servers_add (char *short_name) {
@@ -88,6 +111,62 @@ int servers_add (char *short_name) {
   db->next_id += 1;
   write(db);
   return 1;
+}
+
+void servers_remove(int id) {
+  Servers *db = read();
+  // Arr[Server]
+  Arr *list = db->list;
+  int i = -1;
+  EACH_IX(list, Server, sv, ix)
+    if (server_id(sv) == id) {
+      i = ix;
+      break;
+    }
+  _EACH
+  if (i != -1) {
+    arr_remove(list, i);
+    write(db);
+  }
+}
+
+int servers_set_names (int id, char *short_name, char *name) {
+  Servers *db = read();
+  // Arr[Server]
+  Arr *list = db->list;
+  int ix = id_index(list, id);
+  if (ix != -1) {
+    Server *sv = arr_get(list, ix);
+    if (
+      !str_eq(server_short_name(sv), short_name) &&
+      short_name_index(list, short_name) != -1
+    ) {
+        return 0;
+    }
+    server_set_short_name(sv, short_name);
+    server_set_name(sv, name);
+    write(db);
+  }
+  return 1;
+}
+
+// codes is Arr[ServerCodes]
+void servers_set_codes(int id, Arr *codes) {
+  Servers *db = read();
+  // Arr[Server]
+  Arr *list = db->list;
+  int ix = id_index(list, id);
+  if (ix != -1) {
+    Server *sv = arr_get(list, ix);
+    // Arr[ServerCode]
+    Arr *scs = server_codes(sv);
+    arr_remove_range(scs, 0, arr_size(scs));
+    EACH(codes, ServerCode, sc)
+      arr_push(scs, sc);
+    _EACH
+
+    write(db);
+  }
 }
 
 void servers_add_nick (int nk_id) {

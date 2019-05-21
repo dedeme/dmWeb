@@ -2,7 +2,7 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 import Main from "../../Main.js";
-import SysMain from "../SysMain.js";
+import Nicks from "../Nicks.js"; //eslint-disable-line
 import {_args, _} from "../../I18n.js";
 import Ui from "../../dmjs/Ui.js";
 import Domo from "../../dmjs/Domo.js"; //eslint-disable-line
@@ -24,14 +24,14 @@ const emptyBt = (title) => $("div")
 export default class Wnick {
 
   /**
-   * @param {!SysMain} sysMain
-   * @param {?number} model
+   * @param {!Nicks} nicks
    * @param {!Nick} nick
    */
-  constructor (sysMain, model, nick) {
-    this._sysMain = sysMain;
+  constructor (nicks, nick) {
+    this._nicks = nicks;
     this._nick = nick;
-    this._isModel = model !== null && model === nick.id;
+    this._isModel = nicks.model === nick.id;
+    this._isNickSelId = nicks.nickSelId === nick.id;
   }
 
   /** @return {number} The nick identifier (a number)*/
@@ -63,9 +63,11 @@ export default class Wnick {
       .add($("tr")
         .add($("td").add(model))
         .add($("td").add(isSel))
-        .add($("td").add(Ui.link(() => {
-          this.edit(nick.id);
-        }).klass("link").text(nick.name))))
+        .add($("td").add(this._isNickSelId
+          ? $("span").html("<b>" + nick.name + "</b>")
+          : Ui.link(() => {
+            this._nicks.edit(nick.id);
+          }).klass("link").text(nick.name))))
     ;
   }
 
@@ -76,12 +78,12 @@ export default class Wnick {
   async setModel () {
     const rq = {
       "module": "sys",
-      "source": "Wnick",
+      "source": "nicks/Wnick",
       "rq": "setModel",
       "id": this.id
     };
     await Main.client.send(rq);
-    this._sysMain.run();
+    this._nicks.update();
   }
 
   /** @private */
@@ -91,42 +93,24 @@ export default class Wnick {
     }
     const rq = {
       "module": "sys",
-      "source": "Wnick",
+      "source": "nicks/Wnick",
       "rq": "del",
       "id": this.id
     };
     await Main.client.send(rq);
-    this._sysMain.run();
+    this._nicks.update();
   }
 
   /** @private */
   async setIsSel () {
     const data = {
       "module": "sys",
-      "source": "Wnick",
+      "source": "nicks/Wnick",
       "rq": "setIsSel",
       "id": this.id,
       "value": !this._nick.isSel
     };
-    const rq = await Main.client.send(data);
-    if (rq["ok"]) {
-      this._sysMain.run();
-    } else {
-      alert(_args(_("'%0' has server data missing"), this._nick.name));
-    }
-  }
-
-  /** @private */
-  async edit (id) {
-    const data = {
-      "module": "sys",
-      "source": "Wnick",
-      "rq": "edit",
-      "id": id,
-      "menu": SysMain.editPageId
-    };
     await Main.client.send(data);
-    this._sysMain.run();
+    this._nicks.update();
   }
-
 }

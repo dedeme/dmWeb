@@ -29,4 +29,18 @@ int conf_nick_sel_id (void);
 /// Sets id of selected nick in sys_pate->nicks.
 void conf_set_nick_sel_id (int id);
 
+/// Returns id of selected server in sys_page->servers or -1 if no one is
+/// selected.
+int conf_server_sel_id (void);
+
+/// Sets id of selected server in sys_page->servers.
+void conf_set_server_sel_id (int id);
+
+/// Returns name of selected tab in sys_page->servers or "" if no one is
+/// selected.
+char *conf_server_tab (void);
+
+/// Set name of selected tab in sys_page->servers
+void conf_set_server_tab (char *tab_name);
+
 #endif

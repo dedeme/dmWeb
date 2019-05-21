@@ -125,16 +125,13 @@ calculate nk = do
 --                   'nick'
 lastRef :: String -> IO Double
 lastRef nk = do
-  if nk == "PVA"
-  then return 0
+  conf <- Conf.get
+  let bet = Cgi.get (Js.rMap conf) Js.rDouble "bet"
+  params <- Params.readBase
+  (_, os, cs) <- readQuotes nk
+  let (RCalc _ ls _) = calc bet os cs params (G.force nk)
+  let QRef _ rf = last ls
+  let lastC = last cs
+  if rf < lastC then return rf
   else do
-    conf <- Conf.get
-    let bet = Cgi.get (Js.rMap conf) Js.rDouble "bet"
-    params <- Params.readBase
-    (_, os, cs) <- readQuotes nk
-    let (RCalc _ ls _) = calc bet os cs params (G.force nk)
-    let QRef _ rf = last ls
-    let lastC = last cs
-    if rf < lastC then return rf
-    else do
-      return lastC
+    return lastC

@@ -14,7 +14,7 @@ char *sys__nicks_process(Map *mrq) {
   CGI_GET_STR(rq, mrq, "rq")
 
   if (str_eq(rq, "idata")) {
-    void (fn)(void *null) {
+    void fn (void *null) {
       // Arr [Nick]
       Arr *list = nicks_list();
       map_put(rp, "nickList", arr_to_js(list, (FTO)nick_to_js));
@@ -33,6 +33,24 @@ char *sys__nicks_process(Map *mrq) {
     return cgi_ok(rp);
   }
 
-  EXC_ILLEGAL_ARGUMENT("rq", "idata", rq)
+  if (str_eq(rq, "newNick")) {
+    void fn (void *null) {
+      CGI_GET_STR(nick, mrq, "nick")
+      map_put(rp, "ok", js_wb(nicks_add(nick)));
+    }
+    io_wait(fn, NULL);
+    return cgi_ok(rp);
+  }
+
+  if (str_eq(rq, "setNickSelId")) {
+    void fn (void *null) {
+      CGI_GET_INT(id, mrq, "id")
+      conf_set_nick_sel_id(id);
+    }
+    io_wait(fn, NULL);
+    return cgi_empty();
+  }
+
+  EXC_ILLEGAL_ARGUMENT("rq", "idata | newNick | newNick | setNickSelId", rq)
   return NULL; // Unreachable
 }

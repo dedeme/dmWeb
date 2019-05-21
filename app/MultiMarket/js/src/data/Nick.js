@@ -1,4 +1,4 @@
-// Copyright 12-Apr-2018 ºDeme
+// Copyright 10-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 /** Nick */

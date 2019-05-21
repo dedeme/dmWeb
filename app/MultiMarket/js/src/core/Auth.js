@@ -35,7 +35,7 @@ export default class Auth {
     else I18n.es();
 
     /** @const {!Domo} */
-    const userIn = Ui.field("pass");
+    const userIn = Ui.field("pass").att("id", "userIn");
     /** @const {!Domo} */
     const pass = Ui.pass("accept").att("id", "pass");
     /** @const {!Domo} */
@@ -205,7 +205,8 @@ export default class Auth {
           `&nbsp;<br>${Main.app}<br>&nbsp;`))
         .add($("div").add(body()))
     );
-    userIn.e.focus();
+
+    userIn.e.focus()
   }
 }
 

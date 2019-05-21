@@ -24,7 +24,7 @@ int rconf_is_date_eu(Rconf *this);
 char rconf_date_separator(Rconf *this);
 
 ///
-int rconf_is_number_eu(Rconf *this);
+int rconf_is_iso_number(Rconf *this);
 
 ///
 char *rconf_fields_type(Rconf *this);

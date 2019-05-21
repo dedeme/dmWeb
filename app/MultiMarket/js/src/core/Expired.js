@@ -46,6 +46,6 @@ export default class Expired {
                     "<p><b>" +
                     _args(_("Click %0 to continue."),
                       link) + "</b></p>")))))));
-    this._main.dom.showRoot(w);
+    this._main.view.removeAll().add(w);
   }
 }

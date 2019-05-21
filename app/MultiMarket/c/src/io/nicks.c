@@ -47,7 +47,7 @@ Nicks *nicks_from_js(Js *js) {
   Nicks *this = MALLOC(Nicks);
   this->next_id = js_ri(*p++);
   this->model = js_ri(*p++);
-  this->list = arr_from_js(*p++, (FFROM)nick_to_js);
+  this->list = arr_from_js(*p++, (FFROM)nick_from_js);
   return this;
 }
 
@@ -156,4 +156,21 @@ int nicks_modify(Nick *nick) {
     write(db);
   }
   return 1;
+}
+
+void nicks_set_model(int nk_id) {
+  Nicks *db = read();
+  db->model = nk_id;
+  write(db);
+}
+
+void nicks_set_selected(int nk_id, int value) {
+  Nicks *db = read();
+  EACH(db->list, Nick, nk)
+    if (nick_id(nk) == nk_id) {
+      nick_set_is_sel(nk, value);
+      break;
+    }
+  _EACH
+  write(db);
 }

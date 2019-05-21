@@ -5,7 +5,7 @@ import Ui from "../dmjs/Ui.js";
 import Main from "../Main.js";
 import SysMain from "./SysMain.js"; //eslint-disable-line
 import {_} from "../I18n.js";
-import Log from "./wgs/Log.js";
+import Log from "./home/Log.js";
 
 const $ = Ui.$;
 

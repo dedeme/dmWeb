@@ -23,7 +23,7 @@ export default class Bye {
    * @return {void}
    */
   show () {
-    this._main.dom.showRoot(
+    this._main.view.removeAll().add(
       $("div")
         .add($("div").klass("title")
           .html(`&nbsp;<br>${Main.app}<br>&nbsp;`))

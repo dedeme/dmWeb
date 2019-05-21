@@ -68,6 +68,17 @@ export default class Menu {
   // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
 
   /**
+   * Removes all items from menu
+   * @return {void}
+   */
+  reset () {
+    this._lopts = [];
+    this._lview.removeAll();
+    this._ropts = [];
+    this._rview.removeAll();
+  }
+
+  /**
    * Adds elements to left part of menu. Elements are added left to right.
    * @param {!Domo} o
    * @return {void}
@@ -96,7 +107,7 @@ export default class Menu {
     const mId = "menu_" + id;
     function setId (o) {
       const att = o.att("id");
-      if (att !== "") {
+      if (att && att !== "") {
         o.klass(att === mId ? "frame" : "link");
       }
     }

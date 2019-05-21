@@ -15,13 +15,15 @@ static void request (IserverRq *rq) {
   TRY
     char *e = iserverRq_write(rq, hub_rp(opt_get(iserverRq_msg(rq))));
     if (*e) {
-      log_exception(e, exc_stack());
+      THROW(exc_io_t) e _THROW
     }
   CATCH (ex)
+    char *msg = exc_msg(ex);
     // Arr[char]
-    Arr *stack = exc_stack();
-    log_exception(ex, stack);
-    iserverRq_write(rq, str_f("%s\n  %s", ex, str_join(stack, "\n  ")));
+    Arr *stack = exc_stack(ex);
+
+    log_exception(msg, stack);
+    iserverRq_write(rq, str_f("%s\n  %s", msg, str_join(stack, "\n  ")));
   _TRY
 }
 
@@ -30,7 +32,16 @@ void server_run(Iserver *server) {
     IserverRq *rq = iserver_read(server);
 
     if (*iserverRq_error(rq)) {
-      log_exception(iserverRq_error(rq), exc_stack());
+      TRY
+        EXC_IO(iserverRq_error(rq))
+      CATCH(ex)
+        char *msg = exc_msg(ex);
+        // Arr[char]
+        Arr *stack = exc_stack(ex);
+
+        log_exception(msg, stack);
+        iserverRq_write(rq, str_f("%s\n  %s", msg, str_join(stack, "\n  ")));
+      _TRY
     } else {
       if (opt_is_full(iserverRq_msg(rq))){
         char *msg = opt_get(iserverRq_msg(rq));
@@ -43,15 +54,19 @@ void server_run(Iserver *server) {
             TRY
               EXC_IO(e)
             CATCH (ex)
+              char *msg = exc_msg(ex);
               // Arr[char]
-              Arr *stack = exc_stack();
-              log_exception(ex, stack);
+              Arr *stack = exc_stack(ex);
+
+              log_exception(msg, stack);
+              iserverRq_write(rq, str_f(
+                "%s\n  %s", msg, str_join(stack, "\n  ")
+              ));
             _TRY
           }
         } else {
           async_thread((FPROC)request, rq);
         }
-
       }
     }
 

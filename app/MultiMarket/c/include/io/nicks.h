@@ -26,6 +26,9 @@ void nicks_init (void);
 /// Returns id of nick model or -1 if it has not been set.
 int nicks_model (void);
 
+/// Sets nick model
+void nicks_set_model(int nk_id);
+
 /// Arr[Nick]
 Arr *nicks_list (void);
 
@@ -39,9 +42,13 @@ void nicks_del(int nk_id);
 /// returns 'opt_empty()'
 Opt *nicks_get(int nk_id);
 
-/// Modifies nick i 'nick_name(nick)' is not duplicated and returns 1.
+/// Modifies nick if 'nick_name(nick)' is not duplicated and returns 1.
 /// Otherwise returns 0
 int nicks_modify(Nick *nick);
 
+/// Set the nick with 'nick_id' selected on/off. If nick_id does not exist,
+/// it does nothing
+///   value: is 0 or 1.
+void nicks_set_selected(int nk_id, int value);
 
 #endif

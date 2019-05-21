@@ -6,12 +6,16 @@ C_FILES = $(wildcard src/*.c) \
 					$(wildcard src/io/*.c) \
 					$(wildcard src/server/*.c) \
 					$(wildcard src/server/sys/*.c) \
+					$(wildcard src/server/sys/nicks/*.c) \
+					$(wildcard src/server/sys/servers/*.c) \
 					$(wildcard src/scheduler/*.c)
 H_FILES = $(wildcard include/*.h) \
 					$(wildcard include/data/*.h) \
 					$(wildcard include/io/*.h) \
 					$(wildcard include/server/*.h) \
 					$(wildcard include/server/sys/*.h) \
+					$(wildcard include/server/sys/nicks/*.h) \
+					$(wildcard include/server/sys/servers/*.h) \
 					$(wildcard include/scheduler/*.h)
 
 LIB_PATH = lib/lib$(LIB)

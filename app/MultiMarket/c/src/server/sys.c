@@ -8,7 +8,10 @@
 #include "server/sys/sys__chpass.h"
 #include "server/sys/sys__backups.h"
 #include "server/sys/sys__nicks.h"
+#include "server/sys/nicks/sys__nicks__wnick.h"
 #include "server/sys/sys__servers.h"
+#include "server/sys/servers/sys__servers__names.h"
+#include "server/sys/servers/sys__servers__codes.h"
 
 char *sys_process(Map *mrq) {
   CGI_GET_STR(source, mrq, "source")
@@ -20,11 +23,16 @@ char *sys_process(Map *mrq) {
   if (str_eq(source, "Backups")) return sys__backups_process(mrq);
   if (str_eq(source, "Backups")) return sys__backups_process(mrq);
   if (str_eq(source, "Nicks")) return sys__nicks_process(mrq);
+  if (str_eq(source, "nicks/Wnick")) return sys__nicks__wnick_process(mrq);
   if (str_eq(source, "Servers")) return sys__servers_process(mrq);
+  if (str_eq(source, "servers/Names")) return sys__servers__names_process(mrq);
+  if (str_eq(source, "servers/Codes")) return sys__servers__codes_process(mrq);
 
   EXC_ILLEGAL_ARGUMENT(
     "source",
-    "SysMain | Home | Settings | Chpass | Backups | Nicks | Servers",
+    "SysMain | Home | Settings | Chpass | Backups | "
+    "Nicks | nicks/Wnick | "
+    "Servers | servers/Names | servers/Codes",
     source
   )
   return NULL; // Unreachable

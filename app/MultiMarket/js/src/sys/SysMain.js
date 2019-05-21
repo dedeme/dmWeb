@@ -5,7 +5,6 @@
 import Client from "../dmjs/Client.js";
 import Domo from "../dmjs/Domo.js"; //eslint-disable-line
 import Ui from "../dmjs/Ui.js";
-import Dom from "../core/Dom.js";
 import Main from "../Main.js";  //eslint-disable-line
 import Menu from "../wgs/Menu.js";
 import Home from "./Home.js";
@@ -49,11 +48,6 @@ export default class SysMain {
     return this._view;
   }
 
-  /** @return {!Dom} */
-  get dom () {
-    return this._main.dom;
-  }
-
   // MODEL ---------------------------------------
   // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
 
@@ -78,7 +72,7 @@ export default class SysMain {
       SysMain.serversPageId, _("Servers"), () => this.go(SysMain.serversPageId))
     );
 
-    menu.addRight(Menu.mkClose(main.bye));
+    menu.addRight(Menu.mkClose(main.bye.bind(main)));
     menu.addRight(Menu.separator());
     menu.addRight(Menu.mkOption(
       SysMain.settingsPageId, _("Settings"),
@@ -100,15 +94,6 @@ export default class SysMain {
 
   // CONTROL -------------------------------------
   // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
-
-  async run () {
-    const rq = {
-      "module": "sys",
-      "source": "SysMain",
-      "rq": "idata"
-    };
-    await Main.client.send(rq);
-  }
 
   /** @return {!Promise} */
   async update () {

@@ -39,16 +39,25 @@ int server_id(Server *this);
 char *server_short_name(Server *this);
 
 ///
+void server_set_short_name(Server *this, char *value);
+
+///
 char *server_name(Server *this);
 
-///Opt[Rconf]
-Opt *server_company_conf(Server *this);
+///
+void server_set_name(Server *this, char *value);
 
 ///Opt[Rconf]
 Opt *server_daily_conf(Server *this);
 
+///
+void server_set_daily_conf(Server *this, Opt *value);
+
 ///Opt[Rconf]
 Opt *server_historic_conf(Server *this);
+
+///
+void server_set_historic_conf(Server *this, Opt *value);
 
 ///Arr[ServerCode]
 Arr *server_codes(Server *this);
