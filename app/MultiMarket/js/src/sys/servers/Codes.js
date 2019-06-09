@@ -14,8 +14,8 @@ import {ServerCode} from "../../data/Server.js"; //eslint-disable-line
 
 const $ = Ui.$;
 
-/** Wserver widget. */
-export default class Names {
+/** Codes option. */
+export default class Codes {
 
   /**
    * @param {!Servers} servers
@@ -36,6 +36,7 @@ export default class Names {
              "border-bottom: 1px solid rgb(110,130,150);" +
              "border-collapse: collapse;");
     this._codeFields = [];
+    this._testSpans = [];
 
   }
 
@@ -75,6 +76,7 @@ export default class Names {
     const len = nicks.length;
     let i = 0;
     while (i < len) {
+      const ix = i;
       const nk = nicks[i++];
       const nextNk = i < len ? nicks[i] : nicks[0];
 
@@ -82,10 +84,17 @@ export default class Names {
         .att("id", String(nk.id))
         .setStyle("width", "125px")
         .value(this.getCode(nk.id));
-
       this._codeFields.push(field);
+
+      const span = $("span").add(Ui.img("unknown"));
+      this._testSpans.push(span);
+
       tds.push($("td").style("text-align:right;white-space: nowrap;")
-        .add($("span").text(nk.name + ": ")).add(field));
+        .add(Ui.link(() => this.test(nk.id, ix)).klass("link").text(nk.name))
+        .add($("span").text(": "))
+        .add(field)
+        .add(span)
+      );
     }
 
     this._table.removeAll();
@@ -148,6 +157,7 @@ export default class Names {
     const nicks = this._nicks;
     for (let i = 0; i < nicks.length; ++i) {
       this._codeFields[i].value(this.getCode(nicks[i].id));
+      this._testSpans[i].removeAll().add(Ui.img("unknown"));
     }
   }
 
@@ -170,5 +180,27 @@ export default class Names {
     };
     await Main.client.send(rq);
     this._servers.update();
+  }
+
+  /**
+   * @private
+   * @param {number} nickId
+   * @param {number} spanIx
+   * @return {Promise}
+   */
+  async test (nickId, spanIx) {
+    const rq = {
+      "module": "sys",
+      "source": "servers/Download", // Reuse callback
+      "rq": "historicTest",
+      "serverId": this._server.id,
+      "nickId": nickId
+    };
+    this._testSpans[spanIx].removeAll().add(Ui.img("wait.gif"));
+    const rp = await Main.client.sendLongRun(rq);
+    const ok = rp["ok"];
+    this._testSpans[spanIx].removeAll().add(Ui.img(
+      ok ? "well" : "error"
+    ));
   }
 }

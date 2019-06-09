@@ -31,7 +31,6 @@ export default class Wnick {
     this._nicks = nicks;
     this._nick = nick;
     this._isModel = nicks.model === nick.id;
-    this._isNickSelId = nicks.nickSelId === nick.id;
   }
 
   /** @return {number} The nick identifier (a number)*/
@@ -63,11 +62,9 @@ export default class Wnick {
       .add($("tr")
         .add($("td").add(model))
         .add($("td").add(isSel))
-        .add($("td").add(this._isNickSelId
-          ? $("span").html("<b>" + nick.name + "</b>")
-          : Ui.link(() => {
-            this._nicks.edit(nick.id);
-          }).klass("link").text(nick.name))))
+        .add($("td").add(Ui.link(() => {
+          this._nicks.edit(nick.id);
+        }).klass("link").text(nick.name))))
     ;
   }
 

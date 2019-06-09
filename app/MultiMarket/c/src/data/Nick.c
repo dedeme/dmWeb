@@ -6,7 +6,7 @@
 /* .
 Nick: serial
   id: int
-  name: char *
+  @name: char *
   ---
   @ is_sel: bool: 0
 */
@@ -33,6 +33,10 @@ int nick_id(Nick *this) {
 
 char *nick_name(Nick *this) {
   return this->name;
+}
+
+void nick_set_name(Nick *this, char *value) {
+  this->name = value;
 }
 
 int nick_is_sel(Nick *this) {

@@ -17,6 +17,7 @@
 #include "io/nicks.h"
 #include "io/quotes.h"
 #include "io/servers.h"
+#include "io/calendar.h"
 
 static void help (void) {
   puts("Usage: MultiMarket [start | stop | test | help]");
@@ -34,6 +35,7 @@ static void init (void) {
   nicks_init();
   quotes_init();
   servers_init();
+  calendar_init();
 }
 
 static char *send (char *msg) {
@@ -48,20 +50,23 @@ static int test (void) {
   return str_eq(send("test"), "ok");
 }
 
-
 int main (int argc, char *argv[]) {
   init();
 
   if (argc != 2) {
     help ();
   } else if (str_eq(argv[1], "start")) {
+
     Iserver *sv = iserver_new(PORT);
 
-    pthread_t *server_th = async_thread((FPROC)server_run, sv);
-    pthread_t *scheduler_th = async_thread((FPROC)scheduler_run, NULL);
+    AsyncActor *ac = asyncActor_new(ACTOR_SLEEP);
+    pthread_t *server_th = async_thread((FPROC)server_run, tp_new(ac, sv));
+    pthread_t *scheduler_th = async_thread((FPROC)scheduler_run, ac);
 
     async_join(server_th);
     async_join(scheduler_th);
+    asyncActor_end(ac);
+    asyncActor_join(ac);
 
     iserver_close(sv);
   } else if (str_eq(argv[1], "stop")) {
@@ -75,6 +80,4 @@ int main (int argc, char *argv[]) {
   } else {
     help();
   }
-
-  io_end();
 }

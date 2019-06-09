@@ -9,7 +9,7 @@
 #include "io/conf.h"
 
 // mrq is Map[Js]
-char *sys__servers_process(Map *mrq) {
+char *sys__servers_process(AsyncActor *ac, Map *mrq) {
   // Map[Js]
   Map *rp = map_new();
   CGI_GET_STR(rq, mrq, "rq")
@@ -30,43 +30,35 @@ char *sys__servers_process(Map *mrq) {
       map_put(rp, "serverSelId", js_wi(serverSelId));
       map_put(rp, "serverTab", js_ws(conf_server_tab()));
     }
-    io_wait(fn, NULL);
+    asyncActor_wait(ac, fn, NULL);
     return cgi_ok(rp);
   }
 
   if (str_eq(rq, "new")) {
-    void (fn)(void *null) {
-      CGI_GET_STR(short_name, mrq, "shortName")
-      map_put(rp, "ok", js_wb(servers_add(short_name)));
-    }
-    io_wait(fn, NULL);
+    CGI_GET_STR(short_name, mrq, "shortName")
+    void (fn)(void *null) { map_put(rp, "ok", js_wb(servers_add(short_name))); }
+    asyncActor_wait(ac, fn, NULL);
     return cgi_ok(rp);
   }
 
   if (str_eq(rq, "del")) {
-    void (fn)(void *null) {
-      CGI_GET_INT(id, mrq, "id")
-      servers_remove(id);
-    }
-    io_wait(fn, NULL);
+    CGI_GET_INT(id, mrq, "id")
+    void (fn)(void *null) { servers_remove(id); }
+    asyncActor_wait(ac, fn, NULL);
     return cgi_ok(rp);
   }
 
   if (str_eq(rq, "setServerSelId")) {
-    void (fn)(void *null) {
-      CGI_GET_INT(id, mrq, "id")
-      conf_set_server_sel_id(id);
-    }
-    io_wait(fn, NULL);
+    CGI_GET_INT(id, mrq, "id")
+    void (fn)(void *null) { conf_set_server_sel_id(id); }
+    asyncActor_wait(ac, fn, NULL);
     return cgi_empty();
   }
 
   if (str_eq(rq, "setServerTab")) {
-    void (fn)(void *null) {
-      CGI_GET_STR(id, mrq, "id")
-      conf_set_server_tab(id);
-    }
-    io_wait(fn, NULL);
+    CGI_GET_STR(id, mrq, "id")
+    void (fn)(void *null) { conf_set_server_tab(id); }
+    asyncActor_wait(ac, fn, NULL);
     return cgi_empty();
   }
 
@@ -74,7 +66,7 @@ char *sys__servers_process(Map *mrq) {
     void (fn)(void *null) {
       map_put(rp, "nicks", arr_to_js(nicks_list(), (FTO)nick_to_js));
     }
-    io_wait(fn, NULL);
+    asyncActor_wait(ac, fn, NULL);
     return cgi_ok(rp);
   }
 

@@ -13,11 +13,10 @@ void log_init (void);
 void log_error (char *msg);
 
 /// Writes a warning
-void log_warning (char *msg);
+void log_info (char *msg);
 
 /// Writes a exception.
-///   stack is Arr[char]
-void log_exception (char *msg, Arr *stack);
+void log_exception (Exc *ex);
 
 /// Returns an array of messages 'JSONized'
 Js *log_to_js (void);

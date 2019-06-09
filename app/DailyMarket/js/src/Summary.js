@@ -56,7 +56,7 @@ export default class Summary {
     let start = 0;
     let end = 1;
     [...It.range(cos[0].qs.length)].forEach(i => {
-      let sum = -10000;
+      let sum = 0;
       cos.forEach(e => {
         if (i < e.qs.length) {
           sum += e.stocks * (e.qs[i][1] - e.price);

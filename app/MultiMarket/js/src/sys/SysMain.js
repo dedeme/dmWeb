@@ -10,6 +10,7 @@ import Menu from "../wgs/Menu.js";
 import Home from "./Home.js";
 import Nicks from "./Nicks.js";
 import Servers from "./Servers.js";
+import Schedule from "./Schedule.js";
 import Settings from "./Settings.js";
 import Backups from "./Backups.js";
 import {_} from "../I18n.js";
@@ -83,6 +84,11 @@ export default class SysMain {
       SysMain.backupsPageId, _("Backups"),
       () => this.go(SysMain.backupsPageId)
     ));
+    menu.addRight(Menu.separator());
+    menu.addRight(Menu.mkOption(
+      SysMain.schedulePageId, _("Schedule"),
+      () => this.go(SysMain.schedulePageId)
+    ));
 
     main.view.removeAll()
       .add(menu.wg)
@@ -113,6 +119,8 @@ export default class SysMain {
       new Nicks(this).show();
     } else if (page === SysMain.serversPageId) {
       new Servers(this).show();
+    } else if (page === SysMain.schedulePageId) {
+      new Schedule(this).show();
     } else if (page === SysMain.settingsPageId) {
       new Settings(this).show();
     } else if (page === SysMain.backupsPageId) {
@@ -170,6 +178,11 @@ export default class SysMain {
   /** @return {string} Id of backups page */
   static get backupsPageId () {
     return "backups";
+  }
+
+  /** @return {string} Id of backups page */
+  static get schedulePageId () {
+    return "schedule";
   }
 
 }

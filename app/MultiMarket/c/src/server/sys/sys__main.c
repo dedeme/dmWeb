@@ -7,19 +7,19 @@
 #include "dmc/cgi.h"
 
 // mrq is Map[Js]
-char *sys__main_process(Map *mrq) {
+char *sys__main_process(AsyncActor *ac, Map *mrq) {
   CGI_GET_STR(rq, mrq, "rq")
   // Map[Js]
   Map *rp = map_new();
 
   if (str_eq(rq, "idata")) {
     void fn (void *null) { map_put(rp, "page", js_ws(conf_sys_page())); }
-    io_wait(fn, NULL);
+    asyncActor_wait(ac, fn, NULL);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "go")) {
     CGI_GET_STR(option, mrq, "option")
-    io_run((FPROC)conf_set_sys_page, option);
+    asyncActor_wait(ac, (FPROC)conf_set_sys_page, option);
     return cgi_empty();
   }
 

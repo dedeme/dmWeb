@@ -8,7 +8,7 @@ export class Rconf {
   /* .
   _rc_ Rconf : serial
   url : string
-  sel : boolean
+  sel : number
   isDateEu : boolean
   dateSeparator : string
   isIsoNumber : boolean
@@ -24,7 +24,7 @@ export class Rconf {
   /*--*/
   /**
    * @param {string} url
-   * @param {boolean} sel
+   * @param {number} sel
    * @param {boolean} isDateEu
    * @param {string} dateSeparator
    * @param {boolean} isIsoNumber
@@ -59,7 +59,7 @@ export class Rconf {
 
     /**
      * @private
-     * @type {boolean}
+     * @type {number}
      */
     this._sel = sel;
 
@@ -130,7 +130,7 @@ export class Rconf {
     return this._url;
   }
 
-  /**  @return {boolean} */
+  /**  @return {number} */
   get sel () {
     return this._sel;
   }

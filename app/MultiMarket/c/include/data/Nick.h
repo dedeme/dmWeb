@@ -21,6 +21,9 @@ int nick_id(Nick *this);
 char *nick_name(Nick *this);
 
 ///
+void nick_set_name(Nick *this, char *value);
+
+///
 int nick_is_sel(Nick *this);
 
 ///

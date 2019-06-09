@@ -43,6 +43,7 @@ export default class Home {
             .add($("a").att("href", Main.urlBase + "?fleas")
               .text(_("Fleas Data"))))))
         .add(this._logDiv)
+        .add(Ui.upTop("up"))
     );
 
     this.update();

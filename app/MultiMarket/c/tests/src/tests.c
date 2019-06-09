@@ -7,6 +7,7 @@
 #include "log_tests.h"
 #include "nick_tests.h"
 #include "quote_tests.h"
+#include "quote2_tests.h"
 
 static void init (void) {
   sys_init("MultiMarket_tests");
@@ -16,10 +17,10 @@ static void init (void) {
 
 int main (int argc, char *argv[]) {
   init();
-
-/*  log_tests();
+/*
+  log_tests();
   nick_tests();
-*/  quote_tests();
+  quote_tests();
+*/  quote2_tests();
 
-  io_end();
 }

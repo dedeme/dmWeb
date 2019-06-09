@@ -9,7 +9,7 @@
 #include "dmc/async.h"
 #include "dmc/Iserver.h"
 
-///
-void server_run (Iserver *server);
+/// 'server_actor' is Tp[AsyncActor, Iserver]
+void server_run (Tp *actor_server);
 
 #endif

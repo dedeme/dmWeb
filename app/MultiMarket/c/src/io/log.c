@@ -32,28 +32,20 @@ static void write (char *msg) {
 }
 
 void log_error (char *msg) {
-  char *m = str_f("E%s = %s", date(), msg);
-  io_run((FPROC)write, m);
+  write(str_f("E%s = %s", date(), msg));
 }
 
-void log_warning (char *msg) {
-  char *m = str_f("W%s - %s", date(), msg);
-  io_run((FPROC)write, m);
+void log_info (char *msg) {
+  write(str_f("W%s - %s", date(), msg));
 }
 
 // stack is Arr[char]
-void log_exception (char *msg, Arr *stack) {
-  log_error(str_f("%s\n  %s", msg, str_join(stack, "\n  ")));
+void log_exception (Exc *ex) {
+  log_error(str_f("%s\n  %s", exc_msg(ex), str_join(exc_stack(ex), "\n  ")));
 }
 
 Js *log_to_js (void) {
   if (!log) EXC_ILLEGAL_STATE("'log.txt' was not intiliazed")
 
-  char *r;
-  void get_log (void *null) {
-    r = file_read(log);
-  }
-  io_wait(get_log, NULL);
-
-  return (Js *)r;
+  return (Js *)file_read(log);
 }

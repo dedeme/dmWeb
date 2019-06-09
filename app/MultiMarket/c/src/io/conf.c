@@ -3,6 +3,7 @@
 
 #include "io/conf.h"
 #include "io.h"
+#include "DEFS.h"
 
 static char *conf = NULL;
 
@@ -65,9 +66,30 @@ char *conf_server_tab (void) {
   return js_rs(opt_oget(map_get(read(), "serverTab"), js_ws("")));
 }
 
-/// Set name of selected tab in sys_page->servers
 void conf_set_server_tab (char *tab_name) {
   write("serverTab", js_ws(tab_name));
 }
 
+char *conf_activity (void) {
+  return js_rs(opt_oget(map_get(read(), "activity"), js_ws(ACT_SLEEPING1)));
+}
 
+void conf_set_activity (char *activity_id) {
+  write("activity", js_ws(activity_id));
+}
+
+int conf_fleas_running (void) {
+  return js_rb(opt_oget(map_get(read(), "fleasRunning"), js_wb(0)));
+}
+
+void conf_set_fleas_running (int value) {
+  write("fleasRunning", js_wb(value));
+}
+
+int conf_fleas_finished (void) {
+  return js_rb(opt_oget(map_get(read(), "fleasFinished"), js_wb(0)));
+}
+
+void conf_set_fleas_finished (int value) {
+  write("fleasFinished", js_wb(value));
+}

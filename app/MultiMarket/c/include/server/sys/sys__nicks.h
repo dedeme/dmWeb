@@ -4,9 +4,9 @@
 #ifndef SERVER_SYS_SYS__NICKS_H
   #define SERVER_SYS_SYS__NICKS_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 
 /// mrq is Map[Js]
-char *sys__nicks_process(Map *mrq);
+char *sys__nicks_process(AsyncActor *ac, Map *mrq);
 
 #endif

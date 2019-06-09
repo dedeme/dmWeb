@@ -6,6 +6,7 @@
 
 #include "dmc/async.h"
 #include "data/Server.h"
+#include "data/Rconf.h"
 
 /*--*/
 
@@ -17,6 +18,12 @@ Js *servers_to_js(Servers *this);
 
 ///
 Servers *servers_from_js(Js *js);
+
+///
+typedef struct servers_IdNameCode IdNameCode;
+
+///
+Js *idNameCode_to_js(IdNameCode *this);
 
 /*--*/
 
@@ -36,6 +43,18 @@ void servers_remove (int id);
 /// returns 0. Otherwise returns 1.
 int servers_set_names (int id, char *short_name, char *name);
 
+/// Activates / Deactivates server
+///   id: Server identifier. It it does not exists, this function does nothing.
+///   historic: (1/0) If historic configuration will be updated
+///   conf: Initial configuration
+void servers_activate(int id, int historic, Rconf *conf);
+
+/// Sets configurations.
+///   id: Server identifier. It it does not exists, this function does nothing.
+///   historic: (1/0) If historic configuration will be updated
+///   conf: New configuration
+void servers_set_conf(int id, int historic, Rconf *conf);
+
 /// Set codes. If 'id' does not exists, this function does nothing.
 ///   id: Server id
 ///   codes: Arr[ServerCodes]. New codes
@@ -46,5 +65,20 @@ void servers_add_nick (int nk_id);
 
 /// Removes nick with id 'nk_id' if it exists.
 void servers_del_nick (int nk_id);
+
+/// Returns Arr[IdNameCode]. If 'nick_id' does not have code, its code value
+/// is an empty string.
+Arr *servers_nick_codes (int nick_id);
+
+/// Sets code of nick_id.
+void servers_set_nick_code (int server_id, int nick_id, char *code);
+
+/// Returns '1' if daily closes reading is correct. Otherwise returns '0' and
+/// makes an annotation in Log.
+int servers_test_daily_conf (int id);
+
+/// Returns '1' if historic quotes reading is correct. Otherwise returns '0' and
+/// makes an annotation in Log.
+int servers_test_historic_conf (int id, int nk_id);
 
 #endif

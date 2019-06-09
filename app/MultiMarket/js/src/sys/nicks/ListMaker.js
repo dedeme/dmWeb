@@ -4,6 +4,7 @@
 import Nicks from "../Nicks.js"; //eslint-disable-line
 import Ui from "../../dmjs/Ui.js";
 import {_} from "../../I18n.js";
+import Wnick from "./Wnick.js";
 
 const $ = Ui.$;
 
@@ -17,6 +18,7 @@ export default class ListMaker {
     // VIEW --------
     // TTTTTTTTTTTTT
 
+    this._newNick = Ui.field("newBt").style("width:100px");
     this._table = $("table").att("align", "center");
   }
 
@@ -25,7 +27,19 @@ export default class ListMaker {
 
   /** @return {void} */
   show () {
-    this._nicks.view.removeAll().add(this._table);
+    this._nicks.entryDiv.removeAll()
+      .add($("table").klass("home")
+        .add($("tr").add($("td").add(this._newNick)))
+        .add($("tr").add($("td").style("text-align:center")
+          .add($("button").att("id", "newBt")
+            .text(_("New"))
+            .on("click", () => {
+              this._nicks.newNick(this._newNick.value().trim());
+            })))));
+    this._nicks.title.text("");
+    this._nicks.view.removeAll()
+      .add($("hr"))
+      .add(this._table);
     this.update();
   }
 
@@ -37,31 +51,34 @@ export default class ListMaker {
       this._table.klass("frame")
         .add($("tr").add($("td").text(_("Without Nicks"))));
     } else {
-      const list = this._nicks.nickList;
+      const cols = 6;
+      const rows = Math.ceil(this._nicks.nickList.length / cols);
+      const list = [];
+
+      for (let c = 0; c < cols; ++c) {
+        for (let r = 0; r < rows; ++r) {
+          list[c + r * cols] = this._nicks.nickList[r + c * rows];
+        }
+      }
 
       this._table.klass("frame")
         .style("border-collapse : collapse;");
       let n = 0;
       let tr = $("tr");
       list.forEach(nk => {
-        if (n > 0 && n % 10 === 0) {
+        if (n > 0 && n % cols === 0) {
           this._table.add(tr);
           tr = $("tr");
         }
         tr.add($("td")
-          .style("width:65px;text-align:center;border-right: solid 1px;")
-          .add(Ui.link((() => { this._nicks.edit(nk.id) }).bind(this._nicks))
-            .klass("link").text(nk.name)));
+          .style("width:100px;text-align:center;border-right: solid 1px;")
+          .add(nk === undefined ? $("span") : new Wnick(this._nicks, nk).wg));
         ++n;
       });
-      if (n % 10 !== 0) {
-        while (n % 10 !== 0) {
-          tr.add($("td"));
-          ++n;
-        }
-        this._table.add(tr);
-      }
+      this._table.add(tr);
     }
+
+    this._newNick.e.focus();
   }
 
 }

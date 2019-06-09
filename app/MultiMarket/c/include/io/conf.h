@@ -40,7 +40,28 @@ void conf_set_server_sel_id (int id);
 /// selected.
 char *conf_server_tab (void);
 
-/// Set name of selected tab in sys_page->servers
+/// Set name of selected tab in sys_page->servers.
 void conf_set_server_tab (char *tab_name);
+
+/// Returns identifier of activity. It can be ACT_SLEEPING1, ACT_SLEEPING2,
+/// ACT_ACTIVATING, ACT_ACTIVE or ACT_DEACTIVATING.
+char *conf_activity (void);
+
+/// Sets identifier of activity. It can be ACT_SLEEPING1, ACT_SLEEPING2,
+/// ACT_ACTIVATING, ACT_ACTIVE or ACT_DEACTIVATING.
+void conf_set_activity (char *activity_id);
+
+/// Returns if fleas are running.
+int conf_fleas_running (void);
+
+/// Sets if fleas are running.
+void conf_set_fleas_running (int value);
+
+/// Returns if fleas are finished running.
+int conf_fleas_finished (void);
+
+/// Sets if fleas are finished running.
+void conf_set_fleas_finished (int value);
+
 
 #endif

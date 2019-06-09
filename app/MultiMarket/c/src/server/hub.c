@@ -11,21 +11,21 @@
 #include "io/conf.h"
 
 // rq is Map[Js]
-static char *module_process(char *module, Map *mrq) {
+static char *module_process(AsyncActor *ac, char *module, Map *mrq) {
   // Map[Js]
   Map *rp = map_new();
   if (str_eq(module, ".")) {
     void fn(void *null) { map_put(rp, "lang", js_ws(conf_lang())); }
-    io_wait(fn, NULL);
+    asyncActor_wait(ac, fn, NULL);
     return cgi_ok(rp);
   }
-  if (str_eq(module, "sys")) return sys_process(mrq);
+  if (str_eq(module, "sys")) return sys_process(ac, mrq);
 
   EXC_ILLEGAL_ARGUMENT("module", "sys", module)
   return NULL; // Unreachable
 }
 
-char *hub_rp (char *rq) {
+char *hub_rp (AsyncActor *ac, char *rq) {
   int ix = str_cindex(rq, ':');
   //............................................................. CONNECTION
   if (ix == -1) {
@@ -83,5 +83,5 @@ char *hub_rp (char *rq) {
     return cgi_del_session(session_id);
   }
 
-  return module_process(module, m);
+  return module_process(ac, module, m);
 }

@@ -21,13 +21,12 @@ void log_tests() {
   // Arr[char]
   Arr *l = get_log();
 
-  if (!arr_size(l)) {
-    REPEAT(1200)
-      log_error("Test");
-    _REPEAT
-  }
+  REPEAT(1200)
+    log_error("Test");
+  _REPEAT
 
   l = get_log();
+
   assert(arr_size(l) == LOG_MAX_ENTRIES + 1);
   char *msg = arr_get(l, 0);
   assert(*msg);
@@ -39,7 +38,7 @@ void log_tests() {
   assert(*msg == 'E');
   assert(str_eq(text(msg), "Err 1"));
 
-  log_warning("Warn 1");
+  log_info("Warn 1");
   l = get_log();
   assert(arr_size(l) == LOG_MAX_ENTRIES + 1);
   msg = arr_get(l, 0);

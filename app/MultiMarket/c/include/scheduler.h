@@ -9,6 +9,6 @@
 #include "dmc/async.h"
 
 ///
-void scheduler_run (void *null);
+void scheduler_run (AsyncActor *null);
 
 #endif

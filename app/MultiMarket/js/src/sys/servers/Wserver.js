@@ -1,9 +1,10 @@
 // Copyright 17-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-import Main from "../../Main.js";
+//import Main from "../../Main.js";
+import {SERVER} from "../../consts.js";
 import Servers from "../Servers.js"; //eslint-disable-line
-import {_args, _} from "../../I18n.js";
+import {_} from "../../I18n.js";
 import Ui from "../../dmjs/Ui.js";
 import Domo from "../../dmjs/Domo.js"; //eslint-disable-line
 import Server from "../../data/Server.js"; //eslint-disable-line
@@ -12,7 +13,6 @@ import Server from "../../data/Server.js"; //eslint-disable-line
 
 const $ = Ui.$;
 const img = (id, title) => Ui.img(id).att("title", title);
-const limg = (id, title) => Ui.lightImg(id).att("title", title);
 const emptyBt = (title) => $("div")
   .style("padding:5px;" +
          "border: 1px solid #002040;border-radius: 6px;" +
@@ -46,16 +46,20 @@ export default class Wserver {
 
     const dailyInfo = server.dailyConf === null
       ? emptyBt(_("Daily configuration deactivated"))
-      : server.dailyConf.sel
+      : server.dailyConf.sel === SERVER.SELECTED
         ? img("star", _("Daily configuration selected"))
-        : img("flag1", _("Daily configuration activated"))
+        : server.dailyConf.sel === SERVER.ACTIVE
+          ? img("flag1", _("Daily configuration activated"))
+          : img("stopped", _("Daily configuration stopped"))
     ;
 
     const historicInfo = server.historicConf === null
       ? emptyBt(_("Historic configuration deactivated"))
-      : server.historicConf.sel
+      : server.historicConf.sel === SERVER.SELECTED
         ? img("star", _("Historic configuration selected"))
-        : img("flag1", _("Historic configuration activated"))
+        : server.historicConf.sel === SERVER.ACTIVE
+          ? img("flag1", _("Historic configuration activated"))
+          : img("stopped", _("Historic configuration stopped"))
     ;
 
     return $("table")

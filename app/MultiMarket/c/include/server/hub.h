@@ -7,6 +7,6 @@
 #include "dmc/async.h"
 
 /// Process a request
-char *hub_rp (char *rq);
+char *hub_rp (AsyncActor *ac, char *rq);
 
 #endif

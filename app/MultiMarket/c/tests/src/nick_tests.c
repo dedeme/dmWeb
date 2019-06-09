@@ -8,20 +8,14 @@
 void nick_tests (void) {
   puts("Nick tests:");
 
-  Nick *nk0 = nick_new(0, "TEF", 1, 1, 0);
+  Nick *nk0 = nick_new(0, "TEF");
   Nick *nk = nick_from_js(nick_to_js(nk0));
   assert(nick_id(nk) == 0);
-  assert(str_eq(nick_nick(nk), "TEF"));
-  assert(nick_is_ibex(nk));
-  assert(nick_is_sel(nk));
-  assert(!nick_is_extra(nk));
-
-  nick_set_is_ibex(nk, 0);
-  nick_set_is_sel(nk, 0);
-  nick_set_is_extra(nk, 1);
-  assert(!nick_is_ibex(nk));
+  assert(str_eq(nick_name(nk), "TEF"));
   assert(!nick_is_sel(nk));
-  assert(nick_is_extra(nk));
+
+  nick_set_is_sel(nk, 1);
+  assert(nick_is_sel(nk));
 
   puts("    Finished");
 }

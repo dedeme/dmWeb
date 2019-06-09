@@ -10,6 +10,7 @@ import Server from "../data/Server.js"; //eslint-disable-line
 import Wserver from "./servers/Wserver.js";
 import Names from "./servers/Names.js";
 import Codes from "./servers/Codes.js";
+import Download from "./servers/Download.js";
 import Menu from "../wgs/Menu.js";
 import Nick from "../data/Nick.js";
 
@@ -51,6 +52,11 @@ export default class Servers {
     this._view = $("div");
     this._viewMenu = new Menu();
     this._viewMenuName = $("span");
+  }
+
+  /** @return {!SysMain} */
+  get sysMain () {
+    return this._sysMain;
   }
 
   /** @return {!Domo} */
@@ -125,6 +131,7 @@ export default class Servers {
             .add($("tr").add($("td").add($("hr"))))
             .add($("tr").add($("td").add(this._serverListWg)))))
         .add($("td").style("vertical-align:top").add(this._view0)))
+      .add(Ui.upTop("up"))
     ;
   }
 
@@ -200,10 +207,10 @@ export default class Servers {
       this._view.add(new Names(this, sv).wg);
       break;
     case DAILY:
-      this._view.add($("span").html("Daily"));
+      this._view.add(new Download(false, this, sv).wg);
       break;
     case HISTORIC:
-      this._view.add($("span").html("Historic"));
+      this._view.add(new Download(true, this, sv).wg);
       break;
     case CODES: {
       const rq = {
@@ -242,7 +249,7 @@ export default class Servers {
 
     const ok = rp["ok"];
     if (!ok) {
-      alert(_args(_("Short name '%1' is duplicated"), shortName));
+      alert(_args(_("Short name '%0' is duplicated"), shortName));
       return;
     }
 

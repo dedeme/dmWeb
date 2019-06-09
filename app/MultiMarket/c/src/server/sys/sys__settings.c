@@ -7,19 +7,19 @@
 #include "io/conf.h"
 
 // mrq is Map[Js]
-char *sys__settings_process(Map *mrq) {
+char *sys__settings_process(AsyncActor *ac, Map *mrq) {
   // Map[Js]
   Map *rp = map_new();
   CGI_GET_STR(rq, mrq, "rq")
 
   if (str_eq(rq, "getLang")) {
     void fn (void *null) { map_put(rp, "lang", js_ws(conf_lang())); }
-    io_wait(fn, NULL);
+    asyncActor_wait(ac, fn, NULL);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "setLang")) {
     CGI_GET_STR(lang, mrq, "lang")
-    io_run((FPROC)conf_set_lang, lang);
+    asyncActor_wait(ac, (FPROC)conf_set_lang, lang);
     return cgi_empty();
   }
 

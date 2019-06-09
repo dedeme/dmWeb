@@ -7,7 +7,7 @@ import Main from "../Main.js";
 
 const $ = Ui.$;
 
-/** Main menu. */
+/** Menu widget. */
 export default class Menu {
   constructor () {
     // MODEL -------

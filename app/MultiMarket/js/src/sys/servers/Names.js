@@ -12,8 +12,8 @@ import Server from "../../data/Server.js"; //eslint-disable-line
 
 const $ = Ui.$;
 
-/** Wserver widget. */
-export default class NamesWg {
+/** Names option. */
+export default class Names {
 
   /**
    * @param {!Servers} servers
@@ -44,10 +44,10 @@ export default class NamesWg {
         .style("border-top: 1px solid rgb(110,130,150);" +
                "border-bottom: 1px solid rgb(110,130,150)")
         .add($("tr")
-          .add($("td").style("text-align:right").text(_("Short Name:")))
+          .add($("td").style("text-align:right").text(_("Short Name") + ":"))
           .add($("td").add(this._shortNameField)))
         .add($("tr")
-          .add($("td").style("text-align:right").text(_("Name:")))
+          .add($("td").style("text-align:right").text(_("Name") + ":"))
           .add($("td").add(this._nameField)))
         .add($("tr")
           .add($("td").att("colspan", 2).style("padding-top:4px")

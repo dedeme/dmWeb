@@ -3,12 +3,16 @@
 
 #include "server/sys/sys__chpass.h"
 #include "dmc/cgi.h"
+#include "io.h"
 
 // mrq is Map[Js]
-char *sys__chpass_process(Map *mrq) {
+char *sys__chpass_process(AsyncActor *ac, Map *mrq) {
   CGI_GET_STR(user, mrq, "user")
   CGI_GET_STR(pass, mrq, "pass")
   CGI_GET_STR(new_pass, mrq, "newPass")
 
-  return cgi_change_pass(user, pass, new_pass);
+  char *r = NULL;
+  void fn (void *null) { r = cgi_change_pass(user, pass, new_pass); }
+  asyncActor_wait(ac, fn, NULL);
+  return r;
 }

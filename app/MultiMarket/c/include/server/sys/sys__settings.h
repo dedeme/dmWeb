@@ -7,6 +7,6 @@
 #include "dmc/async.h"
 
 /// mrq is Map[Js]
-char *sys__settings_process(Map *mrq);
+char *sys__settings_process(AsyncActor *ac, Map *mrq);
 
 #endif

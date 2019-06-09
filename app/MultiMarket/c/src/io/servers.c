@@ -2,7 +2,9 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "io/servers.h"
+#include "io/log.h"
 #include "io.h"
+#include "DEFS.h"
 
 char *servers_db = NULL;
 
@@ -10,6 +12,11 @@ char *servers_db = NULL;
 -Servers: serial
   -next_id: int
   -list: Arr - Server
+===
+-IdNameCode: to
+  -id: int
+  -name: char *
+  -code: char *
 */
 
 /*--*/
@@ -42,6 +49,29 @@ Servers *servers_from_js(Js *js) {
   this->next_id = js_ri(*p++);
   this->list = arr_from_js(*p++, (FFROM)server_from_js);
   return this;
+}
+
+struct servers_IdNameCode{
+  int id;
+  char *name;
+  char *code;
+};
+
+static IdNameCode *_idNameCode_new(int id, char *name, char *code) {
+  IdNameCode *this = MALLOC(IdNameCode);
+  this->id = id;
+  this->name = name;
+  this->code = code;
+  return this;
+}
+
+Js *idNameCode_to_js(IdNameCode *this) {
+  // Arr[Js]
+  Arr *js = arr_new();
+  arr_push(js, js_wi((int)this->id));
+  arr_push(js, js_ws(this->name));
+  arr_push(js, js_ws(this->code));
+  return js_wa(js);
 }
 
 /*--*/
@@ -150,6 +180,60 @@ int servers_set_names (int id, char *short_name, char *name) {
   return 1;
 }
 
+void servers_activate(int id, int historic, Rconf *conf) {
+  Servers *db = read();
+  // Arr[Server]
+  Arr *list = db->list;
+  int ix = id_index(list, id);
+  if (ix != -1) {
+    Server *sv = arr_get(list, ix);
+    if (historic) {
+      if (opt_is_empty(server_historic_conf(sv))) {
+        server_set_historic_conf(sv, opt_new(conf));
+      } else {
+        server_set_historic_conf(sv, opt_empty());
+      }
+    } else {
+      if (opt_is_empty(server_daily_conf(sv))) {
+        server_set_daily_conf(sv, opt_new(conf));
+      } else {
+        server_set_daily_conf(sv, opt_empty());
+      }
+    }
+
+    write(db);
+  }
+}
+
+// Returns Arr[char *]
+void servers_set_conf(int id, int historic, Rconf *conf) {
+  Servers *db = read();
+  // Arr[Server]
+  Arr *list = db->list;
+  int ix = id_index(list, id);
+  if (ix != -1) {
+    Server *sv = arr_get(list, ix);
+    if (historic) {
+      if (rconf_sel(conf) == SERVER_SELECTED) {
+        EACH(list, Server, sv)
+          Opt *ocf = server_historic_conf(sv);
+          if (opt_is_full(ocf)) {
+            Rconf *cf = opt_get(ocf);
+            if (rconf_sel(cf) == SERVER_SELECTED) {
+              rconf_set_sel(cf, SERVER_ACTIVE);
+            }
+          }
+        _EACH
+      }
+      server_set_historic_conf(sv, opt_new(conf));
+    } else {
+      server_set_daily_conf(sv, opt_new(conf));
+    }
+
+    write(db);
+  }
+}
+
 // codes is Arr[ServerCodes]
 void servers_set_codes(int id, Arr *codes) {
   Servers *db = read();
@@ -202,3 +286,59 @@ void servers_del_nick (int nk_id) {
   _EACH
   write(db);
 }
+
+// Returns Arr[IdNameCode]
+Arr *servers_nick_codes (int nick_id) {
+  // Arr[IdNameCode]
+  Arr *r = arr_new();
+  EACH(servers_list(), Server, sv)
+    arr_push(r, _idNameCode_new(
+      server_id(sv),
+      server_short_name(sv),
+      server_nick_code(sv, nick_id)
+    ));
+  _EACH
+  return r;
+}
+
+void servers_set_nick_code (int sv_id, int nick_id, char *code) {
+  Servers *db = read();
+  EACH(db->list, Server, sv)
+    if (server_id(sv) == sv_id) {
+      server_set_nick_code(sv, nick_id, code);
+      break;
+    }
+  _EACH
+  write(db);
+}
+
+int servers_test_daily_conf (int id) {
+  Servers *db = read();
+  EACH(db->list, Server, sv)
+    if (server_id(sv) == id) {
+      // Opt[Arr[NickClose]]
+      Opt *closes = server_daily_read(sv);
+      if (opt_is_empty(closes)) return 0;
+      if (arr_size(opt_get(closes)) != arr_size(server_codes(sv))) return 0;
+      return 1;
+    }
+  _EACH
+  log_error(str_f("Server '%d' not found", id));
+  return 0;
+}
+
+int servers_test_historic_conf (int id, int nk_id) {
+  Servers *db = read();
+  EACH(db->list, Server, sv)
+    if (server_id(sv) == id) {
+      // Opt[Arr[Quote]]
+      Opt *quotes = server_historic_read(sv, nk_id);
+      if (opt_is_empty(quotes)) return 0;
+      if (arr_size(opt_get(quotes)) < 10) return 0;
+      return 1;
+    }
+  _EACH
+  log_error(str_f("Server '%d' not found", id));
+  return 0;
+}
+

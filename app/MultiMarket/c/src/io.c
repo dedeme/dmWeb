@@ -4,10 +4,10 @@
 #include "io.h"
 #include "dmc/date.h"
 #include "DEFS.h"
+#include <unistd.h>
 
 static char *data_dir = NULL;
 static char *tmp_dir = NULL;
-static AsyncActor *ac = NULL;
 static int active = 1;
 
 void io_init (void) {
@@ -19,14 +19,8 @@ void io_init (void) {
 
     file_mkdir(tmp_dir);
   }
-  ac = asyncActor_new(ACTOR_SLEEP);
-}
-
-void io_end (void) {
-  if (ac) {
-    asyncActor_end(ac);
-    asyncActor_join(ac);
-  }
+  file_del(tmp_dir);
+  file_mkdir(tmp_dir);
 }
 
 void io_set_active (int value) {
@@ -60,20 +54,4 @@ void io_clear_tmp (void) {
 char *io_time_stamp (void) {
   DateTm *tm = date_tm_now();
   return str_f("%lld", ((long long) tm->tv_sec) + tm->tv_usec);
-}
-
-void io_run (void (*fn)(void *), void *value) {
-  if (ac) {
-    asyncActor_run(ac, fn, value);
-    return;
-  }
-  EXC_ILLEGAL_STATE("io was not intiliazed")
-}
-
-void io_wait (void (*fn)(void *), void *value) {
-  if (ac) {
-    asyncActor_wait(ac, fn, value);
-    return;
-  }
-  EXC_ILLEGAL_STATE("io was not intiliazed")
 }

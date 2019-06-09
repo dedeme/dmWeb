@@ -18,10 +18,13 @@ char *rconf_url(Rconf *this);
 int rconf_sel(Rconf *this);
 
 ///
+void rconf_set_sel(Rconf *this, int value);
+
+///
 int rconf_is_date_eu(Rconf *this);
 
 ///
-char rconf_date_separator(Rconf *this);
+char *rconf_date_separator(Rconf *this);
 
 ///
 int rconf_is_iso_number(Rconf *this);

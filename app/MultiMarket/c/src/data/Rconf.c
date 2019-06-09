@@ -6,9 +6,9 @@
 /* .
 -Rconf: SERIAL
   url: char *
-  sel: bool
+  @sel: int
   is_date_eu: bool
-  date_separator: char
+  date_separator: char *
   is_iso_number: bool
   fields_type: char *
   table_start: char *
@@ -24,7 +24,7 @@ struct Rconf_Rconf{
   char *url;
   int sel;
   int is_date_eu;
-  char date_separator;
+  char *date_separator;
   int is_iso_number;
   char *fields_type;
   char *table_start;
@@ -43,11 +43,15 @@ int rconf_sel(Rconf *this) {
   return this->sel;
 }
 
+void rconf_set_sel(Rconf *this, int value) {
+  this->sel = value;
+}
+
 int rconf_is_date_eu(Rconf *this) {
   return this->is_date_eu;
 }
 
-char rconf_date_separator(Rconf *this) {
+char *rconf_date_separator(Rconf *this) {
   return this->date_separator;
 }
 
@@ -87,9 +91,9 @@ Js *rconf_to_js(Rconf *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_ws(this->url));
-  arr_push(js, js_wb(this->sel));
+  arr_push(js, js_wi((int)this->sel));
   arr_push(js, js_wb(this->is_date_eu));
-  arr_push(js, js_wi((int)this->date_separator));
+  arr_push(js, js_ws(this->date_separator));
   arr_push(js, js_wb(this->is_iso_number));
   arr_push(js, js_ws(this->fields_type));
   arr_push(js, js_ws(this->table_start));
@@ -107,9 +111,9 @@ Rconf *rconf_from_js(Js *js) {
   Js **p = (Js **)arr_start(a);
   Rconf *this = MALLOC(Rconf);
   this->url = js_rs(*p++);
-  this->sel = js_rb(*p++);
+  this->sel = js_ri(*p++);
   this->is_date_eu = js_rb(*p++);
-  this->date_separator = (char)js_ri(*p++);
+  this->date_separator = js_rs(*p++);
   this->is_iso_number = js_rb(*p++);
   this->fields_type = js_rs(*p++);
   this->table_start = js_rs(*p++);
