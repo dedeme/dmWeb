@@ -5,6 +5,8 @@
 #include "dmc/date.h"
 #include "io.h"
 #include "io/conf.h"
+#include "io/calendar.h"
+#include "io/quotes.h"
 #include "DEFS.h"
 #include "scheduler/historic.h"
 #include "scheduler/fleas.h"
@@ -12,21 +14,26 @@
 
 static void sleeping1 (AsyncActor *ac) {
   int hour = atoi(date_f(date_now(), "%H"));
-  if (hour > 4) {
-    void fn (void *null) {
-      conf_set_fleas_running(0);
-      conf_set_fleas_finished(0);
-    }
-    asyncActor_wait(ac, fn, NULL);
-
-    if (io_active ()) historic_read(ac);
-    if (io_active ()) fleas_set_quotes(ac);
-    if (io_active ()) acc_operations_from_historic(ac);
-    if (io_active ()) fleas_run(ac);
+  if (hour > 3 && hour < 8) {
     if (io_active ()) {
-      void fn (void *null) { conf_set_activity(ACT_SLEEPING2); }
+      void fn (void *null) { conf_set_activity(ACT_HISTORIC); }
       asyncActor_wait(ac, fn, NULL);
     }
+  }
+}
+
+static void historic (AsyncActor *ac) {
+  if (io_active ()) historic_update(ac);
+  if (io_active ()) {
+    void fn (void *null) {
+      acc_operations_from_historic(ac);
+    }
+    asyncActor_wait(ac, fn, NULL);
+  }
+  if (io_active ()) fleas_run(ac);
+  if (io_active ()) {
+    void fn (void *null) { conf_set_activity(ACT_SLEEPING2); }
+    asyncActor_wait(ac, fn, NULL);
   }
 }
 
@@ -38,8 +45,7 @@ static void sleeping2 (AsyncActor *ac) {
   }
   sleeping2_time = now;
   puts("Sleeping2 without implementation");
-  return;
-  if (io_active ()) {
+  if (io_active () && calendar_is_open(date_now())) {
     void fn (void *null) { conf_set_activity(ACT_ACTIVATING); }
     asyncActor_wait(ac, fn, NULL);
   }
@@ -53,9 +59,15 @@ static void activating (AsyncActor *ac) {
   }
 }
 
+time_t active_time = 0;
 static void active (AsyncActor *ac) {
+  time_t now = date_now();
+  if (now - active_time < 2 * 60) {
+    return;
+  }
+  active_time = now;
   puts("Active without implementation");
-  if (io_active ()) {
+  if (io_active () && !calendar_is_open(date_now())) {
     void fn (void *null) { conf_set_activity(ACT_DEACTIVATING); }
     asyncActor_wait(ac, fn, NULL);
   }
@@ -77,6 +89,8 @@ void scheduler_run (AsyncActor *ac) {
 
     if (str_eq(activity, ACT_SLEEPING1)) {
       sleeping1(ac);
+    } else if (str_eq(activity, ACT_HISTORIC)) {
+      historic(ac);
     } else if (str_eq(activity, ACT_SLEEPING2)) {
       sleeping2(ac);
     } else if (str_eq(activity, ACT_ACTIVATING)) {

@@ -4,7 +4,10 @@
 #include "server/sys/sys__home.h"
 #include "dmc/cgi.h"
 #include "io/log.h"
+#include "io/conf.h"
+#include "io/fleasdb.h"
 #include "io.h"
+#include "scheduler/fleas.h"
 
 // mrq is Map[Js]
 char *sys__home_process(AsyncActor *ac, Map *mrq) {
@@ -18,6 +21,33 @@ char *sys__home_process(AsyncActor *ac, Map *mrq) {
     return cgi_ok(rp);
   }
 
-  EXC_ILLEGAL_ARGUMENT("rq", "getLog", rq)
+  if (str_eq(rq, "clearLog")) {
+    void fn (void *null) { log_clear(); }
+    asyncActor_wait(ac, fn, NULL);
+    return cgi_empty();
+  }
+
+  if (str_eq(rq, "runFleas")) {
+    fleas_run(ac);
+    return cgi_empty();
+  }
+
+  if (str_eq(rq, "stopFleas")) {
+    void fn (void *null) { conf_set_fleas_running(0); }
+    asyncActor_wait(ac, fn, NULL);
+    return cgi_empty();
+  }
+
+  if (str_eq(rq, "logFleas")) {
+    void fn (void *null) { map_put(rp, "log", fleasdb_flog_to_js()); }
+    asyncActor_wait(ac, fn, NULL);
+    return cgi_ok(rp);
+  }
+
+  EXC_ILLEGAL_ARGUMENT(
+    "rq",
+    "getLog | clearLog | runFleas | stopFleas | logFleas",
+    rq
+  )
   return NULL; // Unreachable
 }

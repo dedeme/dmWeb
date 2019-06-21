@@ -4,17 +4,11 @@
 #include "scheduler/historic.h"
 #include "io/nicks.h"
 #include "io/servers.h"
+#include "io/log.h"
 #include "io.h"
+#include "net.h"
 
-static void read (AsyncActor *ac, Nick *nk, Nick *model) {
-  // Arr[Server]
-//  Arr *servers = servers_list();
-
-
-  printf("historic static read (%s) NOT IMPLEMENTED\n", nick_name(nk));
-}
-
-void historic_read (AsyncActor *ac) {
+void historic_update (AsyncActor *ac) {
   // Arr[Nick]
   Arr *nicks = NULL;
   int model_id = -1;
@@ -35,11 +29,21 @@ void historic_read (AsyncActor *ac) {
     model = arr_get(nicks, 0);
   }
 
-  read(ac, model, NULL);
+  void fn2 (void *null) {
+    log_info(str_f("Reading model %s", nick_name(model)));
+  }
+  asyncActor_wait(ac, fn2, NULL);
+
+  model_id = nick_id(model);
+  net_update_historic(ac, model_id);
 
   EACH(nicks, Nick, nk)
+    void fn3 (void *null) { log_info(str_f("Reading %s", nick_name(nk))); }
+    asyncActor_wait(ac, fn3, NULL);
+
+    int nk_id = nick_id(nk);
     if (!io_active()) break;
-    if (nick_id(nk) == nick_id(model)) continue;
-    read(ac, nk, model);
+    if (nk_id == model_id) continue;
+    net_update_historic(ac, nk_id);
   _EACH
 }

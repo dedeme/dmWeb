@@ -1,6 +1,8 @@
 // Copyright 21-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// Requests from sys->servers->codes
+
 #ifndef SERVER_SYS_SERVERS_SYS__SERVERS__CODES_H
   #define SERVER_SYS_SERVERS_SYS__SERVERS__CODES_H
 

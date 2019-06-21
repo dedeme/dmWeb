@@ -108,40 +108,6 @@ Quote *quote_from_js(Js *js) {
 
 /*--*/
 
-char *quote_test(Quote *this) {
-  if (this->error) return quote_OK;
-  if (this->open > this->max) return quote_OMAX;
-  if (this->close > this->max) return quote_CMAX;
-  if (this->open < this->min) return quote_OMIN;
-  if (this->close < this->min) return quote_CMIN;
-  return quote_OK;
-}
-
-char *quote_test2 (Quote *this, Quote *q_model, Quote *previous_q) {
-  if (this->error) return quote_OK;
-  int cmp = strcmp(this->date, q_model->date);
-  if (cmp > 0) return quote_NO_DATE;
-  if (cmp < 0) return quote_EXTRA_DATE;
-  if (
-    this->open > previous_q->open * 1.20 ||
-    this->open < previous_q->open * 0.8
-  ) return quote_OPEN20;
-  if (
-    this->close > previous_q->close * 1.20 ||
-    this->close < previous_q->close * 0.8
-  ) return quote_CLOSE20;
-  if (
-    this->max > previous_q->max * 1.20 ||
-    this->max < previous_q->max * 0.8
-  ) return quote_MAX20;
-  if (
-    this->min > previous_q->min * 1.20 ||
-    this->min < previous_q->min * 0.8
-  ) return quote_MIN20;
-
-  return quote_OK;
-}
-
 Opt *quote_from_str (char *q) {
   // Arr[char]
   Arr *a = str_csplit(q, ':');
@@ -577,10 +543,8 @@ Tp *quote_check_dates (Arr *model, Arr *qs) {
       Quote *mq = it_next(model_it);
       arr_push(rqs, quote_new(mq->date, -1, -1, -1, -1, -1, 1));
     }
-  } else if (it_has_next(qs_it)) {
-    Quote *qq = it_peek(qs_it);
-    arr_push(errs, str_f("%s: Extra quote to end", qq->date));
   }
+  // else if (it_has_next(qs_it)) -> Do nothing. It is usual when updating.
 
   return tp_new(errs, rqs);
 }
@@ -628,14 +592,23 @@ Tp *quote_blend (Arr *model, Arr *new, Arr *old) {
   while (it_has_next(old_it)) {
     arr_push(qs, it_next(old_it));
   }
+
+  // Arr[char]
+  Arr *errs0 = arr_new();
+  if (arr_size(model)) {
+    // Returns Tp[Arr[char], Arr[Quote]]
+    Tp *e_qs = quote_check_dates(model, qs);
+    errs0 = tp_e1(e_qs);
+    qs = tp_e2(e_qs);
+  }
+
   if (arr_size(qs) > HISTORIC_QUOTES) {
     arr_remove_range(qs, HISTORIC_QUOTES, arr_size(qs));
   }
 
-
-
   // Arr[char]
   Arr *errs = arr_new();
+
   char *last_date = ((Quote *)arr_get(new, arr_size(new) - 1))->date;
   int qs_size = arr_size(qs);
   char *edates = buf_str(error_dates);
@@ -681,14 +654,7 @@ Tp *quote_blend (Arr *model, Arr *new, Arr *old) {
     }
   }
 
-  if (arr_size(model)) {
-    // Returns Tp[Arr[char], Arr[Quote]]
-    Tp *e_qs = quote_check_dates(model, qs);
-    void *fcopy (void *e) { return e; }
-    arr_cat(errs, tp_e1(e_qs), fcopy);
-    qs = tp_e2(e_qs);
-  }
-
+  arr_cat(errs, errs0);
   arr_sort(errs, (FCMP)str_greater);
   arr_reverse(errs);
   return tp_new(errs, qs);

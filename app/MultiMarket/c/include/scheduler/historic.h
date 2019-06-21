@@ -8,7 +8,7 @@
 
 #include "dmc/async.h"
 
-/// Read historic data
-void historic_read (AsyncActor *ac);
+/// Updates historic data
+void historic_update (AsyncActor *ac);
 
 #endif

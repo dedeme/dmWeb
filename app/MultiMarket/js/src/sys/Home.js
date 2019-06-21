@@ -6,6 +6,8 @@ import Main from "../Main.js";
 import SysMain from "./SysMain.js"; //eslint-disable-line
 import {_} from "../I18n.js";
 import Log from "./home/Log.js";
+import Flog from "./home/Flog.js";
+import Wrule from "../wgs/Wrule.js";
 
 const $ = Ui.$;
 
@@ -42,6 +44,24 @@ export default class Home {
             .add($("br"))
             .add($("a").att("href", Main.urlBase + "?fleas")
               .text(_("Fleas Data"))))))
+        .add($("div").klass("head").text(_("Management")))
+        .add($("div")
+          .add($("table").att("align", "center")
+            .add($("tr")
+              .add($("td").klass("frame").style("text-align:center")
+                .add(Wrule.mkSmall(_("Log")))
+                .add(Ui.link(this.clearLog.bind(this))
+                  .klass("link").text(_("Clear"))))
+              .add($("td").klass("frame").style("text-align:center")
+                .add(Wrule.mkSmall(_("Fleas")))
+                .add(Ui.link(this.runFleas.bind(this))
+                  .klass("link").text(_("Run")))
+                .add($("span").html("&nbsp;·&nbsp;"))
+                .add(Ui.link(this.stopFleas.bind(this))
+                  .klass("link").text(_("Stop")))
+                .add($("span").html("&nbsp;|&nbsp;"))
+                .add(Ui.link(this.logFleas.bind(this))
+                  .klass("link").text(_("Log")))))))
         .add(this._logDiv)
         .add(Ui.upTop("up"))
     );
@@ -63,5 +83,48 @@ export default class Home {
     const log = rp["log"];
 
     this._logDiv.removeAll().add(new Log(log).wg); //eslint-disable-line
+  }
+
+  /** @private */
+  async clearLog () {
+    if (confirm(_("All log entries will be deleted.\nContinue?"))) {
+      const rq = {
+        "module": "sys",
+        "source": "Home",
+        "rq": "clearLog"
+      };
+      await Main.client.send(rq);
+
+      this._logDiv.removeAll().add(new Log([]).wg); //eslint-disable-line
+    }
+  }
+
+  /** @private */
+  runFleas () {
+    const rq = {
+      "module": "sys",
+      "source": "Home",
+      "rq": "runFleas"
+    };
+    Main.client.send(rq);
+    alert(_("Fleas running"));
+  }
+
+  /** @private */
+  async stopFleas () {
+    if (confirm(_("End fleas running?"))) {
+      const rq = {
+        "module": "sys",
+        "source": "Home",
+        "rq": "stopFleas"
+      };
+      await Main.client.send(rq);
+      alert(_("Fleas stopped"));
+    }
+  }
+
+  /** @private */
+  logFleas () {
+    Flog.open();
   }
 }

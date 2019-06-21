@@ -1,11 +1,14 @@
 // Copyright 08-Jun-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// Management of 'calendar&#46;db'
+
 #ifndef IO_CALENDAR_H
   #define IO_CALENDAR_H
 
 #include "dmc/std.h"
 #include "data/Timetable.h"
+#include "DEFS.h"
 
 ///
 void calendar_init (void);
@@ -27,5 +30,8 @@ Arr *calendar_special_days (void);
 
 /// 'special_days' is Arr[MarketDay]
 void calendar_set_special_days (Arr *special_days);
+
+///
+int calendar_is_open (time_t date);
 
 #endif

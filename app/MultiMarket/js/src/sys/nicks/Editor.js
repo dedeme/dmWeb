@@ -72,8 +72,8 @@ export default class Editor {
     this._testSpan = $("span");
 
     this._quotesDiv = $("div");
-    this._qLeftMenu = new Menu();
-    this._qRightMenu = new Menu();
+    this._qLeftMenu = new Menu(false);
+    this._qRightMenu = new Menu(false);
     this._leftArea = $("textarea").att("spellcheck", false)
       .att("rows", 25).att("cols", 60);
     this._rightArea = $("textarea").att("spellcheck", false)

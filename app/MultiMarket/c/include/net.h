@@ -1,6 +1,8 @@
 // Copyright 24-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// HTTP readings.
+
 #ifndef NET_H
   #define NET_H
 
@@ -28,6 +30,6 @@ Opt *net_read_historic (Rconf *conf, char *code);
 ///     MSG_ERROR, "server/quotes" -> Wrong server data and quotes corrected
 ///     MSG_ERROR, "net/quotes" -> Connection fail and quotes corrected
 ///     MSG_WARNING, "quotes" -> Quotes corrected
-EMsg *net_update_historic(int nk_id);
+EMsg *net_update_historic(AsyncActor *ac, int nk_id);
 
 #endif

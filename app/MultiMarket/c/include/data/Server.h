@@ -1,10 +1,12 @@
 // Copyright 10-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// Server to read quotes.
+
 #ifndef DATA_SERVER_H
   #define DATA_SERVER_H
 
-#include "dmc/async.h"
+#include "dmc/std.h"
 
 /*--*/
 

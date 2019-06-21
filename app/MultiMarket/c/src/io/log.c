@@ -13,14 +13,14 @@ static char *date (void) {
 }
 
 void log_init (void) {
-  log = path_cat(io_data_dir(), "log.txt", NULL);
+  log = path_cat(io_data_dir(), "log.db", NULL);
   if (!file_exists(log)) {
     file_write(log, "[]");
   }
 }
 
 static void write (char *msg) {
-  if (!log) EXC_ILLEGAL_STATE("'log.txt' was not intiliazed")
+  if (!log) EXC_ILLEGAL_STATE("'log.db' was not intiliazed")
 
   // Arr[char]
   Arr *msgs = arr_from_js((Js *)file_read(log), (FFROM)js_rs);
@@ -45,7 +45,13 @@ void log_exception (Exc *ex) {
 }
 
 Js *log_to_js (void) {
-  if (!log) EXC_ILLEGAL_STATE("'log.txt' was not intiliazed")
+  if (!log) EXC_ILLEGAL_STATE("'log.db' was not intiliazed")
 
   return (Js *)file_read(log);
+}
+
+void log_clear (void) {
+  if (!log) EXC_ILLEGAL_STATE("'log.db' was not intiliazed")
+
+  file_write(log, "[]");
 }

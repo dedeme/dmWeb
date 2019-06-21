@@ -1,10 +1,12 @@
 // Copyright 06-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// Management of 'nicks&#46;db'
+
 #ifndef IO_NICKS_H
   #define IO_NICKS_H
 
-#include "dmc/async.h"
+#include "dmc/std.h"
 #include "data/Nick.h"
 
 /*--*/

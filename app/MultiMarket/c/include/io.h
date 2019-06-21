@@ -1,6 +1,8 @@
 // Copyright 03-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// IO utilities of general caracter, including initialization.
+
 #ifndef IO_H
   #define IO_H
 
@@ -25,7 +27,7 @@ char *io_tmp_dir (void);
 /// Clears 'tmp' dir.
 void io_clear_tmp (void);
 
-/// Returns millisecons since epoch
+/// Returns millisecons since epoch (Used from zip files)
 char *io_time_stamp (void);
 
 #endif

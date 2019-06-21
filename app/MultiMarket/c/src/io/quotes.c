@@ -8,7 +8,7 @@
 #include "data/Nick.h"
 #include "DEFS.h"
 
-char *quotes_db = NULL;
+static char *quotes_db = NULL;
 
 void quotes_init (void) {
   quotes_db = path_cat(io_data_dir(), "quotes", NULL);
@@ -118,6 +118,19 @@ static Tp *check_qs (char *nk_name, char *text, Arr *model_qs) {
   }
 
   EMsg *e = eMsg_new(MSG_OK, "");
+
+  if (arr_size(model_qs)) {
+    Tp *es_qs = quote_check_dates(model_qs, qs);
+    es = tp_e1(es_qs);
+    qs = tp_e2(es_qs);
+    if (arr_size(es)) {
+      log_error(str_f(
+        "Missing/Extra quotes in '%s.db':\n  %s", nk_name, str_join(es, "\n  ")
+      ));
+      e = eMsg_new(MSG_WARNING, "quotes");
+    }
+  }
+
   // Tp[Arr[char], Arr[Quote]]
   Tp *es_qs = quote_check(qs);
   es = tp_e1(es_qs);
@@ -129,17 +142,7 @@ static Tp *check_qs (char *nk_name, char *text, Arr *model_qs) {
     e = eMsg_new(MSG_WARNING, "quotes");
   }
 
-  if (arr_size(model_qs)) {
-    es_qs = quote_check_dates(model_qs, qs);
-    es = tp_e1(es_qs);
-    qs = tp_e2(es_qs);
-    if (arr_size(es)) {
-      log_error(str_f(
-        "Missing/Extra quotes in '%s.db':\n  %s", nk_name, str_join(es, "\n  ")
-      ));
-      e = eMsg_new(MSG_WARNING, "quotes");
-    }
-  } else if (arr_size(qs) != HISTORIC_QUOTES) {
+  if (arr_size(qs) != HISTORIC_QUOTES) {
     int size = arr_size(qs);
     if (size > HISTORIC_QUOTES) {
       arr_remove_range(qs, HISTORIC_QUOTES, size);
@@ -231,3 +234,126 @@ EMsg *quotes_editor_set_quotes(int nick_id, char *qs_text) {
 
   return e;
 }
+
+Arr *quotes_dates (void) {
+  int model_id = nicks_model();
+  if (model_id == -1) {
+    // Arr[Nick]
+    Arr *nicks = nicks_list();
+    if (arr_size(nicks) == 0) {
+      log_error("Nick model not defined");
+      return arr_new();
+    }
+    model_id = nick_id(arr_get(nicks, 0));
+  }
+  // Arr[Quote]
+  Arr *qs = arr_new();
+  char *model_name = nick_name(opt_eget(nicks_get(model_id), str_f(
+    "Nick with id '%d' not found", model_id
+  )));
+  qs = quotes_read(model_name);
+  int qs_size = arr_size(qs);
+  if (qs_size != HISTORIC_QUOTES) {
+    if (qs_size) {
+      log_error(str_f(
+        "%s:%d:[%s]:\n  Wrong quotes number of '%s': Expected %d. Actual %d"
+        __FILE__, (char *)__func__, __LINE__,
+        model_name, HISTORIC_QUOTES, qs_size
+      ));
+    } else {
+      log_error(str_f(
+        "%s:%d:[%s]:\n  Quotes of '%s' have errors"
+        __FILE__, (char *)__func__, __LINE__, model_name
+      ));
+    }
+    return arr_new();
+  }
+
+  // Arr[char]
+  Arr *r = arr_new();
+  EACHR(qs, Quote, q)
+    arr_push(r, quote_date(q));
+  _EACH
+  return r;
+}
+
+// Returns Opt[Qmatrix]
+static Opt *mk_qmtrix (double (*get_value)(Quote *)) {
+  int ffilter (Nick *nk) { return nick_is_sel(nk); }
+  // Arr[Nick]
+  Arr *nicks = arr_from_it(it_filter(arr_to_it(nicks_list()), (FPRED)ffilter));
+  int nicks_size = arr_size(nicks);
+
+  QmatrixValues *rows = GC_MALLOC(HISTORIC_QUOTES * sizeof(QmatrixValues *));
+  QmatrixValues *p = rows;
+  REPEAT(HISTORIC_QUOTES)
+    *p++ = ATOMIC(nicks_size * sizeof(double));
+  _REPEAT
+  EACH_IX(nicks, Nick, nk, col)
+    char *name = nick_name(nk);
+    // Arr[Quote]
+    Arr *qs = quotes_read(name);
+    int qs_size = arr_size(qs);
+
+    if (qs_size != HISTORIC_QUOTES) {
+      if (qs_size) {
+        log_error(str_f(
+          "%s:%d:[%s]:\n  Wrong quotes number of '%s': Expected %d. Actual %d"
+          __FILE__, (char *)__func__, __LINE__,
+          name, HISTORIC_QUOTES, qs_size
+        ));
+      } else {
+        log_error(str_f(
+          "%s:%d:[%s]:\n  Quotes of '%s' have errors"
+          __FILE__, (char *)__func__, __LINE__, name
+        ));
+      }
+      return opt_empty();
+    } else {
+      arr_reverse(qs);
+      Quote **quotes = (Quote **)arr_start(qs);
+      RANGE0(row, HISTORIC_QUOTES)
+        rows[row][col] = get_value(*quotes++);
+      _RANGE
+    }
+  _EACH
+
+  return opt_new(qmatrix_new(nicks, rows));
+}
+
+// Returns Opt[Qmatrix]
+Opt *quotes_closes (void) {
+  return mk_qmtrix(quote_close);
+}
+
+// Returns Opt[Qmatrix]
+Opt *quotes_opens (void) {
+  return mk_qmtrix(quote_open);
+}
+
+// Returns Opt[char]
+Opt *quotes_last_date (void) {
+  int model_id = nicks_model();
+  if (model_id == -1) {
+    // Arr[Nick]
+    Arr *nicks = nicks_list();
+    if (arr_size(nicks) == 0) {
+      log_error("Nick model not defined");
+      return opt_empty();
+    }
+    model_id = nick_id(arr_get(nicks, 0));
+  }
+  // Arr[Quote]
+  Arr *model_qs = arr_new();
+  char *model_name = nick_name(opt_eget(nicks_get(model_id), str_f(
+    "Nick with id '%d' not found", model_id
+  )));
+  model_qs = quotes_read(model_name);
+  if (!arr_size(model_qs)) {
+    log_error("Nick model quotes are wrong");
+    return opt_empty();
+  }
+
+  return opt_new(quote_date(arr_get(model_qs, 0)));
+}
+

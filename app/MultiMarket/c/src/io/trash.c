@@ -5,7 +5,7 @@
 #include "dmc/ext.h"
 #include "io.h"
 
-char *trash_dir = NULL;
+static char *trash_dir = NULL;
 
 void trash_init (void) {
   trash_dir = path_cat(sys_home(), "trash", NULL);

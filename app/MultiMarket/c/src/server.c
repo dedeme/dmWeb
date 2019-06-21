@@ -3,6 +3,7 @@
 
 #include "server.h"
 #include "dmc/date.h"
+#include "dmc/ext.h"
 #include "io.h"
 #include "io/log.h"
 #include "DEFS.h"
@@ -38,6 +39,7 @@ void server_run (Tp *actor_server) {
   AsyncActor *ac = tp_e1(actor_server);
   Iserver *server = tp_e2(actor_server);
 
+  int error_counter = 0;
   while (io_active()) {
     IserverRq *rq = iserver_read(server);
 
@@ -45,10 +47,8 @@ void server_run (Tp *actor_server) {
       TRY
         EXC_IO(iserverRq_error(rq))
       CATCH(ex)
-        asyncActor_wait(ac, (FPROC)log_exception, ex);
-        iserverRq_write(rq, str_f(
-          "%s\n  %s", exc_msg(ex), str_join(exc_stack(ex), "\n  ")
-        ));
+        if (!error_counter) asyncActor_wait(ac, (FPROC)log_exception, ex);
+        ++error_counter;
       _TRY
     } else {
       if (opt_is_full(iserverRq_msg(rq))){
@@ -56,22 +56,31 @@ void server_run (Tp *actor_server) {
 
         if (is_local(rq, msg, "end")) {
           io_set_active(0);
+          error_counter = 0;
         } else if (is_local(rq, msg, "test")) {
           char *e = iserverRq_write(rq, "ok");
           if (*e) {
             TRY
               EXC_IO(e)
             CATCH (ex)
-              asyncActor_wait(ac, (FPROC)log_exception, ex);
-              iserverRq_write(rq, str_f(
-                "%s\n  %s", exc_msg(ex), str_join(exc_stack(ex), "\n  ")
-              ));
+              if (!error_counter) asyncActor_wait(ac, (FPROC)log_exception, ex);
+              ++error_counter;
             _TRY
+          } else {
+            error_counter = 0;
           }
         } else {
           async_thread((FPROC)request, tp_new(ac, rq));
+          error_counter = 0;
         }
       }
+    }
+
+    if (error_counter > 100) {
+      ext_zenity_msg(
+        "dialog-error",
+        "More than 100 tries to read Iserver\nin 'server_run'"
+      );
     }
 
     sys_sleep(SERVER_SLEEP);

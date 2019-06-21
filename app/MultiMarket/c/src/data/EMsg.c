@@ -5,6 +5,7 @@
 
 /* .
 EMsg
+  # Its value is one of ErrorMsg defined in DEFS.h
   error: int
   msg: char *
 */

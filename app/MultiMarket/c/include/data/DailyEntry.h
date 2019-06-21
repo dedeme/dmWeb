@@ -1,10 +1,12 @@
 // Copyright 24-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// Entry for daily data read from server.
+
 #ifndef DATA_DAILYENTRY_H
   #define DATA_DAILYENTRY_H
 
-#include "dmc/async.h"
+#include "dmc/std.h"
 
 /*--*/
 

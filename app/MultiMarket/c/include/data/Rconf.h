@@ -1,10 +1,12 @@
 // Copyright 10-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// Server configuration (for daily and historic configurations)
+
 #ifndef DATA_RCONF_H
   #define DATA_RCONF_H
 
-#include "dmc/async.h"
+#include "dmc/std.h"
 
 /*--*/
 

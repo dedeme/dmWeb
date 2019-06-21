@@ -46,9 +46,6 @@ Ammount = Cantidad
 Annotations = Asientos
 
 # ORPHAN
-Assets = Activo
-
-# ORPHAN
 Autocorrection = Autocorrección
 
 # ORPHAN
@@ -71,9 +68,6 @@ Browser = Navegador
 
 # ORPHAN
 Buy = Compra
-
-# ORPHAN
-Buys = Compras
 
 # ORPHAN
 Capital = Capital
@@ -247,9 +241,6 @@ Selection<br>changes = Cambios en<br>seleccionados
 Sell = Venta
 
 # ORPHAN
-Sells = Ventas
-
-# ORPHAN
 Send '%0' to Extra? = ¿Enviar '%0' a Extra?
 
 # ORPHAN
@@ -310,9 +301,6 @@ Vol. = Vol.
 Withdrawal = Reintegro
 
 # ORPHAN
-Without data = Sin datos
-
-# ORPHAN
 Without nicks = Sin nicks
 
 # ORPHAN
@@ -323,6 +311,92 @@ Wrong data = Datos no válidos
 
 # ORPHAN
 Year close = Cierre del ejercicio
+
+# TO DO
+# src/sys/Home.js: 90
+All log entries will be deleted.\nContinue? = 
+
+# TO DO
+# src/sys/home/Flog.js: 85
+# src/sys/home/Flog.js: 88
+Auto = 
+
+# TO DO
+# src/fleas/FleasMain.js: 76
+Bests = 
+
+# TO DO
+# src/fleas/FleasMain.js: 81
+Champions = 
+
+# TO DO
+# src/fleas/FleasMain.js: 71
+Charts = 
+
+# TO DO
+# src/sys/Home.js: 115
+End fleas running? = 
+
+# TO DO
+# src/sys/Home.js: 56
+Fleas = 
+
+# TO DO
+# src/sys/home/Flog.js: 52
+Fleas Log = 
+
+# TO DO
+# src/sys/Home.js: 110
+Fleas running = 
+
+# TO DO
+# src/sys/Home.js: 122
+Fleas stopped = 
+
+# TO DO
+# src/fleas/wgs/Dtable.js: 142
+Id = 
+
+# TO DO
+# src/fleas/FleasMain.js: 66
+# src/sys/Home.js: 47
+Management = 
+
+# TO DO
+# src/sys/home/Flog.js: 83
+Manual = 
+
+# TO DO
+# src/fleas/Bests.js: 86
+Model '%0' not found = 
+
+# TO DO
+# src/fleas/wgs/Dtable.js: 141
+Nº = 
+
+# TO DO
+# src/fleas/wgs/Dtable.js: 144
+Pf. Avg = 
+
+# TO DO
+# src/fleas/wgs/Dtable.js: 145
+Pf. MDV = 
+
+# TO DO
+# src/fleas/wgs/Dtable.js: 146
+Pf. Sel = 
+
+# TO DO
+# src/sys/Home.js: 58
+Run = 
+
+# TO DO
+# src/sys/Home.js: 61
+Stop = 
+
+# TO DO
+# src/fleas/Bests.js: 96
+Without models = 
 
 # src/sys/servers/Download.js: 51
 %0 is missing = Falta %0
@@ -355,6 +429,9 @@ All = Todo
 # src/sys/Backups.js: 233
 All the data will be replaced = ¡ATENCIÓN!. Todos los datos serán reemplazados.\n¿Continuar?
 
+# src/fleas/wgs/Dtable.js: 143
+Assets = Activo
+
 # src/sys/Backups.js: 284
 Automatic Backups = Backups automáticos
 
@@ -371,6 +448,9 @@ Backup version is wrong = La versión del backup es incorrecta
 # src/sys/Backups.js: 308
 Backups = Copias de seguridad
 
+# src/fleas/wgs/Dtable.js: 147
+Buys = Compras
+
 # src/sys/Chpass.js: 44
 Cancel = Cancelar
 
@@ -385,6 +465,7 @@ Change Password = Cambiar la contraseña
 Check gray squares = Marcar los cuadrados grises
 
 # src/sys/Backups.js: 289
+# src/sys/Home.js: 54
 Clear = Eliminar
 
 # src/sys/Backups.js: 194
@@ -395,9 +476,11 @@ Click %0 to continue. = Hacer click %0 para continuar.
 
 # src/wgs/Msg.js: 57
 # src/sys/home/Log.js: 210
-Close = Cierre
+# src/sys/home/Flog.js: 145
+Close = Cerrar
 
-# src/sys/Schedule.js: 45
+# src/sys/Schedule.js: 53
+# src/sys/Schedule.js: 166
 # src/sys/servers/Download.js: 33
 # src/sys/servers/Download.js: 35
 # src/sys/nicks/Editor.js: 26
@@ -415,10 +498,10 @@ Confirm password = Confirmar la contraseña
 # src/sys/Chpass.js: 182
 Confirm password is missing = Falta la confirmación de la contraseña
 
-# src/sys/Nicks.js: 36
+# src/sys/Nicks.js: 37
 Connection fail = Fallo en la conexión
 
-# src/sys/Nicks.js: 38
+# src/sys/Nicks.js: 39
 Connection fail and quotes corrected = Fallo en la conexión y cotizaciones corregidas
 
 # src/sys/Chpass.js: 60
@@ -430,7 +513,7 @@ Current password is missing = Falta indicar la contraseña actual
 # src/sys/Servers.js: 100
 Daily = Diario
 
-# src/sys/Home.js: 41
+# src/sys/Home.js: 43
 Daily Quotes = Cotizaciones del día
 
 # src/sys/servers/Wserver.js: 52
@@ -451,9 +534,19 @@ Data file is empty = Archivo de datos está vacio
 # src/sys/nicks/Editor.js: 40
 Data file not found = Archivo de datos no encontrado
 
+# src/fleas/wgs/Dtable.js: 151
+# src/sys/Schedule.js: 164
 # src/sys/servers/Download.js: 36
 # src/sys/nicks/Editor.js: 24
 Date = Fecha
+
+# src/sys/Schedule.js: 282
+# src/sys/Schedule.js: 330
+Date '%0' is duplicated = La fecha '%0' está repetida
+
+# src/sys/Schedule.js: 278
+# src/sys/Schedule.js: 326
+Date before today = Fecha anterior a hoy
 
 # src/sys/servers/Download.js: 433
 Date separator = Separador de fechas
@@ -465,19 +558,23 @@ Date separator is missing = Falta el separador de fechas
 # src/sys/nicks/Wnick.js: 53
 Delete = Eliminar
 
+# src/sys/Schedule.js: 296
+# src/sys/Schedule.js: 344
 # src/sys/nicks/Wnick.js: 88
 # src/sys/Servers.js: 264
 Delete '%0'? = ¿Eliminar '%0'?
 
 # src/sys/Backups.js: 311
-# src/sys/Nicks.js: 116
+# src/sys/Nicks.js: 129
 Download = Descarga
 
-# src/sys/Nicks.js: 303
+# src/sys/Nicks.js: 321
 Download has errors = La descarga tiene errores
 
-# src/sys/Nicks.js: 32
-# src/sys/Nicks.js: 300
+# src/sys/Nicks.js: 33
+Download or test successfully done = Descarga o test correcto
+
+# src/sys/Nicks.js: 318
 Download successfully done = Descarga correcta
 
 # src/sys/home/Log.js: 152
@@ -489,17 +586,17 @@ Fail trying to change password = Fallo intentando cambiar la contraseña
 # src/sys/servers/Download.js: 443
 Fields order = Orden de los campos
 
-# src/sys/Home.js: 44
+# src/sys/Home.js: 46
 Fleas Data = Datos de las pulgas
 
-# src/sys/Schedule.js: 82
+# src/sys/Schedule.js: 180
 General Time Table = Horario general
 
 # src/sys/Chpass.js: 166
 # src/core/Auth.js: 105
 Grey squares checks are wrong = Las casillas grises están mal marcadas
 
-# src/Main.js: 116
+# src/Main.js: 118
 Help & Credits = Ayuda & créditos
 
 # src/sys/Servers.js: 104
@@ -517,11 +614,11 @@ Historic configuration selected = Configuración del histórico seleccionada
 # src/sys/servers/Wserver.js: 62
 Historic configuration stopped = Configuración del histórico detenida
 
-# src/sys/Schedule.js: 87
+# src/sys/Schedule.js: 185
 Holidays = Fiestas
 
 # src/sys/SysMain.js: 65
-# src/sys/Home.js: 34
+# src/sys/Home.js: 36
 Home = Inicio
 
 # src/sys/servers/Download.js: 431
@@ -539,11 +636,14 @@ Last Day = Último día
 # src/sys/home/Log.js: 141
 Last Week = Última semana
 
-# src/sys/Nicks.js: 183
+# src/sys/Nicks.js: 199
 List = Lista
 
 # src/sys/home/Log.js: 52
 # src/sys/home/Log.js: 190
+# src/sys/home/Flog.js: 125
+# src/sys/Home.js: 52
+# src/sys/Home.js: 64
 Log = Registro
 
 # src/sys/Chpass.js: 131
@@ -556,7 +656,7 @@ Logout-message = <p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>
 # src/sys/Backups.js: 265
 Make backup = Hacer copia
 
-# src/sys/Home.js: 38
+# src/sys/Home.js: 40
 Market = Mercado
 
 # src/sys/servers/Download.js: 38
@@ -605,21 +705,21 @@ New password and confirm password do not match = La nueva contraseña y su confi
 # src/sys/Chpass.js: 176
 New password is missing = Falta indicar la nueva contraseña
 
-# src/sys/Nicks.js: 223
-# src/sys/Nicks.js: 256
+# src/sys/Nicks.js: 239
+# src/sys/Nicks.js: 272
 Nick '%0' is duplicated = Nick '%0' está repetido
 
 # src/sys/nicks/Editor.js: 43
 Nick model data are wrong = El los datos del nick modelo están en mal estado
 
-# src/sys/Nicks.js: 209
-# src/sys/Nicks.js: 237
+# src/sys/Nicks.js: 225
+# src/sys/Nicks.js: 253
 Nick name is missing = Falta en nombre del nick
 
-# src/sys/Nicks.js: 241
+# src/sys/Nicks.js: 257
 Nick name was not changed = El nombre de nick no se cambió
 
-# src/sys/Nicks.js: 34
+# src/sys/Nicks.js: 35
 Nick not found = Nick no encontrado
 
 # src/sys/nicks/Editor.js: 158
@@ -637,7 +737,8 @@ No modification was performed.<br>See Log. = No se realizó ninguna modificació
 # src/sys/Backups.js: 108
 Only one file can be selected = Sólo se puede seleccionar un archivo
 
-# src/sys/Schedule.js: 44
+# src/sys/Schedule.js: 52
+# src/sys/Schedule.js: 165
 # src/sys/servers/Download.js: 37
 # src/sys/nicks/Editor.js: 25
 Open = Apertura
@@ -667,6 +768,7 @@ Quotes were modified with corrections.<br>See Log. = Las cotizaciones fueron mod
 Quotes were successfully modified = Las cotizaciones se modificaron correctamente
 
 # src/sys/home/Log.js: 149
+# src/sys/home/Flog.js: 91
 Reload = Recargar
 
 # src/sys/servers/Download.js: 405
@@ -692,7 +794,7 @@ Row end = Fin de fila
 # src/sys/servers/Download.js: 453
 Row start = Inicio de fila
 
-# src/sys/Schedule.js: 78
+# src/sys/Schedule.js: 176
 # src/sys/SysMain.js: 89
 Schedule = Calendario
 
@@ -705,6 +807,9 @@ Selected = Seleccionadas
 # src/sys/nicks/Wnick.js: 57
 # src/sys/nicks/Wnick.js: 58
 Selection = Selección
+
+# src/fleas/wgs/Dtable.js: 148
+Sells = Ventas
 
 # src/sys/Servers.js: 238
 Server name is missing = Falta el nombre del servidor
@@ -730,12 +835,17 @@ Short Name is missing = Falta el nombre corto
 # src/sys/Servers.js: 252
 Short name '%0' is duplicated = El nombre corto '%0' está repetido
 
-# src/sys/Nicks.js: 33
-# src/sys/Nicks.js: 302
-# src/sys/nicks/Editor.js: 36
+# src/sys/Nicks.js: 371
+Some quotes should be corrected = Algunas cotizaciones deben ser corregidas
+
+# src/sys/Nicks.js: 34
+# src/sys/Nicks.js: 320
 Some quotes were corrected = Algunas cotizaciones fueron corregidas
 
-# src/sys/Schedule.js: 90
+# src/sys/nicks/Editor.js: 36
+Some quotes were or should be corrected = Algunas cotizaciones fueron o deben ser corregidas
+
+# src/sys/Schedule.js: 188
 Special days = Días especiales
 
 # src/sys/nicks/Editor.js: 30
@@ -753,11 +863,18 @@ Table end = Fin de tabla
 # src/sys/servers/Download.js: 448
 Table start = Inicio de tabla
 
+# src/sys/Nicks.js: 132
 # src/sys/servers/Download.js: 420
 # src/sys/nicks/Editor.js: 199
 Test = Prueba
 
-# src/sys/Nicks.js: 27
+# src/sys/Nicks.js: 372
+Test has errors = La prueba arroja errores
+
+# src/sys/Nicks.js: 369
+Test successfully done = El resultado de la prueba es correcto
+
+# src/sys/Nicks.js: 28
 Total: %0. Selected: %1. = Total: %0. Seleccionados: %1.
 
 # src/sys/Backups.js: 287
@@ -787,10 +904,19 @@ Volume = Volumen
 # src/sys/Servers.js: 167
 Without Data = Sin datos
 
-# src/sys/Nicks.js: 190
+# src/sys/Nicks.js: 206
 # src/sys/servers/Codes.js: 105
 # src/sys/nicks/ListMaker.js: 52
 Without Nicks = Sin nicks
+
+# src/fleas/Charts.js: 44
+# src/fleas/wgs/Dtable.js: 198
+# src/fleas/wgs/Chart.js: 45
+Without data = Sin datos
+
+# src/sys/Schedule.js: 76
+# src/sys/Schedule.js: 122
+Without dates = Sin fechas
 
 # src/sys/Servers.js: 164
 Without<br>Servers = Sin<br>Servidores
@@ -798,10 +924,10 @@ Without<br>Servers = Sin<br>Servidores
 # src/core/Auth.js: 163
 Wrong password = La contraseña es incorrecta
 
-# src/sys/Nicks.js: 35
+# src/sys/Nicks.js: 36
 Wrong server data = Datos del servidor en mal estado
 
-# src/sys/Nicks.js: 37
+# src/sys/Nicks.js: 38
 Wrong server data and quotes corrected = Datos del servidor en mal estado<br>y cotizaciones corregidas
 
 # src/sys/servers/Download.js: 350

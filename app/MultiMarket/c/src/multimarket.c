@@ -18,6 +18,11 @@
 #include "io/quotes.h"
 #include "io/servers.h"
 #include "io/calendar.h"
+#include "io/fleasdb.h"
+
+#include "scheduler/fleas/fleas__models.h"
+
+#include "scheduler/fleas.h"
 
 static void help (void) {
   puts("Usage: MultiMarket [start | stop | test | help]");
@@ -36,6 +41,10 @@ static void init (void) {
   quotes_init();
   servers_init();
   calendar_init();
+  fleasdb_init();
+  //---------
+  fleas__models_init();
+
 }
 
 static char *send (char *msg) {

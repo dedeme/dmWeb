@@ -9,7 +9,7 @@
 #include "io/trash.h"
 #include "DEFS.h"
 
-char *backups_dir = NULL;
+static char *backups_dir = NULL;
 
 void backups_init (void) {
   backups_dir = path_cat(sys_home(), "backups", NULL);

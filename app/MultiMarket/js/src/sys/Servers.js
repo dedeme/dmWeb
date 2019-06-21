@@ -50,7 +50,7 @@ export default class Servers {
     this._serverListWg = $("div");
     this._view0 = $("div");
     this._view = $("div");
-    this._viewMenu = new Menu();
+    this._viewMenu = new Menu(false);
     this._viewMenuName = $("span");
   }
 
@@ -90,7 +90,7 @@ export default class Servers {
    * @return {!Domo}
    */
   get serverWg () {
-    this._viewMenu = new Menu();
+    this._viewMenu = new Menu(false);
     const menu = this._viewMenu;
     menu.addLeft(Menu.mkOption(
       NAMES, _("Names"), () => { this.setServerTab(NAMES) }

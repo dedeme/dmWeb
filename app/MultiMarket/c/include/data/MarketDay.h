@@ -1,6 +1,8 @@
 // Copyright 08-Jun-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// Date and time table of holidays and special days.
+
 #ifndef DATA_MARKETDAY_H
   #define DATA_MARKETDAY_H
 

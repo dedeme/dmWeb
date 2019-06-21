@@ -6,7 +6,7 @@
 #include "io/quotes.h"
 #include "io/servers.h"
 
-char *nicks_db = NULL;
+static char *nicks_db = NULL;
 
 /* .
 -Nicks: serial

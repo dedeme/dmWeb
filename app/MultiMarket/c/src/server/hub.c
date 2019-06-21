@@ -5,10 +5,11 @@
 #include "dmc/cgi.h"
 #include "dmc/cryp.h"
 #include "DEFS.h"
-#include "server/sys.h"
 #include "io.h"
 #include "io/backups.h"
 #include "io/conf.h"
+#include "server/sys.h"
+#include "server/fleas.h"
 
 // rq is Map[Js]
 static char *module_process(AsyncActor *ac, char *module, Map *mrq) {
@@ -20,8 +21,9 @@ static char *module_process(AsyncActor *ac, char *module, Map *mrq) {
     return cgi_ok(rp);
   }
   if (str_eq(module, "sys")) return sys_process(ac, mrq);
+  if (str_eq(module, "fleas")) return fleas_process(ac, mrq);
 
-  EXC_ILLEGAL_ARGUMENT("module", "sys", module)
+  EXC_ILLEGAL_ARGUMENT("module", "sys | fleas", module)
   return NULL; // Unreachable
 }
 

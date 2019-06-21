@@ -1,6 +1,8 @@
 // Copyright 10-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// Management of 'servers&#46;db'
+
 #ifndef IO_SERVERS_H
   #define IO_SERVERS_H
 
@@ -20,10 +22,10 @@ Js *servers_to_js(Servers *this);
 Servers *servers_from_js(Js *js);
 
 ///
-typedef struct servers_IdNameCode IdNameCode;
+typedef struct servers_ServersIdNameCode ServersIdNameCode;
 
 ///
-Js *idNameCode_to_js(IdNameCode *this);
+Js *serversIdNameCode_to_js(ServersIdNameCode *this);
 
 /*--*/
 
@@ -66,8 +68,8 @@ void servers_add_nick (int nk_id);
 /// Removes nick with id 'nk_id' if it exists.
 void servers_del_nick (int nk_id);
 
-/// Returns Arr[IdNameCode]. If 'nick_id' does not have code, its code value
-/// is an empty string.
+/// Returns Arr[SeversIdNameCode]. If 'nick_id' does not have code, its code
+/// value is an empty string.
 Arr *servers_nick_codes (int nick_id);
 
 /// Sets code of nick_id.

@@ -6,14 +6,14 @@
 #include "io.h"
 #include "DEFS.h"
 
-char *servers_db = NULL;
+static char *servers_db = NULL;
 
 /* .
 -Servers: serial
   -next_id: int
   -list: Arr - Server
 ===
--IdNameCode: to
+-ServersIdNameCode: to
   -id: int
   -name: char *
   -code: char *
@@ -51,21 +51,21 @@ Servers *servers_from_js(Js *js) {
   return this;
 }
 
-struct servers_IdNameCode{
+struct servers_ServersIdNameCode{
   int id;
   char *name;
   char *code;
 };
 
-static IdNameCode *_idNameCode_new(int id, char *name, char *code) {
-  IdNameCode *this = MALLOC(IdNameCode);
+static ServersIdNameCode *_serversIdNameCode_new(int id, char *name, char *code) {
+  ServersIdNameCode *this = MALLOC(ServersIdNameCode);
   this->id = id;
   this->name = name;
   this->code = code;
   return this;
 }
 
-Js *idNameCode_to_js(IdNameCode *this) {
+Js *serversIdNameCode_to_js(ServersIdNameCode *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_wi((int)this->id));
@@ -287,12 +287,12 @@ void servers_del_nick (int nk_id) {
   write(db);
 }
 
-// Returns Arr[IdNameCode]
+// Returns Arr[SeversIdNameCode]
 Arr *servers_nick_codes (int nick_id) {
-  // Arr[IdNameCode]
+  // Arr[SeversIdNameCode]
   Arr *r = arr_new();
   EACH(servers_list(), Server, sv)
-    arr_push(r, _idNameCode_new(
+    arr_push(r, _serversIdNameCode_new(
       server_id(sv),
       server_short_name(sv),
       server_nick_code(sv, nick_id)

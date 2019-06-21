@@ -10,9 +10,10 @@
 #include "net.h"
 
 // All Map[Js]
-static Map *download (Map *mrq) {
+static Map *download (void *actor, Map *mrq) {
+  AsyncActor *ac = actor;
   CGI_GET_INT(nk_id, mrq, "nickId")
-  EMsg *e = net_update_historic(nk_id);
+  EMsg *e = net_update_historic(ac, nk_id);
   Map *rp = map_new();
   map_put(rp, "err", js_wi(eMsg_error(e)));
   map_put(rp, "msg", js_ws(eMsg_msg(e)));
@@ -78,10 +79,7 @@ char *sys__nicks_process(AsyncActor *ac, Map *mrq) {
   }
 
   if (str_eq(rq, "download")) {
-    void fn (void *null) {
-      rp = cgi_long_run(download, mrq);
-    }
-    asyncActor_wait(ac, fn, NULL);
+    rp = cgi_long_run(download, ac, mrq);
     return cgi_ok(rp);
   }
 

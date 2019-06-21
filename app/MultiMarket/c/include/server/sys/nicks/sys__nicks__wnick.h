@@ -1,6 +1,8 @@
 // Copyright 16-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// Requests from sys->nicks->wnick
+
 #ifndef SERVER_SYS_NICKS_SYS__NICKS__WNICK_H
   #define SERVER_SYS_NICKS_SYS__NICKS__WNICK_H
 

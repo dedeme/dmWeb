@@ -6,6 +6,7 @@
 /* .
 -Rconf: SERIAL
   url: char *
+  # enum Server
   @sel: int
   is_date_eu: bool
   date_separator: char *

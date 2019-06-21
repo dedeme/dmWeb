@@ -1,10 +1,12 @@
 // Copyright 06-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// Nick data.
+
 #ifndef DATA_NICK_H
   #define DATA_NICK_H
 
-#include "dmc/async.h"
+#include "dmc/std.h"
 
 /*--*/
 

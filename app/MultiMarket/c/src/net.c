@@ -253,43 +253,60 @@ Opt *net_read_historic (Rconf *conf, char *code) {
   return opt_new(t);
 }
 
-EMsg *net_update_historic(int nk_id) {
-  // Opt[Nick]
-  Opt *onk = nicks_get(nk_id);
-  if (opt_is_empty(onk)) {
-    log_error(str_f("Nick id '%d' not found", nk_id));
-    return eMsg_new(MSG_ERROR, "nick");
-  }
-  Nick *nk = opt_get(onk);
-
+EMsg *net_update_historic(AsyncActor *ac, int nk_id) {
+  EMsg *err = eMsg_new(MSG_OK, "");
+  Nick *nk = NULL;
   // Arr[Quote]
-  Arr *old_qs = quotes_read(nick_name(nk));
-  if (!arr_size(old_qs)) {
-    log_error(str_f("Wrong quotes in '%s.db'", nick_name(nk)));
-    return eMsg_new(MSG_ERROR, "nick");
-  }
-  // old_qs is not empty
-
-  int model_id = nicks_model();
-  if (model_id == -1) {
-    log_error("Nick model not defined");
-    return eMsg_new(MSG_ERROR, "model");
-  }
-
+  Arr *old_qs = NULL;
   // Arr[Quote]
-  Arr *model_qs = arr_new();
-  if (nk_id != model_id) {
-    char *model_name = nick_name(opt_eget(nicks_get(model_id), str_f(
-      "Nick model with id '%d' not found", model_id
-    )));
-    model_qs = quotes_read(model_name);
-    if (!arr_size(model_qs)) {
-      log_error("Nick model quotes are wrong");
-      return eMsg_new(MSG_ERROR, "model");
+  Arr *model_qs = NULL;
+
+  void fn1 (void *null) {
+    // Opt[Nick]
+    Opt *onk = nicks_get(nk_id);
+    if (opt_is_empty(onk)) {
+      log_error(str_f("Nick id '%d' not found", nk_id));
+      err = eMsg_new(MSG_ERROR, "nick");
+      return;
+    }
+    nk = opt_get(onk);
+
+    // Arr[Quote]
+    old_qs = quotes_read(nick_name(nk));
+    if (!arr_size(old_qs)) {
+      log_error(str_f("Wrong quotes in '%s.db'", nick_name(nk)));
+      err = eMsg_new(MSG_ERROR, "nick");
+      return;
+    }
+    // old_qs is not empty
+
+    int model_id = nicks_model();
+    if (model_id == -1) {
+      log_error("Nick model not defined");
+      err = eMsg_new(MSG_ERROR, "model");
+      return;
+    }
+
+    // Arr[Quote]
+    model_qs = arr_new();
+    if (nk_id != model_id) {
+      char *model_name = nick_name(opt_eget(nicks_get(model_id), str_f(
+        "Nick model with id '%d' not found", model_id
+      )));
+      model_qs = quotes_read(model_name);
+      if (!arr_size(model_qs)) {
+        log_error("Nick model quotes are wrong");
+        err = eMsg_new(MSG_ERROR, "model");
+        return;
+      }
     }
   }
+  asyncActor_wait(ac, fn1, NULL);
 
-  EMsg *err = eMsg_new(MSG_OK, "");
+  if (eMsg_error(err) == MSG_ERROR) {
+    return err;
+  }
+
   // Arr[Server]
   Arr *servers = servers_list();
   // Arr[Arr[Quote]]
@@ -312,6 +329,7 @@ EMsg *net_update_historic(int nk_id) {
         nick_name(nk), server_name(sv)
       ));
       if (eMsg_error(err) != MSG_ERROR) err = eMsg_new(MSG_ERROR, "server");
+      continue;
     }
     // Opt[char]
     Opt *code = serverCode_code((ServerCode *)opt_get(sc));
@@ -321,6 +339,7 @@ EMsg *net_update_historic(int nk_id) {
         nick_name(nk), server_name(sv)
       ));
       if (eMsg_error(err) != MSG_ERROR) err = eMsg_new(MSG_ERROR, "server");
+      continue;
     }
 
     // Opt[Arr[HistoricEntry]]
@@ -331,6 +350,7 @@ EMsg *net_update_historic(int nk_id) {
         nick_name(nk), server_name(sv)
       ));
       if (eMsg_error(err) != MSG_ERROR) err = eMsg_new(MSG_ERROR, "net");
+      continue;
     }
     char *limit_date = date_to_str(date_add(date_now(), -29));
     // Arr[Quote]
@@ -392,7 +412,8 @@ EMsg *net_update_historic(int nk_id) {
     }
   }
 
-  quotes_write(nick_name(nk), qs);
+  void fn2(void *null) { quotes_write(nick_name(nk), qs); }
+  asyncActor_wait(ac, fn2, NULL);
 
   return err;
 }

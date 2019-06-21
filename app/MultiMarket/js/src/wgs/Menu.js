@@ -9,9 +9,14 @@ const $ = Ui.$;
 
 /** Menu widget. */
 export default class Menu {
-  constructor () {
+  /**
+   * @param {boolean} withSeparator
+   */
+  constructor (withSeparator) {
     // MODEL -------
     // TTTTTTTTTTTTT
+
+    this._withSeparator = withSeparator;
 
     /**
      * @private
@@ -38,7 +43,7 @@ export default class Menu {
      * @private
      * @type {!Domo}
      */
-    this._lview = $("div");
+    this._lview = $("div").style("line-height:22px;");
 
     /**
      * @private
@@ -58,8 +63,14 @@ export default class Menu {
   get wg () {
     return $("div")
       .add($("table").klass("main").add($("tr")
-        .add($("td").add(this._lview))
-        .add($("td").style("text-align:right").add(this._rview))))
+        .add($("td").style(
+          "padding-right:4px;" +
+          (this._withSeparator ? "border-right: 1px solid #000000;" : "")
+        ).add(this._lview))
+        .add($("td").style(
+          "padding-left:4px;vertical-align:top;" +
+          "text-align:right;white-space:nowrap"
+        ).add(this._rview))))
       .add($("hr"))
     ;
   }
@@ -134,7 +145,8 @@ export default class Menu {
    * @param {function():(void|!Promise)} f
    */
   static mkOption (id, tx, f) {
-    return Ui.link(f).att("id", "menu_" + id).text(tx);
+    return Ui.link(f)
+      .att("id", "menu_" + id).text(tx);
   }
 
   /**

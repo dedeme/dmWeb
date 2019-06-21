@@ -3,6 +3,7 @@
 
 #include "io/conf.h"
 #include "io.h"
+#include "io/log.h"
 #include "DEFS.h"
 
 static char *conf = NULL;
@@ -70,11 +71,28 @@ void conf_set_server_tab (char *tab_name) {
   write("serverTab", js_ws(tab_name));
 }
 
+char *conf_fleas_page (void) {
+  return js_rs(opt_oget(map_get(read(), "fleasPage"), js_ws("")));
+}
+
+void conf_set_fleas_page (char *fleas_page) {
+  write("fleasPage", js_ws(fleas_page));
+}
+
+char *conf_fleas_model (void) {
+  return js_rs(opt_oget(map_get(read(), "fleasModel"), js_ws("")));
+}
+
+void conf_set_fleas_model (char *model) {
+  write("fleasModel", js_ws(model));
+}
+
 char *conf_activity (void) {
   return js_rs(opt_oget(map_get(read(), "activity"), js_ws(ACT_SLEEPING1)));
 }
 
 void conf_set_activity (char *activity_id) {
+  log_info(str_f("Activity '%s'", activity_id));
   write("activity", js_ws(activity_id));
 }
 
@@ -84,12 +102,4 @@ int conf_fleas_running (void) {
 
 void conf_set_fleas_running (int value) {
   write("fleasRunning", js_wb(value));
-}
-
-int conf_fleas_finished (void) {
-  return js_rb(opt_oget(map_get(read(), "fleasFinished"), js_wb(0)));
-}
-
-void conf_set_fleas_finished (int value) {
-  write("fleasFinished", js_wb(value));
 }

@@ -1,6 +1,8 @@
 // Copyright 22-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// Requests from sys->servers->download
+
 #ifndef SERVER_SYS_SERVERS_SYS__SERVERS__DOWNLOAD_H
   #define SERVER_SYS_SERVERS_SYS__SERVERS__DOWNLOAD_H
 

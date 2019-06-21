@@ -9,6 +9,7 @@ import Auth from "./core/Auth.js";
 import {I18n, _} from "./I18n.js";
 import Bye from "./core/Bye.js";
 import SysMain from "./sys/SysMain.js";
+import FleasMain from "./fleas/FleasMain.js";
 
 const app = "MultiMarket";
 const version = "201903";
@@ -92,6 +93,7 @@ export default class Main {
       "module": "logout"
     };
     await Main.client.send(rq2);
+
     new Bye(this).show();
   }
 
@@ -124,7 +126,7 @@ export default class Main {
       } else if (module === "daily") {
         //      new MarketMain(self).run();
       } else if (module === "fleas") {
-        //      new MarketMain(self).run();
+        new FleasMain(self).show();
       } else {
         alert("Module '" + module + "' is unknown");
         location.assign(Main.urlBase);

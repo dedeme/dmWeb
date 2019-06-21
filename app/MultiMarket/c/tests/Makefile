@@ -9,7 +9,9 @@ C_FILES = $(wildcard src/*.c) \
 					$(wildcard ../src/server/sys/*.c) \
 					$(wildcard ../src/server/sys/nicks/*.c) \
 					$(wildcard ../src/server/sys/servers/*.c) \
-					$(wildcard ../src/scheduler/*.c)
+					$(wildcard ../src/server/fleas/*.c) \
+					$(wildcard ../src/scheduler/*.c) \
+					$(wildcard ../src/scheduler/fleas/*.c)
 H_FILES = $(wildcard include/*.h) \
 					$(filter-out ../include/main.h, $(wildcard ../include/*.h)) \
 					$(wildcard ../include/io/*.h) \
@@ -18,7 +20,9 @@ H_FILES = $(wildcard include/*.h) \
 					$(wildcard ../include/server/sys/*.h) \
 					$(wildcard ../include/server/sys/nicks/*.h) \
 					$(wildcard ../include/server/sys/servers/*.h) \
-					$(wildcard ../include/scheduler/*.h)
+					$(wildcard ../include/server/fleas/*.h) \
+					$(wildcard ../include/scheduler/*.h) \
+					$(wildcard ../include/scheduler/fleas/*.h)
 
 LIB_PATH = ../lib/lib$(LIB)
 LIB_INCLUDE = ../lib/lib$(LIB)/include

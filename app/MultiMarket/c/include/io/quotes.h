@@ -1,12 +1,15 @@
 // Copyright 10-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// Management of companies quotes (Directory quotes)
+
 #ifndef IO_QUOTES_H
   #define IO_QUOTES_H
 
-#include "dmc/async.h"
+#include "dmc/std.h"
 #include "data/Quote.h"
 #include "data/EMsg.h"
+#include "data/Qmatrix.h"
 
 ///
 void quotes_init (void);
@@ -59,5 +62,22 @@ Tp *quotes_editor_read(int nick_id);
 ///       MSG_ERROR, "model" -> Error: Nick model was not defined
 ///       <i>NOTE: MSG_OK and MSG_WARNING modifies data, MSG_ERROR not</i>.
 EMsg *quotes_editor_set_quotes(int nick_id, char *qs_text);
+
+/// Returns an Arr[char] with dates of flea model. If data have errors returns
+/// an empty array.
+Arr *quotes_dates (void);
+
+/// Returns a Opt[Qmatrix] with closes of selected companies, from before to
+/// after
+Opt *quotes_closes (void);
+
+/// Returns a Opt[Qmatrix] with opens of selected companies, from before to
+/// after
+Opt *quotes_opens (void);
+
+/// Returns a Opt[char] with the last date of company model. If nick model is
+/// not defined, returns the last date of the first company. If there is no
+/// company or model has not quotes returns opt_empty.
+Opt *quotes_last_date (void);
 
 #endif

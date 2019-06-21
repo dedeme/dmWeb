@@ -64,7 +64,7 @@ char *sys__nicks__editor_process(AsyncActor *ac, Map *mrq) {
     CGI_GET_INT(id, mrq, "id")
     void fn (void *null) {
       map_put(rp, "sIdNameCodes",
-        arr_to_js(servers_nick_codes(id), (FTO)idNameCode_to_js)
+        arr_to_js(servers_nick_codes(id), (FTO)serversIdNameCode_to_js)
       );
     }
     asyncActor_wait(ac, fn, NULL);

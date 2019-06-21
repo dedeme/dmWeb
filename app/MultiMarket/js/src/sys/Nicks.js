@@ -63,7 +63,7 @@ export default class Nicks {
     // TTTTTTTTTTTTT
 
     this._entryDiv = $("div");
-    this._menu = new Menu();
+    this._menu = new Menu(false);
     this._title = $("div").style("font-size: 24px;");
     this._view = $("div");
 
@@ -368,7 +368,7 @@ export default class Nicks {
       msg = err === MSG.OK
         ? _("Test successfully done")
         : err === MSG.WARNING
-          ? _("Some should be corrected")
+          ? _("Some quotes should be corrected")
           : _("Test has errors")
       ;
       this._msg.showMsg(err, msg);

@@ -8,9 +8,6 @@
 
 #include "dmc/async.h"
 
-/// Load historic quotes. This function must be called before 'fleas_run()'
-void fleas_set_quotes (AsyncActor *ac);
-
 /// Running fleas in thread apart
 void fleas_run(AsyncActor *ac);
 

@@ -1,6 +1,8 @@
 // Copyright 08-Jun-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// Time table of market open-close.
+
 #ifndef DATA_TIMETABLE_H
   #define DATA_TIMETABLE_H
 

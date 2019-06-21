@@ -1,6 +1,8 @@
 // Copyright 03-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+/// Global definitions.
+
 #ifndef DEFS_H
   #define DEFS_H
 
@@ -10,7 +12,7 @@
 #define APP_NAME "MultiMarket"
 
 /// Log maximum entries
-#define LOG_MAX_ENTRIES 100
+#define LOG_MAX_ENTRIES 300
 
 /// Communications port
 #define PORT 50286
@@ -37,6 +39,9 @@
 #define ACT_SLEEPING1 "Sleeping (1)"
 
 /// Activity state
+#define ACT_HISTORIC "Historic"
+
+/// Activity state
 #define ACT_SLEEPING2 "Sleeping (2)"
 
 /// Activity state
@@ -47,6 +52,51 @@
 
 /// Activity state
 #define ACT_DEACTIVATING "Deactivating"
+
+/// Servers delay in SECONDS
+#define SERVERS_DELAY 900
+
+/// Maximum of mutation
+#define MUTATION_MULTIPLIER 0.3
+
+/// Number of cycle after insertion to finish a process for parameter
+#define CYCLES 5
+
+/// Number of cycle to insert historic results
+#define INSERTION_CYCLE 10
+
+/// Number of fleas per model
+#define FLEAS_PER_MODEL 2000
+
+/// Fleas initial capital for each cycle
+#define INITIAL_CAPITAL 150000
+
+/// Bet
+#define BET 15000
+
+/// Minimun cash to bet
+#define MIN_TO_BET 16000
+
+/// Minimum operations to survive (divisor: days / minSells)
+#define MIN_SELLS 15
+
+/// Maximun operations to survive (divisor: days / maxSells)
+#define MAX_SELLS 6
+
+/// Percentage of max profits to be selectable
+#define CUT_PROFITS 0.8
+
+/// Maximun number of fleas in "_best"
+#define MAXIMUM_HISTORIC_BESTS 252
+
+/// Number of daily results in data base 'data/fleas/MODEL'
+#define FLEA_MODEL_DATES 10
+
+/// Number of champion fleas to be traced
+#define TRACED_CHAMPIONS 40
+
+/// Number total of champion fleas
+#define TOTAL_CHAMPIONS 1000
 
 /// Error messages
 enum ErrorMsg { MSG_OK, MSG_WARNING, MSG_ERROR };

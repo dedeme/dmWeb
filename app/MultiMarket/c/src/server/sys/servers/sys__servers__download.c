@@ -9,7 +9,7 @@
 #include "io/log.h"
 
 // rq and return are Map[Js]
-static Map *test_daily_conf(Map *rq) {
+static Map *test_daily_conf(void *null, Map *rq) {
   CGI_GET_INT(server_id, rq, "serverId")
   // Map[Js]
   Map *rp = map_new();
@@ -23,7 +23,7 @@ static Map *test_daily_conf(Map *rq) {
 }
 
 // rq and return are Map[Js]
-static Map *test_historic_conf(Map *rq) {
+static Map *test_historic_conf(void *null, Map *rq) {
   CGI_GET_INT(server_id, rq, "serverId")
   CGI_GET_INT(nick_id, rq, "nickId")
   // Map[Js]
@@ -59,12 +59,12 @@ char *sys__servers__download_process(AsyncActor *ac, Map *mrq) {
     return cgi_empty();
   }
   if (str_eq(rq, "dailyTest")) {
-    void fn (void *null) { rp = cgi_long_run(test_daily_conf, mrq); }
+    void fn (void *null) { rp = cgi_long_run(test_daily_conf, NULL, mrq); }
     asyncActor_wait(ac, fn, NULL);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "historicTest")) {
-    void fn (void *null) { rp = cgi_long_run(test_historic_conf, mrq); }
+    void fn (void *null) { rp = cgi_long_run(test_historic_conf, NULL, mrq); }
     asyncActor_wait(ac, fn, NULL);
     return cgi_ok(rp);
   }

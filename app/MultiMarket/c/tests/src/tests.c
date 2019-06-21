@@ -8,6 +8,10 @@
 #include "nick_tests.h"
 #include "quote_tests.h"
 #include "quote2_tests.h"
+#include "gen_tests.h"
+#include "rs_tests.h"
+#include "order_tests.h"
+#include "facc_tests.h"
 
 static void init (void) {
   sys_init("MultiMarket_tests");
@@ -21,6 +25,10 @@ int main (int argc, char *argv[]) {
   log_tests();
   nick_tests();
   quote_tests();
-*/  quote2_tests();
+  quote2_tests();
+  gen_tests();
+  rs_tests();
+  order_tests();
+*/  facc_tests();
 
 }

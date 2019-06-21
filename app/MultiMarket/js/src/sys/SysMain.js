@@ -33,7 +33,7 @@ export default class SysMain {
     // VIEW --------
     // TTTTTTTTTTTTT
 
-    this._menu = new Menu();
+    this._menu = new Menu(false);
 
     this._view = $("div");
 
