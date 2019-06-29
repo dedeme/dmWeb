@@ -43,17 +43,25 @@ char *conf_server_tab (void);
 /// Set name of selected tab in sys_page->servers.
 void conf_set_server_tab (char *tab_name);
 
-///
-char *conf_fleas_page (void);
-
-///
-void conf_set_fleas_page (char *fleas_page);
-
 /// Returns model for fleas->bests and fleas-charts
 char *conf_fleas_model (void);
 
 /// Sets model for fleas->bests and fleas-charts
 void conf_set_fleas_model (char *model);
+
+/// Returns the parameter number selected for champions
+int conf_champions_nparams (void);
+
+/// sets the parameter number selected for champions
+void conf_set_champions_nparams (int nparams);
+
+/// Returns '1' if page acc->companies shows all companies and '0' if only
+/// shows those in portfolio.
+int conf_acc_all_cos (void);
+
+/// Sets '1' if page acc->companies shows all companies and '0' if only
+/// shows those in portfolio.
+void conf_set_acc_all_cos (int all_cos);
 
 /// Returns identifier of activity. It can be ACT_SLEEPING1, ACT_SLEEPING2,
 /// ACT_ACTIVATING, ACT_ACTIVE or ACT_DEACTIVATING.

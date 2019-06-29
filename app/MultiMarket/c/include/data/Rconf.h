@@ -16,7 +16,7 @@ typedef struct Rconf_Rconf Rconf;
 ///
 char *rconf_url(Rconf *this);
 
-///
+/// enum Server
 int rconf_sel(Rconf *this);
 
 ///

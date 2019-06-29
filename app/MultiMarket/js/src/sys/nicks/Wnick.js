@@ -5,6 +5,7 @@ import Main from "../../Main.js";
 import Nicks from "../Nicks.js"; //eslint-disable-line
 import {_args, _} from "../../I18n.js";
 import Ui from "../../dmjs/Ui.js";
+import Dec from "../../dmjs/Dec.js";
 import Domo from "../../dmjs/Domo.js"; //eslint-disable-line
 import Nick from "../../data/Nick.js"; //eslint-disable-line
 
@@ -26,10 +27,12 @@ export default class Wnick {
   /**
    * @param {!Nicks} nicks
    * @param {!Nick} nick
+   * @param {number} volume
    */
-  constructor (nicks, nick) {
+  constructor (nicks, nick, volume) {
     this._nicks = nicks;
     this._nick = nick;
+    this._volume = volume;
     this._isModel = nicks.model === nick.id;
   }
 
@@ -58,13 +61,18 @@ export default class Wnick {
       : Ui.link(this.setIsSel.bind(this)).add(emptyBt(_("Selection")))
     ;
 
+    const nk = Ui.link(() => {
+      this._nicks.edit(nick.id);
+    }).klass("link").text(nick.name);
+    if (this._volume > 0) {
+      nk.att("title", new Dec(this._volume, 0).toEu());
+    }
+
     return $("table")
       .add($("tr")
         .add($("td").add(model))
         .add($("td").add(isSel))
-        .add($("td").add(Ui.link(() => {
-          this._nicks.edit(nick.id);
-        }).klass("link").text(nick.name))))
+        .add($("td").add(nk)))
     ;
   }
 

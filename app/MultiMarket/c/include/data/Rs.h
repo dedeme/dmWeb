@@ -8,6 +8,7 @@
 
 #include "dmc/std.h"
 #include "Flea.h"
+#include "Order.h"
 
 /*--*/
 
@@ -92,7 +93,7 @@ Js *rsWeb_to_js(RsWeb *this);
 ///
 RsWeb *rsWeb_from_js(Js *js);
 
-///
+/// Bests fleas result
 typedef struct Rs_RsBests RsBests;
 
 ///
@@ -110,7 +111,7 @@ Js *rsBests_to_js(RsBests *this);
 ///
 RsBests *rsBests_from_js(Js *js);
 
-///
+/// Champion fleas result
 typedef struct Rs_RsChampions RsChampions;
 
 ///
@@ -207,7 +208,7 @@ Js *rsChart_to_js(RsChart *this);
 ///
 RsChart *rsChart_from_js(Js *js);
 
-///
+/// Charts fleas results
 typedef struct Rs_RsCharts RsCharts;
 
 ///
@@ -215,6 +216,41 @@ RsCharts *rsCharts_new(Arr *cos);
 
 /// Arr[RsChart]
 Arr *rsCharts_cos(RsCharts *this);
+
+/// Accounting results of one company
+typedef struct Rs_RsHistoric RsHistoric;
+
+///
+RsHistoric *rsHistoric_new(
+  void *co,
+  double profits,
+  Arr *quotes,
+  Arr *historic,
+  Order *order,
+  double ref,
+  int stocks
+);
+
+/// Company data
+void *rsHistoric_co(RsHistoric *this);
+
+///
+double rsHistoric_profits(RsHistoric *this);
+
+/// Arr[RsChartQ] Dates and quotes
+Arr *rsHistoric_quotes(RsHistoric *this);
+
+/// Arr[RsChartOp] Operations
+Arr *rsHistoric_historic(RsHistoric *this);
+
+/// Last order
+Order *rsHistoric_order(RsHistoric *this);
+
+/// Last ref
+double rsHistoric_ref(RsHistoric *this);
+
+/// stocks in portfolio
+int rsHistoric_stocks(RsHistoric *this);
 
 /*--*/
 

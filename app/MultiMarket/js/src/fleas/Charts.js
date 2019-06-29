@@ -10,7 +10,7 @@ import It from "../dmjs/It.js";
 import ModalBox from "../dmjs/ModalBox.js";
 import Lmenu from "./wgs/Lmenu.js";
 import Chart from "./wgs/Chart.js";
-import Operations from "./wgs/Operations.js";
+import Operations from "../wgs/Operations.js";
 
 const $ = Ui.$;
 

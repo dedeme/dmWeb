@@ -19,8 +19,8 @@ void quotes_init (void) {
 
 // Arr[Quote]
 Arr *quotes_read(char *nk_name) {
-  if (!quotes_db)
-    EXC_IO("'quotes.db' was not initialized")
+  if (!quotes_db) EXC_IO("'quotes.db' was not initialized")
+
   char *fpath = path_cat(quotes_db, str_f("%s.db", nk_name), NULL);
 
   // Arr[Quote]
@@ -284,7 +284,7 @@ static Opt *mk_qmtrix (double (*get_value)(Quote *)) {
   Arr *nicks = arr_from_it(it_filter(arr_to_it(nicks_list()), (FPRED)ffilter));
   int nicks_size = arr_size(nicks);
 
-  QmatrixValues *rows = GC_MALLOC(HISTORIC_QUOTES * sizeof(QmatrixValues *));
+  QmatrixValues *rows = GC_MALLOC(HISTORIC_QUOTES * sizeof(QmatrixValues));
   QmatrixValues *p = rows;
   REPEAT(HISTORIC_QUOTES)
     *p++ = ATOMIC(nicks_size * sizeof(double));
@@ -357,3 +357,55 @@ Opt *quotes_last_date (void) {
   return opt_new(quote_date(arr_get(model_qs, 0)));
 }
 
+// Returns Map[Js->double]
+Map *quotes_last_quotes (void) {
+  if (!quotes_db) EXC_IO("'quotes.db' was not initialized")
+
+  // Map [Js->double]
+  Map *r = map_new();
+  EACH(file_dir(quotes_db), char, f)
+    char *nick_name = str_left(f, -3);
+    // Arr[Quote]
+    Arr *qs = quotes_read(nick_name);
+    if (arr_size(qs) == 0) {
+      log_error(str_f(
+        "quotes_last_quotes: Error reading quotes of %s", nick_name
+      ));
+      continue;
+    }
+    double close = -1;
+    EACH(qs, Quote, q)
+      close = quote_close(q);
+      if (close > 0) break;
+    _EACH
+    map_put(r, nick_name, js_wd(close));
+  _EACH
+
+  return r;
+}
+
+// Returns Map[Js->int]
+Js *quotes_volume (void) {
+  if (!quotes_db) EXC_IO("'quotes.db' was not initialized")
+
+  // Map[Js]
+  Map *r = map_new();
+  EACH(file_dir(quotes_db), char, f)
+    char *nick = str_left(f, -3);
+    double sum = 0;
+    int n = 0;
+    EACH_IX(quotes_read(nick), Quote, q, ix)
+      if (ix == VOLUME_QUOTES) break;
+      double max = quote_max(q);
+      double min = quote_min(q);
+      int vol = quote_vol(q);
+      if (max > 0 && min > 0 && vol >= 0) {
+        sum += (quote_max(q) + quote_min(q)) * ((double)quote_vol(q)) / 2.0;
+        ++n;
+      }
+    _EACH
+    map_put(r, nick, js_wi((int)(sum / ((double)n))));
+  _EACH
+
+  return js_wo(r);
+}

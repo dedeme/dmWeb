@@ -10,6 +10,8 @@ import {I18n, _} from "./I18n.js";
 import Bye from "./core/Bye.js";
 import SysMain from "./sys/SysMain.js";
 import FleasMain from "./fleas/FleasMain.js";
+import AccMain from "./acc/AccMain.js";
+import DailyMain from "./daily/DailyMain.js";
 
 const app = "MultiMarket";
 const version = "201903";
@@ -32,6 +34,8 @@ export default class Main {
       new Expired(this).show();
     });
 
+    this._lang = "es";
+
     // VIEW --------
     // TTTTTTTTTTTTT
 
@@ -41,6 +45,11 @@ export default class Main {
 
 
     this._view = $("div");
+  }
+
+  /** @return {string} */
+  get lang () {
+    return this._lang;
   }
 
   /** @return {!Domo} */
@@ -108,8 +117,9 @@ export default class Main {
 
       /** @type {!Object<string, string>} */
       const rp = await Main.client.rq(rq);
+      self._lang = rp["lang"] || "es";
 
-      if (rp["lang"] === "en") {
+      if (self._lang === "en") {
         I18n.en();
       } else {
         I18n.es();
@@ -121,10 +131,10 @@ export default class Main {
       const /** string */ module = url["0"] || "sys";
       if (module === "sys") {
         new SysMain(self).show();
-      } else if (module === "market") {
-        //      new MarketMain(self).run();
+      } else if (module === "acc") {
+        new AccMain(self).show();
       } else if (module === "daily") {
-        //      new MarketMain(self).run();
+        new DailyMain(self).show();
       } else if (module === "fleas") {
         new FleasMain(self).show();
       } else {

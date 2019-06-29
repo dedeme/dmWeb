@@ -67,19 +67,12 @@ export default class FleasMain {
       () => location.assign(Main.urlBase)
     ));
     menu.addRight(Menu.separator());
-    menu.addRight(Menu.mkOption(
-      FleasMain.chartsPageId, _("Charts"),
-      () => this.go(FleasMain.chartsPageId)
-    ));
+    menu.addRight(Menu.mkLink(FleasMain.chartsPageId, _("Charts"), "fleas"));
     menu.addRight(Menu.separator());
-    menu.addRight(Menu.mkOption(
-      FleasMain.bestsPageId, _("Bests"),
-      () => this.go(FleasMain.bestsPageId)
-    ));
+    menu.addRight(Menu.mkLink(FleasMain.bestsPageId, _("Bests"), "fleas"));
     menu.addRight(Menu.separator());
-    menu.addRight(Menu.mkOption(
-      FleasMain.championsPageId, _("Champions"),
-      () => this.go(FleasMain.championsPageId)
+    menu.addRight(Menu.mkLink(
+      FleasMain.championsPageId, _("Champions"), "fleas"
     ));
 
     const len = models.length;
@@ -87,14 +80,14 @@ export default class FleasMain {
       return;
     }
     const m = models[0];
-    menu.addLeft(Menu.mkOption(m, m, () => this.go(m)));
+    menu.addLeft(Menu.mkLink(m, m, "fleas"));
     if (len === 1) {
       return;
     }
     for (let i = 1; i < len; ++i) {
       const m = models[i];
       menu.addLeft(Menu.separator());
-      menu.addLeft(Menu.mkOption(m, m, () => this.go(m)));
+      menu.addLeft(Menu.mkLink(m, m, "fleas"));
     }
   }
 
@@ -120,15 +113,16 @@ export default class FleasMain {
     };
     const /** !Object<string, ?> */ rp = await Main.client.rq(rq);
 
-    const /** string */ page = rp["page"] || FleasMain.bestsPageId;
-    const /** !Array<string> */ models = rp["models"];
+    const /** string */ page = Ui.url()["1"] || FleasMain.bestsPageId;
+    const /** !Object<string, !Array<?>> */ pnames = rp["pnames"];
+    const /** !Array<string> */ models = Object.keys(pnames);
     models.sort();
 
     this.mkMenu(models);
     this._menu.setSelected(page);
 
     if (page === FleasMain.championsPageId) {
-      new Champions(this).show();
+      new Champions(this, pnames).show();
     } else if (page === FleasMain.chartsPageId) {
       new Charts(this, models).show();
     } else if (page === FleasMain.bestsPageId) {
@@ -136,21 +130,6 @@ export default class FleasMain {
     } else {
       new Model(this, page).show();
     }
-  }
-
-  /**
-   * @param {string} page Page to go
-   * @return {!Promise}
-   */
-  async go (page) {
-    const rq = {
-      "module": "fleas",
-      "source": "FleasMain",
-      "rq": "go",
-      "option": page
-    };
-    await Main.client.rq(rq);
-    this.update();
   }
 
   // STATIC --------------------------------------

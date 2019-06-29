@@ -21,7 +21,7 @@ export default class Lmenu {
      */
     this._tds = entries.map(e =>
       $("td").att("id", e)
-        .style("cursor:pointer")
+        .style("cursor:pointer;white-space:nowrap;")
         .on("click", (() => {
           this.markSelected(e);
           callBack(e);

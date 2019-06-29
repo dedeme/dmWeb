@@ -82,7 +82,9 @@ export default class Model {
             ))))
         );
       } else {
-        self._right.removeAll().add(new Dtable(false, params, table).wg());
+        self._right.removeAll().add(
+          new Dtable(false, false, params, table).wg()
+        );
       }
     }
 

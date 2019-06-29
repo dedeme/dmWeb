@@ -49,7 +49,6 @@ static Darr *fparams(Flea *f) {
 
   darr_push(r, (double)(int)(flea_param(MAX_DAYS, MIN_DAYS, *p++)));
   darr_push(r, flea_param(MAX_STRIP, MIN_STRIP, *p++));
-  darr_push(r, flea_param(MAX_STRIP, MIN_STRIP, *p++));
 
   return r;
 }

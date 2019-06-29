@@ -35,6 +35,15 @@ void servers_init (void);
 /// Arr[Server]
 Arr *servers_list (void);
 
+/// Returns Arr[Server] Historic active servers
+Arr *servers_historic_list (void);
+
+/// Returns Arr[Server] Daily active servers
+Arr *servers_daily_list (void);
+
+/// Returns the url of a company for acc->companies page (using infobolsa)
+char *servers_acc_url (char *nick);
+
 /// If 'short_name' is duplicate, operation is not done and it returns 0.
 int servers_add (char *short_name);
 

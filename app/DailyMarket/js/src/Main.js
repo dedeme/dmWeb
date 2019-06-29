@@ -114,7 +114,6 @@ export default class Main {
 
     if (this._model["lang"] === "es") I18n.es();
     else I18n.en();
-
     const page = this._model["menu"];
     this._page = null;
     switch (page) {

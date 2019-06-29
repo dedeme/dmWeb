@@ -9,9 +9,13 @@
 #include "io/servers.h"
 #include "io/quotes.h"
 #include "io/nicks.h"
+#include "io/conf.h"
+#include "io/accdb.h"
+#include "io/sbox.h"
 #include "data/DailyEntry.h"
 #include "data/HistoricEntry.h"
 #include "data/Server.h"
+#include "data/NickClose.h"
 #include "DEFS.h"
 
 static char *wget (char *url) {
@@ -308,18 +312,13 @@ EMsg *net_update_historic(AsyncActor *ac, int nk_id) {
   }
 
   // Arr[Server]
-  Arr *servers = servers_list();
+  Arr *servers = servers_historic_list();
   // Arr[Arr[Quote]]
   Arr *server_historics = arr_new();
   // Arr[Quote]
   Arr *best_qs = arr_new();
   EACH(servers, Server, sv)
-    // Opt[Rconf]
-    Opt *oconf = server_historic_conf(sv);
-    if (opt_is_empty(oconf)) {
-      continue;
-    }
-    Rconf *conf = opt_get(oconf);
+    Rconf *conf = opt_get(server_historic_conf(sv));
     int ffind(ServerCode *sc) { return serverCode_nick_id(sc) == nk_id; }
     // Opt[ServerCode]
     Opt *sc = it_find(arr_to_it(server_codes(sv)), (FPRED)ffind);
@@ -416,4 +415,167 @@ EMsg *net_update_historic(AsyncActor *ac, int nk_id) {
   asyncActor_wait(ac, fn2, NULL);
 
   return err;
+}
+
+// Map[Js->double]
+static Map *read_dailyqs (AsyncActor *ac) {
+  // Map[Js->double]
+  Map *qs = map_new();
+
+  int nservers = 0;
+  void fn (void *null) {
+    nservers = arr_size(servers_daily_list());
+  }
+  asyncActor_wait(ac, fn, NULL);
+
+  Server *sv = NULL;
+  // Arr[NickClose]
+  Arr *ncs = NULL;
+  int counter = 0;
+  while (!ncs && counter++ < nservers) {
+    void fn (void *null) {
+      sv = opt_oget(sbox_get(), NULL);
+    }
+    asyncActor_wait(ac, fn, NULL);
+
+    if (sv) {
+      ncs = opt_oget(server_daily_read(sv), NULL);
+    }
+  }
+
+  if (!ncs || !sv || arr_size(ncs) == 0) {
+    log_error("net_update_daily: No quote read");
+  } else {
+    EACH(ncs, NickClose, nc)
+      Nick *nick = opt_oget(nicks_get(nickClose_nick(nc)), NULL);
+      if (nick) {
+        map_put(qs, nick_name(nick), js_wd(nickClose_close(nc)));
+      } else {
+        log_error(str_f(
+          "net_update_daily: Nick code '%d' from server '%s' not found",
+          nickClose_nick(nc), server_name(sv)
+        ));
+      }
+    _EACH
+  }
+
+  return qs;
+}
+
+// All Opt's are Opt[NickClose]
+static double best_close(Opt *o1, Opt *o2, Opt *o3) {
+  double c1 = opt_is_empty(o1) ? -1 : nickClose_close(opt_get(o1));
+  double c2 = opt_is_empty(o2) ? -1 : nickClose_close(opt_get(o2));
+  double c3 = opt_is_empty(o3) ? -1 : nickClose_close(opt_get(o3));
+
+  if (c1 > 0) {
+    if (c2 > 0) {
+      if (c3 > 0) {
+        char *c1s = str_f("%.4f", c1);
+        char *c2s = str_f("%.4f", c2);
+        if (str_eq(c1s, c2s)) {
+          return c1;
+        }
+        char *c3s = str_f("%.4f", c3);
+        if (str_eq(c1s, c3s)) {
+          return c1;
+        }
+        if (str_eq(c2s, c3s)) {
+          return c2;
+        }
+        return c1;
+      }
+      return c1;
+    }
+    return c1;
+  }
+  if (c2 > 0) {
+    return c2;
+  }
+  return c3;
+}
+
+void net_update_daily (AsyncActor *ac) {
+  char *activity;
+
+  void fn1 (void *null) {
+    activity = conf_activity();
+  }
+  asyncActor_wait(ac, fn1, NULL);
+
+  // Map[Js->double]
+  Map *qs = map_new();
+  if (
+    str_eq(activity, ACT_ACTIVATING) ||
+    str_eq(activity, ACT_ACTIVE)
+  ) {
+    qs = read_dailyqs(ac);
+  } else if (str_eq(activity, ACT_HISTORIC)) {
+    void fn (void *null) { qs = quotes_last_quotes(); }
+    asyncActor_wait(ac, fn, NULL);
+  } else if (str_eq(activity, ACT_DEACTIVATING)) {
+    // Arr[Server]
+    Arr *svs = arr_new();
+    void fn (void *null) {
+      EACH(servers_daily_list(), Server, sv)
+        if (rconf_sel(opt_get(server_daily_conf(sv))) ==  SERVER_SELECTED) {
+          arr_push(svs, sv);
+        }
+      _EACH
+    }
+    asyncActor_wait(ac, fn, NULL);
+
+    if (arr_size(svs) != 3) {
+      log_error(str_f(
+        "net_update_daily: Selected daily servers are %d, but they should be 3",
+        arr_size(svs)
+      ));
+      qs = read_dailyqs(ac);
+    } else {
+      // Arr[Arr[NickClose]
+      Arr *svncs = arr_new();
+      EACH(svs, Server, sv)
+        // Arr[NickClose]
+        Arr *ncs = opt_oget(server_daily_read(sv), NULL);
+        if (!ncs || arr_size(ncs) == 0) {
+          svncs = arr_new();
+          break;
+        }
+        arr_push(svncs, ncs);
+      _EACH
+
+      if (arr_size(svncs) == 0) {
+        log_error(str_f(
+          "net_update_daily: Some selected server can not be read"
+        ));
+        qs = read_dailyqs(ac);
+      } else {
+        EACH(arr_get(svncs, 0), NickClose, nc)
+          int nick_id = nickClose_nick(nc);
+          Nick *nick = opt_oget(nicks_get(nick_id), NULL);
+          if (!nick) {
+            log_error(str_f(
+              "net_update_daily: Nick code '%d' not found in server '%s'",
+              nick_id, server_name(arr_get(svs, 0))
+            ));
+            continue;
+          }
+
+          int ffind (NickClose *e) { return nickClose_nick(e) == nick_id; }
+          map_put(qs, nick_name(nick), js_wd(best_close(
+            it_find(arr_to_it(arr_get(svncs, 0)), (FPRED)ffind),
+            it_find(arr_to_it(arr_get(svncs, 0)), (FPRED)ffind),
+            it_find(arr_to_it(arr_get(svncs, 0)), (FPRED)ffind)
+          )));
+        _EACH
+      }
+    }
+  } else {
+    return;
+  }
+
+  void fn2 (void *null) {
+    accdb_dailyq_write(js_wo(qs));
+  }
+  asyncActor_wait(ac, fn2, NULL);
 }

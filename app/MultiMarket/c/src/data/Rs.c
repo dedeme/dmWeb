@@ -23,10 +23,12 @@ RsWeb: serial
   result: Rs
   params: Darr
 ===
+# Bests fleas result
 RsBests: serial
   date: char *
   result: RsWeb
 ===
+# Champion fleas result
 RsChampions: serial
   model: char *
   result: RsWeb
@@ -50,9 +52,28 @@ RsChart: serial
   # Arr[RsChartOp] Operations
   historic: Arr - RsChartOp
 ===
+# Charts fleas results
 RsCharts
   # Arr[RsChart]
   cos: Arr - RsChart
+
+===
+
+# Accounting results of one company
+RsHistoric
+  # Company data
+  co: void
+  profits: double
+  # Arr[RsChartQ] Dates and quotes
+  quotes: Arr - RsChartQ
+  # Arr[RsChartOp] Operations
+  historic: Arr - RsChartOp
+  # Last order
+  order: Order
+  # Last ref
+  ref: double
+  # stocks in portfolio
+  stocks: int
 */
 
 /*--*/
@@ -485,6 +506,64 @@ RsCharts *rsCharts_new(Arr *cos) {
 
 Arr *rsCharts_cos(RsCharts *this) {
   return this->cos;
+}
+
+struct Rs_RsHistoric{
+  void *co;
+  double profits;
+  Arr *quotes;
+  Arr *historic;
+  Order *order;
+  double ref;
+  int stocks;
+};
+
+RsHistoric *rsHistoric_new(
+  void *co,
+  double profits,
+  Arr *quotes,
+  Arr *historic,
+  Order *order,
+  double ref,
+  int stocks
+) {
+  RsHistoric *this = MALLOC(RsHistoric);
+  this->co = co;
+  this->profits = profits;
+  this->quotes = quotes;
+  this->historic = historic;
+  this->order = order;
+  this->ref = ref;
+  this->stocks = stocks;
+  return this;
+}
+
+void *rsHistoric_co(RsHistoric *this) {
+  return this->co;
+}
+
+double rsHistoric_profits(RsHistoric *this) {
+  return this->profits;
+}
+
+Arr *rsHistoric_quotes(RsHistoric *this) {
+  return this->quotes;
+}
+
+Arr *rsHistoric_historic(RsHistoric *this) {
+  return this->historic;
+}
+
+Order *rsHistoric_order(RsHistoric *this) {
+  return this->order;
+}
+
+double rsHistoric_ref(RsHistoric *this) {
+  return this->ref;
+}
+
+int rsHistoric_stocks(RsHistoric *this) {
+  return this->stocks;
 }
 
 /*--*/

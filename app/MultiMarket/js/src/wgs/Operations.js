@@ -2,10 +2,10 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 //eslint-disable-next-line
-import Domo from "../../dmjs/Domo.js";
-import Ui from "../../dmjs/Ui.js";
-import DateDm from "../../dmjs/DateDm.js";
-import Dec from "../../dmjs/Dec.js";
+import Domo from "../dmjs/Domo.js";
+import Ui from "../dmjs/Ui.js";
+import DateDm from "../dmjs/DateDm.js";
+import Dec from "../dmjs/Dec.js";
 const $ = Ui.$;
 
 function blanks (tx, width) {

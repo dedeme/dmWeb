@@ -17,7 +17,7 @@ typedef struct NickClose_NickClose NickClose;
 NickClose *nickClose_new(int nick, double close);
 
 /// Nick id
-int nickClose_nickx(NickClose *this);
+int nickClose_nick(NickClose *this);
 
 ///
 double nickClose_close(NickClose *this);

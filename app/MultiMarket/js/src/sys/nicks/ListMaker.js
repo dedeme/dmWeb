@@ -11,9 +11,13 @@ const $ = Ui.$;
 /** Nick page -> List. */
 export default class ListMaker {
 
-  /** @param {!Nicks} nicks */
-  constructor (nicks) {
+  /**
+   * @param {!Nicks} nicks
+   * @param {boolean} withVolume
+   */
+  constructor (nicks, withVolume) {
     this._nicks = nicks;
+    this._withVolume = withVolume;
 
     // VIEW --------
     // TTTTTTTTTTTTT
@@ -72,7 +76,14 @@ export default class ListMaker {
         }
         tr.add($("td")
           .style("width:100px;text-align:center;border-right: solid 1px;")
-          .add(nk === undefined ? $("span") : new Wnick(this._nicks, nk).wg));
+          .add(nk === undefined
+            ? $("span")
+            : new Wnick(
+              this._nicks,
+              nk,
+              this._withVolume ? this._nicks.volume[nk.name] || 0 : -1
+            ).wg)
+        );
         ++n;
       });
       this._table.add(tr);

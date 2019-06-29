@@ -47,7 +47,9 @@ void server_run (Tp *actor_server) {
       TRY
         EXC_IO(iserverRq_error(rq))
       CATCH(ex)
-        if (!error_counter) asyncActor_wait(ac, (FPROC)log_exception, ex);
+        if (error_counter == 5) {
+          asyncActor_wait(ac, (FPROC)log_exception, ex);
+        }
         ++error_counter;
       _TRY
     } else {
@@ -63,7 +65,9 @@ void server_run (Tp *actor_server) {
             TRY
               EXC_IO(e)
             CATCH (ex)
-              if (!error_counter) asyncActor_wait(ac, (FPROC)log_exception, ex);
+              if (error_counter == 5) {
+                asyncActor_wait(ac, (FPROC)log_exception, ex);
+              }
               ++error_counter;
             _TRY
           } else {

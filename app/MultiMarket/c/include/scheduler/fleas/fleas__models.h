@@ -7,6 +7,7 @@
   #define SCHEDULER_FLEAS_FLEAS__MODELS_H
 
 #include "dmc/std.h"
+#include "data/ModelParams.h"
 
 ///
 void fleas__models_init (void);
@@ -19,5 +20,8 @@ Arr *fleas__models_names (void);
 
 /// Returns Opt[Model] The model called 'name'
 Opt *fleas__models_get (char *name);
+
+/// Returns Model-Parameters used by accounting
+ModelParams *fleas__models_acc (void);
 
 #endif

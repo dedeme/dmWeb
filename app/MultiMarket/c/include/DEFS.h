@@ -35,6 +35,9 @@
 /// Number of quotes in historic
 #define HISTORIC_QUOTES 610
 
+/// Number of quotes to calculate volume
+#define VOLUME_QUOTES 100
+
 /// Activity state
 #define ACT_SLEEPING1 "Sleeping (1)"
 
@@ -53,8 +56,14 @@
 /// Activity state
 #define ACT_DEACTIVATING "Deactivating"
 
+/// Hour to start ACT_HISTORIC fase
+#define ACT_HISTORIC_START 3
+
+/// Hour to finish ACT_HISTORIC fase
+#define ACT_HISTORIC_END 8
+
 /// Servers delay in SECONDS
-#define SERVERS_DELAY 900
+#define SERVERS_DELAY 1200
 
 /// Maximum of mutation
 #define MUTATION_MULTIPLIER 0.3
@@ -92,11 +101,17 @@
 /// Number of daily results in data base 'data/fleas/MODEL'
 #define FLEA_MODEL_DATES 10
 
-/// Number of champion fleas to be traced
-#define TRACED_CHAMPIONS 40
+/// Avg days of champions
+#define CHAMPIONS_AVG 10
 
 /// Number total of champion fleas
-#define TOTAL_CHAMPIONS 1000
+#define TOTAL_CHAMPIONS 500
+
+/// Quotes number in account charts
+#define ACC_CHART_QUOTES 250
+
+/// Server short name to get url in accounting charts
+#define ACC_URL "INFOB"
 
 /// Error messages
 enum ErrorMsg { MSG_OK, MSG_WARNING, MSG_ERROR };

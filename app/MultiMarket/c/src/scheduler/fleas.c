@@ -3,6 +3,7 @@
 
 #include "scheduler/fleas.h"
 #include "dmc/date.h"
+#include "dmc/Iarr.h"
 #include "scheduler/fleas/fleas__models.h"
 #include "data/Model.h"
 #include "data/Rs.h"
@@ -23,6 +24,17 @@ static char *replicate (char ch, int n) {
 static char *title (char *name) {
   int len = strlen(name);
   return str_f("%s\n%s\n%s", replicate('_', len), name, replicate('T', len));
+}
+
+static double davg (double old, double new) {
+  return (old * CHAMPIONS_AVG - old + new) / CHAMPIONS_AVG;
+}
+
+static int iavg (int old, int new) {
+  return (int)(
+    (((double)old) * CHAMPIONS_AVG - ((double)old) + ((double)new)) /
+    CHAMPIONS_AVG
+  );
 }
 
 static void run (AsyncActor *ac) {
@@ -58,7 +70,7 @@ static void run (AsyncActor *ac) {
   // Arr[Model]
   Arr *models = fleas__models();
 
-  EACH(models, Model, md)
+  EACH(models, Model, md) {
     asyncActor_wait(
       ac, (FPROC)fleasdb_flog_write, str_f("%s\n", title(model_name(md)))
     );
@@ -265,9 +277,82 @@ static void run (AsyncActor *ac) {
       ));
 
       fleasdb_charts_write(model_name(md), charts);
+
+      fleasdb_champions_add(rsChampions_new(
+        model_name(md),
+        rsWeb_new(rs_selected, model_params(md, rs_flea(rs_selected)))
+      ));
     }
     asyncActor_wait(ac, fn, NULL);
 
+  }_EACH
+
+  // Calculate champions -------------------------------------------------------
+
+  Iarr *nparamss = iarr_new();
+  EACH(models, Model, md)
+    int nparams = arr_size(model_param_names(md));
+    int missing = 1;
+    IEACH(nparamss, n)
+      if (n == nparams) {
+        missing = 0;
+        break;
+      }
+    _EACH
+    if (missing) iarr_push(nparamss, nparams);
+  _EACH
+
+  IEACH(nparamss, nparams)
+    void fn (void *null) {
+      // Arr[RsChampions]
+      Arr *rss = arr_new();
+      EACH_IX(fleasdb_champions_read(nparams), RsChampions, rsCh, ix)
+        char *model = rsChampions_model(rsCh);
+        // Opt[Model]
+        Opt *omd = fleas__models_get(model);
+        if (opt_is_empty(omd)) {
+          log_error(str_f("Champions model '%s' not found", model));
+          continue;
+        }
+        Model *md = opt_get(omd);
+        RsWeb *rsW = rsChampions_result(rsCh);
+        Darr *params = rsWeb_params(rsW);
+        Rs *rs = rsWeb_result(rsW);
+        Flea *fl = rs_flea(rs);
+        RsAssets *old_assets = rs_assets(rs);
+        RsProfits *old_profits = rs_profits(rs);
+        RsAssets *assets = model_assets(md, fl, opens, closes);
+        RsProfits *profits = model_profits(md, fl, opens, closes);
+        double avg = davg(rsProfits_avg(old_profits), rsProfits_avg(profits));
+        double var = davg(rsProfits_var(old_profits), rsProfits_var(profits));
+        Rs *new_rs = rs_new(
+          fl,
+          rsAssets_new(
+            davg(rsAssets_assets(old_assets), rsAssets_assets(assets)),
+            iavg(rsAssets_buys(old_assets), rsAssets_buys(assets)),
+            iavg(rsAssets_sells(old_assets), rsAssets_sells(assets))
+          ),
+          rsProfits_new(avg, var, avg * (1 - var))
+        );
+        arr_push(rss, rsChampions_new(model, rsWeb_new(new_rs, params)));
+      _EACH
+
+      int fsort (RsChampions *r1, RsChampions *r2) {
+        double s1 = rsProfits_sel(
+          rs_profits(rsWeb_result(rsChampions_result(r1)))
+        );
+        double s2 = rsProfits_sel(
+          rs_profits(rsWeb_result(rsChampions_result(r2)))
+        );
+        return s2 > s1;
+      }
+      arr_sort(rss, (FCMP)fsort);
+      if (arr_size(rss) > TOTAL_CHAMPIONS) {
+        arr_remove_range(rss, TOTAL_CHAMPIONS, arr_size(rss));
+      }
+      fleasdb_champions_write(nparams, rss);
+    }
+    asyncActor_run(ac, fn, NULL);
   _EACH
 
   void fn2 (void *null) {

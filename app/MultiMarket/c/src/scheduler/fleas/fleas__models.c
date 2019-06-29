@@ -80,3 +80,9 @@ Opt *fleas__models_get (char *name) {
   int fn (Model *m) { return str_eq(model_name(m), name); }
   return it_find(arr_to_it(fleas__models()), (FPRED)fn);
 }
+
+ModelParams *fleas__models_acc (void) {
+  Darr *ps = darr_new();
+  darr_push(ps, 0.018827);
+  return modelParams_new(fleas__MMBack1(), ps);
+}

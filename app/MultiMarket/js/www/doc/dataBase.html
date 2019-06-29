@@ -364,7 +364,7 @@
         --- So mane as Gen parameters
       ]</pre>
 
-    <h2>New</h3>
+    <h3>New</h3>
     <pre>
       [ <b>RsWeb</b> ]
 
@@ -527,6 +527,145 @@
             ]
         ]
       ]</pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>data/fleas/_champions</h2>
+
+    <!------------>
+    <h3><i>NParameters</i></h3>
+
+    <p><code>data/fleas/_champions/<i>nparameters</i>.db</code></p>
+
+    <p>One file for each parameter number.</p>
+
+    <p>Structure of each file:</p>
+
+    <pre>
+      [ <b>RsChampions</b> ]
+
+      Where <b>RsChampions</b> is: [
+          (0) model: String -- Model name
+          (1) <b>RsWeb</b>
+        ]
+
+      Where <b>RsWeb</b> is:
+          (1) <b>Rs</b>
+          (2) params: [
+              (0) value1: double -- Param value in rate per one
+              (-) value-: double
+              --- So many as fles parameters
+            ]
+        ]
+
+      Where <b>Rs</b> is: [
+        (0) flea: <b>Flea</b> -- Flea data
+        (1) assets: <b>RsAssets</b> -- Simulation results data
+        (2) profits: <b>RsProfits</b> -- Profits data
+      ]
+
+      Where <b>Flea</b> is: [
+        (0) date: String -- Date of creation
+        (1) cycle: Int -- Cycle of creation
+        (2) id: Int -- Number or creation
+        (3) gen: <b>Gen</b> -- Flea parameters
+      ]
+      and <b>RsAssets</b>  is: [
+          (0) assets: Double -- €
+          (1) buys: Int -- Buys number
+          (2) sells: Int -- Sell number
+        ]
+      and <b>RsProfits</b> is: [
+          (0) avg: Double -- Profits average in rate per one
+          (1) var: Double -- Profits variance in rate per one
+          (2) sel: Double -- 'avg' corrected with 'var' in rate per one
+        ]
+
+      Where <b>Gen</b> is: [
+          (0) value0: double -- Value between 0 and 1
+          (-) value-: double
+          --- So many as Gen parameters
+        ]</pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>data/acc</h2>
+
+    <!------------>
+    <h3><i>Quotes</i></h3>
+
+    <p><code>data/acc/quotes.db</code></p>
+
+    <p>Daily quotes.</p>
+
+    <p>Structure:</p>
+
+    <pre>
+    {
+      <i>nick</i>: Double -- One for each nick ("TEF", "ELE", etc.)
+    }</pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>data/acc/diaries</h2>
+
+    <!------------>
+    <h3><i>Year</i></h3>
+
+    <p><code>data/acc/diaries/<i>year</i></code></p>
+
+    <p>One file for each year.</p>
+
+    <p>Structure of each file:</p>
+
+    <pre>
+    [
+      (0) nextId: Double
+      (1) [<b>AccEntry</b>]
+    ]
+
+    Where <b>AccEntry</b> is: [
+        (0) operation: String -- one of "se", "bu", "in", "wi", "pr", "fe",
+                                        "pd", "nd", "cl"
+        (1) id: Int -- Entry identifier
+        (2) date: String -- Operation date
+        (3) if cl -> noting
+               se-by -> nick: String -- Operation (sell or buy) nick
+               Otherwise -> ammount: Double -- Operation amount
+        (4) if cl, in, wi -> Nothing
+               se, bu -> stocks: Int -- Number of stocks
+               Otherwise -> Description: String -- Operation description
+        (5) if se, bu -> price: Double -- Stock price (of one)
+               Otherwise -> Nothing
+      ]</pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>data/acc/historic</h2>
+
+    <!------------>
+    <h3><i>Year</i></h3>
+
+    <p><code>data/acc/historic/<i>year</i></code></p>
+
+    <p>One file for each year.</p>
+
+    <p>Structure of each file:</p>
+
+    <pre>
+    [<b>AccHEntry</b>]
+
+    Where <b>AccHEntry</b> is [
+        (0) date: String -- Entry date
+        (1) profits: [<b>AccHProfits</b>]
+      ]
+
+    Where <b>AccHProfits</b> is [
+        (0) real: Double -- Real profits
+        (1) acc: Dounble -- Accounting profits
+        (2) risk: Double -- Risk profits
+      ]
+    ]</pre>
 
     <!------------------------------------------------------------------------>
     <hr>

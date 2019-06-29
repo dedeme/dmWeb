@@ -10,7 +10,7 @@ import It from "../../dmjs/It.js";
 import {_} from "../../I18n.js";
 const $ = Ui.$;
 
-const DATE = 0;
+const DATE_MODEL = 0;
 const FLEA = 1;
 const PARAMS = 2;
 const ASSETS = 3;
@@ -25,15 +25,22 @@ const PARAM_COLS = 9;
 export default class Dtable {
   /**
    * @param {boolean} isBests
+   * @param {boolean} isChampions If isChampions is true, isBest is true too.
    * @param {!Array<?>} params Flea model parameters data.
    * @param {!Array<?>} entries Table elements.
    */
-  constructor (isBests, params, entries) {
+  constructor (isBests, isChampions, params, entries) {
     /**
      * @private
      * @type {boolean}
      */
     this._isBests = isBests;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this._isChampions = isChampions;
 
     /**
      * @private
@@ -105,7 +112,7 @@ export default class Dtable {
       this._entries.sort((r1, r2) => {
         let v1 = r1[ix];
         let v2 = r2[ix];
-        if (ix === DATE) {
+        if (ix === DATE_MODEL && !this._isChampions) {
           v1 = Number(v1);
           v2 = Number(v2);
         } else if (ix === FLEA) {
@@ -161,7 +168,11 @@ export default class Dtable {
       td(SELLS, _("Sells"))
     ];
     if (this._isBests) {
-      cols.splice(1, 0, td(DATE, _("Date")));
+      if (this._isChampions) {
+        cols.splice(1, 0, td(DATE_MODEL, _("Model")));
+      } else {
+        cols.splice(1, 0, td(DATE_MODEL, _("Date")));
+      }
     }
     cols = cols.concat(
       this._params[0].map((p, i) => td(PARAM_COLS + i, p))
@@ -185,16 +196,31 @@ export default class Dtable {
         $("td").klass("fnumber").text(new Dec(e[BUYS], 0).toEu()),
         $("td").klass("fnumber").text(new Dec(e[SELLS], 0).toEu())
       ];
+      let formats = self._params[1];
+      let pops = [];
+
       if (self._isBests) {
-        cs.splice(1, 0, $("td").klass("menu")
-          .html(DateDm.fromStr(e[DATE]).toString())
-        );
+        if (self._isChampions) {
+          const model = e[DATE_MODEL];
+          cs.splice(1, 0, $("td").klass("menu").html(e[DATE_MODEL]));
+          const ps = self._params[1][model];
+          pops = ps[0]; // Parameter names
+          formats = ps[1];
+        } else {
+          cs.splice(1, 0, $("td").klass("menu")
+            .html(DateDm.fromStr(e[DATE_MODEL]).toString())
+          );
+        }
       }
-      cs = cs.concat(self._params[1].map((p, i) =>
-        $("td").klass("param").text(
+      cs = cs.concat(formats.map((p, i) => {
+        const r = $("td").klass("param").text(
           p[0] + new Dec(e[PARAMS][i] * p[1], p[2]).toEu() + p[3]
-        )
-      ));
+        );
+        if (self._isChampions) {
+          r.att("title", pops[i]);
+        }
+        return r;
+      }));
 
       return cs;
     }
@@ -221,8 +247,8 @@ export default class Dtable {
    * @return {!Domo}
    */
   wg () {
-    if (this._isBests) {
-      this.sort(DATE);
+    if (this._isBests && !this._isChampions) {
+      this.sort(DATE_MODEL);
     } else {
       this.sort(SEL);
     }

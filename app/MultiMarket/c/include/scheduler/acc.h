@@ -8,10 +8,7 @@
 
 #include "dmc/async.h"
 
-/// Calculates and annotates daily operations using historic data.
-void acc_operations_from_historic (AsyncActor *ac);
-
-/// Calculates and annotates daily operations using historic and daily data.
-void acc_operations_from_daily (AsyncActor *ac);
+/// Adds profits to historic (acc/profits data base).
+void acc_historic_profits (AsyncActor *ac);
 
 #endif

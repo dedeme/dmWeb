@@ -31,15 +31,19 @@ char *sys__nicks_process(AsyncActor *ac, Map *mrq) {
       // Arr [Nick]
       Arr *list = nicks_list();
       map_put(rp, "nickList", arr_to_js(list, (FTO)nick_to_js));
+      map_put(rp, "volume", quotes_volume());
       map_put(rp, "model", js_wi(nicks_model()));
-      int sel = conf_nick_sel_id();
-      int nickSelId = -1;
-      EACH(list, Nick, nk)
-        if (nick_id(nk) == sel) {
-          nickSelId = sel;
-          break;
-        }
-      _EACH
+      int nickSelId = conf_nick_sel_id();
+      if (nickSelId >= 0) {
+        int sel = nickSelId;
+        nickSelId = -1;
+        EACH(list, Nick, nk)
+          if (nick_id(nk) == sel) {
+            nickSelId = sel;
+            break;
+          }
+        _EACH
+      }
       map_put(rp, "nickSelId", js_wi(nickSelId));
     }
     asyncActor_wait(ac, fn, NULL);

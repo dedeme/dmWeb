@@ -80,4 +80,13 @@ Opt *quotes_opens (void);
 /// company or model has not quotes returns opt_empty.
 Opt *quotes_last_date (void);
 
+/// Returns Map[Js->double]. Keys are nicks_names. If there is some fail
+/// returns an empty Map.
+Map *quotes_last_quotes (void);
+
+/// Returns Map[Js->int]. (nick_name->volume average of VOLUME_QUOTES days).<br>
+/// Nicks are retrieved from quotes data base and can be some nick missing
+/// relative to nicks data base.
+Js *quotes_volume (void);
+
 #endif

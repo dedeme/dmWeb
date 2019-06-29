@@ -19,6 +19,9 @@
 #include "io/servers.h"
 #include "io/calendar.h"
 #include "io/fleasdb.h"
+#include "io/accdb.h"
+#include "io/sbox.h"
+#include "io/dailydb.h"
 
 #include "scheduler/fleas/fleas__models.h"
 
@@ -42,6 +45,9 @@ static void init (void) {
   servers_init();
   calendar_init();
   fleasdb_init();
+  accdb_init();
+  sbox_init();
+  dailydb_init();
   //---------
   fleas__models_init();
 

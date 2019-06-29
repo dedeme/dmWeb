@@ -32,4 +32,7 @@ Opt *net_read_historic (Rconf *conf, char *code);
 ///     MSG_WARNING, "quotes" -> Quotes corrected
 EMsg *net_update_historic(AsyncActor *ac, int nk_id);
 
+/// Updates daily quotes. Possible errors are annotated in log.
+void net_update_daily (AsyncActor *ac);
+
 #endif

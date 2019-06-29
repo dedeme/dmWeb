@@ -4,6 +4,7 @@
 #include "server/fleas/fleas__main.h"
 #include "io.h"
 #include "io/conf.h"
+#include "data/Model.h"
 #include "scheduler/fleas/fleas__models.h"
 #include "dmc/cgi.h"
 
@@ -15,18 +16,22 @@ char *fleas__main_process(AsyncActor *ac, Map *mrq) {
 
   if (str_eq(rq, "idata")) {
     void fn (void *null) {
-      map_put(rp, "page", js_ws(conf_fleas_page()));
-      map_put(rp, "models", arr_to_js(fleas__models_names(), (FTO)js_ws));
+      // Map[Js]
+      Map *pnames = map_new();
+      EACH(fleas__models(), Model, md)
+        // Arr[Js]
+        Arr *params = arr_new();
+        arr_push(params, arr_to_js(model_param_names(md), (FTO)js_ws));
+        arr_push(params, model_param_jss(md));
+
+        map_put(pnames, model_name(md), js_wa(params));
+      _EACH
+      map_put(rp, "pnames", js_wo(pnames));
     }
     asyncActor_wait(ac, fn, NULL);
     return cgi_ok(rp);
   }
-  if (str_eq(rq, "go")) {
-    CGI_GET_STR(option, mrq, "option")
-    asyncActor_wait(ac, (FPROC)conf_set_fleas_page, option);
-    return cgi_empty();
-  }
 
-  EXC_ILLEGAL_ARGUMENT("rq", "idata | go", rq)
+  EXC_ILLEGAL_ARGUMENT("rq", "idata", rq)
   return NULL; // Unreachable
 }

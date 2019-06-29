@@ -6,6 +6,7 @@
 #include "server/fleas/fleas__bests.h"
 #include "server/fleas/fleas__charts.h"
 #include "server/fleas/fleas__model.h"
+#include "server/fleas/fleas__champions.h"
 
 char *fleas_process(AsyncActor *ac, Map *mrq) {
   CGI_GET_STR(source, mrq, "source")
@@ -14,10 +15,11 @@ char *fleas_process(AsyncActor *ac, Map *mrq) {
   if (str_eq(source, "bests")) return fleas__bests_process(ac, mrq);
   if (str_eq(source, "charts")) return fleas__charts_process(ac, mrq);
   if (str_eq(source, "model")) return fleas__model_process(ac, mrq);
+  if (str_eq(source, "champions")) return fleas__champions_process(ac, mrq);
 
   EXC_ILLEGAL_ARGUMENT(
     "source",
-    "FleasMain | bests | charts | model",
+    "FleasMain | bests | charts | model | champions",
     source
   )
   return NULL; // Unreachable

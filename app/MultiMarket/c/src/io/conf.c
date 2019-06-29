@@ -71,20 +71,28 @@ void conf_set_server_tab (char *tab_name) {
   write("serverTab", js_ws(tab_name));
 }
 
-char *conf_fleas_page (void) {
-  return js_rs(opt_oget(map_get(read(), "fleasPage"), js_ws("")));
-}
-
-void conf_set_fleas_page (char *fleas_page) {
-  write("fleasPage", js_ws(fleas_page));
-}
-
 char *conf_fleas_model (void) {
   return js_rs(opt_oget(map_get(read(), "fleasModel"), js_ws("")));
 }
 
 void conf_set_fleas_model (char *model) {
   write("fleasModel", js_ws(model));
+}
+
+int conf_champions_nparams (void) {
+  return js_ri(opt_oget(map_get(read(), "championsNParams"), js_wi(-1)));
+}
+
+void conf_set_champions_nparams (int nparams) {
+  write("championsNParams", js_wi(nparams));
+}
+
+int conf_acc_all_cos (void) {
+  return js_rb(opt_oget(map_get(read(), "allCos"), js_wb(0)));
+}
+
+void conf_set_acc_all_cos (int all_cos) {
+  write("allCos", js_wb(all_cos));
 }
 
 char *conf_activity (void) {

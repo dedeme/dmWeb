@@ -245,12 +245,11 @@ RsCharts *model_charts(
 
       double price = cls[nco];
 
+      order = this->forder(params, co, price);
       if (price > 0) {
         arr_push(rsq, rsChartQ_new(date, price, this->fref(params, co)));
+        last_close = price;
       }
-
-      order = this->forder(params, co, price);
-      if (price > 0) last_close = price;
     _REPEAT
 
     if (stocks) cash += broker_sell(stocks, last_close);
@@ -261,4 +260,72 @@ RsCharts *model_charts(
   _EACH
 
   return rsCharts_new(rss);
+}
+
+RsHistoric *model_historic (
+  Model *this, Darr *params, Arr *dates, Darr *opens, Darr *closes
+) {
+  int qsize = arr_size(dates);
+
+  QmatrixValues *rows = GC_MALLOC(qsize * sizeof(QmatrixValues));
+  QmatrixValues *p = rows;
+  double *cls = darr_start(closes);
+  REPEAT(qsize)
+    *p = ATOMIC(sizeof(double));
+    **p++ = *cls++;
+  _REPEAT
+  void *co = *(arr_start(this->fcos(params, 1, rows)));
+
+  char **dts = (char **)arr_start(dates);
+  double *ops = darr_start(opens);
+  cls = darr_start(closes);
+
+  // Arr[RsCharQ]
+  Arr *rsq = arr_new();
+  // Arr[RsCharOp]
+  Arr *rsop = arr_new();
+
+  double cash = 0;
+  int stocks = 0;
+  Order *order = order_none();
+  double last_close = 0;
+  REPEAT(qsize) {
+    if (order_is_sell(order) && stocks) {
+      double price = *ops;
+      if (price < 0) price = *(cls - 1);
+
+      arr_push(rsop, rsChartOp_new(1, *dts, stocks, price));
+
+      cash += broker_sell(stocks, price);
+      stocks = 0;
+    } else if (order_is_buy(order)) {
+      double price = *ops;
+      if (price < 0) price = *(cls - 1);
+      stocks = (int)(BET / price);
+
+      arr_push(rsop, rsChartOp_new(0, *dts, stocks, price));
+
+      cash -= broker_buy(stocks, price);
+    }
+
+    double price = *cls;
+
+    order = this->forder(params, co, price);
+
+    if (price > 0)  {
+      arr_push(rsq, rsChartQ_new(*dts, price, this->fref(params, co)));
+      last_close = price;
+    }
+
+    ++dts;
+    ++ops;
+    ++cls;
+  }_REPEAT
+
+  if (stocks) cash += broker_sell(stocks, last_close);
+  double ratio = cash / BET;
+
+  return rsHistoric_new(
+    co, ratio, rsq, rsop, order, this->fref(params, co), stocks
+  );
 }

@@ -10,6 +10,8 @@
 #include "io/conf.h"
 #include "server/sys.h"
 #include "server/fleas.h"
+#include "server/acc.h"
+#include "server/daily.h"
 
 // rq is Map[Js]
 static char *module_process(AsyncActor *ac, char *module, Map *mrq) {
@@ -22,6 +24,8 @@ static char *module_process(AsyncActor *ac, char *module, Map *mrq) {
   }
   if (str_eq(module, "sys")) return sys_process(ac, mrq);
   if (str_eq(module, "fleas")) return fleas_process(ac, mrq);
+  if (str_eq(module, "acc")) return acc_process(ac, mrq);
+  if (str_eq(module, "daily")) return daily_process(ac, mrq);
 
   EXC_ILLEGAL_ARGUMENT("module", "sys | fleas", module)
   return NULL; // Unreachable

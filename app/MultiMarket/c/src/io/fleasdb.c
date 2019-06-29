@@ -9,6 +9,7 @@
 static char *fleas_dir = NULL;
 static char *bests_dir = NULL;
 static char *charts_dir = NULL;
+static char *champions_dir = NULL;
 static char *bests_db = NULL;
 static char *flog_db = NULL;
 
@@ -19,12 +20,14 @@ void fleasdb_init() {
   fleas_dir = path_cat(io_data_dir(), "fleas", NULL);
   bests_dir = path_cat(fleas_dir, "_bests", NULL);
   charts_dir = path_cat(fleas_dir, "_charts", NULL);
+  champions_dir = path_cat(fleas_dir, "_champions", NULL);
   bests_db = path_cat(fleas_dir, "bests.db", NULL);
   flog_db = path_cat(fleas_dir, "flog.db", NULL);
   if (!file_exists(fleas_dir)) {
     file_mkdir(fleas_dir);
     file_mkdir(bests_dir);
     file_mkdir(charts_dir);
+    file_mkdir(champions_dir);
     file_write(bests_db, "[]");
     file_write(flog_db, "[]");
   }
@@ -63,11 +66,9 @@ void fleasdb_model_write (char *model, Js *params, char *date, Arr *rs) {
 
   // Arr[char]
   Arr *fs = file_dir(dir);
-  int ffilter (char *f) { return !str_eq(f, "conf.db"); }
-  arr_filter(fs, (FPRED)ffilter);
   int fsort (char *f1, char *f2) { return strcmp(f1, f2) < 0; }
   arr_sort(fs, (FCMP)fsort);
-  RANGE(i, 10, arr_size(fs))
+  RANGE(i, FLEA_MODEL_DATES, arr_size(fs))
     file_del(arr_get(fs, i));
   _RANGE
 }
@@ -178,6 +179,57 @@ void fleasdb_flog_write (char *msg) {
   Arr *a = arr_from_js(ajs, (FFROM)js_rs);
   arr_insert(a, 0, msg);
   file_write(flog_db, (char *)arr_to_js(a, (FTO)js_ws));
+}
+
+Arr *fleasdb_champions_read (int nparams) {
+  if (!champions_dir) EXC_ILLEGAL_STATE("'champions_dir' was not intiliazed")
+
+  char *f = path_cat(champions_dir, str_f("%d.db", nparams), NULL);
+  if (!file_exists(f)) {
+    return arr_new();
+  }
+
+  return arr_from_js((Js *)file_read(f), (FFROM)rsChampions_from_js);
+}
+
+/// Returns Js -> Arr[RsChampions]
+Js *fleasdb_champions_read_js (int nparams) {
+  if (!champions_dir) EXC_ILLEGAL_STATE("'champions_dir' was not intiliazed")
+
+  char *f = path_cat(champions_dir, str_f("%d.db", nparams), NULL);
+  if (!file_exists(f)) {
+    return (Js *)"[]";
+  }
+
+  return (Js *)file_read(f);
+}
+
+///
+void fleasdb_champions_add (RsChampions *rs) {
+  char *model = rsChampions_model(rs);
+  RsWeb *rsW = rsChampions_result(rs);
+  char *fname = flea_name(rs_flea(rsWeb_result(rsW)));
+  int nparams = darr_size(rsWeb_params(rsW));
+  // Arr[RsChampions]
+  Arr *rss = fleasdb_champions_read(nparams);
+  int findex (RsChampions *r) {
+    char *m = rsChampions_model(r);
+    char *fnm = flea_name(rs_flea(rsWeb_result(rsChampions_result(r))));
+    return str_eq(m, model) && str_eq(fnm, fname);
+  }
+  int ix = it_index(arr_to_it(rss), (FPRED)findex);
+  if (ix == -1) {
+    arr_push(rss, rs);
+    fleasdb_champions_write(nparams, rss);
+  }
+}
+
+/// 'rs' is Arr[RsChampions]
+void fleasdb_champions_write (int nparams, Arr *rss) {
+  if (!champions_dir) EXC_ILLEGAL_STATE("'champions_dir' was not intiliazed")
+
+  char *f = path_cat(champions_dir, str_f("%d.db", nparams), NULL);
+  file_write(f, (char *)arr_to_js(rss, (FTO)rsChampions_to_js));
 }
 
 Js *fleasdb_flog_to_js (void) {

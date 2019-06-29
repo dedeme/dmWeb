@@ -87,7 +87,9 @@ export default class Bests {
             .add($("td").text(_args(_("Model '%0' not found"), model))))
         );
       } else {
-        self._right.removeAll().add(new Dtable(true, params, table).wg());
+        self._right.removeAll().add(
+          new Dtable(true, false, params, table).wg()
+        );
       }
     }
 

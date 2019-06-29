@@ -91,9 +91,14 @@ RsAssets *model_assets(Model *this, Flea *f, Qmatrix *opens, Qmatrix *closes);
 /// Calculates flea profits
 RsProfits *model_profits(Model *this, Flea *f, Qmatrix *opens, Qmatrix *closes);
 
-/// Calculates data from charts. 'dates' is Arr[char]
+/// Calculates data for charts. 'dates' is Arr[char]
 RsCharts *model_charts(
   Model *this, Flea *f, Arr *dates, Qmatrix *opens, Qmatrix *closes
+);
+
+/// Calculates historic results for one company
+RsHistoric *model_historic (
+  Model *this, Darr *params, Arr *dates, Darr *opens, Darr *closes
 );
 
 #endif

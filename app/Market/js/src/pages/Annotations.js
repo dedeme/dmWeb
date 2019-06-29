@@ -52,16 +52,12 @@ const controlDouble = (lang, id, value) => {
 /** Create page. */
 export default class Annotations { // ---------------------- Class Annotations
   /**
-   * @param {!Main} main Main
+   * @param {!AccMain} main Main
    */
   constructor (main) {
-    /**
-     * @private
-     * @type {!Main}
-     */
     this._main = main;
 
-    this._lang = main.model["lang"];
+    this._lang = main.lang;
 
     this._editor = $("div");
     this._cash = $("span");

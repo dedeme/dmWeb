@@ -53,6 +53,9 @@ export default class Nicks {
     /** @type {!Array<!Nick>} */
     this._nickList = [];
 
+    /** @type {!Object<string, number>} */
+    this._volume = {};
+
     /** @type {number} */
     this._nickSelId = -1;
 
@@ -88,6 +91,11 @@ export default class Nicks {
   /** @return {!Array<!Nick>} */
   get nickList () {
     return this._nickList;
+  }
+
+  /** @return {!Object<string, number>} */
+  get volume () {
+    return this._volume;
   }
 
   /** @return {number} Nick list selected */
@@ -164,11 +172,23 @@ export default class Nicks {
     await Main.client.send(rq);
   }
 
-  /** @return {!Promise} */
-  async list () {
-    this._menu.setSelected("list");
-    await this.setNickSelId(-1);
-    new ListMaker(this).show();
+  /**
+   * @param {boolean} volume
+   * @return {!Promise}
+   */
+  async list (volume) {
+    if (volume) {
+      this._nickList.sort((nk1, nk2) =>
+        (this._volume[nk2.name] || 0) - (this._volume[nk1.name] || 0)
+      );
+      this._menu.setSelected("volume");
+      await this.setNickSelId(-2);
+    } else {
+      this._nickList.sort((nk1, nk2) => nk1.name > nk2.name ? 1 : -1);
+      this._menu.setSelected("list");
+      await this.setNickSelId(-1);
+    }
+    new ListMaker(this, volume).show();
   }
 
   /**
@@ -191,12 +211,17 @@ export default class Nicks {
     const rp = await Main.client.send(rq);
 
     this._nickList = rp["nickList"].map(e => Nick.fromJs(e));
+    this._volume = rp["volume"];
 
     this._menu.reset();
 
     this._menu.addLeft($("span").text(mkStatistics(this._nickList)));
     this._menu.addRight(
-      Menu.mkOption("list", _("List"), this.list.bind(this))
+      Menu.mkOption("list", _("List"), () => this.list(false))
+    );
+    this._menu.addRight(Menu.separator());
+    this._menu.addRight(
+      Menu.mkOption("volume", _("Volume"), () => this.list(true))
     );
 
     if (this._nickList.length === 0) {
@@ -207,9 +232,12 @@ export default class Nicks {
     } else {
       this._model = rp["model"];
       this._nickSelId = rp["nickSelId"];
-      this._nickList.sort((nk1, nk2) => nk1.name > nk2.name ? 1 : -1);
       if (this._nickSelId < 0) {
-        this.list();
+        if (this._nickSelId === -2) {
+          this.list(true);
+        } else {
+          this.list(false);
+        }
       } else {
         this.edit(this._nickSelId);
       }

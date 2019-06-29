@@ -32,6 +32,6 @@ Arr *calendar_special_days (void);
 void calendar_set_special_days (Arr *special_days);
 
 ///
-int calendar_is_open (time_t date);
+int calendar_is_open (time_t date_time);
 
 #endif

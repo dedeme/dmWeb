@@ -159,7 +159,7 @@ export default class Menu {
   static mkLink (id, tx, module) {
     return $("a")
       .att("href", Main.urlBase + "?" + module + "&" + id)
-      .att("id", id)
+      .att("id", "menu_" + id)
       .text(tx)
     ;
   }

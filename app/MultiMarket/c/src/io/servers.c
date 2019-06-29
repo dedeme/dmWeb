@@ -4,6 +4,7 @@
 #include "io/servers.h"
 #include "io/log.h"
 #include "io.h"
+#include "io/nicks.h"
 #include "DEFS.h"
 
 static char *servers_db = NULL;
@@ -112,6 +113,54 @@ void servers_init (void) {
 // Arr[Server]
 Arr *servers_list (void) {
    return read()->list;
+}
+
+// Arr[Server]
+Arr *servers_historic_list (void) {
+  int ffilter (Server *sv) {
+    Rconf *conf = opt_oget(server_historic_conf(sv), NULL);
+    if (conf) return rconf_sel(conf) != SERVER_STOPPED;
+    return 0;
+  }
+  return arr_from_it(it_filter(
+    arr_to_it(servers_list()), (FPRED)ffilter
+  ));
+}
+
+// Arr[Server]
+Arr *servers_daily_list (void) {
+  int ffilter (Server *sv) {
+    Rconf *conf = opt_oget(server_daily_conf(sv), NULL);
+    if (conf) return rconf_sel(conf) != SERVER_STOPPED;
+    return 0;
+  }
+  return arr_from_it(it_filter(
+    arr_to_it(servers_list()), (FPRED)ffilter
+  ));
+}
+
+char *servers_acc_url (char *nick) {
+  int id = -1;
+  EACH(nicks_list(), Nick, nk)
+    if (str_eq(nick_name(nk), nick)) {
+      id = nick_id(nk);
+    }
+  _EACH
+  if (id == -1) {
+    return str_f("servers_acc_url: Nick %s not found", nick);
+  }
+  EACH(servers_list(), Server, sv)
+    if (str_eq(server_short_name(sv), ACC_URL)) {
+      Rconf *conf = opt_oget(server_historic_conf(sv), NULL);
+      if (conf) {
+        return str_replace(
+          str_replace(rconf_url(conf), "historico-", ""),
+          "${code}", server_nick_code(sv, id)
+        );
+      }
+    }
+  _EACH
+  return "servers_acc_url: Url not found";
 }
 
 // servers is Arr[Server]
