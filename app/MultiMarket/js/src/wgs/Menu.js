@@ -165,7 +165,7 @@ export default class Menu {
   }
 
   /**
-   * @param {function ():Promise} fbye
+   * @param {function ():?} fbye
    * @return {!Domo}
    */
   static mkClose (fbye) {

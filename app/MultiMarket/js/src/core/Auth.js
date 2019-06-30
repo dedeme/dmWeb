@@ -206,7 +206,7 @@ export default class Auth {
         .add($("div").add(body()))
     );
 
-    userIn.e.focus()
+    userIn.e.focus();
   }
 }
 

@@ -3,13 +3,10 @@
 
 import Main from "../Main.js";
 import AccMain from "./AccMain.js"; //eslint-disable-line
-import {_, _args} from "../I18n.js";
+import {_} from "../I18n.js";
 import Domo from "../dmjs/Domo.js";  //eslint-disable-line
 import Ui from "../dmjs/Ui.js";
-import It from "../dmjs/It.js";
 import Dec from "../dmjs/Dec.js";
-import ModalBox from "../dmjs/ModalBox.js";
-import Operations from "../wgs/Operations.js";
 
 const $ = Ui.$;
 

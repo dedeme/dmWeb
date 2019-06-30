@@ -84,6 +84,9 @@ Ammount = Ammount
 # src/acc/AccMain.js: 78
 Annotations = Annotations
 
+# src/Main.js: 93
+Application exit? = Application exit?
+
 # src/acc/Balance.js: 149
 # src/fleas/wgs/Dtable.js: 163
 Assets = Assets
@@ -373,7 +376,7 @@ General Time Table = General Time Table
 # src/core/Auth.js: 105
 Grey squares checks are wrong = Grey squares checks are wrong
 
-# src/Main.js: 128
+# src/Main.js: 130
 Help & Credits = Help & Credits
 
 # src/sys/Servers.js: 104

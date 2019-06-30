@@ -8,6 +8,10 @@ import DateDm from "../../dmjs/DateDm.js";
 import Dec from "../../dmjs/Dec.js";
 import It from "../../dmjs/It.js";
 import {_} from "../../I18n.js";
+
+import Main from "../../Main.js";
+import Wcharts from "../wgs/Wcharts.js";
+
 const $ = Ui.$;
 
 const DATE_MODEL = 0;
@@ -91,6 +95,9 @@ export default class Dtable {
       () => this._order.push(false)
     );
     this._order[FLEA] = true;
+    if (isChampions) {
+      this._order[DATE_MODEL] = true;
+    }
   }
 
   isAscendant (ix) {
@@ -103,6 +110,9 @@ export default class Dtable {
       () => this._order.push(false)
     );
     this._order[FLEA] = true;
+    if (this._isChampions) {
+      this._order[DATE_MODEL] = true;
+    }
     this._order[ix] = value;
   }
 
@@ -112,7 +122,10 @@ export default class Dtable {
       this._entries.sort((r1, r2) => {
         let v1 = r1[ix];
         let v2 = r2[ix];
-        if (ix === DATE_MODEL && !this._isChampions) {
+        if (ix === DATE_MODEL && this._isChampions) {
+          v2 = v1 > v2 ? 0 : v1 < v2 ? 2 : 1;
+          v1 = 1;
+        } else if (ix === DATE_MODEL) {
           v1 = Number(v1);
           v2 = Number(v2);
         } else if (ix === FLEA) {
@@ -184,11 +197,10 @@ export default class Dtable {
   body () {
     const self = this;
     function cols (e, i) {
+      const fleaName = e[FLEA][0] + "-" + e[FLEA][1] + "-" + e[FLEA][2];
       let cs = [
         $("td").klass("header").style("text-align:right").text(String(i + 1)),
-        $("td").klass("menu").text(
-          e[FLEA][0] + "-" + e[FLEA][1] + "-" + e[FLEA][2]
-        ),
+        $("td").klass("menu").text(fleaName),
         $("td").klass("fnumber").text(new Dec(e[ASSETS], 2).toEu()),
         $("td").klass("fnumber").text(new Dec(e[AVG] * 100, 2).toEu() + "%"),
         $("td").klass("fnumber").text(new Dec(e[MDV] * 100, 2).toEu() + "%"),
@@ -202,10 +214,15 @@ export default class Dtable {
       if (self._isBests) {
         if (self._isChampions) {
           const model = e[DATE_MODEL];
-          cs.splice(1, 0, $("td").klass("menu").html(e[DATE_MODEL]));
           const ps = self._params[1][model];
           pops = ps[0]; // Parameter names
           formats = ps[1];
+          cs.splice(1, 0,
+            $("td").klass("menu").add(
+              Ui.link(() => self.showCharts(model, pops.length, fleaName))
+                .klass("link").html(e[DATE_MODEL])
+            )
+          );
         } else {
           cs.splice(1, 0, $("td").klass("menu")
             .html(DateDm.fromStr(e[DATE_MODEL]).toString())
@@ -240,6 +257,19 @@ export default class Dtable {
     this._div.removeAll().add($("table").att("align", "left").klass("white")
       .add(this.header())
       .adds(this.body())
+    );
+  }
+
+  async showCharts (model, group, flea) {
+    const rq = {
+      "module": "fleas",
+      "source": "Dtable",
+      "rq": "nicks"
+    };
+    const rp = await Main.client.rq(rq);
+    const nicks = rp["nicks"];
+    this._div.removeAll().add(
+      new Wcharts(Wcharts.CHAMPIONS, model, nicks, group, flea).wg
     );
   }
 

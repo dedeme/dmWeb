@@ -10,6 +10,7 @@ C_FILES = $(wildcard src/*.c) \
 					$(wildcard ../src/server/sys/nicks/*.c) \
 					$(wildcard ../src/server/sys/servers/*.c) \
 					$(wildcard ../src/server/fleas/*.c) \
+					$(wildcard ../src/server/fleas/wgs/*.c) \
 					$(wildcard ../src/server/acc/*.c) \
 					$(wildcard ../src/scheduler/*.c) \
 					$(wildcard ../src/scheduler/fleas/*.c)
@@ -22,6 +23,7 @@ H_FILES = $(wildcard include/*.h) \
 					$(wildcard ../include/server/sys/nicks/*.h) \
 					$(wildcard ../include/server/sys/servers/*.h) \
 					$(wildcard ../include/server/fleas/*.h) \
+					$(wildcard ../include/server/fleas/wgs/*.h) \
 					$(wildcard ../include/server/acc/*.h) \
 					$(wildcard ../include/scheduler/*.h) \
 					$(wildcard ../include/scheduler/fleas/*.h)

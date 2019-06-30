@@ -10,16 +10,21 @@
 #include "io/quotes.h"
 #include "io/sbox.h"
 #include "io/dailydb.h"
+#include "io/log.h"
 #include "DEFS.h"
 #include "scheduler/historic.h"
 #include "scheduler/fleas.h"
 #include "scheduler/acc.h"
 
 static void sleeping1 (AsyncActor *ac) {
+  asyncActor_wait(ac, (FPROC)log_info, "In Sleeping (1)");
   int hour = atoi(date_f(date_now(), "%H"));
   if (hour > ACT_HISTORIC_START && hour < ACT_HISTORIC_END) {
     if (io_active ()) {
-      void fn (void *null) { conf_set_activity(ACT_HISTORIC); }
+      void fn (void *null) {
+        conf_set_activity(ACT_HISTORIC);
+        log_info("To Historic");
+      }
       asyncActor_wait(ac, fn, NULL);
     }
   }
@@ -31,7 +36,10 @@ static void historic (AsyncActor *ac) {
   if (io_active ()) acc_historic_profits(ac);
   if (io_active ()) fleas_run(ac);
   if (io_active ()) {
-    void fn (void *null) { conf_set_activity(ACT_SLEEPING2); }
+    void fn (void *null) {
+      conf_set_activity(ACT_SLEEPING2);
+      log_info("To Sleeping (2)");
+    }
     asyncActor_wait(ac, fn, NULL);
   }
 }
@@ -43,8 +51,11 @@ static void sleeping2 (AsyncActor *ac) {
     return;
   }
   sleeping2_time = now;
-  if (io_active () && calendar_is_open(date_now())) {
-    void fn (void *null) { conf_set_activity(ACT_ACTIVATING); }
+  if (io_active () && calendar_is_open(now)) {
+    void fn (void *null) {
+      conf_set_activity(ACT_ACTIVATING);
+      log_info("To Activating");
+    }
     asyncActor_wait(ac, fn, NULL);
   }
 }
@@ -57,7 +68,10 @@ static void activating (AsyncActor *ac) {
     }
     asyncActor_wait(ac, fn1, NULL);
     net_update_daily(ac);
-    void fn2 (void *null) { conf_set_activity(ACT_ACTIVE); }
+    void fn2 (void *null) {
+      conf_set_activity(ACT_ACTIVE);
+      log_info("To Active");
+    }
     asyncActor_wait(ac, fn2, NULL);
   }
 }
@@ -74,8 +88,11 @@ static void active (AsyncActor *ac) {
   void fn (void *null) { dailydb_update(); }
   asyncActor_wait(ac, fn, NULL);
 
-  if (io_active () && !calendar_is_open(date_now())) {
-    void fn (void *null) { conf_set_activity(ACT_DEACTIVATING); }
+  if (io_active () && !calendar_is_open(now)) {
+    void fn (void *null) {
+      conf_set_activity(ACT_DEACTIVATING);
+      log_info("To Deactivating");
+    }
     asyncActor_wait(ac, fn, NULL);
   }
 }
@@ -83,7 +100,10 @@ static void active (AsyncActor *ac) {
 static void deactivating (AsyncActor *ac) {
   net_update_daily(ac);
   if (io_active ()) {
-    void fn (void *null) { conf_set_activity(ACT_SLEEPING1); }
+    void fn (void *null) {
+      conf_set_activity(ACT_SLEEPING1);
+      log_info("To Sleeping (1)");
+    }
     asyncActor_wait(ac, fn, NULL);
   }
 }

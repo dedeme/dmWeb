@@ -56,6 +56,11 @@ Arr *fleasdb_champions_read (int nparams);
 /// Returns Js -> Arr[RsChampions]
 Js *fleasdb_champions_read_js (int nparams);
 
+/// Returns Js -> Opt[RsChart]
+Js *fleasdb_champions_chart_read_js (
+  int nparams, char *model, char *nick, char *flea
+);
+
 /// If 'rs' is duplicate, sets value. If not adds it.
 void fleasdb_champions_add (RsChampions *rs);
 

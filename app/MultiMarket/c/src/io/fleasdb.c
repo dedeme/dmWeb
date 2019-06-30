@@ -3,7 +3,10 @@
 
 #include "io/fleasdb.h"
 #include "io.h"
+#include "io/quotes.h"
 #include "data/Rs.h"
+#include "data/Model.h"
+#include "scheduler/fleas/fleas__models.h"
 #include "DEFS.h"
 
 static char *fleas_dir = NULL;
@@ -181,6 +184,7 @@ void fleasdb_flog_write (char *msg) {
   file_write(flog_db, (char *)arr_to_js(a, (FTO)js_ws));
 }
 
+// Returns Arr[RsChampions]
 Arr *fleasdb_champions_read (int nparams) {
   if (!champions_dir) EXC_ILLEGAL_STATE("'champions_dir' was not intiliazed")
 
@@ -204,7 +208,54 @@ Js *fleasdb_champions_read_js (int nparams) {
   return (Js *)file_read(f);
 }
 
-///
+// Returns Js -> Opt[RsChart]
+Js *fleasdb_champions_chart_read_js (
+  int nparams, char *model, char *nick, char *flea
+) {
+  int ffind (RsChampions *rs) {
+    if (str_eq(rsChampions_model(rs), model)) {
+      return str_eq(
+        flea_name(rs_flea(rsWeb_result(rsChampions_result(rs)))),
+        flea
+      );
+    }
+    return 0;
+  }
+  RsChampions *rsCh = opt_oget(
+    it_find(arr_to_it(fleasdb_champions_read(nparams)), (FPRED)ffind),
+    NULL
+  );
+  if (!rsCh) return js_wn();
+
+  Model *md = opt_oget(fleas__models_get(model), NULL);
+  if (!md) return js_wn();
+
+  Darr *params = rsWeb_params(rsChampions_result(rsCh));
+
+  // Arr[char]
+  Arr *dates = arr_new();
+  Darr *opens = darr_new();
+  Darr *closes = darr_new();
+  // Arr[Quote]
+  Arr *quotes = quotes_read(nick);
+  arr_reverse(quotes);
+
+  EACH(quotes, Quote, q)
+    arr_push(dates, quote_date(q));
+    darr_push(opens, quote_open(q));
+    darr_push(closes, quote_close(q));
+  _EACH
+
+  RsHistoric *rsH = model_historic(md, params, dates, opens, closes);
+
+  return rsChart_to_js(rsChart_new(
+    nick,
+    rsHistoric_profits(rsH),
+    rsHistoric_quotes(rsH),
+    rsHistoric_historic(rsH)
+  ));
+}
+
 void fleasdb_champions_add (RsChampions *rs) {
   char *model = rsChampions_model(rs);
   RsWeb *rsW = rsChampions_result(rs);

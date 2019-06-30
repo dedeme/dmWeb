@@ -89,19 +89,21 @@ export default class Main {
   // CONTROL -------------------------------------
   // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
 
-  /** @return {!Promise} */
-  async bye () {
+  bye () {
+    if (!confirm(_("Application exit?"))) {
+      return;
+    }
     const rq = {
       "module": "sys",
       "source": "SysMain",
       "rq": "go",
       "option": SysMain.homePageId
     };
-    await Main.client.send(rq);
+    Main.client.send(rq);
     const rq2 = {
       "module": "logout"
     };
-    await Main.client.send(rq2);
+    Main.client.send(rq2);
 
     new Bye(this).show();
   }
