@@ -113,7 +113,7 @@ export default class FleasMain {
     };
     const /** !Object<string, ?> */ rp = await Main.client.rq(rq);
 
-    const /** string */ page = Ui.url()["1"] || FleasMain.bestsPageId;
+    const /** string */ page = Ui.url()["1"] || FleasMain.championsPageId;
     const /** !Object<string, !Array<?>> */ pnames = rp["pnames"];
     const /** !Array<string> */ models = Object.keys(pnames);
     models.sort();

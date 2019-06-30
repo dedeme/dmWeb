@@ -105,7 +105,7 @@ export default class AccMain {
 
   /** @return {void} */
   update () {
-    const /** string */ page = Ui.url()["1"] || AccMain.annotationsPageId;
+    const /** string */ page = Ui.url()["1"] || AccMain.profitsPageId;
 
     if (page === AccMain.annotationsPageId) {
       new Annotations(this).show();
