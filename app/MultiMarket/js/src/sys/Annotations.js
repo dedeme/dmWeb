@@ -2,7 +2,7 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 import Main from "../Main.js";
-import AccMain from "./AccMain.js"; //eslint-disable-line
+import SysMain from "./SysMain.js"; //eslint-disable-line
 import {_, _args} from "../I18n.js";
 import Ui from "../dmjs/Ui.js";
 import It from "../dmjs/It.js";
@@ -53,12 +53,12 @@ const controlDouble = (lang, id, value) => {
 export default class Annotations {
 
   /**
-   * @param {!AccMain} accMain Main
+   * @param {!SysMain} sysMain Main
    */
-  constructor (accMain) {
-    this._accMain = accMain;
+  constructor (sysMain) {
+    this._sysMain = sysMain;
     /** @type{string} */
-    this._lang = accMain.lang;
+    this._lang = sysMain.main.lang;
 
     // VIEW ------------------
     // TTTTTTTTTTTTTTTTTTTTTTT
@@ -478,15 +478,15 @@ export default class Annotations {
    * @return {Promise<?>}
    */
   async show () {
-    this._accMain.view.removeAll().add(this.body());
+    this._sysMain.view.removeAll().add(this.body());
     this._editor.removeAll().add(this.selector());
 
     const rq = {
-      "module": "acc",
+      "module": "sys",
       "source": "Annotations",
       "rq": "idata"
     };
-    const rp = await Main.client.rq(rq);
+    const rp = await Main.client.send(rq);
     const errors = rp["errors"];
     if (errors > 0) {
       alert(_args(_("There are wrong annotations (%0).\nSee log."), errors));
@@ -562,13 +562,13 @@ export default class Annotations {
   async removeAnn (ann) { // ---------------------------------------- RemoveAnn
     if (confirm(_args(_("Delete %0?"), JSON.stringify(ann)))) {
       const rq = {
-        "module": "acc",
+        "module": "sys",
         "source": "Annotations",
         "rq": "remove",
         "id": ann[1],
         "date": ann[2]
       };
-      await Main.client.rq(rq);
+      await Main.client.send(rq);
       this.show();
     }
   }
@@ -594,12 +594,12 @@ export default class Annotations {
             type === "pd" || type === "nd" ? [type, 0, d, db, str]
             : [type, 0, d];
     const rq = {
-      "module": "acc",
+      "module": "sys",
       "source": "Annotations",
       "rq": "new",
       "ann": ann
     };
-    await Main.client.rq(rq);
+    await Main.client.send(rq);
     this.show();
   }
 

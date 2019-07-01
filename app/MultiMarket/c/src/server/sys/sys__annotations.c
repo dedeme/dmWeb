@@ -1,7 +1,7 @@
-// Copyright 24-Jun-2019 ºDeme
+// Copyright 01-Jul-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-#include "server/acc/acc__annotations.h"
+#include "server/sys/sys__annotations.h"
 #include "dmc/cgi.h"
 #include "io.h"
 #include "io/conf.h"
@@ -10,7 +10,7 @@
 #include "data/Acc.h"
 
 // mrq is Map[Js]
-char *acc__annotations_process(AsyncActor *ac, Map *mrq) {
+char *sys__annotations_process(AsyncActor *ac, Map *mrq) {
   CGI_GET_STR(rq, mrq, "rq")
   // Map[Js]
   Map *rp = map_new();
@@ -52,5 +52,6 @@ char *acc__annotations_process(AsyncActor *ac, Map *mrq) {
   EXC_ILLEGAL_ARGUMENT("rq", "idata | new | remove", rq)
   return NULL; // Unreachable
 }
+
 
 

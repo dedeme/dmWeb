@@ -57,7 +57,11 @@ static Arr *base (Map *qs, Arr *pf, Nick *nk) {
   arr_push(r, js_wa(hqs));
   arr_push(r, js_wi(stocks));
   arr_push(r, js_wd(price));
-  arr_push(r, js_wd(rsHistoric_stocks(rs) ? -ref : ref));
+  arr_push(r, js_wd(
+    (rsHistoric_stocks(rs) && !order_is_sell(rsHistoric_order(rs))) ||
+    order_is_buy(rsHistoric_order(rs))
+    ? -ref : ref
+  ));
   return r;
 }
 
@@ -94,10 +98,15 @@ void dailydb_reset (void) {
 void dailydb_update (void) {
   if (!dailydb) EXC_ILLEGAL_STATE("'dailydb' was not intiliazed")
 
+  int size = 0;
+  int changed = 0;
+  // Arr[Nick]
+  Arr *all_nicks = nicks_list();
+
   // Arr[Nick]
   Arr *nicks_missing = arr_new();
 
-  EACH(nicks_list(), Nick, nk)
+  EACH(all_nicks, Nick, nk)
     if (!nick_is_sel(nk)) {
       continue;
     }
@@ -106,29 +115,28 @@ void dailydb_update (void) {
     char *f = path_cat(dailydb, str_f("%s", nk_name), NULL);
     if (!file_exists(f)) {
       arr_push(nicks_missing, nk);
+      changed = 1;
       continue;
     }
-    // Arr[Js]
-    Arr *data = js_ra((Js *)file_read(f));
-    // Arr[Js]
-    Arr *hqs = arr_get(data, 1);
-    // Arr[Js]
-    Arr *hq = arr_peek(hqs);
 
-    double q = accdb_dailyq_read_nick(nk_name);
-    if (q > 0) {
-      Js *qjs = js_wd(q);
-      if (!str_eq((char *)arr_get(hq, 1), (char *)qjs)) {
-        hq = arr_new();
-        arr_push(hq, js_ws(date_f(date_now(), "%H")));
-        arr_push(hq, qjs);
+    if (!changed) {
+      // Arr[Js]
+      Arr *data = js_ra((Js *)file_read(f));
+      // Arr[Js]
+      Arr *hqs = js_ra(arr_get(data, 1));
+      if (arr_size(hqs) > size) size = arr_size(hqs);
+      // Arr[Js]
+      Arr *hq = js_ra(arr_peek(hqs));
 
-        arr_push(hqs, hq);
-
-        file_write(f, (char *)js_wa(data));
+      double q = accdb_dailyq_read_nick(nk_name);
+      if (q > 0) {
+        Js *qjs = js_wd(q);
+        changed = !str_eq((char *)arr_get(hq, 1), (char *)qjs);
       }
     }
   _EACH
+
+  if (!changed) return;
 
   if (arr_size(nicks_missing)) {
     // Map[Js->double] (nick_name -> close)
@@ -142,19 +150,58 @@ void dailydb_update (void) {
     // It is not necessary to use 'accdb_pf_update(pf);'
 
     EACH(nicks_missing, Nick, nk)
-      if (!nick_is_sel(nk)) {
-        continue;
-      }
       // Arr[Js]
       Arr *b = base(qs, pf, nk);
 
       if (arr_size(b)) {
+        // Arr[Js]
+        Arr *hqs = js_ra(arr_get(b, 1));
+        while (arr_size(hqs) < size) {
+          arr_push(hqs, arr_peek(hqs));
+        }
+
         char *f = path_cat(dailydb, str_f("%s", nick_name(nk)), NULL);
         file_write(f, (char *)js_wa(b));
       }
     _EACH
-    dailydb_update();
   }
+
+  EACH(all_nicks, Nick, nk)
+    if (!nick_is_sel(nk)) {
+      continue;
+    }
+    char *nk_name = nick_name(nk);
+
+    char *f = path_cat(dailydb, str_f("%s", nk_name), NULL);
+    if (!file_exists(f)) {
+      continue;
+    }
+
+    // Arr[Js]
+    Arr *data = js_ra((Js *)file_read(f));
+    // Arr[Js]
+    Arr *hqs = js_ra(arr_get(data, 1));
+    while (arr_size(hqs) < size) {
+      arr_push(hqs, arr_peek(hqs));
+    }
+
+    Js *qjs = arr_peek(hqs);
+    // Arr[Js]
+    Arr *hq = js_ra(qjs);
+
+    double q = accdb_dailyq_read_nick(nk_name);
+    if (q > 0) qjs = js_wd(q);
+
+    hq = arr_new();
+    arr_push(hq, js_ws(date_f(date_now(), "%H")));
+    arr_push(hq, qjs);
+
+    arr_push(hqs, js_wa(hq));
+    arr_set(data, 1, js_wa(hqs));
+
+    file_write(f, (char *)js_wa(data));
+  _EACH
+
 }
 
 Js *dailydb_cos (void) {

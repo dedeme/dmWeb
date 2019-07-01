@@ -10,6 +10,7 @@ import Menu from "../wgs/Menu.js";
 import Home from "./Home.js";
 import Nicks from "./Nicks.js";
 import Servers from "./Servers.js";
+import Annotations from "./Annotations.js";
 import Schedule from "./Schedule.js";
 import Settings from "./Settings.js";
 import Backups from "./Backups.js";
@@ -72,6 +73,11 @@ export default class SysMain {
     menu.addLeft(Menu.mkOption(
       SysMain.serversPageId, _("Servers"), () => this.go(SysMain.serversPageId))
     );
+    menu.addLeft(Menu.separator2());
+    menu.addLeft(Menu.mkOption(
+      SysMain.annotationsPageId, _("Annotations"),
+      () => this.go(SysMain.annotationsPageId)
+    ));
 
     menu.addRight(Menu.mkClose(main.bye.bind(main)));
     menu.addRight(Menu.separator());
@@ -119,6 +125,8 @@ export default class SysMain {
       new Nicks(this).show();
     } else if (page === SysMain.serversPageId) {
       new Servers(this).show();
+    } else if (page === SysMain.annotationsPageId) {
+      new Annotations(this).show();
     } else if (page === SysMain.schedulePageId) {
       new Schedule(this).show();
     } else if (page === SysMain.settingsPageId) {
@@ -163,6 +171,11 @@ export default class SysMain {
   /** @return {string} */
   static get serversPageId () {
     return "servers";
+  }
+
+  /** @return {string} */
+  static get annotationsPageId () {
+    return "annotations";
   }
 
   /** @return {string} */

@@ -10,7 +10,6 @@ import Menu from "../wgs/Menu.js";
 import {_} from "../I18n.js";
 
 import Downloader from "./wgs/Downloader.js";
-import Annotations from "./Annotations.js";
 import Companies from "./Companies.js";
 import Balance from "./Balance.js";
 import Trading from "./Trading.js";
@@ -74,9 +73,6 @@ export default class AccMain {
       () => location.assign(Main.urlBase)
     ));
 
-    menu.addLeft(Menu.mkLink(
-      AccMain.annotationsPageId, _("Annotations"), "acc"));
-    menu.addLeft(Menu.separator());
     menu.addLeft(Menu.mkLink(AccMain.companiesPageId, _("Companies"), "acc"));
     menu.addLeft(Menu.separator());
     menu.addLeft(Menu.mkLink(AccMain.balancePageId, _("Balance"), "acc"));
@@ -107,9 +103,7 @@ export default class AccMain {
   update () {
     const /** string */ page = Ui.url()["1"] || AccMain.profitsPageId;
 
-    if (page === AccMain.annotationsPageId) {
-      new Annotations(this).show();
-    } else if (page === AccMain.companiesPageId) {
+    if (page === AccMain.companiesPageId) {
       new Companies(this).show();
     } else if (page === AccMain.balancePageId) {
       new Balance(this).show();
@@ -119,7 +113,7 @@ export default class AccMain {
       new Profits(this).show();
     } else {
       alert("Option '" + page + "' is unknown");
-      new Annotations(this).show();
+      new Profits(this).show();
     }
 
     this._menu.setSelected(page);
@@ -127,11 +121,6 @@ export default class AccMain {
 
   // STATIC --------------------------------------
   // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
-
-  /** @return {string} */
-  static get annotationsPageId () {
-    return "_annotations_";
-  }
 
   /** @return {string} */
   static get managementPageId () {

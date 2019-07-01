@@ -42,7 +42,7 @@ export default class DailyMain {
 
     this._lastProfits = 0;
 
-    this._lastTick = 8;
+    this._lastTick = 16;
 
     // VIEW --------
     // TTTTTTTTTTTTT
@@ -174,7 +174,7 @@ export default class DailyMain {
     const server = data.server;
     let state = data.state;
 
-    if (state !== "active" || this._lastProfits !== profits) {
+    if (state !== "Active" || this._lastProfits !== profits) {
       this._lastTick = 16;
     } else {
       this._lastTick -= 2;

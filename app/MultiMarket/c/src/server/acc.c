@@ -3,7 +3,6 @@
 
 #include "server/acc.h"
 #include "server/acc/acc__downloader.h"
-#include "server/acc/acc__annotations.h"
 #include "server/acc/acc__companies.h"
 #include "server/acc/acc__balance.h"
 #include "server/acc/acc__trading.h"
@@ -13,7 +12,6 @@ char *acc_process(AsyncActor *ac, Map *mrq) {
   CGI_GET_STR(source, mrq, "source")
 
   if (str_eq(source, "Downloader")) return acc__downloader_process(ac, mrq);
-  if (str_eq(source, "Annotations")) return acc__annotations_process(ac, mrq);
   if (str_eq(source, "Companies")) return acc__companies_process(ac, mrq);
   if (str_eq(source, "Balance")) return acc__balance_process(ac, mrq);
   if (str_eq(source, "Trading")) return acc__trading_process(ac, mrq);
@@ -21,7 +19,7 @@ char *acc_process(AsyncActor *ac, Map *mrq) {
 
   EXC_ILLEGAL_ARGUMENT(
     "source",
-    "Downloader | Annotations | Companies | Balance | Trading | Profits",
+    "Downloader | Companies | Balance | Trading | Profits",
     source
   )
   return NULL; // Unreachable

@@ -9,27 +9,27 @@
 # src/sys/Backups.js: 114
 '%0' is an empty file = '%0' es un archivo vacío
 
-# src/acc/Annotations.js: 17
+# src/sys/Annotations.js: 17
 '%0' is empty = Falta rellenar el campo '%0'
 
 # src/sys/nicks/Editor.js: 429
 '%0' is not a number = %0 no es un número
 
-# src/acc/Annotations.js: 26
+# src/sys/Annotations.js: 26
 '%0' is not a positive integer = '%0' no es un entero positivo
 
-# src/acc/Annotations.js: 47
+# src/sys/Annotations.js: 47
 '%0' is not a positive number = '%0' no es un número positivo
 
-# src/acc/Annotations.js: 108
 # src/sys/Chpass.js: 38
+# src/sys/Annotations.js: 108
 # src/core/Auth.js: 50
 Accept = Aceptar
 
 # src/sys/Home.js: 40
 Accounting = Contabilidad
 
-# src/acc/Balance.js: 126
+# src/acc/Balance.js: 123
 Accounting profits = Beneficios contables
 
 # src/sys/servers/Download.js: 467
@@ -60,35 +60,35 @@ All log entries will be deleted.\nContinue? = Todas las entradas del registro se
 # src/sys/Backups.js: 233
 All the data will be replaced = ¡ATENCIÓN!. Todos los datos serán reemplazados.\n¿Continuar?
 
-# src/acc/Annotations.js: 208
-# src/acc/Annotations.js: 209
-# src/acc/Annotations.js: 225
-# src/acc/Annotations.js: 240
-# src/acc/Annotations.js: 241
-# src/acc/Annotations.js: 257
-# src/acc/Annotations.js: 273
-# src/acc/Annotations.js: 274
-# src/acc/Annotations.js: 292
-# src/acc/Annotations.js: 309
-# src/acc/Annotations.js: 310
-# src/acc/Annotations.js: 328
-# src/acc/Annotations.js: 345
-# src/acc/Annotations.js: 346
-# src/acc/Annotations.js: 364
-# src/acc/Annotations.js: 381
-# src/acc/Annotations.js: 382
-# src/acc/Annotations.js: 400
+# src/sys/Annotations.js: 208
+# src/sys/Annotations.js: 209
+# src/sys/Annotations.js: 225
+# src/sys/Annotations.js: 240
+# src/sys/Annotations.js: 241
+# src/sys/Annotations.js: 257
+# src/sys/Annotations.js: 273
+# src/sys/Annotations.js: 274
+# src/sys/Annotations.js: 292
+# src/sys/Annotations.js: 309
+# src/sys/Annotations.js: 310
+# src/sys/Annotations.js: 328
+# src/sys/Annotations.js: 345
+# src/sys/Annotations.js: 346
+# src/sys/Annotations.js: 364
+# src/sys/Annotations.js: 381
+# src/sys/Annotations.js: 382
+# src/sys/Annotations.js: 400
 Ammount = Cantidad
 
-# src/acc/Annotations.js: 453
-# src/acc/AccMain.js: 78
+# src/sys/SysMain.js: 78
+# src/sys/Annotations.js: 453
 Annotations = Asientos
 
 # src/Main.js: 93
 Application exit? = ¿Salir de la aplicación?
 
-# src/acc/Balance.js: 149
-# src/fleas/wgs/Dtable.js: 163
+# src/acc/Balance.js: 146
+# src/fleas/wgs/Dtable.js: 176
 Assets = Activo
 
 # src/sys/home/Flog.js: 85
@@ -107,43 +107,43 @@ Backup version is missing = Falta la versión del backup
 # src/sys/Backups.js: 163
 Backup version is wrong = La versión del backup es incorrecta
 
-# src/sys/SysMain.js: 84
+# src/sys/SysMain.js: 90
 # src/sys/Backups.js: 308
 Backups = Copias de seguridad
 
-# src/acc/Balance.js: 145
-# src/acc/AccMain.js: 82
+# src/acc/Balance.js: 142
+# src/acc/AccMain.js: 78
 Balance = Balance
 
 # src/fleas/FleasMain.js: 72
 Bests = Mejores
 
-# src/acc/Balance.js: 246
+# src/acc/Balance.js: 243
 # src/daily/Cos.js: 152
 Bet = Apuesta
 
 # src/acc/Trading.js: 290
-# src/acc/Balance.js: 208
-# src/acc/Annotations.js: 190
-# src/acc/Annotations.js: 435
-# src/acc/Annotations.js: 524
+# src/acc/Balance.js: 205
+# src/sys/Annotations.js: 190
+# src/sys/Annotations.js: 435
+# src/sys/Annotations.js: 524
 Buy = Compra
 
 # src/acc/Trading.js: 401
-# src/fleas/wgs/Dtable.js: 167
+# src/fleas/wgs/Dtable.js: 180
 Buys = Compras
 
-# src/acc/Annotations.js: 104
 # src/sys/Chpass.js: 44
+# src/sys/Annotations.js: 104
 Cancel = Cancelar
 
-# src/acc/Balance.js: 160
+# src/acc/Balance.js: 157
 Capital = Capital
 
-# src/acc/Balance.js: 165
+# src/acc/Balance.js: 162
 Cash = Caja
 
-# src/acc/Annotations.js: 466
+# src/sys/Annotations.js: 466
 Cash: = Caja:
 
 # src/fleas/FleasMain.js: 75
@@ -173,14 +173,14 @@ Clear trash? = ¿Vaciar la papelera?
 Click %0 to continue. = Hacer click %0 para continuar.
 
 # src/wgs/Msg.js: 57
-# src/acc/Annotations.js: 422
 # src/sys/home/Log.js: 210
 # src/sys/home/Flog.js: 145
+# src/sys/Annotations.js: 422
 Close = Cerrar
 
-# src/acc/Annotations.js: 521
 # src/sys/Schedule.js: 53
 # src/sys/Schedule.js: 166
+# src/sys/Annotations.js: 521
 # src/sys/servers/Download.js: 33
 # src/sys/servers/Download.js: 35
 # src/sys/nicks/Editor.js: 26
@@ -188,7 +188,7 @@ CloseN = Cierre
 
 # src/acc/Trading.js: 404
 # src/acc/Trading.js: 410
-# src/acc/Balance.js: 204
+# src/acc/Balance.js: 201
 Co. = Cia.
 
 # src/sys/servers/Download.js: 34
@@ -197,7 +197,7 @@ Code = Código
 # src/sys/Servers.js: 108
 Codes = Códigos
 
-# src/acc/AccMain.js: 80
+# src/acc/AccMain.js: 76
 Companies = Empresas
 
 # src/sys/Chpass.js: 72
@@ -218,7 +218,7 @@ Current password = Contraseña actual
 # src/sys/Chpass.js: 170
 Current password is missing = Falta indicar la contraseña actual
 
-# src/acc/Balance.js: 117
+# src/acc/Balance.js: 114
 Current profits = Beneficios reales
 
 # src/sys/Servers.js: 100
@@ -245,18 +245,18 @@ Data file is empty = Archivo de datos está vacio
 # src/sys/nicks/Editor.js: 40
 Data file not found = Archivo de datos no encontrado
 
-# src/acc/Annotations.js: 94
-# src/acc/Annotations.js: 131
-# src/acc/Annotations.js: 170
-# src/acc/Annotations.js: 207
-# src/acc/Annotations.js: 239
-# src/acc/Annotations.js: 272
-# src/acc/Annotations.js: 308
-# src/acc/Annotations.js: 344
-# src/acc/Annotations.js: 380
-# src/acc/Annotations.js: 413
-# src/fleas/wgs/Dtable.js: 174
+# src/fleas/wgs/Dtable.js: 187
 # src/sys/Schedule.js: 164
+# src/sys/Annotations.js: 94
+# src/sys/Annotations.js: 131
+# src/sys/Annotations.js: 170
+# src/sys/Annotations.js: 207
+# src/sys/Annotations.js: 239
+# src/sys/Annotations.js: 272
+# src/sys/Annotations.js: 308
+# src/sys/Annotations.js: 344
+# src/sys/Annotations.js: 380
+# src/sys/Annotations.js: 413
 # src/sys/servers/Download.js: 36
 # src/sys/nicks/Editor.js: 24
 Date = Fecha
@@ -278,7 +278,7 @@ Date separator is missing = Falta el separador de fechas
 # src/daily/Cos.js: 144
 Day = Día
 
-# src/acc/Balance.js: 255
+# src/acc/Balance.js: 252
 Days = Días
 
 # src/daily/DailyMain.js: 197
@@ -288,7 +288,7 @@ Deactivating = Desactivando
 # src/sys/nicks/Wnick.js: 56
 Delete = Eliminar
 
-# src/acc/Annotations.js: 563
+# src/sys/Annotations.js: 563
 Delete %0? = ¿Eliminar %0?
 
 # src/sys/Schedule.js: 296
@@ -297,27 +297,27 @@ Delete %0? = ¿Eliminar %0?
 # src/sys/Servers.js: 264
 Delete '%0'? = ¿Eliminar '%0'?
 
-# src/acc/Annotations.js: 275
-# src/acc/Annotations.js: 292
-# src/acc/Annotations.js: 311
-# src/acc/Annotations.js: 328
-# src/acc/Annotations.js: 347
-# src/acc/Annotations.js: 364
-# src/acc/Annotations.js: 383
-# src/acc/Annotations.js: 400
+# src/sys/Annotations.js: 275
+# src/sys/Annotations.js: 292
+# src/sys/Annotations.js: 311
+# src/sys/Annotations.js: 328
+# src/sys/Annotations.js: 347
+# src/sys/Annotations.js: 364
+# src/sys/Annotations.js: 383
+# src/sys/Annotations.js: 400
 Description = Concepto
 
-# src/acc/Annotations.js: 362
-# src/acc/Annotations.js: 443
-# src/acc/Annotations.js: 534
+# src/sys/Annotations.js: 362
+# src/sys/Annotations.js: 443
+# src/sys/Annotations.js: 534
 Diff. + = Dif. +
 
-# src/acc/Annotations.js: 398
-# src/acc/Annotations.js: 444
-# src/acc/Annotations.js: 535
+# src/sys/Annotations.js: 398
+# src/sys/Annotations.js: 444
+# src/sys/Annotations.js: 535
 Diff. - = Dif. -
 
-# src/acc/Balance.js: 194
+# src/acc/Balance.js: 191
 Differences = Diferencias
 
 # src/sys/Backups.js: 311
@@ -336,7 +336,7 @@ Download successfully done = Descarga correcta
 # src/sys/Home.js: 115
 End fleas running? = ¿Detener las pulgas?
 
-# src/acc/Balance.js: 152
+# src/acc/Balance.js: 149
 Equity = Pasivo
 
 # src/sys/home/Log.js: 152
@@ -345,10 +345,10 @@ Errors = Errores
 # src/sys/Chpass.js: 99
 Fail trying to change password = Fallo intentando cambiar la contraseña
 
-# src/acc/Balance.js: 178
-# src/acc/Annotations.js: 326
-# src/acc/Annotations.js: 441
-# src/acc/Annotations.js: 533
+# src/acc/Balance.js: 175
+# src/sys/Annotations.js: 326
+# src/sys/Annotations.js: 441
+# src/sys/Annotations.js: 533
 Fees = Comisiones
 
 # src/sys/servers/Download.js: 443
@@ -398,16 +398,16 @@ Historic configuration stopped = Configuración del histórico detenida
 # src/sys/Schedule.js: 185
 Holidays = Fiestas
 
-# src/sys/SysMain.js: 65
+# src/sys/SysMain.js: 66
 # src/sys/Home.js: 36
 Home = Inicio
 
-# src/fleas/wgs/Dtable.js: 162
+# src/fleas/wgs/Dtable.js: 175
 Id = Id
 
-# src/acc/Annotations.js: 224
-# src/acc/Annotations.js: 437
-# src/acc/Annotations.js: 528
+# src/sys/Annotations.js: 224
+# src/sys/Annotations.js: 437
+# src/sys/Annotations.js: 528
 Income = Ingreso
 
 # src/sys/servers/Download.js: 431
@@ -451,7 +451,7 @@ Logout-message = <p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>
 # src/sys/Backups.js: 265
 Make backup = Hacer copia
 
-# src/acc/AccMain.js: 73
+# src/acc/AccMain.js: 72
 # src/fleas/FleasMain.js: 66
 # src/sys/Home.js: 47
 # src/daily/DailyMain.js: 106
@@ -468,7 +468,7 @@ Max = Max
 # src/sys/nicks/Editor.js: 28
 Min = Min
 
-# src/fleas/wgs/Dtable.js: 172
+# src/fleas/wgs/Dtable.js: 185
 # src/sys/nicks/Wnick.js: 53
 # src/sys/nicks/Wnick.js: 55
 Model = Modelo
@@ -510,8 +510,8 @@ New password and confirm password do not match = La nueva contraseña y su confi
 # src/sys/Chpass.js: 176
 New password is missing = Falta indicar la nueva contraseña
 
-# src/acc/Annotations.js: 153
-# src/acc/Annotations.js: 192
+# src/sys/Annotations.js: 153
+# src/sys/Annotations.js: 192
 # src/daily/Cos.js: 146
 Nick = Nick
 
@@ -535,9 +535,9 @@ Nick not found = Nick no encontrado
 # src/sys/nicks/Editor.js: 158
 Nick with id %0 not found = Nick con id %0 no encontado
 
-# src/acc/Annotations.js: 132
-# src/acc/Annotations.js: 171
-# src/sys/SysMain.js: 69
+# src/sys/SysMain.js: 70
+# src/sys/Annotations.js: 132
+# src/sys/Annotations.js: 171
 Nicks = Nicks
 
 # src/sys/Servers.js: 182
@@ -546,7 +546,7 @@ No Server Selected = Ningún servidor seleccionado
 # src/sys/nicks/Editor.js: 365
 No modification was performed.<br>See Log. = No se realizó ninguna modificación.<br>Ver el registro.
 
-# src/fleas/wgs/Dtable.js: 161
+# src/fleas/wgs/Dtable.js: 174
 Nº = Nº
 
 # src/sys/Backups.js: 108
@@ -573,13 +573,13 @@ Password is missing = Falta indicar la contraseña
 # src/sys/Chpass.js: 206
 Password successfully changed = La contraseña se cambió correctamente
 
-# src/fleas/wgs/Dtable.js: 164
+# src/fleas/wgs/Dtable.js: 177
 Pf. Avg = Media Bf.
 
-# src/fleas/wgs/Dtable.js: 165
+# src/fleas/wgs/Dtable.js: 178
 Pf. MDV = Var. Bf.
 
-# src/fleas/wgs/Dtable.js: 166
+# src/fleas/wgs/Dtable.js: 179
 Pf. Sel = Sel. Bf.
 
 # src/acc/Companies.js: 332
@@ -587,22 +587,22 @@ Pf. Sel = Sel. Bf.
 Portfolio = Cartera
 
 # src/acc/Trading.js: 297
-# src/acc/Annotations.js: 135
-# src/acc/Annotations.js: 136
-# src/acc/Annotations.js: 153
-# src/acc/Annotations.js: 174
-# src/acc/Annotations.js: 175
-# src/acc/Annotations.js: 192
+# src/sys/Annotations.js: 135
+# src/sys/Annotations.js: 136
+# src/sys/Annotations.js: 153
+# src/sys/Annotations.js: 174
+# src/sys/Annotations.js: 175
+# src/sys/Annotations.js: 192
 Price = Precio
 
-# src/acc/Balance.js: 113
-# src/acc/Balance.js: 186
-# src/acc/Balance.js: 228
+# src/acc/Balance.js: 110
+# src/acc/Balance.js: 183
+# src/acc/Balance.js: 225
 # src/acc/Companies.js: 418
-# src/acc/Annotations.js: 290
-# src/acc/Annotations.js: 440
-# src/acc/Annotations.js: 532
-# src/acc/AccMain.js: 86
+# src/acc/AccMain.js: 82
+# src/sys/Annotations.js: 290
+# src/sys/Annotations.js: 440
+# src/sys/Annotations.js: 532
 # src/daily/Cos.js: 148
 Profits = Beneficios
 
@@ -645,11 +645,11 @@ Restore backup = Restaurar copia
 # src/daily/Cos.js: 156
 Reverse = Reverso
 
-# src/acc/Balance.js: 237
+# src/acc/Balance.js: 234
 # src/daily/Cos.js: 150
 Risk = Riesgo
 
-# src/acc/Balance.js: 131
+# src/acc/Balance.js: 128
 Risk profits = Beneficios - riesgo
 
 # src/sys/servers/Download.js: 455
@@ -662,7 +662,7 @@ Row start = Inicio de fila
 Run = Activar
 
 # src/sys/Schedule.js: 176
-# src/sys/SysMain.js: 89
+# src/sys/SysMain.js: 95
 Schedule = Calendario
 
 # src/sys/nicks/Editor.js: 94
@@ -677,28 +677,28 @@ Selected = Seleccionado
 Selection = Selección
 
 # src/acc/Trading.js: 290
-# src/acc/Balance.js: 210
-# src/acc/Annotations.js: 151
-# src/acc/Annotations.js: 434
-# src/acc/Annotations.js: 524
+# src/acc/Balance.js: 207
+# src/sys/Annotations.js: 151
+# src/sys/Annotations.js: 434
+# src/sys/Annotations.js: 524
 Sell = Venta
 
 # src/acc/Trading.js: 407
-# src/acc/Balance.js: 170
-# src/fleas/wgs/Dtable.js: 168
+# src/acc/Balance.js: 167
+# src/fleas/wgs/Dtable.js: 181
 Sells = Ventas
 
 # src/sys/Servers.js: 238
 Server name is missing = Falta el nombre del servidor
 
-# src/sys/SysMain.js: 73
+# src/sys/SysMain.js: 74
 # src/sys/nicks/Editor.js: 111
 Servers = Servidores
 
 # src/core/Expired.js: 45
 Session is expired. = La sesión ha expirado.
 
-# src/sys/SysMain.js: 79
+# src/sys/SysMain.js: 85
 # src/sys/Settings.js: 41
 Settings = Configuración
 
@@ -743,14 +743,14 @@ Step = Paso
 # src/acc/Trading.js: 313
 # src/acc/Trading.js: 405
 # src/acc/Trading.js: 411
-# src/acc/Balance.js: 155
-# src/acc/Balance.js: 197
-# src/acc/Annotations.js: 133
-# src/acc/Annotations.js: 134
-# src/acc/Annotations.js: 153
-# src/acc/Annotations.js: 172
-# src/acc/Annotations.js: 173
-# src/acc/Annotations.js: 192
+# src/acc/Balance.js: 152
+# src/acc/Balance.js: 194
+# src/sys/Annotations.js: 133
+# src/sys/Annotations.js: 134
+# src/sys/Annotations.js: 153
+# src/sys/Annotations.js: 172
+# src/sys/Annotations.js: 173
+# src/sys/Annotations.js: 192
 Stocks = Acciones
 
 # src/sys/Home.js: 61
@@ -783,16 +783,16 @@ Test has errors = La prueba arroja errores
 # src/sys/Nicks.js: 397
 Test successfully done = El resultado de la prueba es correcto
 
-# src/acc/Annotations.js: 492
+# src/sys/Annotations.js: 492
 There are wrong annotations (%0).\nSee log. = Hay anotaciones incorrectas (%0).\nVer registro.
 
-# src/acc/Balance.js: 139
+# src/acc/Balance.js: 136
 Total bet = Apuesta total
 
 # src/sys/Nicks.js: 28
 Total: %0. Selected: %1. = Total: %0. Seleccionados: %1.
 
-# src/acc/AccMain.js: 84
+# src/acc/AccMain.js: 80
 Trading = Operaciones
 
 # src/sys/Backups.js: 287
@@ -810,7 +810,7 @@ User = Usuario
 # src/core/Auth.js: 77
 User name is missing = Falta indicar el nombre del usuario
 
-# src/acc/Balance.js: 219
+# src/acc/Balance.js: 216
 Value = Valor
 
 # src/sys/servers/Download.js: 58
@@ -823,9 +823,9 @@ Vol = Vol
 # src/sys/servers/Download.js: 40
 Volume = Volumen
 
-# src/acc/Annotations.js: 256
-# src/acc/Annotations.js: 438
-# src/acc/Annotations.js: 528
+# src/sys/Annotations.js: 256
+# src/sys/Annotations.js: 438
+# src/sys/Annotations.js: 528
 Withdrawal = Reintegro
 
 # src/sys/Servers.js: 167
@@ -844,8 +844,8 @@ Without champions = Sin ganadores
 # src/acc/Profits.js: 26
 # src/acc/Profits.js: 174
 # src/fleas/Model.js: 105
-# src/fleas/Charts.js: 44
-# src/fleas/wgs/Dtable.js: 237
+# src/fleas/wgs/Wcharts.js: 45
+# src/fleas/wgs/Dtable.js: 254
 # src/fleas/wgs/Chart.js: 45
 Without data = Sin datos
 
@@ -871,7 +871,7 @@ Wrong server data = Datos del servidor en mal estado
 # src/sys/Nicks.js: 38
 Wrong server data and quotes corrected = Datos del servidor en mal estado<br>y cotizaciones corregidas
 
-# src/acc/Annotations.js: 447
+# src/sys/Annotations.js: 447
 Year close = Cierre del ejercicio
 
 # src/sys/servers/Download.js: 350
