@@ -17,7 +17,6 @@
 #include "scheduler/acc.h"
 
 static void sleeping1 (AsyncActor *ac) {
-  asyncActor_wait(ac, (FPROC)log_info, "In Sleeping (1)");
   int hour = atoi(date_f(date_now(), "%H"));
   if (hour > ACT_HISTORIC_START && hour < ACT_HISTORIC_END) {
     if (io_active ()) {
