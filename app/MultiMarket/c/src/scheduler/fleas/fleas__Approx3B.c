@@ -1,7 +1,7 @@
 // Copyright 20-Jun-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-#include "scheduler/fleas/fleas__Approx3b.h"
+#include "scheduler/fleas/fleas__Approx3B.h"
 #include "data/Flea.h"
 #include "data/Order.h"
 #include "DEFS.h"
@@ -101,7 +101,7 @@ static double ref(Darr *params, void *co) {
   return ((CO *)co)->ref;
 }
 
-Model *fleas__Approx3b() {
+Model *fleas__Approx3B() {
   // Arr[char]
   Arr *param_names = arr_new();
   arr_push(param_names, "Inicio C");
@@ -125,7 +125,7 @@ Model *fleas__Approx3b() {
   Js *param_jss = js_wa(param_jss_js);
 
   return model_new(
-    str_new("Approx3b"),
+    str_new("Approx3B"),
     param_names,
     param_jss,
     fparams_new,

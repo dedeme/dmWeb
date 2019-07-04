@@ -4,6 +4,8 @@
 #include "tests.h"
 #include "io.h"
 #include "io/log.h"
+#include "io/nicks.h"
+#include "io/quotes.h"
 #include "log_tests.h"
 #include "nick_tests.h"
 #include "quote_tests.h"
@@ -12,11 +14,14 @@
 #include "rs_tests.h"
 #include "order_tests.h"
 #include "facc_tests.h"
+#include "nickSets_tests.h"
 
 static void init (void) {
   sys_init("MultiMarket_tests");
   io_init();
   log_init();
+  nicks_init();
+  quotes_init();
 }
 
 int main (int argc, char *argv[]) {
@@ -29,6 +34,6 @@ int main (int argc, char *argv[]) {
   gen_tests();
   rs_tests();
   order_tests();
-*/  facc_tests();
-
+  facc_tests();
+*/  nickSets_tests();
 }

@@ -1,19 +1,16 @@
-// Copyright 21-Jun-2019 ºDeme
+// Copyright 03-Jul-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-#include "scheduler/fleas/fleas__Incr3.h"
+#include "scheduler/fleas/fleas__Incr3a.h"
 #include "data/Flea.h"
 #include "data/Order.h"
 #include "io/quotes.h"
 #include "DEFS.h"
 
-enum {DAYS, STRIP_TO_BUY, STRIP_TO_SELL};
+enum {STRIP_TO_BUY, STRIP_TO_SELL};
 
-// Days is at d + d * x, where x >= MAX_DAYS && x <= MIN_DAYS
-#define MAX_DAYS 120
-
-// Days is at d + d * x, where x >= MAX_DAYS && x <= MIN_DAYS
-#define MIN_DAYS 20
+// Days number
+#define NDAYS 53
 
 // Strip is d + d * x where x >= MAX_STRIP && x <= MIN_STRIP
 #define MAX_STRIP 0.25
@@ -47,7 +44,6 @@ static Darr *fparams(Flea *f) {
   double *p = gen_values(g);
   Darr *r = darr_new();
 
-  darr_push(r, (double)(int)(flea_param(MAX_DAYS, MIN_DAYS, *p++)));
   darr_push(r, flea_param(MAX_STRIP, MIN_STRIP, *p++));
   darr_push(r, flea_param(MAX_STRIP, MIN_STRIP, *p++));
 
@@ -66,7 +62,7 @@ static Arr *fcos(Darr *params, int qnicks, QmatrixValues *closes) {
 
 static Order *order(Darr *params, void *company, double q) {
   CO *co = (CO *)company;
-  int days = darr_get(params, DAYS);
+  int days = NDAYS;
 
   if (co->days_ix < days) {
     co->days_ix += 1;
@@ -132,24 +128,14 @@ static double ref(Darr *params, void *company) {
   ;
 }
 
-Model *fleas__Incr3() {
+Model *fleas__Incr3a() {
   // Arr[char]
   Arr *param_names = arr_new();
-  arr_push(param_names, "Días");
-  arr_push(param_names, "Banda C");
-  arr_push(param_names, "Banda V");
+  arr_push(param_names, "(Días=53) Banda C");
+  arr_push(param_names, "(Días=53) Banda V");
 
   // Arr[Js]
   Arr *param_jss_js = arr_new();
-  Js *mk_pday_jss () {
-    Arr *r = arr_new();
-    arr_push(r, js_ws(""));
-    arr_push(r, js_wi(1));
-    arr_push(r, js_wi(0));
-    arr_push(r, js_ws(""));
-    Js *js = js_wa(r);
-    return js;
-  }
   Js *mk_p_jss () {
     Arr *r = arr_new();
     arr_push(r, js_ws(""));
@@ -159,13 +145,12 @@ Model *fleas__Incr3() {
     Js *js = js_wa(r);
     return js;
   }
-  arr_push(param_jss_js, mk_pday_jss());
   arr_push(param_jss_js, mk_p_jss());
   arr_push(param_jss_js, mk_p_jss());
   Js *param_jss = js_wa(param_jss_js);
 
   return model_new(
-    str_new("Incr3"),
+    str_new("Incr3a"),
     param_names,
     param_jss,
     fparams,
@@ -176,4 +161,5 @@ Model *fleas__Incr3() {
 }
 
 #undef CO
+
 

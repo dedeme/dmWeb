@@ -6,12 +6,13 @@
 #ifndef DATA_MODEL_H
   #define DATA_MODEL_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 #include "dmc/Darr.h"
 #include "Flea.h"
 #include "Order.h"
 #include "Rs.h"
 #include "Qmatrix.h"
+#include "NickSets.h"
 
 /// Function which returns parameters of 'f'
 typedef Darr *(*Fparams)(Flea *f);
@@ -86,10 +87,14 @@ Order *model_order(Model *this, Darr *params, void *co, double q);
 double model_ref(Model *this, Darr *params, void *co);
 
 /// Calculates flea assets
-RsAssets *model_assets(Model *this, Flea *f, Qmatrix *opens, Qmatrix *closes);
+RsAssets *model_assets(
+  Model *this, Flea *f, NickSets *sets, Qmatrix *opens, Qmatrix *closes
+);
 
 /// Calculates flea profits
-RsProfits *model_profits(Model *this, Flea *f, Qmatrix *opens, Qmatrix *closes);
+RsProfits *model_profits(
+  Model *this, Flea *f, NickSets *sets, Qmatrix *opens, Qmatrix *closes
+);
 
 /// Calculates data for charts. 'dates' is Arr[char]
 RsCharts *model_charts(

@@ -9,15 +9,15 @@ void order_tests() {
   puts("Order tests:");
 
   OrderCos *os = orderCos_new(105);
-  orderCos_addOrder(os, 0, order_none());
-  orderCos_addOrder(os, 1, order_buy(1.2));
-  orderCos_addOrder(os, 2, order_sell());
-  orderCos_addOrder(os, 3, order_none());
-  orderCos_addOrder(os, 4, order_none());
-  orderCos_addOrder(os, 5, order_sell());
-  orderCos_addOrder(os, 6, order_buy(1.4));
-  orderCos_addOrder(os, 7, order_none());
-  orderCos_addOrder(os, 8, order_buy(1.1));
+  orderCos_add(os, 0, order_none());
+  orderCos_add(os, 1, order_buy(1.2));
+  orderCos_add(os, 2, order_sell());
+  orderCos_add(os, 3, order_none());
+  orderCos_add(os, 4, order_none());
+  orderCos_add(os, 5, order_sell());
+  orderCos_add(os, 6, order_buy(1.4));
+  orderCos_add(os, 7, order_none());
+  orderCos_add(os, 8, order_buy(1.1));
 
   assert(orderCos_nsells(os) == 2);
   assert(orderCos_nbuys(os) == 3);

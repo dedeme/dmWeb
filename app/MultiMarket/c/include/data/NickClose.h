@@ -1,7 +1,7 @@
 // Copyright 24-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-/// Tuple nick-close used in data/Server.
+/// Tuple nick-close used in data/Server and quotes_sets.
 
 #ifndef DATA_NICKCLOSE_H
   #define DATA_NICKCLOSE_H

@@ -5,11 +5,12 @@
 #include "data/Model.h"
 #include "scheduler/fleas/fleas__Approx.h"
 #include "scheduler/fleas/fleas__Approx2.h"
-#include "scheduler/fleas/fleas__Approx3a.h"
-#include "scheduler/fleas/fleas__Approx3b.h"
+#include "scheduler/fleas/fleas__Approx3A.h"
+#include "scheduler/fleas/fleas__Approx3B.h"
 #include "scheduler/fleas/fleas__GA.h"
 #include "scheduler/fleas/fleas__Incr2.h"
 #include "scheduler/fleas/fleas__Incr3.h"
+#include "scheduler/fleas/fleas__Incr3a.h"
 #include "scheduler/fleas/fleas__MA.h"
 #include "scheduler/fleas/fleas__MA2.h"
 #include "scheduler/fleas/fleas__MM1.h"
@@ -35,27 +36,28 @@ void fleas__models_init (void) {
 
   arr_push(models, fleas__Approx());
   arr_push(models, fleas__Approx2());
-  arr_push(models, fleas__Approx3a());
-  arr_push(models, fleas__Approx3b());
+  arr_push(models, fleas__Approx3A());
+  arr_push(models, fleas__Approx3B());
   arr_push(models, fleas__GA());
   arr_push(models, fleas__Incr2());
   arr_push(models, fleas__Incr3());
+//  arr_push(models, fleas__Incr3a());
   arr_push(models, fleas__MA());
   arr_push(models, fleas__MA2());
   arr_push(models, fleas__MM1());
   arr_push(models, fleas__MM2A());
-  arr_push(models, fleas__MM2Aa());
-  arr_push(models, fleas__MM2Ab());
+//  arr_push(models, fleas__MM2Aa());
+//  arr_push(models, fleas__MM2Ab());
   arr_push(models, fleas__MM2B());
   arr_push(models, fleas__MM4());
   arr_push(models, fleas__MMBack1());
   arr_push(models, fleas__MMBack2());
-  arr_push(models, fleas__MMBack2a());
-  arr_push(models, fleas__MMBack2b());
+//  arr_push(models, fleas__MMBack2a());
+//  arr_push(models, fleas__MMBack2b());
   arr_push(models, fleas__MMWin1());
   arr_push(models, fleas__MMWin2());
-  arr_push(models, fleas__MMWin2a());
-  arr_push(models, fleas__MMWin2b());
+//  arr_push(models, fleas__MMWin2a());
+//  arr_push(models, fleas__MMWin2b());
 }
 
 // Arr[Model]

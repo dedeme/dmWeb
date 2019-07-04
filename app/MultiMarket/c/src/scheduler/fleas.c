@@ -47,16 +47,18 @@ static void run (AsyncActor *ac) {
   Arr *dates;
   Qmatrix *closes;
   Qmatrix *opens;
+  NickSets *sets;
   void fn (void *null) {
     conf_set_fleas_running(1);
     fleasdb_flog_clear();
     dates = quotes_dates();
     closes = opt_oget(quotes_closes(), NULL);
     opens = opt_oget(quotes_opens(), NULL);
+    sets = opt_oget(quotes_sets(), NULL);
   }
   asyncActor_wait(ac, fn, NULL);
 
-  if (!arr_size(dates) || !closes || !opens) {
+  if (!arr_size(dates) || !closes || !opens || !sets) {
     return;
   }
 
@@ -80,7 +82,7 @@ static void run (AsyncActor *ac) {
     Rs *rs_selected = rs_new(
       flea_new(date, 0, 0, nparams),
       rsAssets_new(0, 0, 0),
-      rsProfits_new(0, 0, 0)
+      rsProfits_new(-100, 0, -100)
     );
     Rs *old_rs_selected = rs_selected;
 
@@ -92,7 +94,7 @@ static void run (AsyncActor *ac) {
       rs
     )
       Flea *f = rs_flea(rsWeb_result(rsBests_result(rs)));
-      RsAssets *assets = model_assets(md, f, opens, closes);
+      RsAssets *assets = model_assets(md, f, sets, opens, closes);
       arr_push(rss_old, rs_new(f, assets, rsProfits_new(0, 0, 0)));
     _EACH
 
@@ -105,7 +107,7 @@ static void run (AsyncActor *ac) {
         arr_push(rss, rs_new(
           flea_new(date, 0, i, nparams),
           rsAssets_new(0, 0, 0),
-          rsProfits_new(0, 0, 0)
+          rsProfits_new(-100, 0, -100)
         ));
       _RANGE
 
@@ -130,7 +132,7 @@ static void run (AsyncActor *ac) {
           Flea *fnew = flea_mutate(
             rs_flea(arr_get(rss, rss_sizec)), date, cy + 1, id++
           );
-          RsAssets *assets = model_assets(md, fnew, opens, closes);
+          RsAssets *assets = model_assets(md, fnew, sets, opens, closes);
           arr_push(rss, rs_new(fnew, assets, rsProfits_new(0, 0, 0)));
 
           ++rss_sizec;
@@ -199,7 +201,7 @@ static void run (AsyncActor *ac) {
         Flea *fl = rs_flea(rs);
         RsAssets *assets = rs_assets(rs);
         double as = rsAssets_assets(assets);
-        RsProfits *prfs = model_profits(md, fl, opens, closes);
+        RsProfits *prfs = model_profits(md, fl, sets, opens, closes);
         arr_set(rss, i, rs_new(rs_flea(rs), assets, prfs));
         if (as > max_assets) max_assets = as;
       _EACH
@@ -312,6 +314,7 @@ static void run (AsyncActor *ac) {
         Opt *omd = fleas__models_get(model);
         if (opt_is_empty(omd)) {
           log_error(str_f("Champions model '%s' not found", model));
+          arr_push(rss, rsCh);
           continue;
         }
         Model *md = opt_get(omd);
@@ -321,8 +324,8 @@ static void run (AsyncActor *ac) {
         Flea *fl = rs_flea(rs);
         RsAssets *old_assets = rs_assets(rs);
         RsProfits *old_profits = rs_profits(rs);
-        RsAssets *assets = model_assets(md, fl, opens, closes);
-        RsProfits *profits = model_profits(md, fl, opens, closes);
+        RsAssets *assets = model_assets(md, fl, sets, opens, closes);
+        RsProfits *profits = model_profits(md, fl, sets, opens, closes);
         double avg = davg(rsProfits_avg(old_profits), rsProfits_avg(profits));
         double var = davg(rsProfits_var(old_profits), rsProfits_var(profits));
         Rs *new_rs = rs_new(

@@ -10,6 +10,6 @@
 #include "data/Model.h"
 
 ///
-Model *fleas__Approx3a();
+Model *fleas__Approx3A();
 
 #endif

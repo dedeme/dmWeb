@@ -10,6 +10,7 @@
 #include "data/Quote.h"
 #include "data/EMsg.h"
 #include "data/Qmatrix.h"
+#include "data/NickSets.h"
 
 ///
 void quotes_init (void);
@@ -25,7 +26,7 @@ Arr *quotes_read (char *nick_name);
 ///   qs: It is Arr[Quote]. Its order is from after to before.
 void quotes_write (char *nick_name, Arr *qs);
 
-/// Creates a new empty file if it do not already exist.
+/// Creates a new empty file if it does not already exist.
 ///   nick_name: Name of nick (e.g. TEF)
 void quotes_add (char *nick_name);
 
@@ -74,6 +75,9 @@ Opt *quotes_closes (void);
 /// Returns a Opt[Qmatrix] with opens of selected companies, from before to
 /// after
 Opt *quotes_opens (void);
+
+/// Returns Opt[NickSets] 5 sets of nick names from selected companies.
+Opt *quotes_sets (void);
 
 /// Returns a Opt[char] with the last date of company model. If nick model is
 /// not defined, returns the last date of the first company. If there is no

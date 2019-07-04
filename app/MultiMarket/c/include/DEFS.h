@@ -35,6 +35,9 @@
 /// Number of quotes in historic
 #define HISTORIC_QUOTES 610
 
+/// Minimal number of companies in a set
+#define SET_COMPANIES 10
+
 /// Number of quotes to calculate volume
 #define VOLUME_QUOTES 100
 

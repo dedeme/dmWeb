@@ -6,6 +6,7 @@
 #include "io/log.h"
 #include "io.h"
 #include "data/Nick.h"
+#include "data/NickClose.h"
 #include "DEFS.h"
 
 static char *quotes_db = NULL;
@@ -329,6 +330,121 @@ Opt *quotes_closes (void) {
 // Returns Opt[Qmatrix]
 Opt *quotes_opens (void) {
   return mk_qmtrix(quote_open);
+}
+
+Opt *quotes_sets (void) {
+  // If fails returns -1
+  double first_quote(QmatrixValues *vs, int start, int co) {
+    vs = vs + start;
+    double r;
+    RANGE(i, start, HISTORIC_QUOTES)
+      r = (*(vs++))[co];
+      if (r > 0) return r;
+    _RANGE
+    return -1;
+  }
+
+  // If fails returns -1
+  double last_quote(QmatrixValues *vs, int start, int co) {
+    vs += HISTORIC_QUOTES;
+    double r;
+    RANGE(i, start, HISTORIC_QUOTES)
+      r = (*(--vs))[co];
+      if (r > 0) return r;
+    _RANGE
+    return -1;
+  }
+
+  Qmatrix *mx = opt_oget(quotes_closes(), NULL);
+  if (!mx) return opt_empty();
+
+  // Arr[Nick]
+  Arr *all = qmatrix_nicks(mx);
+  if (arr_size(all) < SET_COMPANIES * 2) {
+    log_error(str_f(
+      "quotes_sets: There are less than %d companies (%d)",
+      SET_COMPANIES * 2, arr_size(all)
+    ));
+  }
+  char *all_fmap (NickClose *nc) { return arr_get(all, nickClose_nick(nc)); }
+
+  // Arr[NickClose]
+  Arr *complete = arr_new();
+
+  // Arr[NickClose]
+  Arr *semi = arr_new();
+
+  int semi_ix = HISTORIC_QUOTES / 2;
+  RANGE0(nk_id, arr_size(all))
+    QmatrixValues *vs = qmatrix_values(mx);
+    double first_complete = first_quote(vs, 0, nk_id);
+    double last_complete = last_quote(vs, 0, nk_id);
+    double first_semi = first_quote(vs, semi_ix, nk_id);
+    double last_semi = last_quote(vs, semi_ix, nk_id);
+    if (
+      first_complete > 0 && last_complete > 0 &&
+      first_semi > 0 && last_semi > 0
+    ) {
+      arr_push(complete, nickClose_new(
+        nk_id, (last_complete - first_complete) / first_complete
+      ));
+      arr_push(semi, nickClose_new(
+        nk_id, (last_semi - first_semi) / first_semi
+      ));
+    }
+  _RANGE
+
+  int fgreater(NickClose *nc1, NickClose *nc2) {
+    return nickClose_close(nc1) > nickClose_close(nc2);
+  }
+  arr_sort(complete, (FCMP)fgreater);
+  arr_sort(semi, (FCMP)fgreater);
+
+  // Tp[Arr[Nick], Arr[Nick]] (win, loss)
+  // ncs is Arr[NickClose]. It can result reversed.
+  Tp *partition (Arr *ncs) {
+    // Arr[char]
+    Arr *win = arr_new();
+    // Arr[char]
+    Arr *loss = arr_new();
+    EACH(ncs, NickClose, nc)
+      Nick *nick = arr_get(all, nickClose_nick(nc));
+      if (nickClose_close(nc) > 0) arr_push(win, nick);
+      else arr_push(loss, nick);
+    _EACH
+    if (
+      arr_size(win) < SET_COMPANIES
+    ) {
+      win = arr_from_it(it_map(
+        it_take(arr_to_it(ncs), SET_COMPANIES),
+        (FCOPY)all_fmap
+      ));
+      loss = arr_from_it(it_map(
+        it_drop(arr_to_it(ncs), SET_COMPANIES),
+        (FCOPY)all_fmap
+      ));
+    } else if (arr_size(loss) < SET_COMPANIES) {
+      arr_reverse(ncs);
+      loss = arr_from_it(it_map(
+        it_take(arr_to_it(ncs), SET_COMPANIES),
+        (FCOPY)all_fmap
+      ));
+      win = arr_from_it(it_map(
+        it_drop(arr_to_it(ncs), SET_COMPANIES),
+        (FCOPY)all_fmap
+      ));
+    }
+    return tp_new(win, loss);
+  }
+
+  // Tp[Arr[Nick], Arr[Nick]] (win, loss)
+  Tp *all_ps = partition(complete);
+  // Tp[Arr[Nick], Arr[Nick]] (win, loss)
+  Tp *semi_ps = partition(semi);
+
+  return opt_new(nickSets_new(
+    tp_e1(all_ps), tp_e2(all_ps), tp_e1(semi_ps), tp_e2(semi_ps)
+  ));
 }
 
 // Returns Opt[char]
