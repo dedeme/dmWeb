@@ -24,6 +24,13 @@ char *daily_process(AsyncActor *ac, Map *mrq) {
     asyncActor_wait(ac, fn, NULL);
     return cgi_ok(rp);
   }
+  if (str_eq(rq, "update")) {
+    void fn (void *null) {
+      dailydb_update_charts();
+    }
+    asyncActor_wait(ac, fn, NULL);
+    return cgi_empty();
+  }
 
   EXC_ILLEGAL_ARGUMENT("rq", "idata", rq)
   return NULL; // Unreachable

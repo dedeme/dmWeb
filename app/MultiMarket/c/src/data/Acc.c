@@ -56,11 +56,10 @@ AccHEntry: SERIAL
 # Portfolio entry
 -AccPfEntry: to
   nick: char *
-  @stocks: int
-  @price: double
+  stocks: int
+  price: double
   @quote: double
   @ref: double
-
 ===
 # Tuple (errors (Arr[char]), ledger, pf)
 -AccLedPf
@@ -394,16 +393,8 @@ int accPfEntry_stocks(AccPfEntry *this) {
   return this->stocks;
 }
 
-void accPfEntry_set_stocks(AccPfEntry *this, int value) {
-  this->stocks = value;
-}
-
 double accPfEntry_price(AccPfEntry *this) {
   return this->price;
-}
-
-void accPfEntry_set_price(AccPfEntry *this, double value) {
-  this->price = value;
 }
 
 double accPfEntry_quote(AccPfEntry *this) {
@@ -573,7 +564,6 @@ AccEntry *accEntry_from_js(Js *js) {
   return this;
 }
 
-// 'pf' is Arr[AccPfEntry]
 static void pf_add(AccPf *pf, char *nick, int stocks, double price) {
   EACH(pf, AccPfEntry, e)
     if (str_eq(e->nick, nick)) {
@@ -600,7 +590,7 @@ AccLedPf *accLedPf_new(Arr *annotations) {
   Dec *profits = dec_new(0, 2); // -
   Dec *differences = dec_new(0, 2); // -
 
-  AccPf *pf = (AccPf *)arr_new();
+  AccPf *pf = arr_new();
 
   EACH_IX(annotations, AccEntry, e, ix)
     char *operation = e->operation;

@@ -215,3 +215,38 @@ Js *dailydb_cos (void) {
 
   return js_wa(r);
 }
+
+void dailydb_update_charts (void) {
+  // Arr[Js]
+  Arr *cos = js_ra(dailydb_cos());
+
+  AccLedPf *rs = accLedPf_new(accdb_diary_read());
+  EACH(accLedPf_errors(rs), char, e)
+    log_error(e);
+  _EACH
+  // Arr[AccPfEntry]
+  Arr *pf = accLedPf_pf(rs);
+  // It is not necessary to use 'accdb_pf_update(pf);'
+
+  EACH_IX(cos, Js, co, ix)
+    // Arr[Js]
+    Arr *aco = js_ra(co);
+    char *nick = js_rs(arr_get(aco, 0));
+    int stocks = 0;
+    double price = 0;
+    EACH(pf, AccPfEntry, e)
+      if (str_eq(accPfEntry_nick(e), nick)) {
+        stocks = accPfEntry_stocks(e);
+        price = accPfEntry_price(e);
+        break;
+      }
+    _EACH
+    arr_set(aco, 2, js_wi(stocks));
+    arr_set(aco, 3, js_wd(price));
+
+    char *f = path_cat(dailydb, str_f("%s", nick), NULL);
+    file_write(f, (char *)js_wa(aco));
+  _EACH
+
+  dailydb_update();
+}

@@ -106,6 +106,11 @@ export default class DailyMain {
       DailyMain.managementPageId, _("Management"),
       () => location.assign(Main.urlBase)
     ));
+    this._menu.addRight(Menu.separator());
+    this._menu.addRight(Menu.mkOption(
+      DailyMain.updatePageId, _("Update"),
+      () => this.updateCharts()
+    ));
     this._menu.addRight(this._dataSpan);
 
     this._main.view.removeAll()
@@ -229,6 +234,26 @@ export default class DailyMain {
     }, 15000);
   }
 
+  /** @private */
+  async updateCharts () {
+    this._main.view.removeAll()
+      .add($("div").style("text-align:center")
+        .add(Ui.img("wait2.gif").klass("frame")))
+    ;
+
+    const rq = {
+      "module": "daily",
+      "rq": "update"
+    };
+    await Main.client.rq(rq);
+
+    this._main.view.removeAll()
+      .add(this._menu.wg)
+      .add(this._body)
+    ;
+    this.update();
+  }
+
   /**
    * @param {string} nick
    * @return {boolean}
@@ -262,11 +287,6 @@ export default class DailyMain {
     }
   }
 
-  /** @return {string} */
-  static get managementPageId () {
-    return "_management_";
-  }
-
   /** @return {string} Id of Summary page */
   static get summaryPageId () {
     return "_sumary_";
@@ -286,4 +306,15 @@ export default class DailyMain {
   static get selectionPageId () {
     return "_selection_";
   }
+
+  /** @return {string} */
+  static get updatePageId () {
+    return "_update_";
+  }
+
+  /** @return {string} */
+  static get managementPageId () {
+    return "_management_";
+  }
+
 }

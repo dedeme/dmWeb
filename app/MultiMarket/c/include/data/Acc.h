@@ -144,13 +144,7 @@ char *accPfEntry_nick(AccPfEntry *this);
 int accPfEntry_stocks(AccPfEntry *this);
 
 ///
-void accPfEntry_set_stocks(AccPfEntry *this, int value);
-
-///
 double accPfEntry_price(AccPfEntry *this);
-
-///
-void accPfEntry_set_price(AccPfEntry *this, double value);
 
 ///
 double accPfEntry_quote(AccPfEntry *this);
