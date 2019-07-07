@@ -3,7 +3,7 @@
 
 #include "io/log.h"
 #include "dmc/date.h"
-#include "io.h"
+#include "io/io.h"
 #include "DEFS.h"
 
 static char *log = NULL;

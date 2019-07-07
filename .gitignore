@@ -1,3 +1,4 @@
+.directory
 tools
 lib
 *.geany
@@ -7,6 +8,7 @@ gitk
 obj
 bin
 _test
+.mkdir
 
 #js
 **/www/index.js

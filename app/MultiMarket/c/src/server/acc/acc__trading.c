@@ -8,7 +8,7 @@
 #include "io/log.h"
 #include "data/Acc.h"
 #include "data/ModelParams.h"
-#include "scheduler/fleas/fleas__models.h"
+#include "data/dfleas/dfleas__models.h"
 #include "DEFS.h"
 
 // mrq is Map[Js]
@@ -82,7 +82,7 @@ char *acc__trading_process(AsyncActor *ac, Map *mrq) {
       map_put(rp, "buys", js_wa(buys));
       map_put(rp, "sells", js_wa(sells));
 
-      ModelParams *mps = fleas__models_acc();
+      ModelParams *mps = dfleas__models_acc();
       map_put(rp, "params", darr_to_js(modelParams_params(mps)));
     }
     asyncActor_wait(ac, fn, NULL);

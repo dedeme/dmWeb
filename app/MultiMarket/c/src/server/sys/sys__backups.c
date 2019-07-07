@@ -5,7 +5,6 @@
 #include "dmc/cgi.h"
 #include "io/backups.h"
 #include "io/trash.h"
-#include "io.h"
 
 // mrq is Map[Js]
 char *sys__backups_process(AsyncActor *ac, Map *mrq) {

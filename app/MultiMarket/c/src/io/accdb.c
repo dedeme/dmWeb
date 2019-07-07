@@ -3,10 +3,10 @@
 
 #include "io/accdb.h"
 #include "dmc/date.h"
-#include "io.h"
+#include "io/io.h"
 #include "io/conf.h"
 #include "io/quotes.h"
-#include "scheduler/fleas/fleas__models.h"
+#include "data/dfleas/dfleas__models.h"
 #include "data/Model.h"
 #include "DEFS.h"
 
@@ -81,7 +81,7 @@ RsHistoric *accdb_historic (char *nick) {
     darr_push(closes, quote_close(q));
   _EACH
 
-  ModelParams *mps = fleas__models_acc();
+  ModelParams *mps = dfleas__models_acc();
   return model_historic(
     modelParams_model(mps),
     modelParams_params(mps),
@@ -104,7 +104,7 @@ RsHistoric *accdb_historic_without_dailyq (char *nick) {
     darr_push(closes, quote_close(q));
   _EACH
 
-  ModelParams *mps = fleas__models_acc();
+  ModelParams *mps = dfleas__models_acc();
   return model_historic(
     modelParams_model(mps),
     modelParams_params(mps),

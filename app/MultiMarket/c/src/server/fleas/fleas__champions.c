@@ -2,10 +2,9 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "server/fleas/fleas__champions.h"
-#include "io.h"
 #include "io/conf.h"
 #include "io/fleasdb.h"
-#include "scheduler/fleas/fleas__models.h"
+#include "data/dfleas/dfleas__models.h"
 #include "data/Model.h"
 #include "dmc/cgi.h"
 

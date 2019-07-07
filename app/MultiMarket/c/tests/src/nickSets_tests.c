@@ -25,6 +25,14 @@ void nickSets_tests() {
   NickSets *sets = opt_oget(quotes_sets(), NULL);
   assert(sets);
 
+  // Arr[Nick]
+  Arr *all = arr_new();
+  EACH(nickSets_win(sets), Nick, nk)
+    char *nkname = nick_name(nk);
+    int fcontains (Nick *n) { return str_eq(nick_name(n), nkname); }
+    if (!it_contains(arr_to_it(all), (FPRED)fcontains)) arr_push(all, nk);
+  _EACH
+
   /*
   puts("XXXXXXXXXXXXXXXXXXXXX");
   Arr *set = nickSets_all(sets);
@@ -44,7 +52,7 @@ void nickSets_tests() {
   puts("XXXXXXXXXXXXXXXXXXXXX");
   */
 
-  EACH(nickSets_all(sets), Nick, nk)
+  EACH(all, Nick, nk)
     if (fcontains(nickSets_win(sets), nk)) {
       assert(!fcontains(nickSets_loss(sets), nk));
     } else {

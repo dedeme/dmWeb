@@ -6,9 +6,7 @@
 #include "io/nicks.h"
 #include "io/quotes.h"
 #include "io/servers.h"
-#include "io/log.h"
 #include "data/Quote.h"
-#include "io.h"
 #include "DEFS.h"
 
 /// mrq is Map[Js]

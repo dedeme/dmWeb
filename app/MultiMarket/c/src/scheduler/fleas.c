@@ -4,7 +4,7 @@
 #include "scheduler/fleas.h"
 #include "dmc/date.h"
 #include "dmc/Iarr.h"
-#include "scheduler/fleas/fleas__models.h"
+#include "data/dfleas/dfleas__models.h"
 #include "data/Model.h"
 #include "data/Rs.h"
 #include "io/log.h"
@@ -70,7 +70,7 @@ static void run (AsyncActor *ac) {
   double max_sells_mul =
       (double)max_sells / (INITIAL_CAPITAL + INITIAL_CAPITAL);
   // Arr[Model]
-  Arr *models = fleas__models();
+  Arr *models = dfleas__models();
 
   EACH(models, Model, md) {
     asyncActor_wait(
@@ -311,7 +311,7 @@ static void run (AsyncActor *ac) {
       EACH_IX(fleasdb_champions_read(nparams), RsChampions, rsCh, ix)
         char *model = rsChampions_model(rsCh);
         // Opt[Model]
-        Opt *omd = fleas__models_get(model);
+        Opt *omd = dfleas__models_get(model);
         if (opt_is_empty(omd)) {
           log_error(str_f("Champions model '%s' not found", model));
           arr_push(rss, rsCh);

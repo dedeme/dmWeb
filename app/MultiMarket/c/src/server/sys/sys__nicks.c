@@ -3,11 +3,10 @@
 
 #include "server/sys/sys__nicks.h"
 #include "dmc/cgi.h"
-#include "io.h"
 #include "io/conf.h"
 #include "io/nicks.h"
 #include "io/quotes.h"
-#include "net.h"
+#include "io/net.h"
 
 // All Map[Js]
 static Map *download (void *actor, Map *mrq) {

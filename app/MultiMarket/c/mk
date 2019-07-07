@@ -1,0 +1,28 @@
+#!/bin/bash
+
+ROOT=$(pwd)
+
+cd $ROOT/.mkdir/lib//data
+make > /dev/null
+cd $ROOT/.mkdir/lib//data/dfleas
+make > /dev/null
+cd $ROOT/.mkdir/lib//io
+make > /dev/null
+cd $ROOT/.mkdir/lib//scheduler
+make > /dev/null
+cd $ROOT/.mkdir/lib//server/sys/servers
+make > /dev/null
+cd $ROOT/.mkdir/lib//server/sys/nicks
+make > /dev/null
+cd $ROOT/.mkdir/lib//server/sys
+make > /dev/null
+cd $ROOT/.mkdir/lib//server/fleas/wgs
+make > /dev/null
+cd $ROOT/.mkdir/lib//server/fleas
+make > /dev/null
+cd $ROOT/.mkdir/lib//server/acc
+make > /dev/null
+cd $ROOT/.mkdir/lib//server
+make > /dev/null
+cd $ROOT
+make > /dev/null

@@ -5,7 +5,7 @@
 #include "dmc/date.h"
 #include "dmc/ext.h"
 #include "dmc/b64.h"
-#include "io.h"
+#include "io/io.h"
 #include "io/trash.h"
 #include "DEFS.h"
 

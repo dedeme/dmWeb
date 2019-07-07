@@ -5,7 +5,6 @@
 #include "dmc/cgi.h"
 #include "dmc/cryp.h"
 #include "DEFS.h"
-#include "io.h"
 #include "io/backups.h"
 #include "io/conf.h"
 #include "server/sys.h"

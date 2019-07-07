@@ -3,7 +3,7 @@
 
 #include "io/trash.h"
 #include "dmc/ext.h"
-#include "io.h"
+#include "io/io.h"
 
 static char *trash_dir = NULL;
 

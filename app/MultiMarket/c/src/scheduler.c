@@ -3,8 +3,8 @@
 
 #include "scheduler.h"
 #include "dmc/date.h"
-#include "net.h"
-#include "io.h"
+#include "io/net.h"
+#include "io/io.h"
 #include "io/conf.h"
 #include "io/calendar.h"
 #include "io/quotes.h"

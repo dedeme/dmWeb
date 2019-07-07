@@ -2,11 +2,11 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "io/fleasdb.h"
-#include "io.h"
+#include "io/io.h"
 #include "io/quotes.h"
 #include "data/Rs.h"
 #include "data/Model.h"
-#include "scheduler/fleas/fleas__models.h"
+#include "data/dfleas/dfleas__models.h"
 #include "DEFS.h"
 
 static char *fleas_dir = NULL;
@@ -227,7 +227,7 @@ Js *fleasdb_champions_chart_read_js (
   );
   if (!rsCh) return js_wn();
 
-  Model *md = opt_oget(fleas__models_get(model), NULL);
+  Model *md = opt_oget(dfleas__models_get(model), NULL);
   if (!md) return js_wn();
 
   Darr *params = rsWeb_params(rsChampions_result(rsCh));

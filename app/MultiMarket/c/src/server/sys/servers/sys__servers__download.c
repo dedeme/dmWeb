@@ -5,7 +5,6 @@
 #include "dmc/cgi.h"
 #include "io/servers.h"
 #include "data/Rconf.h"
-#include "io.h"
 #include "io/log.h"
 
 // rq and return are Map[Js]

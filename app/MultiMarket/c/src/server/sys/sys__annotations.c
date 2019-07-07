@@ -3,7 +3,6 @@
 
 #include "server/sys/sys__annotations.h"
 #include "dmc/cgi.h"
-#include "io.h"
 #include "io/conf.h"
 #include "io/accdb.h"
 #include "io/log.h"

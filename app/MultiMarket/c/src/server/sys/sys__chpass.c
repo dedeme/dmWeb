@@ -3,7 +3,6 @@
 
 #include "server/sys/sys__chpass.h"
 #include "dmc/cgi.h"
-#include "io.h"
 
 // mrq is Map[Js]
 char *sys__chpass_process(AsyncActor *ac, Map *mrq) {

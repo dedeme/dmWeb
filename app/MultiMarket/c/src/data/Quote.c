@@ -4,7 +4,6 @@
 #include "data/Quote.h"
 #include "dmc/Dec.h"
 #include "errno.h"
-#include "io/log.h"
 #include "DEFS.h"
 
 /* .

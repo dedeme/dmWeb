@@ -32,7 +32,7 @@ ServerCode *serverCode_from_js(Js *js);
 typedef struct Server_Server Server;
 
 ///
-Server *server_new(int id, char *short_name);
+Server *server_new(int id, char *short_name, Arr *nicks);
 
 ///
 int server_id(Server *this);
@@ -78,16 +78,5 @@ char *server_nick_code (Server *this, int nick_id);
 /// Code is "" if nick_id has not code.<p>
 /// If this has not nick_id registred, this functions does nothing.
 void server_set_nick_code (Server *this, int nick_id, char *code);
-
-/// Returns Opt[Arr[NickClose]]<p>
-/// Arr[NickClose] can not contain some nick. In such case an error annotation
-/// will be done in Log.
-Opt *server_daily_read (Server *this);
-
-/// Returns Opt[Arr[Quote]]<p>
-///   nick_id: Nick identifier
-///   return: Opt[Arr[Quote]]. If Arr[quote] has less than 10 elements an
-///           annotation is done in Log.
-Opt *server_historic_read (Server *this, int nick_id);
 
 #endif

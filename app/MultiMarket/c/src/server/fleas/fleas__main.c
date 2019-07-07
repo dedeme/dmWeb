@@ -2,10 +2,9 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "server/fleas/fleas__main.h"
-#include "io.h"
 #include "io/conf.h"
 #include "data/Model.h"
-#include "scheduler/fleas/fleas__models.h"
+#include "data/dfleas/dfleas__models.h"
 #include "dmc/cgi.h"
 
 // mrq is Map[Js]
@@ -18,7 +17,7 @@ char *fleas__main_process(AsyncActor *ac, Map *mrq) {
     void fn (void *null) {
       // Map[Js]
       Map *pnames = map_new();
-      EACH(fleas__models(), Model, md)
+      EACH(dfleas__models(), Model, md)
         // Arr[Js]
         Arr *params = arr_new();
         arr_push(params, arr_to_js(model_param_names(md), (FTO)js_ws));

@@ -5,8 +5,8 @@
 #include "io/nicks.h"
 #include "io/servers.h"
 #include "io/log.h"
-#include "io.h"
-#include "net.h"
+#include "io/net.h"
+#include "io/io.h"
 
 void historic_update (AsyncActor *ac) {
   // Arr[Nick]

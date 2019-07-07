@@ -6,7 +6,6 @@
 #include "io/log.h"
 #include "io/conf.h"
 #include "io/fleasdb.h"
-#include "io.h"
 #include "scheduler/fleas.h"
 
 // mrq is Map[Js]

@@ -3,8 +3,9 @@
 
 #include "io/servers.h"
 #include "io/log.h"
-#include "io.h"
+#include "io/io.h"
 #include "io/nicks.h"
+#include "io/net.h"
 #include "DEFS.h"
 
 static char *servers_db = NULL;
@@ -186,7 +187,7 @@ static int short_name_index (Arr *servers, char *short_name) {
 int servers_add (char *short_name) {
   Servers *db = read();
   if (is_duplicate(db, short_name)) return 0;
-  arr_push(db->list, server_new(db->next_id, short_name));
+  arr_push(db->list, server_new(db->next_id, short_name, nicks_list()));
   db->next_id += 1;
   write(db);
   return 1;
@@ -366,7 +367,7 @@ int servers_test_daily_conf (int id) {
   EACH(db->list, Server, sv)
     if (server_id(sv) == id) {
       // Opt[Arr[NickClose]]
-      Opt *closes = server_daily_read(sv);
+      Opt *closes = net_server_daily_read(sv);
       if (opt_is_empty(closes)) return 0;
       if (arr_size(opt_get(closes)) != arr_size(server_codes(sv))) return 0;
       return 1;
@@ -381,7 +382,7 @@ int servers_test_historic_conf (int id, int nk_id) {
   EACH(db->list, Server, sv)
     if (server_id(sv) == id) {
       // Opt[Arr[Quote]]
-      Opt *quotes = server_historic_read(sv, nk_id);
+      Opt *quotes = net_server_historic_read(sv, nk_id);
       if (opt_is_empty(quotes)) return 0;
       if (arr_size(opt_get(quotes)) < 10) return 0;
       return 1;

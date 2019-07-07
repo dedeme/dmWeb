@@ -4,7 +4,7 @@
 #include "multimarket.h"
 #include "dmc/cgi.h"
 #include "dmc/Iserver.h"
-#include "io.h"
+#include "io/io.h"
 #include "DEFS.h"
 #include "server.h"
 #include "scheduler.h"
@@ -23,7 +23,7 @@
 #include "io/sbox.h"
 #include "io/dailydb.h"
 
-#include "scheduler/fleas/fleas__models.h"
+#include "data/dfleas/dfleas__models.h"
 
 #include "scheduler/fleas.h"
 
@@ -49,7 +49,7 @@ static void init (void) {
   sbox_init();
   dailydb_init();
   //---------
-  fleas__models_init();
+  dfleas__models_init();
 
 }
 

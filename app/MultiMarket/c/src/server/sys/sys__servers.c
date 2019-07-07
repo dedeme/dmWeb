@@ -3,7 +3,6 @@
 
 #include "server/sys/sys__servers.h"
 #include "dmc/cgi.h"
-#include "io.h"
 #include "io/servers.h"
 #include "io/nicks.h"
 #include "io/conf.h"

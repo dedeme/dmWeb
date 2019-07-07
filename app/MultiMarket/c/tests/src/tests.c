@@ -2,7 +2,7 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "tests.h"
-#include "io.h"
+#include "io/io.h"
 #include "io/log.h"
 #include "io/nicks.h"
 #include "io/quotes.h"
@@ -26,7 +26,7 @@ static void init (void) {
 
 int main (int argc, char *argv[]) {
   init();
-/*
+
   log_tests();
   nick_tests();
   quote_tests();
@@ -35,5 +35,5 @@ int main (int argc, char *argv[]) {
   rs_tests();
   order_tests();
   facc_tests();
-*/  nickSets_tests();
+  nickSets_tests();
 }

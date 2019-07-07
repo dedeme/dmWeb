@@ -4,7 +4,6 @@
 #include "server/sys/servers/sys__servers__names.h"
 #include "dmc/cgi.h"
 #include "io/servers.h"
-#include "io.h"
 
 char *sys__servers__names_process(AsyncActor *ac, Map *mrq) {
   CGI_GET_STR(rq, mrq, "rq")

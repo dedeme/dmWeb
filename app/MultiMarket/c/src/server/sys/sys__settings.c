@@ -3,7 +3,6 @@
 
 #include "server/sys/sys__settings.h"
 #include "dmc/cgi.h"
-#include "io.h"
 #include "io/conf.h"
 
 // mrq is Map[Js]

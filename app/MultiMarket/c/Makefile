@@ -1,38 +1,26 @@
 PRG = MultiMarket
-LIB = dmc
 
-C_FILES = $(wildcard src/*.c) \
-					$(wildcard src/data/*.c) \
-					$(wildcard src/io/*.c) \
-					$(wildcard src/server/*.c) \
-					$(wildcard src/server/sys/*.c) \
-					$(wildcard src/server/sys/nicks/*.c) \
-					$(wildcard src/server/sys/servers/*.c) \
-					$(wildcard src/server/fleas/*.c) \
-					$(wildcard src/server/fleas/wgs/*.c) \
-					$(wildcard src/server/acc/*.c) \
-					$(wildcard src/scheduler/*.c) \
-					$(wildcard src/scheduler/fleas/*.c)
-H_FILES = $(wildcard include/*.h) \
-					$(wildcard include/data/*.h) \
-					$(wildcard include/io/*.h) \
-					$(wildcard include/server/*.h) \
-					$(wildcard include/server/sys/*.h) \
-					$(wildcard include/server/sys/nicks/*.h) \
-					$(wildcard include/server/sys/servers/*.h) \
-					$(wildcard include/server/fleas/*.h) \
-					$(wildcard include/server/fleas/wgs/*.h) \
-					$(wildcard include/server/acc/*.h) \
-					$(wildcard include/scheduler/*.h) \
-					$(wildcard include/scheduler/fleas/*.h)
-
-LIB_PATH = lib/lib$(LIB)
-LIB_INCLUDE = lib/lib$(LIB)/include
+LIB_PATH_dmc = lib/libdmc
+LIB_INCLUDE_dmc = $(LIB_PATH_dmc)/include
+LIB_NAME_dmc = $(LIB_PATH_dmc)/libdmc.a
 
 CFLAGS = -Wall -rdynamic
-FILES = $(C_FILES) $(H_FILES)
-bin/$(PRG): $(FILES) $(LIB_PATH)/lib$(LIB).a
-	gcc $(CFLAGS) $(FILES) -o bin/$(PRG) \
-	  -Iinclude -I$(LIB_INCLUDE) \
-		-L$(LIB_PATH) -l$(LIB) \
+FILES = $(wildcard src/*.c) $(wildcard include/*.h)
+bin/MultiMarket: $(FILES) \
+		.mkdir/lib/server/libserver.a
+	gcc $(CFLAGS) $(FILES) -o bin/MultiMarket \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc) \
+		-L.mkdir/lib/server -lserver \
+		-L.mkdir/lib/server/acc -lacc \
+		-L.mkdir/lib/server/fleas -lfleas \
+		-L.mkdir/lib/server/fleas/wgs -lwgs \
+		-L.mkdir/lib/server/sys -lsys \
+		-L.mkdir/lib/server/sys/nicks -lnicks \
+		-L.mkdir/lib/server/sys/servers -lservers \
+		-L.mkdir/lib/scheduler -lscheduler \
+		-L.mkdir/lib/io -lio \
+		-L.mkdir/lib/data/dfleas -ldfleas \
+		-L.mkdir/lib/data -ldata \
+		-L$(LIB_PATH_dmc) -ldmc \
 		-lgc -lpthread -lm

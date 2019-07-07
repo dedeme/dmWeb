@@ -4,7 +4,6 @@
 #include "server/sys/nicks/sys__nicks__wnick.h"
 #include "dmc/cgi.h"
 #include "io/nicks.h"
-#include "io.h"
 
 /// mrq is Map[Js]
 char *sys__nicks__wnick_process(AsyncActor *ac, Map *mrq) {
