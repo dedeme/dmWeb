@@ -32,9 +32,6 @@ ServerCode *serverCode_from_js(Js *js);
 typedef struct Server_Server Server;
 
 ///
-Server *server_new(int id, char *short_name, Arr *nicks);
-
-///
 int server_id(Server *this);
 
 ///
@@ -71,6 +68,9 @@ Js *server_to_js(Server *this);
 Server *server_from_js(Js *js);
 
 /*--*/
+
+/// 'nicks' is Arr[Nick]
+Server *server_new(int id, char *short_name, Arr *nicks);
 
 /// If nick_id has not code, returns "".
 char *server_nick_code (Server *this, int nick_id);

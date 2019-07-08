@@ -16,11 +16,11 @@ ServerCode: serial
   code: Opt - char *
 ===
 
-Server: serial
+-Server: serial
   id: int
   @short_name: char *
   # Arr[nick]
-  -nicks: Arr - Nick
+  # -nicks: Arr - Nick
   ---
   @name: char *: short_name
   # Opt[Rconf]
@@ -28,16 +28,8 @@ Server: serial
   # Opt[Rconf]
   @historic_conf: Opt - Rconf: opt_empty()
   # Arr[ServerCode]
-  codes: Arr - ServerCode: make_codes(this->nicks)
+  codes: Arr - ServerCode: arr_new()
 */
-
-// Arr[ServerCode]. nicks is Arr[Nick]
-static Arr *make_codes (Arr *nicks) {
-  ServerCode *fmap (Nick *nk) {
-    return serverCode_new(nick_id(nk), opt_empty());
-  }
-  return arr_from_it(it_map(arr_to_it(nicks), (FCOPY)fmap));
-}
 
 /*--*/
 
@@ -88,22 +80,20 @@ ServerCode *serverCode_from_js(Js *js) {
 struct Server_Server{
   int id;
   char *short_name;
-  Arr *nicks;
   char *name;
   Opt *daily_conf;
   Opt *historic_conf;
   Arr *codes;
 };
 
-Server *server_new(int id, char *short_name, Arr *nicks) {
+static Server *_server_new(int id, char *short_name) {
   Server *this = MALLOC(Server);
   this->id = id;
   this->short_name = short_name;
-  this->nicks = nicks;
   this->name = short_name;
   this->daily_conf = opt_empty();
   this->historic_conf = opt_empty();
-  this->codes = make_codes(this->nicks);
+  this->codes = arr_new();
   return this;
 }
 
@@ -152,7 +142,6 @@ Js *server_to_js(Server *this) {
   Arr *js = arr_new();
   arr_push(js, js_wi((int)this->id));
   arr_push(js, js_ws(this->short_name));
-  arr_push(js, arr_to_js(this->nicks, (FTO)nick_to_js));
   arr_push(js, js_ws(this->name));
   arr_push(js, opt_is_empty(this->daily_conf)
     ? js_wn()
@@ -173,7 +162,6 @@ Server *server_from_js(Js *js) {
   Server *this = MALLOC(Server);
   this->id = js_ri(*p++);
   this->short_name = js_rs(*p++);
-  this->nicks = arr_from_js(*p++, (FFROM)nick_from_js);
   this->name = js_rs(*p++);
   this->daily_conf = js_is_null(*p)
       ? p++? opt_empty(): NULL
@@ -188,6 +176,15 @@ Server *server_from_js(Js *js) {
 }
 
 /*--*/
+
+Server *server_new(int id, char *short_name, Arr *nicks) {
+  Server *this = _server_new(id, short_name);
+  ServerCode *fmap (Nick *nk) {
+    return serverCode_new(nick_id(nk), opt_empty());
+  }
+  this->codes = arr_from_it(it_map(arr_to_it(nicks), (FCOPY)fmap));
+  return this;
+}
 
 char *server_nick_code (Server *this, int nick_id) {
   EACH(this->codes, ServerCode, sc)
