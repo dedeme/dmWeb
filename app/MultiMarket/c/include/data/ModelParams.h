@@ -13,17 +13,23 @@
 /*--*/
 
 ///
+///   Arguments:
+///     model: Model
+///     params: Darr
 typedef struct ModelParams_ModelParams ModelParams;
 
 ///
-ModelParams *modelParams_new(Model *model, Darr *params);
+ModelParams *modelParams_new (Model *model, Darr *params);
 
 ///
-Model *modelParams_model(ModelParams *this);
+Model *modelParams_model (ModelParams *this);
 
 ///
-Darr *modelParams_params(ModelParams *this);
+Darr *modelParams_params (ModelParams *this);
 
 /*--*/
 
+/// Returns 1 if model names are equals and params are equals with a gap of
+/// 0.0000001
+int modelParams_eq (ModelParams *p1, ModelParams *p2);
 #endif

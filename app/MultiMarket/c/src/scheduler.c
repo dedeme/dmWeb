@@ -15,6 +15,7 @@
 #include "scheduler/historic.h"
 #include "scheduler/fleas.h"
 #include "scheduler/acc.h"
+#include "scheduler/management.h"
 
 static void sleeping1 (AsyncActor *ac) {
   int hour = atoi(date_f(date_now(), "%H"));
@@ -33,6 +34,7 @@ static void historic (AsyncActor *ac) {
   if (io_active ()) historic_update(ac);
   if (io_active ()) net_update_daily(ac);
   if (io_active ()) acc_historic_profits(ac);
+  if (io_active ()) management_update(ac);
   if (io_active ()) fleas_run(ac);
   if (io_active ()) {
     void fn (void *null) {

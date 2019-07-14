@@ -98,10 +98,10 @@ static double ref(Darr *params, void *co) {
 }
 
 Model *dfleas__MM2B() {
-  // Arr[char]
-  Arr *param_names = arr_new();
-  arr_push(param_names, "Banda");
-  arr_push(param_names, "Paso");
+  // Arr[ModelMxMn]
+  Arr *param_cf = arr_new();
+  arr_push(param_cf, modelMxMn_new("Banda", MAX_STRIP, MIN_STRIP));
+  arr_push(param_cf, modelMxMn_new("Paso", MAX_STEP, MIN_STEP));
 
   // Arr[Js]
   Arr *param_jss_js = arr_new();
@@ -120,7 +120,7 @@ Model *dfleas__MM2B() {
 
   return model_new(
     str_new("MM2B"),
-    param_names,
+    param_cf,
     param_jss,
     fparams,
     fcos,

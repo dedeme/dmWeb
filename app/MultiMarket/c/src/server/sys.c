@@ -16,6 +16,7 @@
 #include "server/sys/servers/sys__servers__codes.h"
 #include "server/sys/servers/sys__servers__download.h"
 #include "server/sys/sys__annotations.h"
+#include "server/sys/sys__models.h"
 
 char *sys_process(AsyncActor *ac, Map *mrq) {
   CGI_GET_STR(source, mrq, "source")
@@ -39,13 +40,14 @@ char *sys_process(AsyncActor *ac, Map *mrq) {
   if (str_eq(source, "servers/Download"))
     return sys__servers__download_process(ac, mrq);
   if (str_eq(source, "Annotations")) return sys__annotations_process(ac, mrq);
+  if (str_eq(source, "Models")) return sys__models_process(ac, mrq);
 
   EXC_ILLEGAL_ARGUMENT(
     "source",
     "SysMain | Home | Settings | Chpass | Backups | Schedule "
     "Nicks | nicks/Wnick | nicks/Editor "
     "Servers | servers/Names | servers/Codes | servers/Download | "
-    "Annotations",
+    "Annotations | Models",
     source
   )
   return NULL; // Unreachable

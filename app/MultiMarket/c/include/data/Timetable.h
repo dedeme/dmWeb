@@ -11,25 +11,30 @@
 /*--*/
 
 ///
+///   Arguments:
+///     hopen: int
+///     mopen: int
+///     hclose: int
+///     mclose: int
 typedef struct Timetable_Timetable Timetable;
 
 ///
-int timetable_hopen(Timetable *this);
+int timetable_hopen (Timetable *this);
 
 ///
-int timetable_mopen(Timetable *this);
+int timetable_mopen (Timetable *this);
 
 ///
-int timetable_hclose(Timetable *this);
+int timetable_hclose (Timetable *this);
 
 ///
-int timetable_mclose(Timetable *this);
+int timetable_mclose (Timetable *this);
 
 ///
-Js *timetable_to_js(Timetable *this);
+Js *timetable_to_js (Timetable *this);
 
 ///
-Timetable *timetable_from_js(Js *js);
+Timetable *timetable_from_js (Js *js);
 
 /*--*/
 

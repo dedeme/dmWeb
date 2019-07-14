@@ -12,25 +12,30 @@
 /*--*/
 
 ///
+///   Arguments:
+///     date: char*
+///     cycle: int
+///     id: int
+///     gen: Gen
 typedef struct Flea_Flea Flea;
 
 ///
-char *flea_date(Flea *this);
+char *flea_date (Flea *this);
 
 ///
-int flea_cycle(Flea *this);
+int flea_cycle (Flea *this);
 
 ///
-int flea_id(Flea *this);
+int flea_id (Flea *this);
 
 ///
-Gen *flea_gen(Flea *this);
+Gen *flea_gen (Flea *this);
 
 ///
-Js *flea_to_js(Flea *this);
+Js *flea_to_js (Flea *this);
 
 ///
-Flea *flea_from_js(Js *js);
+Flea *flea_from_js (Js *js);
 
 /*--*/
 

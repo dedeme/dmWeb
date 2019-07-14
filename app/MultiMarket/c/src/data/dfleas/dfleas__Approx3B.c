@@ -102,11 +102,11 @@ static double ref(Darr *params, void *co) {
 }
 
 Model *dfleas__Approx3B() {
-  // Arr[char]
-  Arr *param_names = arr_new();
-  arr_push(param_names, "Inicio C");
-  arr_push(param_names, "Inicio V");
-  arr_push(param_names, "Paso");
+  // Arr[ModelMxMin]
+  Arr *param_cf = arr_new();
+  arr_push(param_cf, modelMxMn_new("Inicio C", MAX_TO_BUY, MIN_TO_BUY));
+  arr_push(param_cf, modelMxMn_new("Inicio V", MAX_TO_SELL, MIN_TO_SELL));
+  arr_push(param_cf, modelMxMn_new("Paso", MAX_TO_STEP, MIN_TO_STEP));
 
   // Arr[Js]
   Arr *param_jss_js = arr_new();
@@ -126,7 +126,7 @@ Model *dfleas__Approx3B() {
 
   return model_new(
     str_new("Approx3B"),
-    param_names,
+    param_cf,
     param_jss,
     fparams_new,
     fcos,

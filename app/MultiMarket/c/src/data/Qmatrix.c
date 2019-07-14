@@ -14,23 +14,23 @@ Qmatrix
 
 /*--*/
 
-struct Qmatrix_Qmatrix{
+struct Qmatrix_Qmatrix {
   Arr *nicks;
   QmatrixValues *values;
 };
 
-Qmatrix *qmatrix_new(Arr *nicks, QmatrixValues *values) {
+Qmatrix *qmatrix_new (Arr *nicks, QmatrixValues *values) {
   Qmatrix *this = MALLOC(Qmatrix);
   this->nicks = nicks;
   this->values = values;
   return this;
 }
 
-Arr *qmatrix_nicks(Qmatrix *this) {
+Arr *qmatrix_nicks (Qmatrix *this) {
   return this->nicks;
 }
 
-QmatrixValues *qmatrix_values(Qmatrix *this) {
+QmatrixValues *qmatrix_values (Qmatrix *this) {
   return this->values;
 }
 

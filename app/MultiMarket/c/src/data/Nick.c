@@ -13,13 +13,13 @@ Nick: serial
 
 /*--*/
 
-struct Nick_Nick{
+struct Nick_Nick {
   int id;
   char *name;
   int is_sel;
 };
 
-Nick *nick_new(int id, char *name) {
+Nick *nick_new (int id, char *name) {
   Nick *this = MALLOC(Nick);
   this->id = id;
   this->name = name;
@@ -27,27 +27,27 @@ Nick *nick_new(int id, char *name) {
   return this;
 }
 
-int nick_id(Nick *this) {
+int nick_id (Nick *this) {
   return this->id;
 }
 
-char *nick_name(Nick *this) {
+char *nick_name (Nick *this) {
   return this->name;
 }
 
-void nick_set_name(Nick *this, char *value) {
+void nick_set_name (Nick *this, char *value) {
   this->name = value;
 }
 
-int nick_is_sel(Nick *this) {
+int nick_is_sel (Nick *this) {
   return this->is_sel;
 }
 
-void nick_set_is_sel(Nick *this, int value) {
+void nick_set_is_sel (Nick *this, int value) {
   this->is_sel = value;
 }
 
-Js *nick_to_js(Nick *this) {
+Js *nick_to_js (Nick *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_wi((int)this->id));
@@ -56,7 +56,7 @@ Js *nick_to_js(Nick *this) {
   return js_wa(js);
 }
 
-Nick *nick_from_js(Js *js) {
+Nick *nick_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);

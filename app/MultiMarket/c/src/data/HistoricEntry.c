@@ -14,7 +14,7 @@ HistoricEntry:
 */
 /*--*/
 
-struct HistoricEntry_HistoricEntry{
+struct HistoricEntry_HistoricEntry {
   char *date;
   double open;
   double close;
@@ -23,7 +23,7 @@ struct HistoricEntry_HistoricEntry{
   int vol;
 };
 
-HistoricEntry *historicEntry_new(
+HistoricEntry *historicEntry_new (
   char *date,
   double open,
   double close,
@@ -41,27 +41,27 @@ HistoricEntry *historicEntry_new(
   return this;
 }
 
-char *historicEntry_date(HistoricEntry *this) {
+char *historicEntry_date (HistoricEntry *this) {
   return this->date;
 }
 
-double historicEntry_open(HistoricEntry *this) {
+double historicEntry_open (HistoricEntry *this) {
   return this->open;
 }
 
-double historicEntry_close(HistoricEntry *this) {
+double historicEntry_close (HistoricEntry *this) {
   return this->close;
 }
 
-double historicEntry_max(HistoricEntry *this) {
+double historicEntry_max (HistoricEntry *this) {
   return this->max;
 }
 
-double historicEntry_min(HistoricEntry *this) {
+double historicEntry_min (HistoricEntry *this) {
   return this->min;
 }
 
-int historicEntry_vol(HistoricEntry *this) {
+int historicEntry_vol (HistoricEntry *this) {
   return this->vol;
 }
 

@@ -13,148 +13,178 @@
 /*--*/
 
 ///
+///   Arguments:
+///     assets: double
+///     buys: int
+///     sells: int
 typedef struct Rs_RsAssets RsAssets;
 
 ///
-RsAssets *rsAssets_new(double assets, int buys, int sells);
+RsAssets *rsAssets_new (double assets, int buys, int sells);
 
 ///
-double rsAssets_assets(RsAssets *this);
+double rsAssets_assets (RsAssets *this);
 
 ///
-int rsAssets_buys(RsAssets *this);
+int rsAssets_buys (RsAssets *this);
 
 ///
-int rsAssets_sells(RsAssets *this);
+int rsAssets_sells (RsAssets *this);
 
 ///
-Js *rsAssets_to_js(RsAssets *this);
+Js *rsAssets_to_js (RsAssets *this);
 
 ///
-RsAssets *rsAssets_from_js(Js *js);
+RsAssets *rsAssets_from_js (Js *js);
 
 ///
+///   Arguments:
+///     avg: double
+///     var: double
+///     sel: double
 typedef struct Rs_RsProfits RsProfits;
 
 ///
-RsProfits *rsProfits_new(double avg, double var, double sel);
+RsProfits *rsProfits_new (double avg, double var, double sel);
 
 ///
-double rsProfits_avg(RsProfits *this);
+double rsProfits_avg (RsProfits *this);
 
 ///
-double rsProfits_var(RsProfits *this);
+double rsProfits_var (RsProfits *this);
 
 ///
-double rsProfits_sel(RsProfits *this);
+double rsProfits_sel (RsProfits *this);
 
 ///
-Js *rsProfits_to_js(RsProfits *this);
+Js *rsProfits_to_js (RsProfits *this);
 
 ///
-RsProfits *rsProfits_from_js(Js *js);
+RsProfits *rsProfits_from_js (Js *js);
 
 ///
+///   Arguments:
+///     flea: Flea
+///     assets: RsAssets
+///     profits: RsProfits
 typedef struct Rs_Rs Rs;
 
 ///
-Rs *rs_new(Flea *flea, RsAssets *assets, RsProfits *profits);
+Rs *rs_new (Flea *flea, RsAssets *assets, RsProfits *profits);
 
 ///
-Flea *rs_flea(Rs *this);
+Flea *rs_flea (Rs *this);
 
 ///
-RsAssets *rs_assets(Rs *this);
+RsAssets *rs_assets (Rs *this);
 
 ///
-RsProfits *rs_profits(Rs *this);
+RsProfits *rs_profits (Rs *this);
 
 ///
-Js *rs_to_js(Rs *this);
+Js *rs_to_js (Rs *this);
 
 ///
-Rs *rs_from_js(Js *js);
+Rs *rs_from_js (Js *js);
 
 ///
+///   Arguments:
+///     result: Rs
+///     params: Darr
 typedef struct Rs_RsWeb RsWeb;
 
 ///
-RsWeb *rsWeb_new(Rs *result, Darr *params);
+RsWeb *rsWeb_new (Rs *result, Darr *params);
 
 ///
-Rs *rsWeb_result(RsWeb *this);
+Rs *rsWeb_result (RsWeb *this);
 
 ///
-Darr *rsWeb_params(RsWeb *this);
+Darr *rsWeb_params (RsWeb *this);
 
 ///
-Js *rsWeb_to_js(RsWeb *this);
+Js *rsWeb_to_js (RsWeb *this);
 
 ///
-RsWeb *rsWeb_from_js(Js *js);
+RsWeb *rsWeb_from_js (Js *js);
 
 /// Bests fleas result
+///   Arguments:
+///     date: char*
+///     result: RsWeb
 typedef struct Rs_RsBests RsBests;
 
 ///
-RsBests *rsBests_new(char *date, RsWeb *result);
+RsBests *rsBests_new (char *date, RsWeb *result);
 
 ///
-char *rsBests_date(RsBests *this);
+char *rsBests_date (RsBests *this);
 
 ///
-RsWeb *rsBests_result(RsBests *this);
+RsWeb *rsBests_result (RsBests *this);
 
 ///
-Js *rsBests_to_js(RsBests *this);
+Js *rsBests_to_js (RsBests *this);
 
 ///
-RsBests *rsBests_from_js(Js *js);
+RsBests *rsBests_from_js (Js *js);
 
 /// Champion fleas result
+///   Arguments:
+///     model: char*
+///     result: RsWeb
 typedef struct Rs_RsChampions RsChampions;
 
 ///
-RsChampions *rsChampions_new(char *model, RsWeb *result);
+RsChampions *rsChampions_new (char *model, RsWeb *result);
 
 ///
-char *rsChampions_model(RsChampions *this);
+char *rsChampions_model (RsChampions *this);
 
 ///
-RsWeb *rsChampions_result(RsChampions *this);
+RsWeb *rsChampions_result (RsChampions *this);
 
 ///
-Js *rsChampions_to_js(RsChampions *this);
+Js *rsChampions_to_js (RsChampions *this);
 
 ///
-RsChampions *rsChampions_from_js(Js *js);
+RsChampions *rsChampions_from_js (Js *js);
 
 ///
+///   Arguments:
+///     date: char*
+///     close: double
+///     ref: double
 typedef struct Rs_RsChartQ RsChartQ;
 
 ///
-RsChartQ *rsChartQ_new(char *date, double close, double ref);
+RsChartQ *rsChartQ_new (char *date, double close, double ref);
 
 ///
-char *rsChartQ_date(RsChartQ *this);
+char *rsChartQ_date (RsChartQ *this);
 
 ///
-double rsChartQ_close(RsChartQ *this);
+double rsChartQ_close (RsChartQ *this);
 
 ///
-double rsChartQ_ref(RsChartQ *this);
+double rsChartQ_ref (RsChartQ *this);
 
 ///
-Js *rsChartQ_to_js(RsChartQ *this);
+Js *rsChartQ_to_js (RsChartQ *this);
 
 ///
-RsChartQ *rsChartQ_from_js(Js *js);
+RsChartQ *rsChartQ_from_js (Js *js);
 
 ///
+///   Arguments:
+///     is_sell: bool
+///     date: char*
+///     stocks: int
+///     price: double
 typedef struct Rs_RsChartOp RsChartOp;
 
 ///
-RsChartOp *rsChartOp_new(
+RsChartOp *rsChartOp_new (
   int is_sell,
   char *date,
   int stocks,
@@ -162,28 +192,33 @@ RsChartOp *rsChartOp_new(
 );
 
 ///
-int rsChartOp_is_sell(RsChartOp *this);
+int rsChartOp_is_sell (RsChartOp *this);
 
 ///
-char *rsChartOp_date(RsChartOp *this);
+char *rsChartOp_date (RsChartOp *this);
 
 ///
-int rsChartOp_stocks(RsChartOp *this);
+int rsChartOp_stocks (RsChartOp *this);
 
 ///
-double rsChartOp_price(RsChartOp *this);
+double rsChartOp_price (RsChartOp *this);
 
 ///
-Js *rsChartOp_to_js(RsChartOp *this);
+Js *rsChartOp_to_js (RsChartOp *this);
 
 ///
-RsChartOp *rsChartOp_from_js(Js *js);
+RsChartOp *rsChartOp_from_js (Js *js);
 
 ///
+///   Arguments:
+///     nick: char*
+///     profits: double
+///     quotes: Arr-RsChartQ
+///     historic: Arr-RsChartOp
 typedef struct Rs_RsChart RsChart;
 
 ///
-RsChart *rsChart_new(
+RsChart *rsChart_new (
   char *nick,
   double profits,
   Arr *quotes,
@@ -191,37 +226,47 @@ RsChart *rsChart_new(
 );
 
 ///
-char *rsChart_nick(RsChart *this);
+char *rsChart_nick (RsChart *this);
 
 ///
-double rsChart_profits(RsChart *this);
+double rsChart_profits (RsChart *this);
 
 /// Arr[RsChartQ] Dates and quotes
-Arr *rsChart_quotes(RsChart *this);
+Arr *rsChart_quotes (RsChart *this);
 
 /// Arr[RsChartOp] Operations
-Arr *rsChart_historic(RsChart *this);
+Arr *rsChart_historic (RsChart *this);
 
 ///
-Js *rsChart_to_js(RsChart *this);
+Js *rsChart_to_js (RsChart *this);
 
 ///
-RsChart *rsChart_from_js(Js *js);
+RsChart *rsChart_from_js (Js *js);
 
 /// Charts fleas results
+///   Arguments:
+///     cos: Arr-RsChart
 typedef struct Rs_RsCharts RsCharts;
 
 ///
-RsCharts *rsCharts_new(Arr *cos);
+RsCharts *rsCharts_new (Arr *cos);
 
 /// Arr[RsChart]
-Arr *rsCharts_cos(RsCharts *this);
+Arr *rsCharts_cos (RsCharts *this);
 
 /// Accounting results of one company
+///   Arguments:
+///     co: void
+///     profits: double
+///     quotes: Arr-RsChartQ
+///     historic: Arr-RsChartOp
+///     order: Order
+///     ref: double
+///     stocks: int
 typedef struct Rs_RsHistoric RsHistoric;
 
 ///
-RsHistoric *rsHistoric_new(
+RsHistoric *rsHistoric_new (
   void *co,
   double profits,
   Arr *quotes,
@@ -232,25 +277,25 @@ RsHistoric *rsHistoric_new(
 );
 
 /// Company data
-void *rsHistoric_co(RsHistoric *this);
+void *rsHistoric_co (RsHistoric *this);
 
 ///
-double rsHistoric_profits(RsHistoric *this);
+double rsHistoric_profits (RsHistoric *this);
 
 /// Arr[RsChartQ] Dates and quotes
-Arr *rsHistoric_quotes(RsHistoric *this);
+Arr *rsHistoric_quotes (RsHistoric *this);
 
 /// Arr[RsChartOp] Operations
-Arr *rsHistoric_historic(RsHistoric *this);
+Arr *rsHistoric_historic (RsHistoric *this);
 
 /// Last order
-Order *rsHistoric_order(RsHistoric *this);
+Order *rsHistoric_order (RsHistoric *this);
 
 /// Last ref
-double rsHistoric_ref(RsHistoric *this);
+double rsHistoric_ref (RsHistoric *this);
 
 /// stocks in portfolio
-int rsHistoric_stocks(RsHistoric *this);
+int rsHistoric_stocks (RsHistoric *this);
 
 /*--*/
 

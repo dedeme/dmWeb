@@ -49,7 +49,7 @@ const controlDouble = (lang, id, value) => {
   return "";
 };
 
-/** Annptations page. */
+/** Annotations page. */
 export default class Annotations {
 
   /**

@@ -6,6 +6,7 @@
 #include "io/io.h"
 #include "io/conf.h"
 #include "io/quotes.h"
+#include "io/managerdb.h"
 #include "data/dfleas/dfleas__models.h"
 #include "data/Model.h"
 #include "DEFS.h"
@@ -54,7 +55,7 @@ void accdb_dailyq_write (Js *quotes) {
   file_write(quotes_db, (char *)quotes);
 }
 
-RsHistoric *accdb_historic (char *nick) {
+RsHistoric *accdb_historic_with_dailyq (char *nick) {
   // Arr[char]
   Arr *dates = arr_new();
   Darr *opens = darr_new();
@@ -81,7 +82,7 @@ RsHistoric *accdb_historic (char *nick) {
     darr_push(closes, quote_close(q));
   _EACH
 
-  ModelParams *mps = dfleas__models_acc();
+  ModelParams *mps = managerdb_nick(nick);
   return model_historic(
     modelParams_model(mps),
     modelParams_params(mps),
@@ -89,7 +90,7 @@ RsHistoric *accdb_historic (char *nick) {
   );
 }
 
-RsHistoric *accdb_historic_without_dailyq (char *nick) {
+RsHistoric *accdb_historic (char *nick) {
   // Arr[char]
   Arr *dates = arr_new();
   Darr *opens = darr_new();
@@ -104,7 +105,7 @@ RsHistoric *accdb_historic_without_dailyq (char *nick) {
     darr_push(closes, quote_close(q));
   _EACH
 
-  ModelParams *mps = dfleas__models_acc();
+  ModelParams *mps = managerdb_nick(nick);
   return model_historic(
     modelParams_model(mps),
     modelParams_params(mps),
@@ -201,7 +202,7 @@ void accdb_pf_update (AccPf *pf) {
     char *nick = accPfEntry_nick(e);
     double quote = accdb_dailyq_read_nick(nick);
     accPfEntry_set_quote(e, quote);
-    RsHistoric *rs = accdb_historic(nick);
+    RsHistoric *rs = accdb_historic_with_dailyq(nick);
     double ref = rsHistoric_ref(rs);
     accPfEntry_set_ref(e, ref < quote ? ref : quote);
   _EACH

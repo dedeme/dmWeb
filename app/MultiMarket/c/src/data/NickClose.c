@@ -12,23 +12,23 @@ NickClose
 
 /*--*/
 
-struct NickClose_NickClose{
+struct NickClose_NickClose {
   int nick;
   double close;
 };
 
-NickClose *nickClose_new(int nick, double close) {
+NickClose *nickClose_new (int nick, double close) {
   NickClose *this = MALLOC(NickClose);
   this->nick = nick;
   this->close = close;
   return this;
 }
 
-int nickClose_nick(NickClose *this) {
+int nickClose_nick (NickClose *this) {
   return this->nick;
 }
 
-double nickClose_close(NickClose *this) {
+double nickClose_close (NickClose *this) {
   return this->close;
 }
 

@@ -6,9 +6,9 @@
 #include "io/nicks.h"
 #include "io/accdb.h"
 #include "io/log.h"
+#include "io/conf.h"
+#include "io/managerdb.h"
 #include "data/Acc.h"
-#include "data/ModelParams.h"
-#include "data/dfleas/dfleas__models.h"
 #include "DEFS.h"
 
 // mrq is Map[Js]
@@ -39,7 +39,12 @@ char *acc__trading_process(AsyncActor *ac, Map *mrq) {
       int nicks_size = arr_size(nicks);
       OrderCos *os = orderCos_new(nicks_size);
       EACH_IX(nicks, char, nick, ix)
-        RsHistoric *rs = accdb_historic(nick);
+        RsHistoric *rs;
+        if (str_eq(conf_activity(), ACT_SLEEPING1)) {
+          rs = accdb_historic_with_dailyq(nick);
+        } else {
+          rs = accdb_historic(nick);
+        }
         orderCos_add(os, ix, rsHistoric_order(rs));
       _EACH
 
@@ -82,7 +87,7 @@ char *acc__trading_process(AsyncActor *ac, Map *mrq) {
       map_put(rp, "buys", js_wa(buys));
       map_put(rp, "sells", js_wa(sells));
 
-      ModelParams *mps = dfleas__models_acc();
+      ModelParams *mps = managerdb_default();
       map_put(rp, "params", darr_to_js(modelParams_params(mps)));
     }
     asyncActor_wait(ac, fn, NULL);

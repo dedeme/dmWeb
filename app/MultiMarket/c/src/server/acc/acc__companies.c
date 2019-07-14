@@ -68,8 +68,19 @@ char *acc__companies_process(AsyncActor *ac, Map *mrq) {
   if (str_eq(rq, "historic")) {
     CGI_GET_STR(nick, mrq, "nick")
     void fn (void *null) {
+      // Arr[AccEntry]
+      Arr *annotations = accdb_diary_read();
+      AccLedPf *lp = accLedPf_new(annotations);
+      EACH(accLedPf_errors(lp), char, e)
+        log_error(e);
+      _EACH
+      // Arr[AccPfEntry]
+      Arr *pf = accLedPf_pf(lp);
+      int ffind (AccPfEntry *e) { return str_eq(accPfEntry_nick(e), nick); }
+      AccPfEntry *pfe = opt_nget(it_find(arr_to_it(pf), (FPRED)ffind));
+
       map_put(rp, "url", js_ws(servers_acc_url(nick)));
-      RsHistoric *rs = accdb_historic(nick);
+      RsHistoric *rs = accdb_historic_with_dailyq(nick);
 
       // Arr[char]
       Arr *rsdates = arr_new();
@@ -89,6 +100,7 @@ char *acc__companies_process(AsyncActor *ac, Map *mrq) {
         arr_push(rsqs, js_wa(a));
       _EACH
 
+      map_put(rp, "price", js_wd(pfe ? accPfEntry_price(pfe) : -1));
       map_put(rp, "profits", js_wd(rsHistoric_profits(rs)));
       map_put(rp, "dates", arr_to_js(rsdates, (FTO)js_ws));
       map_put(rp, "quotes", js_wa(rsqs));

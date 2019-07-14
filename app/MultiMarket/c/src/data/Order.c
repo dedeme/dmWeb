@@ -12,22 +12,21 @@
 */
 /*--*/
 
-struct Order_Order{
+struct Order_Order {
   int type;
   double ponderation;
 };
 
-static Order *_order_new(int type, double ponderation) {
+static Order *_order_new (int type, double ponderation) {
   Order *this = MALLOC(Order);
   this->type = type;
   this->ponderation = ponderation;
   return this;
 }
 
-double order_ponderation(Order *this) {
+double order_ponderation (Order *this) {
   return this->ponderation;
 }
-
 
 /*--*/
 

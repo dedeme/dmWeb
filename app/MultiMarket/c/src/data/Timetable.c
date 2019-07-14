@@ -13,14 +13,14 @@
 
 /*--*/
 
-struct Timetable_Timetable{
+struct Timetable_Timetable {
   int hopen;
   int mopen;
   int hclose;
   int mclose;
 };
 
-static Timetable *_timetable_new(
+static Timetable *_timetable_new (
   int hopen,
   int mopen,
   int hclose,
@@ -34,23 +34,23 @@ static Timetable *_timetable_new(
   return this;
 }
 
-int timetable_hopen(Timetable *this) {
+int timetable_hopen (Timetable *this) {
   return this->hopen;
 }
 
-int timetable_mopen(Timetable *this) {
+int timetable_mopen (Timetable *this) {
   return this->mopen;
 }
 
-int timetable_hclose(Timetable *this) {
+int timetable_hclose (Timetable *this) {
   return this->hclose;
 }
 
-int timetable_mclose(Timetable *this) {
+int timetable_mclose (Timetable *this) {
   return this->mclose;
 }
 
-Js *timetable_to_js(Timetable *this) {
+Js *timetable_to_js (Timetable *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_wi((int)this->hopen));
@@ -60,7 +60,7 @@ Js *timetable_to_js(Timetable *this) {
   return js_wa(js);
 }
 
-Timetable *timetable_from_js(Js *js) {
+Timetable *timetable_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);

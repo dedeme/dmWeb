@@ -83,7 +83,7 @@ Opt *dfleas__models_get (char *name) {
   return it_find(arr_to_it(dfleas__models()), (FPRED)fn);
 }
 
-ModelParams *dfleas__models_acc (void) {
+ModelParams *dfleas__models_default (void) {
   Darr *ps = darr_new();
   darr_push(ps, 0.018827);
   return modelParams_new(dfleas__MMBack1(), ps);

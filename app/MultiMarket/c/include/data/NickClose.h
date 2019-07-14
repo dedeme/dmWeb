@@ -11,16 +11,19 @@
 /*--*/
 
 ///
+///   Arguments:
+///     nick: int
+///     close: double
 typedef struct NickClose_NickClose NickClose;
 
 ///
-NickClose *nickClose_new(int nick, double close);
+NickClose *nickClose_new (int nick, double close);
 
 /// Nick id
-int nickClose_nick(NickClose *this);
+int nickClose_nick (NickClose *this);
 
 ///
-double nickClose_close(NickClose *this);
+double nickClose_close (NickClose *this);
 
 /*--*/
 

@@ -14,17 +14,20 @@ typedef double * QmatrixValues;
 /*--*/
 
 ///
+///   Arguments:
+///     nicks: Arr-Nick
+///     values: QmatrixValues
 typedef struct Qmatrix_Qmatrix Qmatrix;
 
 ///
-Qmatrix *qmatrix_new(Arr *nicks, QmatrixValues *values);
+Qmatrix *qmatrix_new (Arr *nicks, QmatrixValues *values);
 
 /// Arr[Nick]
-Arr *qmatrix_nicks(Qmatrix *this);
+Arr *qmatrix_nicks (Qmatrix *this);
 
 /// Array of HISTORIC_QUOTES of QmatrixValues (one for each date). Every
 /// QmatrixValues has 'nicks size' doubles.
-QmatrixValues *qmatrix_values(Qmatrix *this);
+QmatrixValues *qmatrix_values (Qmatrix *this);
 
 /*--*/
 

@@ -6,6 +6,7 @@
 #include "io/fleasdb.h"
 #include "data/dfleas/dfleas__models.h"
 #include "data/Model.h"
+#include "data/ModelMxMn.h"
 #include "dmc/cgi.h"
 
 // mrq is Map[Js]
@@ -39,7 +40,9 @@ char *fleas__bests_process(AsyncActor *ac, Map *mrq) {
         Model *m = opt_get(md);
         // Arr[Js]
         Arr *params = arr_new();
-        arr_push(params, arr_to_js(model_param_names(m), (FTO)js_ws));
+        arr_push(params, arr_to_js(
+          modelMxMn_names(model_param_cf(m)), (FTO)js_ws
+        ));
         arr_push(params, model_param_jss(m));
         map_put(rp, "params", js_wa(params));
         map_put(rp, "table", fleasdb_bests_read_js(model));

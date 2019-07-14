@@ -70,13 +70,13 @@ AccHEntry: SERIAL
 */
 /*--*/
 
-struct Acc_AccSeBu{
+struct Acc_AccSeBu {
   char *nick;
   int stocks;
   double price;
 };
 
-static AccSeBu *_accSeBu_new(char *nick, int stocks, double price) {
+static AccSeBu *_accSeBu_new (char *nick, int stocks, double price) {
   AccSeBu *this = MALLOC(AccSeBu);
   this->nick = nick;
   this->stocks = stocks;
@@ -84,19 +84,19 @@ static AccSeBu *_accSeBu_new(char *nick, int stocks, double price) {
   return this;
 }
 
-char *accSeBu_nick(AccSeBu *this) {
+char *accSeBu_nick (AccSeBu *this) {
   return this->nick;
 }
 
-int accSeBu_stocks(AccSeBu *this) {
+int accSeBu_stocks (AccSeBu *this) {
   return this->stocks;
 }
 
-double accSeBu_price(AccSeBu *this) {
+double accSeBu_price (AccSeBu *this) {
   return this->price;
 }
 
-Js *accSeBu_to_js(AccSeBu *this) {
+Js *accSeBu_to_js (AccSeBu *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_ws(this->nick));
@@ -105,7 +105,7 @@ Js *accSeBu_to_js(AccSeBu *this) {
   return js_wa(js);
 }
 
-AccSeBu *accSeBu_from_js(Js *js) {
+AccSeBu *accSeBu_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -116,28 +116,28 @@ AccSeBu *accSeBu_from_js(Js *js) {
   return this;
 }
 
-struct Acc_AccInWi{
+struct Acc_AccInWi {
   double ammount;
 };
 
-static AccInWi *_accInWi_new(double ammount) {
+static AccInWi *_accInWi_new (double ammount) {
   AccInWi *this = MALLOC(AccInWi);
   this->ammount = ammount;
   return this;
 }
 
-double accInWi_ammount(AccInWi *this) {
+double accInWi_ammount (AccInWi *this) {
   return this->ammount;
 }
 
-Js *accInWi_to_js(AccInWi *this) {
+Js *accInWi_to_js (AccInWi *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_wd(this->ammount));
   return js_wa(js);
 }
 
-AccInWi *accInWi_from_js(Js *js) {
+AccInWi *accInWi_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -146,27 +146,27 @@ AccInWi *accInWi_from_js(Js *js) {
   return this;
 }
 
-struct Acc_AccPrFePdNd{
+struct Acc_AccPrFePdNd {
   double ammount;
   char *cause;
 };
 
-static AccPrFePdNd *_accPrFePdNd_new(double ammount, char *cause) {
+static AccPrFePdNd *_accPrFePdNd_new (double ammount, char *cause) {
   AccPrFePdNd *this = MALLOC(AccPrFePdNd);
   this->ammount = ammount;
   this->cause = cause;
   return this;
 }
 
-double accPrFePdNd_ammount(AccPrFePdNd *this) {
+double accPrFePdNd_ammount (AccPrFePdNd *this) {
   return this->ammount;
 }
 
-char *accPrFePdNd_cause(AccPrFePdNd *this) {
+char *accPrFePdNd_cause (AccPrFePdNd *this) {
   return this->cause;
 }
 
-Js *accPrFePdNd_to_js(AccPrFePdNd *this) {
+Js *accPrFePdNd_to_js (AccPrFePdNd *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_wd(this->ammount));
@@ -174,7 +174,7 @@ Js *accPrFePdNd_to_js(AccPrFePdNd *this) {
   return js_wa(js);
 }
 
-AccPrFePdNd *accPrFePdNd_from_js(Js *js) {
+AccPrFePdNd *accPrFePdNd_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -184,14 +184,14 @@ AccPrFePdNd *accPrFePdNd_from_js(Js *js) {
   return this;
 }
 
-struct Acc_AccEntry{
+struct Acc_AccEntry {
   char *operation;
   int id;
   char *date;
   void *values;
 };
 
-static AccEntry *_accEntry_new(
+static AccEntry *_accEntry_new (
   char *operation,
   int id,
   char *date,
@@ -205,41 +205,41 @@ static AccEntry *_accEntry_new(
   return this;
 }
 
-char *accEntry_operation(AccEntry *this) {
+char *accEntry_operation (AccEntry *this) {
   return this->operation;
 }
 
-int accEntry_id(AccEntry *this) {
+int accEntry_id (AccEntry *this) {
   return this->id;
 }
 
-void accEntry_set_id(AccEntry *this, int value) {
+void accEntry_set_id (AccEntry *this, int value) {
   this->id = value;
 }
 
-char *accEntry_date(AccEntry *this) {
+char *accEntry_date (AccEntry *this) {
   return this->date;
 }
 
-struct Acc_AccHProfits{
+struct Acc_AccHProfits {
   double real;
   double acc;
   double risk;
 };
 
-double accHProfits_real(AccHProfits *this) {
+double accHProfits_real (AccHProfits *this) {
   return this->real;
 }
 
-double accHProfits_acc(AccHProfits *this) {
+double accHProfits_acc (AccHProfits *this) {
   return this->acc;
 }
 
-double accHProfits_risk(AccHProfits *this) {
+double accHProfits_risk (AccHProfits *this) {
   return this->risk;
 }
 
-Js *accHProfits_to_js(AccHProfits *this) {
+Js *accHProfits_to_js (AccHProfits *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_wd(this->real));
@@ -248,7 +248,7 @@ Js *accHProfits_to_js(AccHProfits *this) {
   return js_wa(js);
 }
 
-AccHProfits *accHProfits_from_js(Js *js) {
+AccHProfits *accHProfits_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -259,20 +259,20 @@ AccHProfits *accHProfits_from_js(Js *js) {
   return this;
 }
 
-struct Acc_AccHEntry{
+struct Acc_AccHEntry {
   char *date;
   AccHProfits *profits;
 };
 
-char *accHEntry_date(AccHEntry *this) {
+char *accHEntry_date (AccHEntry *this) {
   return this->date;
 }
 
-AccHProfits *accHEntry_profits(AccHEntry *this) {
+AccHProfits *accHEntry_profits (AccHEntry *this) {
   return this->profits;
 }
 
-Js *accHEntry_to_js(AccHEntry *this) {
+Js *accHEntry_to_js (AccHEntry *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_ws(this->date));
@@ -280,7 +280,7 @@ Js *accHEntry_to_js(AccHEntry *this) {
   return js_wa(js);
 }
 
-AccHEntry *accHEntry_from_js(Js *js) {
+AccHEntry *accHEntry_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -290,7 +290,7 @@ AccHEntry *accHEntry_from_js(Js *js) {
   return this;
 }
 
-struct Acc_AccLedger{
+struct Acc_AccLedger {
   double stocks;
   double cash;
   double capital;
@@ -300,7 +300,7 @@ struct Acc_AccLedger{
   double differences;
 };
 
-static AccLedger *_accLedger_new(
+static AccLedger *_accLedger_new (
   double stocks,
   double cash,
   double capital,
@@ -320,35 +320,35 @@ static AccLedger *_accLedger_new(
   return this;
 }
 
-double accLedger_stocks(AccLedger *this) {
+double accLedger_stocks (AccLedger *this) {
   return this->stocks;
 }
 
-double accLedger_cash(AccLedger *this) {
+double accLedger_cash (AccLedger *this) {
   return this->cash;
 }
 
-double accLedger_capital(AccLedger *this) {
+double accLedger_capital (AccLedger *this) {
   return this->capital;
 }
 
-double accLedger_sells(AccLedger *this) {
+double accLedger_sells (AccLedger *this) {
   return this->sells;
 }
 
-double accLedger_fees(AccLedger *this) {
+double accLedger_fees (AccLedger *this) {
   return this->fees;
 }
 
-double accLedger_profits(AccLedger *this) {
+double accLedger_profits (AccLedger *this) {
   return this->profits;
 }
 
-double accLedger_differences(AccLedger *this) {
+double accLedger_differences (AccLedger *this) {
   return this->differences;
 }
 
-Js *accLedger_to_js(AccLedger *this) {
+Js *accLedger_to_js (AccLedger *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_wd(this->stocks));
@@ -361,7 +361,7 @@ Js *accLedger_to_js(AccLedger *this) {
   return js_wa(js);
 }
 
-struct Acc_AccPfEntry{
+struct Acc_AccPfEntry {
   char *nick;
   int stocks;
   double price;
@@ -369,7 +369,7 @@ struct Acc_AccPfEntry{
   double ref;
 };
 
-static AccPfEntry *_accPfEntry_new(
+static AccPfEntry *_accPfEntry_new (
   char *nick,
   int stocks,
   double price,
@@ -385,35 +385,35 @@ static AccPfEntry *_accPfEntry_new(
   return this;
 }
 
-char *accPfEntry_nick(AccPfEntry *this) {
+char *accPfEntry_nick (AccPfEntry *this) {
   return this->nick;
 }
 
-int accPfEntry_stocks(AccPfEntry *this) {
+int accPfEntry_stocks (AccPfEntry *this) {
   return this->stocks;
 }
 
-double accPfEntry_price(AccPfEntry *this) {
+double accPfEntry_price (AccPfEntry *this) {
   return this->price;
 }
 
-double accPfEntry_quote(AccPfEntry *this) {
+double accPfEntry_quote (AccPfEntry *this) {
   return this->quote;
 }
 
-void accPfEntry_set_quote(AccPfEntry *this, double value) {
+void accPfEntry_set_quote (AccPfEntry *this, double value) {
   this->quote = value;
 }
 
-double accPfEntry_ref(AccPfEntry *this) {
+double accPfEntry_ref (AccPfEntry *this) {
   return this->ref;
 }
 
-void accPfEntry_set_ref(AccPfEntry *this, double value) {
+void accPfEntry_set_ref (AccPfEntry *this, double value) {
   this->ref = value;
 }
 
-Js *accPfEntry_to_js(AccPfEntry *this) {
+Js *accPfEntry_to_js (AccPfEntry *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_ws(this->nick));
@@ -424,13 +424,13 @@ Js *accPfEntry_to_js(AccPfEntry *this) {
   return js_wa(js);
 }
 
-struct Acc_AccLedPf{
+struct Acc_AccLedPf {
   Arr *errors;
   AccLedger *ledger;
   AccPf *pf;
 };
 
-static AccLedPf *_accLedPf_new(Arr *errors, AccLedger *ledger, AccPf *pf) {
+static AccLedPf *_accLedPf_new (Arr *errors, AccLedger *ledger, AccPf *pf) {
   AccLedPf *this = MALLOC(AccLedPf);
   this->errors = errors;
   this->ledger = ledger;
@@ -438,15 +438,15 @@ static AccLedPf *_accLedPf_new(Arr *errors, AccLedger *ledger, AccPf *pf) {
   return this;
 }
 
-Arr *accLedPf_errors(AccLedPf *this) {
+Arr *accLedPf_errors (AccLedPf *this) {
   return this->errors;
 }
 
-AccLedger *accLedPf_ledger(AccLedPf *this) {
+AccLedger *accLedPf_ledger (AccLedPf *this) {
   return this->ledger;
 }
 
-AccPf *accLedPf_pf(AccLedPf *this) {
+AccPf *accLedPf_pf (AccLedPf *this) {
   return this->pf;
 }
 

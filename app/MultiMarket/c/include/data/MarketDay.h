@@ -11,28 +11,34 @@
 /*--*/
 
 ///
+///   Arguments:
+///     date: char*
+///     hopen: int
+///     mopen: int
+///     hclose: int
+///     mclose: int
 typedef struct MarketDay_MarketDay MarketDay;
 
 ///
-char *marketDay_date(MarketDay *this);
+char *marketDay_date (MarketDay *this);
 
 ///
-int marketDay_hopen(MarketDay *this);
+int marketDay_hopen (MarketDay *this);
 
 ///
-int marketDay_mopen(MarketDay *this);
+int marketDay_mopen (MarketDay *this);
 
 ///
-int marketDay_hclose(MarketDay *this);
+int marketDay_hclose (MarketDay *this);
 
 ///
-int marketDay_mclose(MarketDay *this);
+int marketDay_mclose (MarketDay *this);
 
 ///
-Js *marketDay_to_js(MarketDay *this);
+Js *marketDay_to_js (MarketDay *this);
 
 ///
-MarketDay *marketDay_from_js(Js *js);
+MarketDay *marketDay_from_js (Js *js);
 
 /*--*/
 

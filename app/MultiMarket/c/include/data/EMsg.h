@@ -11,16 +11,19 @@
 /*--*/
 
 ///
+///   Arguments:
+///     error: int
+///     msg: char*
 typedef struct EMsg_EMsg EMsg;
 
 ///
-EMsg *eMsg_new(int error, char *msg);
+EMsg *eMsg_new (int error, char *msg);
 
 /// Its value is one of ErrorMsg defined in DEFS.h
-int eMsg_error(EMsg *this);
+int eMsg_error (EMsg *this);
 
 ///
-char *eMsg_msg(EMsg *this);
+char *eMsg_msg (EMsg *this);
 
 /*--*/
 

@@ -27,10 +27,11 @@ function led (url, color) {
 }
 
 /**
+ * @param {number} price
  * @param {!Array<!Array<?>>} qs
  * @return {!Domo}
  */
-function mkGr (qs) {
+function mkGr (price, qs) {
   let backg = "#e9e9e9";
   const lastQ = qs[qs.length - 1];
   const lastQ1 = qs[qs.length - 2];
@@ -51,7 +52,7 @@ function mkGr (qs) {
     return cv;
   }
 
-  let max = qs[0][0];
+  let max = price > 0 ? price : qs[0][0];
   let min = max;
   qs.forEach(dv => {
     let v = dv[0];
@@ -85,6 +86,17 @@ function mkGr (qs) {
       ctx.closePath();
     }
     ctx.setLineDash([]);
+  }
+
+  if (price > 0) {
+    ctx.strokeStyle = "rgba(215, 215, 190)";
+    const y = 145.5 - (price - base) * 140 / top;
+    ctx.beginPath();
+    ctx.moveTo(45.5, y);
+    ctx.lineTo(294.5, y);
+    ctx.stroke();
+    ctx.closePath();
+    ctx.strokeStyle = "rgba(0, 0, 0)";
   }
 
   const xstep = 1;
@@ -126,10 +138,11 @@ function mkGr (qs) {
  * @param {!Domo} div
  * @param {string} nick
  * @param {number} refDay
+ * @param {number} price
  * @param {!Array<string>} ds
  * @param {!Array<!Array<number>>} qs
  */
-function mkGrBig (box, div, nick, refDay, ds, qs) {
+function mkGrBig (box, div, nick, refDay, price, ds, qs) {
   const bt = $("button").html("Close");
 
   let backg = "#e9e9e9";
@@ -152,7 +165,7 @@ function mkGrBig (box, div, nick, refDay, ds, qs) {
     return;
   }
 
-  let max = qs[0][0];
+  let max = price > 0 ? price : qs[0][0];
   let min = max;
   qs.forEach(dv => {
     let v = dv[0];
@@ -186,6 +199,17 @@ function mkGrBig (box, div, nick, refDay, ds, qs) {
       ctx.closePath();
     }
     ctx.setLineDash([]);
+  }
+
+  if (price > 0) {
+    ctx.strokeStyle = "rgba(215, 215, 190)";
+    const y = 290.5 - (price - base) * 280 / top;
+    ctx.beginPath();
+    ctx.moveTo(90.5, y);
+    ctx.lineTo(588.5, y);
+    ctx.stroke();
+    ctx.closePath();
+    ctx.strokeStyle = "rgba(0, 0, 0)";
   }
 
   const xstep = 2;
@@ -255,7 +279,7 @@ function mkGrBig (box, div, nick, refDay, ds, qs) {
   });
 }
 
-function mkGrTd (box, div, nick, url, profits, ds, qs, hs) {
+function mkGrTd (box, div, nick, url, price, profits, ds, qs, hs) {
   const lastQ = qs[qs.length - 1];
   return $("td")
     .add($("table").klass("main")
@@ -283,11 +307,11 @@ function mkGrTd (box, div, nick, url, profits, ds, qs, hs) {
             }))))
       .add($("tr")
         .add($("td").att("colspan", 3)
-          .add(mkGr(qs)
+          .add(mkGr(price, qs)
             .setStyle("cursor", "pointer")
             .on("click", () => {
               mkGrBig(
-                box, div, nick, qs.length, ds, qs
+                box, div, nick, qs.length, price, ds, qs
               );
               box.show(true);
             })))))
@@ -389,6 +413,7 @@ export default class Companies {
         };
         const rp = await Main.client.rq(rq);
 
+        const price = rp["price"];
         const profits = rp["profits"];
         ttProfits += profits;
         const dates = rp["dates"];
@@ -396,7 +421,7 @@ export default class Companies {
         const url = rp["url"];
         const historic = rp["historic"];
         tds.push(mkGrTd(
-          box, div, nick, url, profits, dates, quotes, historic
+          box, div, nick, url, price, profits, dates, quotes, historic
         ));
         if (tds.length === ncols) {
           tb.add($("tr").add($("td").att("colspan", ncols).add($("hr"))));

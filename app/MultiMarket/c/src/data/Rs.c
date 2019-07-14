@@ -78,13 +78,13 @@ RsHistoric
 
 /*--*/
 
-struct Rs_RsAssets{
+struct Rs_RsAssets {
   double assets;
   int buys;
   int sells;
 };
 
-RsAssets *rsAssets_new(double assets, int buys, int sells) {
+RsAssets *rsAssets_new (double assets, int buys, int sells) {
   RsAssets *this = MALLOC(RsAssets);
   this->assets = assets;
   this->buys = buys;
@@ -92,19 +92,19 @@ RsAssets *rsAssets_new(double assets, int buys, int sells) {
   return this;
 }
 
-double rsAssets_assets(RsAssets *this) {
+double rsAssets_assets (RsAssets *this) {
   return this->assets;
 }
 
-int rsAssets_buys(RsAssets *this) {
+int rsAssets_buys (RsAssets *this) {
   return this->buys;
 }
 
-int rsAssets_sells(RsAssets *this) {
+int rsAssets_sells (RsAssets *this) {
   return this->sells;
 }
 
-Js *rsAssets_to_js(RsAssets *this) {
+Js *rsAssets_to_js (RsAssets *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_wd(this->assets));
@@ -113,7 +113,7 @@ Js *rsAssets_to_js(RsAssets *this) {
   return js_wa(js);
 }
 
-RsAssets *rsAssets_from_js(Js *js) {
+RsAssets *rsAssets_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -124,13 +124,13 @@ RsAssets *rsAssets_from_js(Js *js) {
   return this;
 }
 
-struct Rs_RsProfits{
+struct Rs_RsProfits {
   double avg;
   double var;
   double sel;
 };
 
-RsProfits *rsProfits_new(double avg, double var, double sel) {
+RsProfits *rsProfits_new (double avg, double var, double sel) {
   RsProfits *this = MALLOC(RsProfits);
   this->avg = avg;
   this->var = var;
@@ -138,19 +138,19 @@ RsProfits *rsProfits_new(double avg, double var, double sel) {
   return this;
 }
 
-double rsProfits_avg(RsProfits *this) {
+double rsProfits_avg (RsProfits *this) {
   return this->avg;
 }
 
-double rsProfits_var(RsProfits *this) {
+double rsProfits_var (RsProfits *this) {
   return this->var;
 }
 
-double rsProfits_sel(RsProfits *this) {
+double rsProfits_sel (RsProfits *this) {
   return this->sel;
 }
 
-Js *rsProfits_to_js(RsProfits *this) {
+Js *rsProfits_to_js (RsProfits *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_wd(this->avg));
@@ -159,7 +159,7 @@ Js *rsProfits_to_js(RsProfits *this) {
   return js_wa(js);
 }
 
-RsProfits *rsProfits_from_js(Js *js) {
+RsProfits *rsProfits_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -170,13 +170,13 @@ RsProfits *rsProfits_from_js(Js *js) {
   return this;
 }
 
-struct Rs_Rs{
+struct Rs_Rs {
   Flea *flea;
   RsAssets *assets;
   RsProfits *profits;
 };
 
-Rs *rs_new(Flea *flea, RsAssets *assets, RsProfits *profits) {
+Rs *rs_new (Flea *flea, RsAssets *assets, RsProfits *profits) {
   Rs *this = MALLOC(Rs);
   this->flea = flea;
   this->assets = assets;
@@ -184,19 +184,19 @@ Rs *rs_new(Flea *flea, RsAssets *assets, RsProfits *profits) {
   return this;
 }
 
-Flea *rs_flea(Rs *this) {
+Flea *rs_flea (Rs *this) {
   return this->flea;
 }
 
-RsAssets *rs_assets(Rs *this) {
+RsAssets *rs_assets (Rs *this) {
   return this->assets;
 }
 
-RsProfits *rs_profits(Rs *this) {
+RsProfits *rs_profits (Rs *this) {
   return this->profits;
 }
 
-Js *rs_to_js(Rs *this) {
+Js *rs_to_js (Rs *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, flea_to_js(this->flea));
@@ -205,7 +205,7 @@ Js *rs_to_js(Rs *this) {
   return js_wa(js);
 }
 
-Rs *rs_from_js(Js *js) {
+Rs *rs_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -216,27 +216,27 @@ Rs *rs_from_js(Js *js) {
   return this;
 }
 
-struct Rs_RsWeb{
+struct Rs_RsWeb {
   Rs *result;
   Darr *params;
 };
 
-RsWeb *rsWeb_new(Rs *result, Darr *params) {
+RsWeb *rsWeb_new (Rs *result, Darr *params) {
   RsWeb *this = MALLOC(RsWeb);
   this->result = result;
   this->params = params;
   return this;
 }
 
-Rs *rsWeb_result(RsWeb *this) {
+Rs *rsWeb_result (RsWeb *this) {
   return this->result;
 }
 
-Darr *rsWeb_params(RsWeb *this) {
+Darr *rsWeb_params (RsWeb *this) {
   return this->params;
 }
 
-Js *rsWeb_to_js(RsWeb *this) {
+Js *rsWeb_to_js (RsWeb *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, rs_to_js(this->result));
@@ -244,7 +244,7 @@ Js *rsWeb_to_js(RsWeb *this) {
   return js_wa(js);
 }
 
-RsWeb *rsWeb_from_js(Js *js) {
+RsWeb *rsWeb_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -254,27 +254,27 @@ RsWeb *rsWeb_from_js(Js *js) {
   return this;
 }
 
-struct Rs_RsBests{
+struct Rs_RsBests {
   char *date;
   RsWeb *result;
 };
 
-RsBests *rsBests_new(char *date, RsWeb *result) {
+RsBests *rsBests_new (char *date, RsWeb *result) {
   RsBests *this = MALLOC(RsBests);
   this->date = date;
   this->result = result;
   return this;
 }
 
-char *rsBests_date(RsBests *this) {
+char *rsBests_date (RsBests *this) {
   return this->date;
 }
 
-RsWeb *rsBests_result(RsBests *this) {
+RsWeb *rsBests_result (RsBests *this) {
   return this->result;
 }
 
-Js *rsBests_to_js(RsBests *this) {
+Js *rsBests_to_js (RsBests *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_ws(this->date));
@@ -282,7 +282,7 @@ Js *rsBests_to_js(RsBests *this) {
   return js_wa(js);
 }
 
-RsBests *rsBests_from_js(Js *js) {
+RsBests *rsBests_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -292,27 +292,27 @@ RsBests *rsBests_from_js(Js *js) {
   return this;
 }
 
-struct Rs_RsChampions{
+struct Rs_RsChampions {
   char *model;
   RsWeb *result;
 };
 
-RsChampions *rsChampions_new(char *model, RsWeb *result) {
+RsChampions *rsChampions_new (char *model, RsWeb *result) {
   RsChampions *this = MALLOC(RsChampions);
   this->model = model;
   this->result = result;
   return this;
 }
 
-char *rsChampions_model(RsChampions *this) {
+char *rsChampions_model (RsChampions *this) {
   return this->model;
 }
 
-RsWeb *rsChampions_result(RsChampions *this) {
+RsWeb *rsChampions_result (RsChampions *this) {
   return this->result;
 }
 
-Js *rsChampions_to_js(RsChampions *this) {
+Js *rsChampions_to_js (RsChampions *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_ws(this->model));
@@ -320,7 +320,7 @@ Js *rsChampions_to_js(RsChampions *this) {
   return js_wa(js);
 }
 
-RsChampions *rsChampions_from_js(Js *js) {
+RsChampions *rsChampions_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -330,13 +330,13 @@ RsChampions *rsChampions_from_js(Js *js) {
   return this;
 }
 
-struct Rs_RsChartQ{
+struct Rs_RsChartQ {
   char *date;
   double close;
   double ref;
 };
 
-RsChartQ *rsChartQ_new(char *date, double close, double ref) {
+RsChartQ *rsChartQ_new (char *date, double close, double ref) {
   RsChartQ *this = MALLOC(RsChartQ);
   this->date = date;
   this->close = close;
@@ -344,19 +344,19 @@ RsChartQ *rsChartQ_new(char *date, double close, double ref) {
   return this;
 }
 
-char *rsChartQ_date(RsChartQ *this) {
+char *rsChartQ_date (RsChartQ *this) {
   return this->date;
 }
 
-double rsChartQ_close(RsChartQ *this) {
+double rsChartQ_close (RsChartQ *this) {
   return this->close;
 }
 
-double rsChartQ_ref(RsChartQ *this) {
+double rsChartQ_ref (RsChartQ *this) {
   return this->ref;
 }
 
-Js *rsChartQ_to_js(RsChartQ *this) {
+Js *rsChartQ_to_js (RsChartQ *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_ws(this->date));
@@ -365,7 +365,7 @@ Js *rsChartQ_to_js(RsChartQ *this) {
   return js_wa(js);
 }
 
-RsChartQ *rsChartQ_from_js(Js *js) {
+RsChartQ *rsChartQ_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -376,14 +376,14 @@ RsChartQ *rsChartQ_from_js(Js *js) {
   return this;
 }
 
-struct Rs_RsChartOp{
+struct Rs_RsChartOp {
   int is_sell;
   char *date;
   int stocks;
   double price;
 };
 
-RsChartOp *rsChartOp_new(
+RsChartOp *rsChartOp_new (
   int is_sell,
   char *date,
   int stocks,
@@ -397,23 +397,23 @@ RsChartOp *rsChartOp_new(
   return this;
 }
 
-int rsChartOp_is_sell(RsChartOp *this) {
+int rsChartOp_is_sell (RsChartOp *this) {
   return this->is_sell;
 }
 
-char *rsChartOp_date(RsChartOp *this) {
+char *rsChartOp_date (RsChartOp *this) {
   return this->date;
 }
 
-int rsChartOp_stocks(RsChartOp *this) {
+int rsChartOp_stocks (RsChartOp *this) {
   return this->stocks;
 }
 
-double rsChartOp_price(RsChartOp *this) {
+double rsChartOp_price (RsChartOp *this) {
   return this->price;
 }
 
-Js *rsChartOp_to_js(RsChartOp *this) {
+Js *rsChartOp_to_js (RsChartOp *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_wb(this->is_sell));
@@ -423,7 +423,7 @@ Js *rsChartOp_to_js(RsChartOp *this) {
   return js_wa(js);
 }
 
-RsChartOp *rsChartOp_from_js(Js *js) {
+RsChartOp *rsChartOp_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -435,14 +435,14 @@ RsChartOp *rsChartOp_from_js(Js *js) {
   return this;
 }
 
-struct Rs_RsChart{
+struct Rs_RsChart {
   char *nick;
   double profits;
   Arr *quotes;
   Arr *historic;
 };
 
-RsChart *rsChart_new(
+RsChart *rsChart_new (
   char *nick,
   double profits,
   Arr *quotes,
@@ -456,23 +456,23 @@ RsChart *rsChart_new(
   return this;
 }
 
-char *rsChart_nick(RsChart *this) {
+char *rsChart_nick (RsChart *this) {
   return this->nick;
 }
 
-double rsChart_profits(RsChart *this) {
+double rsChart_profits (RsChart *this) {
   return this->profits;
 }
 
-Arr *rsChart_quotes(RsChart *this) {
+Arr *rsChart_quotes (RsChart *this) {
   return this->quotes;
 }
 
-Arr *rsChart_historic(RsChart *this) {
+Arr *rsChart_historic (RsChart *this) {
   return this->historic;
 }
 
-Js *rsChart_to_js(RsChart *this) {
+Js *rsChart_to_js (RsChart *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_ws(this->nick));
@@ -482,7 +482,7 @@ Js *rsChart_to_js(RsChart *this) {
   return js_wa(js);
 }
 
-RsChart *rsChart_from_js(Js *js) {
+RsChart *rsChart_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -494,21 +494,21 @@ RsChart *rsChart_from_js(Js *js) {
   return this;
 }
 
-struct Rs_RsCharts{
+struct Rs_RsCharts {
   Arr *cos;
 };
 
-RsCharts *rsCharts_new(Arr *cos) {
+RsCharts *rsCharts_new (Arr *cos) {
   RsCharts *this = MALLOC(RsCharts);
   this->cos = cos;
   return this;
 }
 
-Arr *rsCharts_cos(RsCharts *this) {
+Arr *rsCharts_cos (RsCharts *this) {
   return this->cos;
 }
 
-struct Rs_RsHistoric{
+struct Rs_RsHistoric {
   void *co;
   double profits;
   Arr *quotes;
@@ -518,7 +518,7 @@ struct Rs_RsHistoric{
   int stocks;
 };
 
-RsHistoric *rsHistoric_new(
+RsHistoric *rsHistoric_new (
   void *co,
   double profits,
   Arr *quotes,
@@ -538,31 +538,31 @@ RsHistoric *rsHistoric_new(
   return this;
 }
 
-void *rsHistoric_co(RsHistoric *this) {
+void *rsHistoric_co (RsHistoric *this) {
   return this->co;
 }
 
-double rsHistoric_profits(RsHistoric *this) {
+double rsHistoric_profits (RsHistoric *this) {
   return this->profits;
 }
 
-Arr *rsHistoric_quotes(RsHistoric *this) {
+Arr *rsHistoric_quotes (RsHistoric *this) {
   return this->quotes;
 }
 
-Arr *rsHistoric_historic(RsHistoric *this) {
+Arr *rsHistoric_historic (RsHistoric *this) {
   return this->historic;
 }
 
-Order *rsHistoric_order(RsHistoric *this) {
+Order *rsHistoric_order (RsHistoric *this) {
   return this->order;
 }
 
-double rsHistoric_ref(RsHistoric *this) {
+double rsHistoric_ref (RsHistoric *this) {
   return this->ref;
 }
 
-int rsHistoric_stocks(RsHistoric *this) {
+int rsHistoric_stocks (RsHistoric *this) {
   return this->stocks;
 }
 

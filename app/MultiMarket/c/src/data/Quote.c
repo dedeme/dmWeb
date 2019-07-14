@@ -19,7 +19,7 @@ Quote: serial
 */
 /*--*/
 
-struct Quote_Quote{
+struct Quote_Quote {
   char *date;
   double open;
   double close;
@@ -29,7 +29,7 @@ struct Quote_Quote{
   int error;
 };
 
-Quote *quote_new(
+Quote *quote_new (
   char *date,
   double open,
   double close,
@@ -49,35 +49,35 @@ Quote *quote_new(
   return this;
 }
 
-char *quote_date(Quote *this) {
+char *quote_date (Quote *this) {
   return this->date;
 }
 
-double quote_open(Quote *this) {
+double quote_open (Quote *this) {
   return this->open;
 }
 
-double quote_close(Quote *this) {
+double quote_close (Quote *this) {
   return this->close;
 }
 
-double quote_max(Quote *this) {
+double quote_max (Quote *this) {
   return this->max;
 }
 
-double quote_min(Quote *this) {
+double quote_min (Quote *this) {
   return this->min;
 }
 
-int quote_vol(Quote *this) {
+int quote_vol (Quote *this) {
   return this->vol;
 }
 
-int quote_error(Quote *this) {
+int quote_error (Quote *this) {
   return this->error;
 }
 
-Js *quote_to_js(Quote *this) {
+Js *quote_to_js (Quote *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_ws(this->date));
@@ -90,7 +90,7 @@ Js *quote_to_js(Quote *this) {
   return js_wa(js);
 }
 
-Quote *quote_from_js(Js *js) {
+Quote *quote_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);

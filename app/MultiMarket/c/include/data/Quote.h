@@ -11,10 +11,18 @@
 /*--*/
 
 ///
+///   Arguments:
+///     date: char*
+///     open: double
+///     close: double
+///     max: double
+///     min: double
+///     vol: int
+///     error: bool
 typedef struct Quote_Quote Quote;
 
 ///
-Quote *quote_new(
+Quote *quote_new (
   char *date,
   double open,
   double close,
@@ -25,31 +33,31 @@ Quote *quote_new(
 );
 
 ///
-char *quote_date(Quote *this);
+char *quote_date (Quote *this);
 
 ///
-double quote_open(Quote *this);
+double quote_open (Quote *this);
 
 ///
-double quote_close(Quote *this);
+double quote_close (Quote *this);
 
 ///
-double quote_max(Quote *this);
+double quote_max (Quote *this);
 
 ///
-double quote_min(Quote *this);
+double quote_min (Quote *this);
 
 ///
-int quote_vol(Quote *this);
+int quote_vol (Quote *this);
 
 /// It it is 1, quotes are handly modified.
-int quote_error(Quote *this);
+int quote_error (Quote *this);
 
 ///
-Js *quote_to_js(Quote *this);
+Js *quote_to_js (Quote *this);
 
 ///
-Quote *quote_from_js(Js *js);
+Quote *quote_from_js (Js *js);
 
 /*--*/
 

@@ -77,7 +77,7 @@ static void run (AsyncActor *ac) {
       ac, (FPROC)fleasdb_flog_write, str_f("%s\n", title(model_name(md)))
     );
 
-    int nparams = arr_size(model_param_names(md));
+    int nparams = arr_size(model_param_cf(md));
 
     Rs *rs_selected = rs_new(
       flea_new(date, 0, 0, nparams),
@@ -293,7 +293,7 @@ static void run (AsyncActor *ac) {
 
   Iarr *nparamss = iarr_new();
   EACH(models, Model, md)
-    int nparams = arr_size(model_param_names(md));
+    int nparams = arr_size(model_param_cf(md));
     int missing = 1;
     IEACH(nparamss, n)
       if (n == nparams) {
@@ -357,6 +357,12 @@ static void run (AsyncActor *ac) {
     }
     asyncActor_run(ac, fn, NULL);
   _EACH
+
+  // Garbage collector
+  dates = NULL;
+  closes = NULL;
+  opens = NULL;
+  sets = NULL;
 
   void fn2 (void *null) {
     conf_set_fleas_running(0);

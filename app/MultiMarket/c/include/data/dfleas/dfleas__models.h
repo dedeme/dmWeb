@@ -21,7 +21,7 @@ Arr *dfleas__models_names (void);
 /// Returns Opt[Model] The model called 'name'
 Opt *dfleas__models_get (char *name);
 
-/// Returns Model-Parameters used by accounting
-ModelParams *dfleas__models_acc (void);
+/// Returns Model-Parameters used by default in program initialization.
+ModelParams *dfleas__models_default (void);
 
 #endif

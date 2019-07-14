@@ -50,7 +50,7 @@ static Arr *base (Map *qs, Arr *pf, Nick *nk) {
     stocks = accPfEntry_stocks(pfe);
     price = accPfEntry_price(pfe);
   }
-  RsHistoric *rs = accdb_historic_without_dailyq(nk_name);
+  RsHistoric *rs = accdb_historic(nk_name);
   double ref = rsHistoric_ref(rs);
 
   arr_push(r, js_ws(nk_name));

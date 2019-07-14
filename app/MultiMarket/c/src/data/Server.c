@@ -33,27 +33,27 @@ ServerCode: serial
 
 /*--*/
 
-struct Server_ServerCode{
+struct Server_ServerCode {
   int nick_id;
   Opt *code;
 };
 
-ServerCode *serverCode_new(int nick_id, Opt *code) {
+ServerCode *serverCode_new (int nick_id, Opt *code) {
   ServerCode *this = MALLOC(ServerCode);
   this->nick_id = nick_id;
   this->code = code;
   return this;
 }
 
-int serverCode_nick_id(ServerCode *this) {
+int serverCode_nick_id (ServerCode *this) {
   return this->nick_id;
 }
 
-Opt *serverCode_code(ServerCode *this) {
+Opt *serverCode_code (ServerCode *this) {
   return this->code;
 }
 
-Js *serverCode_to_js(ServerCode *this) {
+Js *serverCode_to_js (ServerCode *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_wi((int)this->nick_id));
@@ -64,7 +64,7 @@ Js *serverCode_to_js(ServerCode *this) {
   return js_wa(js);
 }
 
-ServerCode *serverCode_from_js(Js *js) {
+ServerCode *serverCode_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
@@ -77,7 +77,7 @@ ServerCode *serverCode_from_js(Js *js) {
   return this;
 }
 
-struct Server_Server{
+struct Server_Server {
   int id;
   char *short_name;
   char *name;
@@ -86,7 +86,7 @@ struct Server_Server{
   Arr *codes;
 };
 
-static Server *_server_new(int id, char *short_name) {
+static Server *_server_new (int id, char *short_name) {
   Server *this = MALLOC(Server);
   this->id = id;
   this->short_name = short_name;
@@ -97,47 +97,47 @@ static Server *_server_new(int id, char *short_name) {
   return this;
 }
 
-int server_id(Server *this) {
+int server_id (Server *this) {
   return this->id;
 }
 
-char *server_short_name(Server *this) {
+char *server_short_name (Server *this) {
   return this->short_name;
 }
 
-void server_set_short_name(Server *this, char *value) {
+void server_set_short_name (Server *this, char *value) {
   this->short_name = value;
 }
 
-char *server_name(Server *this) {
+char *server_name (Server *this) {
   return this->name;
 }
 
-void server_set_name(Server *this, char *value) {
+void server_set_name (Server *this, char *value) {
   this->name = value;
 }
 
-Opt *server_daily_conf(Server *this) {
+Opt *server_daily_conf (Server *this) {
   return this->daily_conf;
 }
 
-void server_set_daily_conf(Server *this, Opt *value) {
+void server_set_daily_conf (Server *this, Opt *value) {
   this->daily_conf = value;
 }
 
-Opt *server_historic_conf(Server *this) {
+Opt *server_historic_conf (Server *this) {
   return this->historic_conf;
 }
 
-void server_set_historic_conf(Server *this, Opt *value) {
+void server_set_historic_conf (Server *this, Opt *value) {
   this->historic_conf = value;
 }
 
-Arr *server_codes(Server *this) {
+Arr *server_codes (Server *this) {
   return this->codes;
 }
 
-Js *server_to_js(Server *this) {
+Js *server_to_js (Server *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_wi((int)this->id));
@@ -155,7 +155,7 @@ Js *server_to_js(Server *this) {
   return js_wa(js);
 }
 
-Server *server_from_js(Js *js) {
+Server *server_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);

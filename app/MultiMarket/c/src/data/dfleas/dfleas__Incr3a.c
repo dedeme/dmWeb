@@ -128,10 +128,10 @@ static double ref(Darr *params, void *company) {
 }
 
 Model *dfleas__Incr3a() {
-  // Arr[char]
-  Arr *param_names = arr_new();
-  arr_push(param_names, "(Días=53) Banda C");
-  arr_push(param_names, "(Días=53) Banda V");
+  // Arr[ModelMxMn]
+  Arr *param_cf = arr_new();
+  arr_push(param_cf, modelMxMn_new("(Días=53) Banda C", MAX_STRIP, MIN_STRIP));
+  arr_push(param_cf, modelMxMn_new("(Días=53) Banda V", MAX_STRIP, MIN_STRIP));
 
   // Arr[Js]
   Arr *param_jss_js = arr_new();
@@ -150,7 +150,7 @@ Model *dfleas__Incr3a() {
 
   return model_new(
     str_new("Incr3a"),
-    param_names,
+    param_cf,
     param_jss,
     fparams,
     fcos,

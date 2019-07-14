@@ -13,6 +13,7 @@
 #include "Rs.h"
 #include "Qmatrix.h"
 #include "NickSets.h"
+#include "ModelMxMn.h"
 
 /// Function which returns parameters of 'f'
 typedef Darr *(*Fparams)(Flea *f);
@@ -38,12 +39,20 @@ typedef Order *(*Forder)(Darr *params, void *co, double q);
 typedef double (*Fref)(Darr *params, void *co);
 
 ///
+///   Arguments:
+///     name: char*
+///     param_cf: Arr-ModelMxMn
+///     param_jss: Js
+///     fparams: Fparams
+///     fcos: Fcos
+///     forder: Forder
+///     fref: Fref
 typedef struct Model_Model Model;
 
 ///
-Model *model_new(
+Model *model_new (
   char *name,
-  Arr *param_names,
+  Arr *param_cf,
   Js *param_jss,
   Fparams fparams,
   Fcos fcos,
@@ -52,13 +61,13 @@ Model *model_new(
 );
 
 /// Model name.
-char *model_name(Model *this);
+char *model_name (Model *this);
 
-/// Arr[char] Names of model parameters.
-Arr *model_param_names(Model *this);
+/// Arr[ModelMxMn] Names of model parameters.
+Arr *model_param_cf (Model *this);
 
-/// Template to show params in javascript (prefix-multiplicator-decimals-sufix)
-Js *model_param_jss(Model *this);
+/// Template to show params in javascript (prefix-multiplicator-decimals-suffix)
+Js *model_param_jss (Model *this);
 
 /// Returns parameters of 'f'.
 Darr *model_params(Model *this, Flea *f);

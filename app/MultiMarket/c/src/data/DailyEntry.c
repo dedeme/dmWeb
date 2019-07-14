@@ -10,23 +10,23 @@ DailyEntry:
 */
 /*--*/
 
-struct DailyEntry_DailyEntry{
+struct DailyEntry_DailyEntry {
   char *code;
   double close;
 };
 
-DailyEntry *dailyEntry_new(char *code, double close) {
+DailyEntry *dailyEntry_new (char *code, double close) {
   DailyEntry *this = MALLOC(DailyEntry);
   this->code = code;
   this->close = close;
   return this;
 }
 
-char *dailyEntry_code(DailyEntry *this) {
+char *dailyEntry_code (DailyEntry *this) {
   return this->code;
 }
 
-double dailyEntry_close(DailyEntry *this) {
+double dailyEntry_close (DailyEntry *this) {
   return this->close;
 }
 

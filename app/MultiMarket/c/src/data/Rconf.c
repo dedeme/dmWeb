@@ -21,7 +21,7 @@
 */
 /*--*/
 
-struct Rconf_Rconf{
+struct Rconf_Rconf {
   char *url;
   int sel;
   int is_date_eu;
@@ -36,59 +36,59 @@ struct Rconf_Rconf{
   Arr *cols_end;
 };
 
-char *rconf_url(Rconf *this) {
+char *rconf_url (Rconf *this) {
   return this->url;
 }
 
-int rconf_sel(Rconf *this) {
+int rconf_sel (Rconf *this) {
   return this->sel;
 }
 
-void rconf_set_sel(Rconf *this, int value) {
+void rconf_set_sel (Rconf *this, int value) {
   this->sel = value;
 }
 
-int rconf_is_date_eu(Rconf *this) {
+int rconf_is_date_eu (Rconf *this) {
   return this->is_date_eu;
 }
 
-char *rconf_date_separator(Rconf *this) {
+char *rconf_date_separator (Rconf *this) {
   return this->date_separator;
 }
 
-int rconf_is_iso_number(Rconf *this) {
+int rconf_is_iso_number (Rconf *this) {
   return this->is_iso_number;
 }
 
-char *rconf_fields_type(Rconf *this) {
+char *rconf_fields_type (Rconf *this) {
   return this->fields_type;
 }
 
-char *rconf_table_start(Rconf *this) {
+char *rconf_table_start (Rconf *this) {
   return this->table_start;
 }
 
-char *rconf_table_end(Rconf *this) {
+char *rconf_table_end (Rconf *this) {
   return this->table_end;
 }
 
-char *rconf_row_start(Rconf *this) {
+char *rconf_row_start (Rconf *this) {
   return this->row_start;
 }
 
-char *rconf_row_end(Rconf *this) {
+char *rconf_row_end (Rconf *this) {
   return this->row_end;
 }
 
-Arr *rconf_cols_start(Rconf *this) {
+Arr *rconf_cols_start (Rconf *this) {
   return this->cols_start;
 }
 
-Arr *rconf_cols_end(Rconf *this) {
+Arr *rconf_cols_end (Rconf *this) {
   return this->cols_end;
 }
 
-Js *rconf_to_js(Rconf *this) {
+Js *rconf_to_js (Rconf *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_ws(this->url));
@@ -106,7 +106,7 @@ Js *rconf_to_js(Rconf *this) {
   return js_wa(js);
 }
 
-Rconf *rconf_from_js(Js *js) {
+Rconf *rconf_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);

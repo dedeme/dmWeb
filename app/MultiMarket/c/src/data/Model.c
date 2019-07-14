@@ -12,8 +12,8 @@
 -Model
   # Model name.
   name: char *
-  # Arr[char] Names of model parameters.
-  param_names: Arr - char
+  # Arr[ModelMxMn] Names of model parameters.
+  param_cf: Arr - char
   # Template to show params in javascript (prefix-multiplicator-decimals-sufix)
   param_jss: Js
   -fparams: Fparams
@@ -24,7 +24,7 @@
 
 struct Model_Model{
   char *name;
-  Arr *param_names;
+  Arr *param_cf;
   Js *param_jss;
   Fparams fparams;
   Fcos fcos;
@@ -34,7 +34,7 @@ struct Model_Model{
 
 Model *model_new(
   char *name,
-  Arr *param_names,
+  Arr *param_cf,
   Js *param_jss,
   Fparams fparams,
   Fcos fcos,
@@ -43,7 +43,7 @@ Model *model_new(
 ) {
   Model *this = MALLOC(Model);
   this->name = name;
-  this->param_names = param_names;
+  this->param_cf = param_cf;
   this->param_jss = param_jss;
   this->fparams = fparams;
   this->fcos = fcos;
@@ -56,8 +56,8 @@ char *model_name(Model *this) {
   return this->name;
 }
 
-Arr *model_param_names(Model *this) {
-  return this->param_names;
+Arr *model_param_cf(Model *this) {
+  return this->param_cf;
 }
 
 Js *model_param_jss(Model *this) {
@@ -79,7 +79,6 @@ Order *model_order(Model *this, Darr *params, void *co, double q) {
 double model_ref(Model *this, Darr *params, void *co) {
   return this->fref(params, co);
 }
-
 
 // set is Arr[char]
 static Qmatrix *qset(Qmatrix *mx, Arr *set) {

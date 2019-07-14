@@ -11,24 +11,29 @@ ModelParams
 
 /*--*/
 
-struct ModelParams_ModelParams{
+struct ModelParams_ModelParams {
   Model *model;
   Darr *params;
 };
 
-ModelParams *modelParams_new(Model *model, Darr *params) {
+ModelParams *modelParams_new (Model *model, Darr *params) {
   ModelParams *this = MALLOC(ModelParams);
   this->model = model;
   this->params = params;
   return this;
 }
 
-Model *modelParams_model(ModelParams *this) {
+Model *modelParams_model (ModelParams *this) {
   return this->model;
 }
 
-Darr *modelParams_params(ModelParams *this) {
+Darr *modelParams_params (ModelParams *this) {
   return this->params;
 }
 
 /*--*/
+
+int modelParams_eq (ModelParams *p1, ModelParams *p2) {
+  return str_eq(model_name(p1->model), model_name(p2->model)) &&
+    darr_eq(p1->params, p2->params, 0.0000001);
+}

@@ -27,11 +27,11 @@ void accdb_dailyq_write (Js *quotes);
 
 /// Returns results including daily quotes and using the current accouning
 /// flea model.
-RsHistoric *accdb_historic (char *nick);
+RsHistoric *accdb_historic_with_dailyq (char *nick);
 
 /// Returns results not including daily quotes and using the current accouning
 /// flea model.
-RsHistoric *accdb_historic_without_dailyq (char *nick);
+RsHistoric *accdb_historic (char *nick);
 
 /// Returns Arr[AccEntry] with every entry (From before to after)
 Arr *accdb_diary_read (void);

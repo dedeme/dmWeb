@@ -11,61 +11,72 @@
 /*--*/
 
 ///
+///   Arguments:
+///     nick_id: int
+///     code: Opt-char*
 typedef struct Server_ServerCode ServerCode;
 
 ///
-ServerCode *serverCode_new(int nick_id, Opt *code);
+ServerCode *serverCode_new (int nick_id, Opt *code);
 
 ///
-int serverCode_nick_id(ServerCode *this);
+int serverCode_nick_id (ServerCode *this);
 
 /// Opt[char]
-Opt *serverCode_code(ServerCode *this);
+Opt *serverCode_code (ServerCode *this);
 
 ///
-Js *serverCode_to_js(ServerCode *this);
+Js *serverCode_to_js (ServerCode *this);
 
 ///
-ServerCode *serverCode_from_js(Js *js);
+ServerCode *serverCode_from_js (Js *js);
 
 ///
+///   Arguments:
+///     id: int
+///     short_name: char*
+///   Variables:
+///     name: char*
+///     daily_conf: Opt-Rconf
+///     historic_conf: Opt-Rconf
+///     codes: Arr-ServerCode
 typedef struct Server_Server Server;
 
 ///
-int server_id(Server *this);
+int server_id (Server *this);
 
 ///
-char *server_short_name(Server *this);
+char *server_short_name (Server *this);
 
 ///
-void server_set_short_name(Server *this, char *value);
+void server_set_short_name (Server *this, char *value);
 
 ///
-char *server_name(Server *this);
+char *server_name (Server *this);
 
 ///
-void server_set_name(Server *this, char *value);
+void server_set_name (Server *this, char *value);
 
 /// Opt[Rconf]
-Opt *server_daily_conf(Server *this);
+Opt *server_daily_conf (Server *this);
 
 ///
-void server_set_daily_conf(Server *this, Opt *value);
+void server_set_daily_conf (Server *this, Opt *value);
 
 /// Opt[Rconf]
-Opt *server_historic_conf(Server *this);
+Opt *server_historic_conf (Server *this);
 
 ///
-void server_set_historic_conf(Server *this, Opt *value);
+void server_set_historic_conf (Server *this, Opt *value);
 
 /// Arr[ServerCode]
-Arr *server_codes(Server *this);
+Arr *server_codes (Server *this);
 
 ///
-Js *server_to_js(Server *this);
+Js *server_to_js (Server *this);
 
 ///
-Server *server_from_js(Js *js);
+Server *server_from_js (Js *js);
 
 /*--*/
 

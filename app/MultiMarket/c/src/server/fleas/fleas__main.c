@@ -4,6 +4,7 @@
 #include "server/fleas/fleas__main.h"
 #include "io/conf.h"
 #include "data/Model.h"
+#include "data/ModelMxMn.h"
 #include "data/dfleas/dfleas__models.h"
 #include "dmc/cgi.h"
 
@@ -20,7 +21,9 @@ char *fleas__main_process(AsyncActor *ac, Map *mrq) {
       EACH(dfleas__models(), Model, md)
         // Arr[Js]
         Arr *params = arr_new();
-        arr_push(params, arr_to_js(model_param_names(md), (FTO)js_ws));
+        arr_push(params, arr_to_js(
+          modelMxMn_names(model_param_cf(md)), (FTO)js_ws
+        ));
         arr_push(params, model_param_jss(md));
 
         map_put(pnames, model_name(md), js_wa(params));

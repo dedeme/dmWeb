@@ -8,18 +8,21 @@
 #include "io/log.h"
 
 void acc_historic_profits (AsyncActor *ac) {
-  AccLedPf *rs = accLedPf_new(accdb_diary_read());
-  EACH(accLedPf_errors(rs), char, e)
-    log_error(e);
-  _EACH
+  void fn (void *null) {
+    AccLedPf *rs = accLedPf_new(accdb_diary_read());
+    EACH(accLedPf_errors(rs), char, e)
+      log_error(e);
+    _EACH
 
-  accdb_pf_update(accLedPf_pf(rs));
+    accdb_pf_update(accLedPf_pf(rs));
 
-  Darr *pfs = accLedPf_profits(rs);
-  accdb_profits_add(
-    date_to_str(date_add(date_now(), -1)),
-    darr_get(pfs, 0),
-    darr_get(pfs, 1),
-    darr_get(pfs, 2)
-  );
+    Darr *pfs = accLedPf_profits(rs);
+    accdb_profits_add(
+      date_to_str(date_add(date_now(), -1)),
+      darr_get(pfs, 0),
+      darr_get(pfs, 1),
+      darr_get(pfs, 2)
+    );
+  }
+  asyncActor_wait(ac, fn, NULL);
 }

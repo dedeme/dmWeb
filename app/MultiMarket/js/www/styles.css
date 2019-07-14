@@ -146,6 +146,12 @@ TD.nick {
   width: 50px;
 }
 
+TD.example {
+  text-align: center;
+  font-style: italic;
+  color: #c9c9c9;
+}
+
 DIV.head {
   padding-top:15px;
   padding-bottom:2px;

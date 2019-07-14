@@ -11,6 +11,7 @@ import Home from "./Home.js";
 import Nicks from "./Nicks.js";
 import Servers from "./Servers.js";
 import Annotations from "./Annotations.js";
+import Models from "./Models.js";
 import Schedule from "./Schedule.js";
 import Settings from "./Settings.js";
 import Backups from "./Backups.js";
@@ -78,6 +79,11 @@ export default class SysMain {
       SysMain.annotationsPageId, _("Annotations"),
       () => this.go(SysMain.annotationsPageId)
     ));
+    menu.addLeft(Menu.separator2());
+    menu.addLeft(Menu.mkOption(
+      SysMain.modelsPageId, _("Models"),
+      () => this.go(SysMain.modelsPageId)
+    ));
 
     menu.addRight(Menu.mkClose(main.bye.bind(main)));
     menu.addRight(Menu.separator());
@@ -127,6 +133,8 @@ export default class SysMain {
       new Servers(this).show();
     } else if (page === SysMain.annotationsPageId) {
       new Annotations(this).show();
+    } else if (page === SysMain.modelsPageId) {
+      new Models(this).show();
     } else if (page === SysMain.schedulePageId) {
       new Schedule(this).show();
     } else if (page === SysMain.settingsPageId) {
@@ -176,6 +184,11 @@ export default class SysMain {
   /** @return {string} */
   static get annotationsPageId () {
     return "annotations";
+  }
+
+  /** @return {string} */
+  static get modelsPageId () {
+    return "models";
   }
 
   /** @return {string} */

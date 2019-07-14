@@ -17,14 +17,14 @@ NickSets
 
 /*--*/
 
-struct NickSets_NickSets{
+struct NickSets_NickSets {
   Arr *win;
   Arr *loss;
   Arr *semi_win;
   Arr *semi_loss;
 };
 
-NickSets *nickSets_new(
+NickSets *nickSets_new (
   Arr *win,
   Arr *loss,
   Arr *semi_win,
@@ -38,19 +38,19 @@ NickSets *nickSets_new(
   return this;
 }
 
-Arr *nickSets_win(NickSets *this) {
+Arr *nickSets_win (NickSets *this) {
   return this->win;
 }
 
-Arr *nickSets_loss(NickSets *this) {
+Arr *nickSets_loss (NickSets *this) {
   return this->loss;
 }
 
-Arr *nickSets_semi_win(NickSets *this) {
+Arr *nickSets_semi_win (NickSets *this) {
   return this->semi_win;
 }
 
-Arr *nickSets_semi_loss(NickSets *this) {
+Arr *nickSets_semi_loss (NickSets *this) {
   return this->semi_loss;
 }
 

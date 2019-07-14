@@ -12,14 +12,14 @@
 */
 /*--*/
 
-struct Flea_Flea{
+struct Flea_Flea {
   char *date;
   int cycle;
   int id;
   Gen *gen;
 };
 
-static Flea *_flea_new(
+static Flea *_flea_new (
   char *date,
   int cycle,
   int id,
@@ -33,23 +33,23 @@ static Flea *_flea_new(
   return this;
 }
 
-char *flea_date(Flea *this) {
+char *flea_date (Flea *this) {
   return this->date;
 }
 
-int flea_cycle(Flea *this) {
+int flea_cycle (Flea *this) {
   return this->cycle;
 }
 
-int flea_id(Flea *this) {
+int flea_id (Flea *this) {
   return this->id;
 }
 
-Gen *flea_gen(Flea *this) {
+Gen *flea_gen (Flea *this) {
   return this->gen;
 }
 
-Js *flea_to_js(Flea *this) {
+Js *flea_to_js (Flea *this) {
   // Arr[Js]
   Arr *js = arr_new();
   arr_push(js, js_ws(this->date));
@@ -59,7 +59,7 @@ Js *flea_to_js(Flea *this) {
   return js_wa(js);
 }
 
-Flea *flea_from_js(Js *js) {
+Flea *flea_from_js (Js *js) {
   // Arr[Js]
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);

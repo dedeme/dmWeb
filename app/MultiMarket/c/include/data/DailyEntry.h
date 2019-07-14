@@ -11,16 +11,19 @@
 /*--*/
 
 ///
+///   Arguments:
+///     code: char*
+///     close: double
 typedef struct DailyEntry_DailyEntry DailyEntry;
 
 ///
-DailyEntry *dailyEntry_new(char *code, double close);
+DailyEntry *dailyEntry_new (char *code, double close);
 
 ///
-char *dailyEntry_code(DailyEntry *this);
+char *dailyEntry_code (DailyEntry *this);
 
 ///
-double dailyEntry_close(DailyEntry *this);
+double dailyEntry_close (DailyEntry *this);
 
 /*--*/
 

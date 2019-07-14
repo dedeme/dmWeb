@@ -12,10 +12,17 @@
 /*--*/
 
 ///
+///   Arguments:
+///     date: char*
+///     open: double
+///     close: double
+///     max: double
+///     min: double
+///     vol: int
 typedef struct HistoricEntry_HistoricEntry HistoricEntry;
 
 ///
-HistoricEntry *historicEntry_new(
+HistoricEntry *historicEntry_new (
   char *date,
   double open,
   double close,
@@ -25,22 +32,22 @@ HistoricEntry *historicEntry_new(
 );
 
 ///
-char *historicEntry_date(HistoricEntry *this);
+char *historicEntry_date (HistoricEntry *this);
 
 ///
-double historicEntry_open(HistoricEntry *this);
+double historicEntry_open (HistoricEntry *this);
 
 ///
-double historicEntry_close(HistoricEntry *this);
+double historicEntry_close (HistoricEntry *this);
 
 ///
-double historicEntry_max(HistoricEntry *this);
+double historicEntry_max (HistoricEntry *this);
 
 ///
-double historicEntry_min(HistoricEntry *this);
+double historicEntry_min (HistoricEntry *this);
 
 ///
-int historicEntry_vol(HistoricEntry *this);
+int historicEntry_vol (HistoricEntry *this);
 
 /*--*/
 

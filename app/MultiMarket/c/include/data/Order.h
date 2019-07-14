@@ -11,10 +11,13 @@
 /*--*/
 
 ///
+///   Arguments:
+///     type: int
+///     ponderation: double
 typedef struct Order_Order Order;
 
 /// Returns ponderation of a buy order.
-double order_ponderation(Order *this);
+double order_ponderation (Order *this);
 
 /*--*/
 

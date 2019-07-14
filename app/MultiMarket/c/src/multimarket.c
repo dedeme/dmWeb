@@ -22,6 +22,7 @@
 #include "io/accdb.h"
 #include "io/sbox.h"
 #include "io/dailydb.h"
+#include "io/managerdb.h"
 
 #include "data/dfleas/dfleas__models.h"
 
@@ -48,6 +49,7 @@ static void init (void) {
   accdb_init();
   sbox_init();
   dailydb_init();
+  managerdb_init();
   //---------
   dfleas__models_init();
 

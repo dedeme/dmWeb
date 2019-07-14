@@ -11,31 +11,36 @@
 /*--*/
 
 ///
+///   Arguments:
+///     id: int
+///     name: char*
+///   Variables:
+///     is_sel: bool
 typedef struct Nick_Nick Nick;
 
 ///
-Nick *nick_new(int id, char *name);
+Nick *nick_new (int id, char *name);
 
 ///
-int nick_id(Nick *this);
+int nick_id (Nick *this);
 
 ///
-char *nick_name(Nick *this);
+char *nick_name (Nick *this);
 
 ///
-void nick_set_name(Nick *this, char *value);
+void nick_set_name (Nick *this, char *value);
 
 ///
-int nick_is_sel(Nick *this);
+int nick_is_sel (Nick *this);
 
 ///
-void nick_set_is_sel(Nick *this, int value);
+void nick_set_is_sel (Nick *this, int value);
 
 ///
-Js *nick_to_js(Nick *this);
+Js *nick_to_js (Nick *this);
 
 ///
-Nick *nick_from_js(Js *js);
+Nick *nick_from_js (Js *js);
 
 /*--*/
 
