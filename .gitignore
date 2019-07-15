@@ -8,7 +8,7 @@ gitk
 obj
 bin
 _test
-.mkdir
+.mkaux
 
 #js
 **/www/index.js

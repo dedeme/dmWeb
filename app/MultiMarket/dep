@@ -2,7 +2,6 @@
 
 cd c
 ./dep
-makemake --prg MultiMarket --libs dmc
 cd ../js
 ./dep
 cd ..
