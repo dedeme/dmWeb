@@ -48,6 +48,9 @@ export default class Cos {
 
     /** @private */
     this._reverse = false;
+
+    /** @private */
+    this._cosDiv = $("div");
   }
 
   showData () {
@@ -87,6 +90,9 @@ export default class Cos {
     cos.forEach((e, i) => {
       this._chs[i].update(e[0], e[1]);
     });
+    this._chs.splice(cos.length, this._chs.length - cos.length);
+
+    this._cosDiv.removeAll().add(this.chartsTable());
   }
 
   nickOrder () {
@@ -179,7 +185,7 @@ export default class Cos {
   show () {
     this._dailyMain.body.removeAll().add($("div").style("text-align:center;")
       .add(orderDiv)
-      .add(this.chartsTable())
+      .add(this._cosDiv)
       .add(Ui.upTop("up"))
     );
     this.signalOrder();

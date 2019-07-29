@@ -17,9 +17,9 @@ import Code from "./Code.js";
 
 const app = "JsDoc";
 const version = "201809";
-const langStore = "${app}__lang";
-const captchaAuthStore = "${app}__captcha";
-const captchaChpassStore = "${app}__captchaCh";
+const langStore = `${app}__lang`;
+const captchaAuthStore = `${app}__captcha`;
+const captchaChpassStore = `${app}__captchaCh`;
 
 const settingsPageId = "settings";
 const backupsPageId = "backups";

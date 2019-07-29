@@ -1,23 +1,28 @@
-// Copyright 23-Mar-2019 ºDeme
+// Copyright 18-Jul-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 import Domo from "./dmjs/Domo.js"; //eslint-disable-line
 import Client from "./dmjs/Client.js";
 import Ui from "./dmjs/Ui.js";
+import Store from "./dmjs/Store.js";
 import Expired from "./core/Expired.js";
 import Auth from "./core/Auth.js";
 import {I18n, _} from "./I18n.js";
 import Bye from "./core/Bye.js";
-import SysMain from "./sys/SysMain.js";
-import FleasMain from "./fleas/FleasMain.js";
-import AccMain from "./acc/AccMain.js";
-import DailyMain from "./daily/DailyMain.js";
 
-const app = "MultiMarket";
-const version = "201903";
+import Menu from "./wgs/Menu.js";
+import {Data} from "./Data.js";
+import Settings from "./Settings.js";
+import WRanking from "./wgs/WRanking.js";
+
+
+const app = "MarketLeague";
+const version = "201907";
 const langStore = `${app}__lang`;
 const captchaAuthStore = `${app}__captcha`;
 const captchaChpassStore = `${app}__captchaCh`;
+
+const appStore = `${app}__data`;
 
 const $ = Ui.$;
 
@@ -36,6 +41,9 @@ export default class Main {
 
     this._lang = "es";
 
+    /** @type {Data} */
+    this._data = null;
+
     // VIEW --------
     // TTTTTTTTTTTTT
 
@@ -43,8 +51,12 @@ export default class Main {
       .att("href", "doc/about.html")
       .att("target", "blank");
 
+    this._menuDiv = $("div");
 
     this._view = $("div");
+
+    /** @type {!Menu} */
+    this._menu = new Menu(false);
   }
 
   /** @return {string} */
@@ -57,6 +69,15 @@ export default class Main {
     return this._view;
   }
 
+  /** @return {!Data} */
+  get data () {
+    if (this._data === null) {
+      throw Error("'data' is null");
+    } else {
+      return this._data;
+    }
+  }
+
   // MODEL ---------------------------------------
   // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
 
@@ -67,6 +88,7 @@ export default class Main {
   /** @private */
   get wg () {
     return $("div")
+      .add(this._menuDiv)
       .add(this._view)
       .add($("p").html("&nbsp;"))
       .add($("hr"))
@@ -89,74 +111,101 @@ export default class Main {
   // CONTROL -------------------------------------
   // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
 
+  /** @private */
+  menu () {
+    const m = this._menu;
+    m.reset();
+
+    m.addLeft(Menu.mkLink(Main.dailyPageId, _("Daily")));
+    m.addLeft(Menu.separator());
+    m.addLeft(Menu.mkLink(Main.shortPageId, _("Short")));
+    m.addLeft(Menu.separator());
+    m.addLeft(Menu.mkLink(Main.mediumPageId, _("Medium")));
+    m.addLeft(Menu.separator());
+    m.addLeft(Menu.mkLink(Main.longPageId, _("Long")));
+
+    m.addRight(Menu.mkClose(this.bye.bind(this)));
+    m.addRight(Menu.separator());
+    m.addRight(Menu.mkLink(Main.settingsPageId, _("Settings")));
+
+    this._menuDiv.removeAll().add(m.wg);
+  }
+
   bye () {
     if (!confirm(_("Application exit?"))) {
       return;
     }
     const rq = {
-      "module": "sys",
-      "source": "SysMain",
-      "rq": "go",
-      "option": SysMain.homePageId
+      "rq": "logout"
     };
     Main.client.send(rq);
-    const rq2 = {
-      "module": "logout"
-    };
-    Main.client.send(rq2);
 
     new Bye(this).show();
   }
 
   /** @return {!Promise} */
   async update () {
-    const self = this;
-
-    async function go () {
+    const /** boolean */ ok = await Main.client.connect();
+    if (ok) {
       const rq = {
-        "module": ".",
+        "rq": "getLang",
       };
-
       /** @type {!Object<string, string>} */
       const rp = await Main.client.rq(rq);
-      self._lang = rp["lang"] || "es";
+      this._lang = rp["lang"] || "es";
 
-      if (self._lang === "en") {
+      if (this._lang === "en") {
         I18n.en();
       } else {
         I18n.es();
       }
 
-      self._credits.html("<small>" + _("Help & Credits") + "</small>");
+      this.menu();
+      this._credits.html("<small>" + _("Help & Credits") + "</small>");
+
+      // Store.del(appStore);
+      const data = Store.take(appStore);
+      /** type {Data} */
+      let d;
+      if (data === null) {
+        const rq = {
+          "rq": "init"
+        };
+        const rp = await Main.client.rq(rq);
+        const data = rp["data"];
+        Store.put(appStore, JSON.stringify(data));
+        d = Data.fromJs(data);
+      } else {
+        const rq = {
+          "rq": "update",
+          "data": JSON.parse(data)
+        };
+        const rp = await Main.client.rq(rq);
+        const data2 = rp["data"];
+        Store.put(appStore, JSON.stringify(data2));
+        d = Data.fromJs(data2);
+      }
 
       const url = Ui.url();
-      const /** string */ module = url["0"] || "sys";
-      if (module === "sys") {
-        new SysMain(self).show();
-      } else if (module === "acc") {
-        new AccMain(self).show();
-      } else if (module === "daily") {
-        new DailyMain(self).show();
-      } else if (module === "fleas") {
-        new FleasMain(self).show();
+      const /** string */ module = url["0"] || Main.dailyPageId;
+      if (module === Main.dailyPageId) {
+        new WRanking(d.previous.dailyG, d.current.dailyG).show(this._view);
+      } else if (module === Main.shortPageId) {
+        new WRanking(d.previous.shortG, d.current.shortG).show(this._view);
+      } else if (module === Main.mediumPageId) {
+        new WRanking(d.previous.mediumG, d.current.mediumG).show(this._view);
+      } else if (module === Main.longPageId) {
+        new WRanking(d.previous.longG, d.current.longG).show(this._view);
+      } else if (module === Main.settingsPageId) {
+        new Settings(this).show();
       } else {
         alert("Module '" + module + "' is unknown");
         location.assign(Main.urlBase);
       }
-    }
 
-    const url = Ui.url();
-    const /** string */ module = url["0"] || "sys";
-
-    if (module === "sys") {
-      const /** boolean */ ok = await Main.client.connect();
-      if (ok) {
-        go();
-      } else {
-        new Auth(this).show();
-      }
+      this._menu.setSelected(module);
     } else {
-      go();
+      new Auth(this).show();
     }
   }
 
@@ -202,6 +251,33 @@ export default class Main {
       throw new Error("Client is not initialized");
     }
     return client;
+  }
+
+  // ---------------------------------------------
+
+  /** @return {string} Application name */
+  static get dailyPageId () {
+    return "_daily_";
+  }
+
+  /** @return {string} Application name */
+  static get shortPageId () {
+    return "_short_";
+  }
+
+  /** @return {string} Application name */
+  static get mediumPageId () {
+    return "_medium_";
+  }
+
+  /** @return {string} Application name */
+  static get longPageId () {
+    return "_long_";
+  }
+
+  /** @return {string} Application name */
+  static get settingsPageId () {
+    return "_settings_";
   }
 
 }

@@ -42,7 +42,7 @@ Accept = Aceptar
 # src/sys/Home.js: 40
 Accounting = Contabilidad
 
-# src/acc/Balance.js: 123
+# src/acc/Balance.js: 128
 Accounting profits = Beneficios contables
 
 # src/sys/servers/Download.js: 467
@@ -100,7 +100,7 @@ Annotations = Asientos
 # src/Main.js: 93
 Application exit? = ¿Salir de la aplicación?
 
-# src/acc/Balance.js: 146
+# src/acc/Balance.js: 161
 # src/fleas/wgs/Dtable.js: 176
 Assets = Activo
 
@@ -124,19 +124,19 @@ Backup version is wrong = La versión del backup es incorrecta
 # src/sys/Backups.js: 308
 Backups = Copias de seguridad
 
-# src/acc/Balance.js: 142
+# src/acc/Balance.js: 157
 # src/acc/AccMain.js: 78
 Balance = Balance
 
 # src/fleas/FleasMain.js: 72
 Bests = Mejores
 
-# src/acc/Balance.js: 243
-# src/daily/Cos.js: 152
+# src/acc/Balance.js: 258
+# src/daily/Cos.js: 158
 Bet = Apuesta
 
 # src/acc/Trading.js: 290
-# src/acc/Balance.js: 205
+# src/acc/Balance.js: 220
 # src/sys/Annotations.js: 190
 # src/sys/Annotations.js: 435
 # src/sys/Annotations.js: 524
@@ -151,10 +151,10 @@ Buys = Compras
 # src/sys/Annotations.js: 104
 Cancel = Cancelar
 
-# src/acc/Balance.js: 157
+# src/acc/Balance.js: 172
 Capital = Capital
 
-# src/acc/Balance.js: 162
+# src/acc/Balance.js: 177
 Cash = Caja
 
 # src/sys/Annotations.js: 466
@@ -202,7 +202,7 @@ CloseN = Cierre
 
 # src/acc/Trading.js: 404
 # src/acc/Trading.js: 410
-# src/acc/Balance.js: 201
+# src/acc/Balance.js: 216
 Co. = Cia.
 
 # src/sys/servers/Download.js: 34
@@ -232,7 +232,7 @@ Current password = Contraseña actual
 # src/sys/Chpass.js: 170
 Current password is missing = Falta indicar la contraseña actual
 
-# src/acc/Balance.js: 114
+# src/acc/Balance.js: 119
 Current profits = Beneficios reales
 
 # src/sys/Servers.js: 100
@@ -289,10 +289,10 @@ Date separator = Separador de fechas
 # src/sys/servers/Download.js: 265
 Date separator is missing = Falta el separador de fechas
 
-# src/daily/Cos.js: 144
+# src/daily/Cos.js: 150
 Day = Día
 
-# src/acc/Balance.js: 252
+# src/acc/Balance.js: 267
 Days = Días
 
 # src/daily/DailyMain.js: 202
@@ -335,7 +335,7 @@ Diff. + = Dif. +
 # src/sys/Annotations.js: 535
 Diff. - = Dif. -
 
-# src/acc/Balance.js: 191
+# src/acc/Balance.js: 206
 Differences = Diferencias
 
 # src/sys/Backups.js: 311
@@ -354,7 +354,7 @@ Download successfully done = Descarga correcta
 # src/sys/Home.js: 115
 End fleas running? = ¿Detener las pulgas?
 
-# src/acc/Balance.js: 149
+# src/acc/Balance.js: 164
 Equity = Pasivo
 
 # src/sys/home/Log.js: 152
@@ -363,7 +363,7 @@ Errors = Errores
 # src/sys/Chpass.js: 99
 Fail trying to change password = Fallo intentando cambiar la contraseña
 
-# src/acc/Balance.js: 175
+# src/acc/Balance.js: 190
 # src/sys/Annotations.js: 326
 # src/sys/Annotations.js: 441
 # src/sys/Annotations.js: 533
@@ -539,7 +539,7 @@ New password is missing = Falta indicar la nueva contraseña
 # src/sys/Models.js: 196
 # src/sys/Annotations.js: 153
 # src/sys/Annotations.js: 192
-# src/daily/Cos.js: 146
+# src/daily/Cos.js: 152
 Nick = Nick
 
 # src/sys/Nicks.js: 267
@@ -588,7 +588,7 @@ Only one file can be selected = Sólo se puede seleccionar un archivo
 # src/sys/nicks/Editor.js: 25
 Open = Apertura
 
-# src/daily/Cos.js: 143
+# src/daily/Cos.js: 149
 Order by = Ordenado por
 
 # src/acc/Trading.js: 413
@@ -602,6 +602,9 @@ Password is missing = Falta indicar la contraseña
 
 # src/sys/Chpass.js: 206
 Password successfully changed = La contraseña se cambió correctamente
+
+# src/acc/Balance.js: 149
+Pay Back = Plazo de recuperación
 
 # src/fleas/wgs/Dtable.js: 177
 Pf. Avg = Media Bf.
@@ -625,15 +628,15 @@ Portfolio = Cartera
 # src/sys/Annotations.js: 192
 Price = Precio
 
-# src/acc/Balance.js: 110
-# src/acc/Balance.js: 183
-# src/acc/Balance.js: 225
+# src/acc/Balance.js: 115
+# src/acc/Balance.js: 198
+# src/acc/Balance.js: 240
 # src/acc/Companies.js: 443
 # src/acc/AccMain.js: 82
 # src/sys/Annotations.js: 290
 # src/sys/Annotations.js: 440
 # src/sys/Annotations.js: 532
-# src/daily/Cos.js: 148
+# src/daily/Cos.js: 154
 Profits = Beneficios
 
 # src/sys/nicks/Editor.js: 114
@@ -675,14 +678,14 @@ Restore = Restauración
 # src/sys/Backups.js: 277
 Restore backup = Restaurar copia
 
-# src/daily/Cos.js: 156
+# src/daily/Cos.js: 162
 Reverse = Reverso
 
-# src/acc/Balance.js: 234
-# src/daily/Cos.js: 150
+# src/acc/Balance.js: 249
+# src/daily/Cos.js: 156
 Risk = Riesgo
 
-# src/acc/Balance.js: 128
+# src/acc/Balance.js: 133
 Risk profits = Beneficios - riesgo
 
 # src/sys/servers/Download.js: 455
@@ -710,14 +713,14 @@ Selected = Seleccionado
 Selection = Selección
 
 # src/acc/Trading.js: 290
-# src/acc/Balance.js: 207
+# src/acc/Balance.js: 222
 # src/sys/Annotations.js: 151
 # src/sys/Annotations.js: 434
 # src/sys/Annotations.js: 524
 Sell = Venta
 
 # src/acc/Trading.js: 407
-# src/acc/Balance.js: 167
+# src/acc/Balance.js: 182
 # src/fleas/wgs/Dtable.js: 181
 Sells = Ventas
 
@@ -745,7 +748,7 @@ Short Name is missing = Falta el nombre corto
 # src/sys/Servers.js: 252
 Short name '%0' is duplicated = El nombre corto '%0' está repetido
 
-# src/daily/Cos.js: 154
+# src/daily/Cos.js: 160
 Signal = Señal
 
 # src/daily/DailyMain.js: 203
@@ -776,8 +779,8 @@ Step = Paso
 # src/acc/Trading.js: 313
 # src/acc/Trading.js: 405
 # src/acc/Trading.js: 411
-# src/acc/Balance.js: 152
-# src/acc/Balance.js: 194
+# src/acc/Balance.js: 167
+# src/acc/Balance.js: 209
 # src/sys/Annotations.js: 133
 # src/sys/Annotations.js: 134
 # src/sys/Annotations.js: 153
@@ -819,7 +822,7 @@ Test successfully done = El resultado de la prueba es correcto
 # src/sys/Annotations.js: 492
 There are wrong annotations (%0).\nSee log. = Hay anotaciones incorrectas (%0).\nVer registro.
 
-# src/acc/Balance.js: 136
+# src/acc/Balance.js: 141
 Total bet = Apuesta total
 
 # src/sys/Nicks.js: 28
@@ -846,7 +849,7 @@ User = Usuario
 # src/core/Auth.js: 77
 User name is missing = Falta indicar el nombre del usuario
 
-# src/acc/Balance.js: 216
+# src/acc/Balance.js: 231
 Value = Valor
 
 # src/sys/servers/Download.js: 58

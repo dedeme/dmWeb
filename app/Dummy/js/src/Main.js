@@ -15,9 +15,9 @@ import Create from "./Create.js";
 
 const app = "Dummy";
 const version = "201808";
-const langStore = "${app}__lang";
-const captchaAuthStore = "${app}__captcha";
-const captchaChpassStore = "${app}__captchaCh";
+const langStore = `${app}__lang`;
+const captchaAuthStore = `${app}__captcha`;
+const captchaChpassStore = `${app}__captchaCh`;
 
 const settingsPageId = "settings";
 const backupsPageId = "backups";

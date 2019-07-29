@@ -1,7 +1,7 @@
 #!/bin/bash
 
 JS_ROOT="../../.."
-SOURCES="src libs/dmjsBasic libs/dmjsWidgets"
+SOURCES="src lib/dmjsBasic lib/dmjsWidgets"
 
 # DON'T CHANGE vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 

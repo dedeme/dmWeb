@@ -355,7 +355,7 @@ static void run (AsyncActor *ac) {
       }
       fleasdb_champions_write(nparams, rss);
     }
-    asyncActor_run(ac, fn, NULL);
+    asyncActor_wait(ac, fn, NULL);
   _EACH
 
   // Garbage collector

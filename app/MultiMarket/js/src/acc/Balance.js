@@ -42,6 +42,11 @@ function fdays (buy, current, ref, inc) {
       : r;
 }
 
+function fcolor (value) {
+  if (value < 0) return "aa2800";
+  return "0041aa";
+}
+
 /** Balance page. */
 export default class Balance {
 
@@ -138,6 +143,16 @@ export default class Balance {
             .add($("span").html(
               "<font color='00aa41'>" +
               (this.formatN(this._bet, 2)) +
+              "</font>"))))
+        .add($("tr")
+          .add($("td").klass("rlabel")
+            .add($("span").html(_("Pay Back") + ":")))
+          .add($("td").klass("number")
+            .add($("span").html(
+              `<font color='${fcolor(this._riskProfits)}'>` +
+              (this.formatN(
+                fdays(-this._riskProfits, this._bet, 0, this._inc), 0)
+              ) +
               "</font>")))))
       .add($("div").klass("head").html(_("Balance")))
       .add($("table").att("align", "center").klass("home")

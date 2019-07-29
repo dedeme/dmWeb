@@ -1,6 +1,0 @@
-version: 1.0
-shards:
-  dedeme_lib:
-    github: dedeme/dedeme_lib
-    commit: 26ef6c543bb5baf00b6790da7a226980a5efb79b
-

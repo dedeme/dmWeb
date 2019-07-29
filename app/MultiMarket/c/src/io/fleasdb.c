@@ -16,9 +16,6 @@ static char *champions_dir = NULL;
 static char *bests_db = NULL;
 static char *flog_db = NULL;
 
-// Arr[RsChart]
-static Arr *charts = NULL;
-
 void fleasdb_init() {
   fleas_dir = path_cat(io_data_dir(), "fleas", NULL);
   bests_dir = path_cat(fleas_dir, "_bests", NULL);
@@ -135,18 +132,12 @@ void fleasdb_bests_add (char *model, RsBests *rs) {
 Arr *charts_read (int cache, char *model) {
   if (!charts_dir) EXC_ILLEGAL_STATE("'charts_dir' was not intiliazed")
 
-  if (cache) {
-    return charts ? charts : arr_new();
-  }
-
   char *f = path_cat(charts_dir, str_f("%s.db", model), NULL);
   if (!file_exists(f)) {
-    charts = arr_new();
+    return arr_new();
   } else {
-    charts = arr_from_js((Js *)file_read(f), (FFROM)rsChart_from_js);
+    return arr_from_js((Js *)file_read(f), (FFROM)rsChart_from_js);
   }
-
-  return charts;
 }
 
 Js *fleasdb_charts_read_nicks_js (char *model) {

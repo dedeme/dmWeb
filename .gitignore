@@ -5,10 +5,7 @@ lib
 gitk
 
 #c
-obj
 bin
-_test
-.mkaux
 
 #js
 **/www/index.js
