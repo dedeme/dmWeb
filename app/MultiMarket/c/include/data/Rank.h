@@ -84,6 +84,7 @@ RankFlea *rankFlea_from_js (Js *js);
 ///     flea: char*
 ///     is_new: bool
 ///     variation: int
+///     order: int
 typedef struct Rank_Rank Rank;
 
 ///
@@ -91,7 +92,8 @@ Rank *rank_new (
   char *model,
   char *flea,
   int is_new,
-  int variation
+  int variation,
+  int order
 );
 
 ///
@@ -105,6 +107,9 @@ int rank_is_new (Rank *this);
 
 /// If is_new == 1, variation == 0
 int rank_variation (Rank *this);
+
+///
+int rank_order (Rank *this);
 
 ///
 Js *rank_to_js (Rank *this);

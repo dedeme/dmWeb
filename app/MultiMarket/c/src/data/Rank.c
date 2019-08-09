@@ -29,6 +29,7 @@ Rank: serial
   is_new: bool
   # If is_new == 1, variation == 0
   variation: int
+  order: int
 */
 
 /*--*/
@@ -160,19 +161,22 @@ struct Rank_Rank {
   char *flea;
   int is_new;
   int variation;
+  int order;
 };
 
 Rank *rank_new (
   char *model,
   char *flea,
   int is_new,
-  int variation
+  int variation,
+  int order
 ) {
   Rank *this = MALLOC(Rank);
   this->model = model;
   this->flea = flea;
   this->is_new = is_new;
   this->variation = variation;
+  this->order = order;
   return this;
 }
 
@@ -192,6 +196,10 @@ int rank_variation (Rank *this) {
   return this->variation;
 }
 
+int rank_order (Rank *this) {
+  return this->order;
+}
+
 Js *rank_to_js (Rank *this) {
   // Arr[Js]
   Arr *js = arr_new();
@@ -199,6 +207,7 @@ Js *rank_to_js (Rank *this) {
   arr_push(js, js_ws(this->flea));
   arr_push(js, js_wb(this->is_new));
   arr_push(js, js_wi((int)this->variation));
+  arr_push(js, js_wi((int)this->order));
   return js_wa(js);
 }
 
@@ -211,6 +220,7 @@ Rank *rank_from_js (Js *js) {
   this->flea = js_rs(*p++);
   this->is_new = js_rb(*p++);
   this->variation = js_ri(*p++);
+  this->order = js_ri(*p++);
   return this;
 }
 
@@ -280,7 +290,8 @@ Arr *rank_mk_ranking (Arr *rss, Arr *positions) {
         : dif > 0 ? 1
           : dif < -3 ? -2
             : dif < 0 ? -1
-              : 0
+              : 0,
+      rankPosition_position(last_pos)
     ));
   }_RANGE
 

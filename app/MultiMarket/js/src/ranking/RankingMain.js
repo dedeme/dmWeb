@@ -48,11 +48,12 @@ export default class RankingMain {
 
   /** @private */
   mkList (sel, ls) {
-    const rows = ls.map((e, ix) => {
-      const /** string */ model = e[0];
-      const /** string */ flea = e[1];
-      const /** boolean */ isNew = e[2];
-      const /** number */ variation = e[3]; // -2 -1 0 1 2
+    ls.sort((e1, e2) => e1[5] - e2[5]);
+    const rows = ls.map(e => {
+      const /** string */ model = e[1];
+      const /** string */ flea = e[2];
+      const /** boolean */ isNew = e[3];
+      const /** number */ variation = e[4]; // -2 -1 0 1 2
       const img = isNew ? "rk-new"
         : variation === -2 ? "rk-down2"
           : variation === -1 ? "rk-down"
@@ -60,9 +61,9 @@ export default class RankingMain {
               : variation === 2 ? "rk-up2"
                 : "rk-eq"
       ;
-      const span = ix === sel
+      const span = e[0] === sel
         ? $("span").html(` <i>${model}-${flea}</i>`)
-        : Ui.link(() => this.newSel(ix)).klass("link")
+        : Ui.link(() => this.newSel(e[0])).klass("link")
           .html(` ${model}-${flea}`)
       ;
       return $("tr").add($("td")
@@ -105,8 +106,7 @@ export default class RankingMain {
   }
 
   /** @private */
-  resultsTable (rs) {
-    const assets = rs[1][0][1][0];
+  resultsTable (rs, assets) {
     const buys = rs[1][0][1][1];
     const sells = rs[1][0][1][2];
     const avg = rs[1][0][2][0];
@@ -289,16 +289,25 @@ export default class RankingMain {
   mkInfo (selData, selParamNames, selParamFmts) {
     const rs = selData[0];
     const name = rs[0] + "-" + rs[1][0][0][0];
+    const assets = selData[1];
+    const positions = selData[2];
+    const lastAssets = assets[assets.length - 1][1];
     this._infoTd.removeAll()
       .add($("div").klass("head").html(name))
       .add(this.paramsTable(rs, selParamNames, selParamFmts))
       .add($("div").style("height:5px"))
-      .add(this.resultsTable(rs))
+      .add(this.resultsTable(rs, lastAssets))
       .add($("div").klass("head").html(_("Assets")))
-      .add(this.chart1(selData[1]))
+      .add(this.chart1(assets))
       .add($("div").klass("head").html(_("Positions")))
-      .add(this.chart2(selData[2]))
+      .add(this.chart2(positions))
     ;
+  }
+
+  mkWgs (sel, list, selData, selParamNames, selParamFmts) {
+    list.forEach((e, ix) => e.unshift(ix));
+    this.mkList(sel, list);
+    this.mkInfo(selData, selParamNames, selParamFmts);
   }
 
   /** @return {void} */
@@ -337,8 +346,7 @@ export default class RankingMain {
     const selParamNames = rp["selParamNames"];
     const selParamFmts = rp["selParamFmts"];
 
-    this.mkList(sel, list);
-    this.mkInfo(selData, selParamNames, selParamFmts);
+    this.mkWgs(sel, list, selData, selParamNames, selParamFmts);
   }
 
   /**
@@ -359,8 +367,7 @@ export default class RankingMain {
     const selParamNames = rp["selParamNames"];
     const selParamFmts = rp["selParamFmts"];
 
-    this.mkList(sel, list);
-    this.mkInfo(selData, selParamNames, selParamFmts);
+    this.mkWgs(sel, list, selData, selParamNames, selParamFmts);
   }
 
 }
