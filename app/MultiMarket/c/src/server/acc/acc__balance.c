@@ -15,7 +15,7 @@ char *acc__balance_process(AsyncActor *ac, Map *mrq) {
   Map *rp = map_new();
 
   if (str_eq(rq, "idata")) {
-    void fn (void *null) {
+    void fn () {
       AccLedPf *rs = accLedPf_new(accdb_diary_read());
       EACH(accLedPf_errors(rs), char, e)
         log_error(e);
@@ -29,7 +29,7 @@ char *acc__balance_process(AsyncActor *ac, Map *mrq) {
       ModelParams *mps = managerdb_default();
       map_put(rp, "inc", js_wd(darr_get(modelParams_params(mps), 0)));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 

@@ -15,10 +15,10 @@ char *fleas__wgs__wcharts_process(AsyncActor *ac, Map *mrq) {
   if (rq == 0) {
     CGI_GET_STR(model, mrq, "model")
     CGI_GET_STR(nick, mrq, "nick")
-    void fn (void *null) {
+    void fn () {
       map_put(rp, "data", fleasdb_charts_read_js(model, nick));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   // From champions
@@ -27,12 +27,12 @@ char *fleas__wgs__wcharts_process(AsyncActor *ac, Map *mrq) {
     CGI_GET_STR(nick, mrq, "nick")
     CGI_GET_INT(group, mrq, "group")
     CGI_GET_STR(flea, mrq, "flea")
-    void fn (void *null) {
+    void fn () {
       map_put(rp, "data", fleasdb_champions_chart_read_js(
         group, model, nick, flea
       ));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 

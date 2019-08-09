@@ -6,11 +6,10 @@
 #ifndef IO_QUOTES_H
   #define IO_QUOTES_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 #include "data/Quote.h"
 #include "data/EMsg.h"
 #include "data/Qmatrix.h"
-#include "data/NickSets.h"
 
 ///
 void quotes_init (void);
@@ -64,8 +63,8 @@ Tp *quotes_editor_read(int nick_id);
 ///       <i>NOTE: MSG_OK and MSG_WARNING modifies data, MSG_ERROR not</i>.
 EMsg *quotes_editor_set_quotes(int nick_id, char *qs_text);
 
-/// Returns an Arr[char] with dates of flea model. If data have errors returns
-/// an empty array.
+/// Returns an Arr[char] with dates of flea model, from before to after. If
+/// data have errors returns an empty array.
 Arr *quotes_dates (void);
 
 /// Returns a Opt[Qmatrix] with closes of selected companies, from before to
@@ -75,9 +74,6 @@ Opt *quotes_closes (void);
 /// Returns a Opt[Qmatrix] with opens of selected companies, from before to
 /// after
 Opt *quotes_opens (void);
-
-/// Returns Opt[NickSets] 5 sets of nick names from selected companies.
-Opt *quotes_sets (void);
 
 /// Returns a Opt[char] with the last date of company model. If nick model is
 /// not defined, returns the last date of the first company. If there is no

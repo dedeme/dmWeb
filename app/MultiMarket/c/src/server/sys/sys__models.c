@@ -16,7 +16,7 @@ char *sys__models_process(AsyncActor *ac, Map *mrq) {
   CGI_GET_STR(rq, mrq, "rq")
 
   if (str_eq(rq, "idata")) {
-    void fn (void *null) {
+    void fn () {
       // Map[ManagerEntry2]
       Map *es = map_new();
       EACH(nicks_list(), Nick, nk)
@@ -57,7 +57,7 @@ char *sys__models_process(AsyncActor *ac, Map *mrq) {
       _EACH
       map_put(rp, "models", arr_to_js(models, (FTO)managerEntry2_to_js));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 
@@ -65,10 +65,10 @@ char *sys__models_process(AsyncActor *ac, Map *mrq) {
     CGI_GET_STR(nick, mrq, "nick");
     CGI_GET_STR(model, mrq, "model");
     CGI_GET(Darr *, params, darr_from_js, mrq, "params");
-    void fn (void *null) {
+    void fn () {
       map_put(rp, "ok", js_wb(!managerdb_set_nick (nick, model, params)));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 

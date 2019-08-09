@@ -34,11 +34,7 @@ static void request (Tp *ac_rq) {
   _TRY
 }
 
-// 'server_actor' is Tp[AsyncActor, Iserver]
-void server_run (Tp *actor_server) {
-  AsyncActor *ac = tp_e1(actor_server);
-  Iserver *server = tp_e2(actor_server);
-
+void server_run (AsyncActor *ac, Iserver *server) {
   int error_counter = 0;
   while (io_active()) {
     IserverRq *rq = iserver_read(server);
@@ -48,7 +44,8 @@ void server_run (Tp *actor_server) {
         EXC_IO(iserverRq_error(rq))
       CATCH(ex)
         if (error_counter == 5) {
-          asyncActor_wait(ac, (FPROC)log_exception, ex);
+          void fn () { log_exception(ex); }
+          asyncActor_wait(ac, fn);
         }
         ++error_counter;
       _TRY
@@ -66,7 +63,8 @@ void server_run (Tp *actor_server) {
               EXC_IO(e)
             CATCH (ex)
               if (error_counter == 5) {
-                asyncActor_wait(ac, (FPROC)log_exception, ex);
+                void fn () { log_exception(ex); }
+                asyncActor_wait(ac, fn);
               }
               ++error_counter;
             _TRY
@@ -74,17 +72,21 @@ void server_run (Tp *actor_server) {
             error_counter = 0;
           }
         } else {
-          async_thread((FPROC)request, tp_new(ac, rq));
+          async_thread_detached((FPROC)request, tp_new(ac, rq));
           error_counter = 0;
         }
       }
     }
 
     if (error_counter > 100) {
-      ext_zenity_msg(
-        "dialog-error",
-        "More than 100 tries to read Iserver\nin 'server_run'"
-      );
+      void fn () {
+        log_error(str_f(
+          "server_run: More than 100 tries to read Iserver '%s'",
+          iserverRq_host(rq)
+        ));
+      }
+      asyncActor_wait(ac, fn);
+      error_counter = 0;
     }
 
     sys_sleep(SERVER_SLEEP);

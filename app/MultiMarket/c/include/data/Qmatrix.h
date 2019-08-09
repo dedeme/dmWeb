@@ -6,7 +6,7 @@
 #ifndef DATA_QMATRIX_H
   #define DATA_QMATRIX_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 
 /// Array of doubles
 typedef double * QmatrixValues;
@@ -30,5 +30,8 @@ Arr *qmatrix_nicks (Qmatrix *this);
 QmatrixValues *qmatrix_values (Qmatrix *this);
 
 /*--*/
+
+/// Adds 'row' to 'table' and remove the first row of 'table'
+void qmatrix_add(QmatrixValues *table, QmatrixValues row);
 
 #endif

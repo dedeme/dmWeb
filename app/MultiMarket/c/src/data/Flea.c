@@ -87,6 +87,6 @@ char *flea_name (Flea *this) {
 }
 
 double flea_param(double mx, double mn, double value) {
-  return mn + value * (mx - mn);
+  return mx > mn ? mn + value * (mx - mn) : 0;
 }
 

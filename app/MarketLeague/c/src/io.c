@@ -451,3 +451,54 @@ DataAll *io_update (DataAll *data) {
     )
   );
 }
+
+char *io_check_nicks (DataAll *data) {
+  // Kv[Arr[char]]
+  Kv *rs = dataAll_check_nicks(data);
+  if (*kv_key(rs))
+    return kv_key(rs);
+
+  // Arr[char]
+  Arr *dnicks = kv_value(rs);
+  // Arr[char]
+  Arr *fnicks = file_dir(DAILY_QUOTES_DIR);
+
+  char *extra = "";
+  EACH(dnicks, char, dn)
+    int missing = 1;
+    EACH(fnicks, char, fn)
+      if (str_eq(dn, fn)) {
+        missing = 0;
+        break;
+      }
+    _EACH
+    if (missing) {
+      extra = dn;
+      break;
+    }
+  _EACH
+
+  if (*extra) {
+    char *new = "";
+    EACH(fnicks, char, fn)
+      int missing = 1;
+      EACH(dnicks, char, dn)
+        if (str_eq(dn, fn)) {
+          missing = 0;
+          break;
+        }
+      _EACH
+      if (missing) {
+        new = fn;
+        break;
+      }
+    _EACH
+
+    if (*new) {
+      return str_f("replace;%s;%s", extra, new);
+    }
+    EXC_ILLEGAL_ARGUMENT("'new' value ", "Some nick", "")
+  }
+
+  return "";
+}

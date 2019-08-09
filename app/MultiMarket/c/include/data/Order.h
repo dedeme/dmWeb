@@ -6,7 +6,7 @@
 #ifndef DATA_ORDER_H
   #define DATA_ORDER_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 
 /*--*/
 

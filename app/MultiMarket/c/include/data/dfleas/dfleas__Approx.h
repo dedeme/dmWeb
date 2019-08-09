@@ -1,15 +1,14 @@
-// Copyright 20-Jun-2019 ºDeme
+// Copyright 02-Aug-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-/// Approx model.
+/// Approx models.
 
-#ifndef DATA_DFLEAS_FLEAS__APPROX_H
-  #define DATA_DFLEAS_FLEAS__APPROX_H
+#ifndef DATA_DFLEAS_DFLEAS__APPROX_H
+  #define DATA_DFLEAS_DFLEAS__APPROX_H
 
-#include "dmc/std.h"
-#include "data/Model.h"
+#include "dmc/async.h"
 
-///
-Model *dfleas__Approx();
+/// Returns Arr[Model]
+Arr *dfleas__Approx_models (void);
 
 #endif

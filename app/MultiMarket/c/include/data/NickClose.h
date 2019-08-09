@@ -6,7 +6,7 @@
 #ifndef DATA_NICKCLOSE_H
   #define DATA_NICKCLOSE_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 
 /*--*/
 

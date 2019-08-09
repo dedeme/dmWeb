@@ -28,7 +28,7 @@ char *acc__companies_process(AsyncActor *ac, Map *mrq) {
   if (str_eq(rq, "nicks")) {
     int filter_sel (Nick *nk) { return nick_is_sel(nk); }
     void *fmap (Nick *nk) { return nick_name(nk); }
-    void fn (void *null) {
+    void fn () {
       int all_cos = conf_acc_all_cos();
       map_put(rp, "allCos", js_wb(all_cos));
 
@@ -56,18 +56,18 @@ char *acc__companies_process(AsyncActor *ac, Map *mrq) {
       }
       map_put(rp, "nicks", arr_to_js(arr_from_it(nicks), (FTO)js_ws));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "setAllCos")) {
     CGI_GET_BOOL(value, mrq, "value")
-    void fn (void *null) { conf_set_acc_all_cos(value); }
-    asyncActor_wait(ac, (FPROC)fn, NULL);
+    void fn () { conf_set_acc_all_cos(value); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
   if (str_eq(rq, "historic")) {
     CGI_GET_STR(nick, mrq, "nick")
-    void fn (void *null) {
+    void fn () {
       // Arr[AccEntry]
       Arr *annotations = accdb_diary_read();
       AccLedPf *lp = accLedPf_new(annotations);
@@ -108,7 +108,7 @@ char *acc__companies_process(AsyncActor *ac, Map *mrq) {
         rsHistoric_historic(rs), (FTO)rsChartOp_to_js
       ));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
 
     return cgi_ok(rp);
   }

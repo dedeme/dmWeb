@@ -424,3 +424,97 @@ DataAll *dataAll_from_js (Js *js) {
 
 /*--*/
 
+Kv *dataAll_check_nicks (DataAll *this) {
+
+  DataPrevious *previous = dataAll_previous(this);
+  DataPreviousGroup *pdaily = dataPrevious_daily_g(previous);
+  DataPreviousGroup *pshort = dataPrevious_short_g(previous);
+  DataPreviousGroup *pmedium = dataPrevious_medium_g(previous);
+  DataPreviousGroup *plong = dataPrevious_long_g(previous);
+
+  DataCurrent *current = dataAll_current(this);
+  DataLeagueGroup *ldaily = dataCurrent_daily_g(current);
+  DataLeagueGroup *lshort = dataCurrent_short_g(current);
+  DataLeagueGroup *lmedium = dataCurrent_medium_g(current);
+  DataLeagueGroup *llong = dataCurrent_long_g(current);
+
+  // Arr[char]
+  Arr *cat (DataPreviousGroup *gr) {
+    return it_to(it_cat(
+      it_from(dataPreviousGroup_first(gr)),
+      it_cat(
+        it_from(dataPreviousGroup_second(gr)),
+        it_from(dataPreviousGroup_third(gr))
+      )
+    ));
+  }
+
+  // Arr[char]
+  int ok (Arr *a1, Arr *a2) {
+    if (arr_size(a1) != arr_size(a2)) return 0;
+    EACH(a1, char, e1)
+      int missing = 1;
+      EACH(a2, char, e2)
+        if (str_eq(e1, e2)) {
+          missing = 0;
+          break;
+        }
+      _EACH
+      if (missing) return 0;
+    _EACH
+    return 1;
+  }
+
+  char *okpc (DataPreviousGroup *pr, DataLeagueGroup *lg) {
+    if (ok(
+      dataPreviousGroup_first(pr),
+      dataLeague_nicks(dataLeagueGroup_first(lg))
+    )) {
+      if (ok(
+        dataPreviousGroup_second(pr),
+        dataLeague_nicks(dataLeagueGroup_second(lg))
+      )) {
+        if (ok(
+          dataPreviousGroup_third(pr),
+          dataLeague_nicks(dataLeagueGroup_third(lg))
+        )) {
+          return "";
+        }
+        return "previus != current;3";
+      }
+      return "previus != current;2";
+    }
+    return "previus != current;1";
+  }
+
+  char *rs = okpc(pdaily, ldaily);
+  if (*rs) {
+    return kv_new(str_f("%s;DAILY", rs), arr_new());
+  }
+  rs = okpc(pshort, lshort);
+  if (*rs) {
+    return kv_new(str_f("%s;SHORT", rs), arr_new());
+  }
+  rs = okpc(pmedium, lmedium);
+  if (*rs) {
+    return kv_new(str_f("%s;MEDIUM", rs), arr_new());
+  }
+  rs = okpc(plong, llong);
+  if (*rs) {
+    return kv_new(str_f("%s;LONG", rs), arr_new());
+  }
+
+  /// Arr [char]
+  Arr *nicks = cat(pdaily);
+
+  if (ok(nicks, cat(pshort))) {
+    if (ok(nicks, cat(pmedium))) {
+      if (ok(nicks, cat(plong))) {
+        return kv_new("", nicks);
+      }
+      return kv_new("group != group;DAILY;MEDIUM", arr_new());
+    }
+    return kv_new("group != group;DAILY;MEDIUM", arr_new());
+  }
+  return kv_new("group != group;DAILY;SHORT", arr_new());
+}

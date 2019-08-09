@@ -30,7 +30,7 @@ static RsHistoric *historic (char *nick, ModelParams *mps) {
 }
 
 void management_update (AsyncActor *ac) {
-  void fn (void *null) {
+  void fn () {
     EACH(nicks_list(), Nick, nk)
       char *nick = nick_name(nk);
       if (nick_is_sel(nk)) {
@@ -49,5 +49,5 @@ void management_update (AsyncActor *ac) {
       }
     _EACH
   }
-  asyncActor_wait(ac, fn, NULL);
+  asyncActor_wait(ac, fn);
 }

@@ -13,19 +13,19 @@ char *fleas__charts_process(AsyncActor *ac, Map *mrq) {
   Map *rp = map_new();
 
   if (str_eq(rq, "getModel")) {
-    void fn (void *null) {
+    void fn () {
       map_put(rp, "model", js_ws(conf_fleas_model()));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "nicks")) {
     CGI_GET_STR(model, mrq, "model")
-    void fn (void *null) {
+    void fn () {
       conf_set_fleas_model(model);
       map_put(rp, "list", fleasdb_charts_read_nicks_js(model));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 

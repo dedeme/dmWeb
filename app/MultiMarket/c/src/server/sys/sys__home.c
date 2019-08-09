@@ -15,14 +15,14 @@ char *sys__home_process(AsyncActor *ac, Map *mrq) {
   Map *rp = map_new();
 
   if (str_eq(rq, "getLog")) {
-    void fn (void *null) { map_put(rp, "log", log_to_js()); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { map_put(rp, "log", log_to_js()); }
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 
   if (str_eq(rq, "clearLog")) {
-    void fn (void *null) { log_clear(); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { log_clear(); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
 
@@ -32,14 +32,14 @@ char *sys__home_process(AsyncActor *ac, Map *mrq) {
   }
 
   if (str_eq(rq, "stopFleas")) {
-    void fn (void *null) { conf_set_fleas_running(0); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { conf_set_fleas_running(0); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
 
   if (str_eq(rq, "logFleas")) {
-    void fn (void *null) { map_put(rp, "log", fleasdb_flog_to_js()); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { map_put(rp, "log", fleasdb_flog_to_js()); }
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 

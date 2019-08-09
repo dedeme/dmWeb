@@ -6,7 +6,7 @@
 #ifndef IO_DAILYDB_H
   #define IO_DAILYDB_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 
 ///
 void dailydb_init (void);

@@ -6,7 +6,7 @@
 #ifndef DATA_EMSG_H
   #define DATA_EMSG_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 
 /*--*/
 

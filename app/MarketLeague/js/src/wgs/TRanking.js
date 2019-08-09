@@ -96,7 +96,6 @@ export default class TRanking {
           .add($("td").style(fmt + "text-align:right")
             .html(new Dec(m.dif, 4).toEu()))
         ;
-      }
-      ));
+      }));
   }
 }

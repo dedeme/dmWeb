@@ -12,7 +12,6 @@
 #include "Order.h"
 #include "Rs.h"
 #include "Qmatrix.h"
-#include "NickSets.h"
 #include "ModelMxMn.h"
 
 /// Function which returns parameters of 'f'
@@ -97,12 +96,17 @@ double model_ref(Model *this, Darr *params, void *co);
 
 /// Calculates flea assets
 RsAssets *model_assets(
-  Model *this, Flea *f, NickSets *sets, Qmatrix *opens, Qmatrix *closes
+  Model *this, Flea *f, Qmatrix *opens, Qmatrix *closes
+);
+
+/// Returns Arr[RankAssets] assets for a model-params.
+Arr *model_assets_historic(
+  Model *this, Darr *params, Arr *dates, Qmatrix *opens, Qmatrix *closes
 );
 
 /// Calculates flea profits
 RsProfits *model_profits(
-  Model *this, Flea *f, NickSets *sets, Qmatrix *opens, Qmatrix *closes
+  Model *this, Flea *f, Qmatrix *opens, Qmatrix *closes
 );
 
 /// Calculates data for charts. 'dates' is Arr[char]

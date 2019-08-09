@@ -1,15 +1,14 @@
-// Copyright 20-Jun-2019 ºDeme
+// Copyright 02-Aug-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-/// GA model.
+/// GA models.
 
-#ifndef DATA_DFLEAS_FLEAS__GA_H
-  #define DATA_DFLEAS_FLEAS__GA_H
+#ifndef DATA_DFLEAS_DFLEAS__GA_H
+  #define DATA_DFLEAS_DFLEAS__GA_H
 
-#include "dmc/std.h"
-#include "data/Model.h"
+#include "dmc/async.h"
 
-///
-Model *dfleas__GA();
+/// Returns Arr[Model]
+Arr *dfleas__GA_models (void);
 
 #endif

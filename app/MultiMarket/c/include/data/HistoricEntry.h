@@ -6,7 +6,7 @@
 #ifndef DATA_HISTORICENTRY_H
   #define DATA_HISTORICENTRY_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 #include "Quote.h"
 
 /*--*/

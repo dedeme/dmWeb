@@ -18,10 +18,10 @@
 #define PORT 50286
 
 /// Time to server sleep (milliseconds)
-#define ACTOR_SLEEP 50
+#define ACTOR_SLEEP 10
 
 /// Time to server sleep (milliseconds)
-#define SERVER_SLEEP 50
+#define SERVER_SLEEP 10
 
 /// Time to scheduler sleep (milliseconds)
 #define SCHEDULER_SLEEP 50
@@ -93,10 +93,7 @@
 #define MIN_SELLS 15
 
 /// Maximun operations to survive (divisor: days / maxSells)
-#define MAX_SELLS 6
-
-/// Percentage of max profits to be selectable
-#define CUT_PROFITS 0.8
+#define MAX_SELLS 11
 
 /// Maximun number of fleas in "_best"
 #define MAXIMUM_HISTORIC_BESTS 252
@@ -112,6 +109,9 @@
 
 /// Quotes number in account charts
 #define ACC_CHART_QUOTES 250
+
+/// Maximum number of data in ranking charts
+#define MAXIMUM_HISTORIC_RANKING 450
 
 /// Server short name to get url in accounting charts
 #define ACC_URL "INFOB"

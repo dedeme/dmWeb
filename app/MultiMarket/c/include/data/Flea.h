@@ -6,7 +6,7 @@
 #ifndef DATA_FLEA_H
   #define DATA_FLEA_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 #include "Gen.h"
 
 /*--*/
@@ -62,5 +62,6 @@ char *flea_name (Flea *this);
 ///   mx: Maximun value of parameter
 ///   mn: Minimum value of parameter
 ///   value: Gen parameter - between (0 and 1]
+/// If mx <= mn returns 0.
 double flea_param (double mx, double mn, double value);
 

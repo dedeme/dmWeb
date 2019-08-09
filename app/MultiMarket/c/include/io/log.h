@@ -6,7 +6,7 @@
 #ifndef IO_LOG_H
   #define IO_LOG_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 
 /// Intializes 'Log'
 void log_init (void);

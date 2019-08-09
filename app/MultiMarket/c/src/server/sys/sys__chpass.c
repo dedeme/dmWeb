@@ -11,7 +11,7 @@ char *sys__chpass_process(AsyncActor *ac, Map *mrq) {
   CGI_GET_STR(new_pass, mrq, "newPass")
 
   char *r = NULL;
-  void fn (void *null) { r = cgi_change_pass(user, pass, new_pass); }
-  asyncActor_wait(ac, fn, NULL);
+  void fn () { r = cgi_change_pass(user, pass, new_pass); }
+  asyncActor_wait(ac, fn);
   return r;
 }

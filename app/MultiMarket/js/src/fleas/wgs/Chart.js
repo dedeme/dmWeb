@@ -88,12 +88,32 @@ export default class Chart {
     let max = qs[0][1];
     let min = max;
     qs.forEach(e => {
+      if (max < 0) {
+        if (e[1] > 0) {
+          if (e[2] > 0) {
+            if (e[1] > e[2]) {
+              max = e[1];
+              min = e[2];
+            } else {
+              max = e[2];
+              min = e[1];
+            }
+          } else {
+            max = e[1];
+            min = e[1];
+          }
+        } else {
+          max = e[2];
+          min = e[2];
+        }
+        return;
+      }
       let v = e[1];
       if (v > max) max = v;
-      if (v < min) min = v;
+      if (v > 0 && v < min) min = v;
       v = e[2];
       if (v > max) max = v;
-      if (v < min) min = v;
+      if (v > 0 && v < min) min = v;
     });
     const gap = max / 100;
     const base = Math.floor((min / gap) - 1) * gap;

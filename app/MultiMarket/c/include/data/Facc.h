@@ -6,7 +6,7 @@
 #ifndef DATA_FACC_H
   #define DATA_FACC_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 #include "Qmatrix.h"
 
 ///
@@ -39,8 +39,15 @@ int facc_sell(Facc *this, int co, double price);
 /// Returns total of assets discounting fees.
 ///   ncos: Companies number. Its value is equals to the size of 'closes' and
 ///         'facc_pf()'.
-///   closes: Market closes. Each index is a company. Thus closes[2] is the
-///           close of company "2".
-double facc_assets(Facc *this, int ncos, QmatrixValues closes);
+///   closes: Market closes. Each row is a date and in each row each index is
+///           a company. Thus closes[0][2] is the close of company "2" in the
+///           first date.
+///   ix: Index of date (row) to calculate assets
+double facc_assets(
+  Facc *this,
+  int ncos,
+  Qmatrix *closes,
+  int ix
+);
 
 #endif

@@ -23,18 +23,8 @@ export default class FleasMain {
    */
   constructor (main) {
     this._main = main;
-
-    // MODEL -------
-    // TTTTTTTTTTTTT
-
-
-    // VIEW --------
-    // TTTTTTTTTTTTT
-
     this._menu = new Menu(true);
-
     this._view = $("div");
-
   }
 
   /** @return {!Main} */
@@ -46,10 +36,6 @@ export default class FleasMain {
   get view () {
     return this._view;
   }
-
-  // MODEL ---------------------------------------
-  // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
-
 
   // VIEW ----------------------------------------
   // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT

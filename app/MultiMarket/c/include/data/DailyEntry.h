@@ -6,7 +6,7 @@
 #ifndef DATA_DAILYENTRY_H
   #define DATA_DAILYENTRY_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 
 /*--*/
 

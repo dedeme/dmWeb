@@ -13,51 +13,54 @@ char *sys__backups_process(AsyncActor *ac, Map *mrq) {
   Map *rp = map_new();
 
   if (str_eq(rq, "lists")) {
-    void fn (void *null) {
+    void fn () {
       map_put(rp, "backups", arr_to_js(backups_list(), (FTO)js_ws));
       map_put(rp, "trash", arr_to_js(trash_list(), (FTO)js_ws));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "backup")) {
-    void fn (void *null) { map_put(rp, "name", js_ws(backups_make())); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { map_put(rp, "name", js_ws(backups_make())); }
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "restoreStart")) {
-    void fn (void *null) { backups_restore_start(); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { backups_restore_start(); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
   if (str_eq(rq, "restoreAppend")) {
     CGI_GET_STR(data, mrq, "data");
-    asyncActor_wait(ac, (FPROC)backups_restore_append, data);
+    void fn () { backups_restore_append(data); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
   if (str_eq(rq, "restoreAbort")) {
-    void fn (void *null) { backups_restore_abort(); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { backups_restore_abort(); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
   if (str_eq(rq, "restoreEnd")) {
-    void fn (void *null) { map_put(rp, "fail", js_ws(backups_restore_end())); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { map_put(rp, "fail", js_ws(backups_restore_end())); }
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "autorestore")) {
     CGI_GET_STR(file, mrq, "file");
-    asyncActor_wait(ac, (FPROC)backups_autorestore, file);
+    void fn () { backups_autorestore(file); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
   if (str_eq(rq, "clearTrash")) {
-    void fn (void *null) { trash_clear(); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { trash_clear(); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
   if (str_eq(rq, "restoreTrash")) {
     CGI_GET_STR(file, mrq, "file");
-    asyncActor_wait(ac, (FPROC)trash_restore, file);
+    void fn () { trash_restore(file); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
 

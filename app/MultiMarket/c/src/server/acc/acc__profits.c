@@ -19,7 +19,7 @@ char *acc__profits_process(AsyncActor *ac, Map *mrq) {
   Map *rp = map_new();
 
   if (str_eq(rq, "idata")) {
-    void fn (void *null) {
+    void fn () {
       if (str_eq(conf_activity(), ACT_SLEEPING2)) {
         map_put(rp, "data", accdb_profits_read_js());
       } else {
@@ -43,7 +43,7 @@ char *acc__profits_process(AsyncActor *ac, Map *mrq) {
         ));
       }
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 

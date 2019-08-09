@@ -45,26 +45,26 @@ char *sys__servers__download_process(AsyncActor *ac, Map *mrq) {
     CGI_GET_INT(id, mrq, "id")
     CGI_GET_BOOL(historic, mrq, "historic")
     CGI_GET(Rconf *, conf, rconf_from_js, mrq, "conf")
-    void fn (void *null) { servers_activate(id, historic, conf); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { servers_activate(id, historic, conf); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
   if (str_eq(rq, "modify")) {
     CGI_GET_INT(id, mrq, "id")
     CGI_GET_BOOL(historic, mrq, "historic")
     CGI_GET(Rconf *, conf, rconf_from_js, mrq, "conf")
-    void fn (void *null) { servers_set_conf(id, historic, conf); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { servers_set_conf(id, historic, conf); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
   if (str_eq(rq, "dailyTest")) {
-    void fn (void *null) { rp = cgi_long_run(test_daily_conf, NULL, mrq); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { rp = cgi_long_run(test_daily_conf, NULL, mrq); }
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "historicTest")) {
-    void fn (void *null) { rp = cgi_long_run(test_historic_conf, NULL, mrq); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { rp = cgi_long_run(test_historic_conf, NULL, mrq); }
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 

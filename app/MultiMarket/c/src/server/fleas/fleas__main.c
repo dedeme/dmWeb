@@ -15,7 +15,7 @@ char *fleas__main_process(AsyncActor *ac, Map *mrq) {
   Map *rp = map_new();
 
   if (str_eq(rq, "idata")) {
-    void fn (void *null) {
+    void fn () {
       // Map[Js]
       Map *pnames = map_new();
       EACH(dfleas__models(), Model, md)
@@ -30,7 +30,7 @@ char *fleas__main_process(AsyncActor *ac, Map *mrq) {
       _EACH
       map_put(rp, "pnames", js_wo(pnames));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 

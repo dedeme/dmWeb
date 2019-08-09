@@ -51,11 +51,28 @@ int facc_sell(Facc *this, int co, double price) {
   return 0;
 }
 
-double facc_assets(Facc *this, int ncos, QmatrixValues closes) {
+double facc_assets(
+  Facc *this,
+  int ncos,
+  Qmatrix *closes,
+  int ix
+) {
   double r = this->cash;
+  QmatrixValues *cs = qmatrix_values(closes);
   RANGE0(i, ncos)
     int stocks = this->pf[i];
-    if (stocks) r += broker_sell(stocks, closes[i]);
+    if (stocks) {
+      int value = cs[ix][i];
+      while (value < 0) {
+        if (ix == 0) {
+          value = 0;
+          break;
+        }
+        --ix;
+        value = cs[ix][i];
+      }
+      r += broker_sell(stocks, value);
+    }
   _RANGE
   return r;
 }

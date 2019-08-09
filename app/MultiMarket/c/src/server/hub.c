@@ -11,20 +11,22 @@
 #include "server/fleas.h"
 #include "server/acc.h"
 #include "server/daily.h"
+#include "server/ranking.h"
 
 // rq is Map[Js]
 static char *module_process(AsyncActor *ac, char *module, Map *mrq) {
   // Map[Js]
   Map *rp = map_new();
   if (str_eq(module, ".")) {
-    void fn(void *null) { map_put(rp, "lang", js_ws(conf_lang())); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn() { map_put(rp, "lang", js_ws(conf_lang())); }
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   if (str_eq(module, "sys")) return sys_process(ac, mrq);
   if (str_eq(module, "fleas")) return fleas_process(ac, mrq);
   if (str_eq(module, "acc")) return acc_process(ac, mrq);
   if (str_eq(module, "daily")) return daily_process(ac, mrq);
+  if (str_eq(module, "ranking")) return ranking_process(ac, mrq);
 
   EXC_ILLEGAL_ARGUMENT("module", "sys | fleas", module)
   return NULL; // Unreachable

@@ -26,7 +26,7 @@ char *sys__nicks_process(AsyncActor *ac, Map *mrq) {
   CGI_GET_STR(rq, mrq, "rq")
 
   if (str_eq(rq, "idata")) {
-    void fn (void *null) {
+    void fn () {
       // Arr [Nick]
       Arr *list = nicks_list();
       map_put(rp, "nickList", arr_to_js(list, (FTO)nick_to_js));
@@ -45,28 +45,28 @@ char *sys__nicks_process(AsyncActor *ac, Map *mrq) {
       }
       map_put(rp, "nickSelId", js_wi(nickSelId));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 
   if (str_eq(rq, "newNick")) {
     CGI_GET_STR(nick, mrq, "nick")
-    void fn (void *null) { map_put(rp, "ok", js_wb(nicks_add(nick))); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { map_put(rp, "ok", js_wb(nicks_add(nick))); }
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 
   if (str_eq(rq, "setNickSelId")) {
     CGI_GET_INT(id, mrq, "id")
-    void fn (void *null) { conf_set_nick_sel_id(id); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { conf_set_nick_sel_id(id); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
 
   if (str_eq(rq, "modNick")) {
     CGI_GET_INT(nk_id, mrq, "nickId")
     CGI_GET_STR(nk_name, mrq, "nickName")
-    void fn (void *null) {
+    void fn () {
       int ok = 0;
       // Opt[Nick]
       Opt *onk = nicks_get(nk_id);
@@ -77,7 +77,7 @@ char *sys__nicks_process(AsyncActor *ac, Map *mrq) {
       }
       map_put(rp, "ok", js_wb(ok));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 
@@ -88,12 +88,12 @@ char *sys__nicks_process(AsyncActor *ac, Map *mrq) {
 
   if (str_eq(rq, "test")) {
     CGI_GET_INT(nk_id, mrq, "nickId")
-    void fn (void *null) {
+    void fn () {
       EMsg *e = tp_e1(quotes_editor_read(nk_id));
       map_put(rp, "err", js_wi(eMsg_error(e)));
       map_put(rp, "msg", js_ws(eMsg_msg(e)));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 

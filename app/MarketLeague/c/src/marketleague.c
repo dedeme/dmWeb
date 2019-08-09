@@ -48,7 +48,13 @@ static char *process(char *session_id, Map *mrq) {
 
   if (str_eq(rq, "update")) {
     CGI_GET(DataAll *, data, dataAll_from_js, mrq, "data");
-    map_put(rp, "data", dataAll_to_js(io_update(data)));
+    char *error = io_check_nicks(data);
+    map_put(rp, "error", js_ws(error));
+    if (*error) {
+      map_put(rp, "data", dataAll_to_js(data));
+    } else {
+      map_put(rp, "data", dataAll_to_js(io_update(data)));
+    }
     return cgi_ok(rp);
   }
 
@@ -61,6 +67,8 @@ static char *process(char *session_id, Map *mrq) {
 }
 
 int main (int argc, char *argv[]) {
+  exc_init();
+
   if (argc != 2)
     EXC_ILLEGAL_STATE("argc must be 2")
 

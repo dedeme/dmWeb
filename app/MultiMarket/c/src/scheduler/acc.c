@@ -8,7 +8,7 @@
 #include "io/log.h"
 
 void acc_historic_profits (AsyncActor *ac) {
-  void fn (void *null) {
+  void fn () {
     AccLedPf *rs = accLedPf_new(accdb_diary_read());
     EACH(accLedPf_errors(rs), char, e)
       log_error(e);
@@ -24,5 +24,5 @@ void acc_historic_profits (AsyncActor *ac) {
       darr_get(pfs, 2)
     );
   }
-  asyncActor_wait(ac, fn, NULL);
+  asyncActor_wait(ac, fn);
 }

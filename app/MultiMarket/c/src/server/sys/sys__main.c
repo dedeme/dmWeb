@@ -12,13 +12,14 @@ char *sys__main_process(AsyncActor *ac, Map *mrq) {
   Map *rp = map_new();
 
   if (str_eq(rq, "idata")) {
-    void fn (void *null) { map_put(rp, "page", js_ws(conf_sys_page())); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { map_put(rp, "page", js_ws(conf_sys_page())); }
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "go")) {
     CGI_GET_STR(option, mrq, "option")
-    asyncActor_wait(ac, (FPROC)conf_set_sys_page, option);
+    void fn () { conf_set_sys_page(option); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
 

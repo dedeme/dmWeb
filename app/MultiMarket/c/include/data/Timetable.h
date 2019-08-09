@@ -6,7 +6,7 @@
 #ifndef DATA_TIMETABLE_H
   #define DATA_TIMETABLE_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 
 /*--*/
 

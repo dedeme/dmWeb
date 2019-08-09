@@ -12,13 +12,14 @@ char *sys__settings_process(AsyncActor *ac, Map *mrq) {
   CGI_GET_STR(rq, mrq, "rq")
 
   if (str_eq(rq, "getLang")) {
-    void fn (void *null) { map_put(rp, "lang", js_ws(conf_lang())); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { map_put(rp, "lang", js_ws(conf_lang())); }
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "setLang")) {
     CGI_GET_STR(lang, mrq, "lang")
-    asyncActor_wait(ac, (FPROC)conf_set_lang, lang);
+    void fn () { conf_set_lang(lang); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
 

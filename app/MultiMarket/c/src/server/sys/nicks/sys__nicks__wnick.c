@@ -14,22 +14,22 @@ char *sys__nicks__wnick_process(AsyncActor *ac, Map *mrq) {
   if (str_eq(rq, "setIsSel")) {
     CGI_GET_INT(id, mrq, "id")
     CGI_GET_BOOL(value, mrq, "value")
-    void fn (void *null) { nicks_set_selected(id, value); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { nicks_set_selected(id, value); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
 
   if (str_eq(rq, "setModel")) {
     CGI_GET_INT(id, mrq, "id")
-    void fn (void *null) { nicks_set_model(id); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { nicks_set_model(id); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
 
   if (str_eq(rq, "del")) {
     CGI_GET_INT(id, mrq, "id")
-    void fn (void *null) { nicks_del(id); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { nicks_del(id); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
 

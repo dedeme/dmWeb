@@ -14,10 +14,10 @@ char *sys__servers__names_process(AsyncActor *ac, Map *mrq) {
     CGI_GET_INT(id, mrq, "id")
     CGI_GET_STR(shortName, mrq, "shortName")
     CGI_GET_STR(name, mrq, "name")
-    void fn (void *null) {
+    void fn () {
       map_put(rp, "ok", js_wb(servers_set_names(id, shortName, name)));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 

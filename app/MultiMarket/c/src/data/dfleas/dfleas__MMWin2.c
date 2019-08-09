@@ -32,7 +32,7 @@ CO {
 };
 
 static CO *co_new(int to_sell, double ref, double max) {
-  CO *this = malloc(sizeof(CO));
+  CO *this = MALLOC(CO);
   this->to_sell = to_sell;
   this->ref = ref;
   this->mm = max;

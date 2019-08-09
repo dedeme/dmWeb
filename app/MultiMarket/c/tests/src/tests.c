@@ -15,6 +15,7 @@
 #include "order_tests.h"
 #include "facc_tests.h"
 #include "nickSets_tests.h"
+#include "rank_tests.h"
 
 static void init (void) {
   sys_init("MultiMarket_tests");
@@ -36,4 +37,5 @@ int main (int argc, char *argv[]) {
   order_tests();
   facc_tests();
   nickSets_tests();
+  rank_tests();
 }

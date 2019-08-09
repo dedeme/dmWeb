@@ -2,6 +2,7 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "data/Qmatrix.h"
+#include "DEFS.h"
 
 /* .
 Qmatrix
@@ -36,4 +37,10 @@ QmatrixValues *qmatrix_values (Qmatrix *this) {
 
 /*--*/
 
-
+void qmatrix_add(QmatrixValues *table, QmatrixValues row) {
+  QmatrixValues *next = table;
+  REPEAT(HISTORIC_QUOTES - 1) {
+    *table++ = *(next++);
+  }_REPEAT
+  *table = row;
+}

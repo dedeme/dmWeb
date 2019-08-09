@@ -15,7 +15,7 @@ char *sys__annotations_process(AsyncActor *ac, Map *mrq) {
   Map *rp = map_new();
 
   if (str_eq(rq, "idata")) {
-    void fn (void *null) {
+    void fn () {
       // Arr[AccEntry]
       Arr *annotations = accdb_diary_read();
       AccLedPf *rs = accLedPf_new(annotations);
@@ -26,25 +26,25 @@ char *sys__annotations_process(AsyncActor *ac, Map *mrq) {
       map_put(rp, "cash", js_wd(accLedger_cash(accLedPf_ledger(rs))));
       map_put(rp, "annotations", accdb_diary_read_js());
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "new")) {
     CGI_GET(AccEntry *, ann, accEntry_from_js, mrq, "ann")
-    void fn (void *null) {
+    void fn () {
       accdb_diary_add(ann);
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
   if (str_eq(rq, "remove")) {
     CGI_GET_INT(id, mrq, "id");
     CGI_GET_STR(date, mrq, "date");
     char *year = str_left(date, 4);
-    void fn (void *null) {
+    void fn () {
       accdb_diary_remove(year, id);
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
 

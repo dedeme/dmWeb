@@ -6,7 +6,7 @@
 #ifndef DATA_GEN_H
   #define DATA_GEN_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 #include "dmc/Darr.h"
 
 ///

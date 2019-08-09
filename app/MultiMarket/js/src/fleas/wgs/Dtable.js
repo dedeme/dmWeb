@@ -280,7 +280,7 @@ export default class Dtable {
     if (this._isBests && !this._isChampions) {
       this.sort(DATE_MODEL);
     } else {
-      this.sort(SEL);
+      this.sort(ASSETS);
     }
     this.showTable();
     return this._div;

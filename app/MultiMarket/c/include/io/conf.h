@@ -6,7 +6,7 @@
 #ifndef IO_CONF_H
   #define IO_CONF_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 
 ///
 void conf_init (void);
@@ -76,5 +76,11 @@ int conf_fleas_running (void);
 
 /// Sets if fleas are running.
 void conf_set_fleas_running (int value);
+
+/// Returns order number of selected in ranking
+int conf_ranking_selected (void);
+
+/// Sets order number of selected in ranking
+void conf_set_ranking_selected (int value);
 
 #endif

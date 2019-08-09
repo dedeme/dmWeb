@@ -6,8 +6,9 @@
 #ifndef IO_FLEASDB_H
   #define IO_FLEASDB_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 #include "data/Rs.h"
+#include "data/Rank.h"
 
 /// Initilizes fleas data base.
 void fleasdb_init();
@@ -66,6 +67,13 @@ void fleasdb_champions_add (RsChampions *rs);
 
 /// 'rss' is Arr[RsChampions]
 void fleasdb_champions_write (int nparams, Arr *rss);
+
+/// Returns Arr[RsChampions]. This function updates ranking.db
+Arr *fleasdb_ranking (void);
+
+/// Returns Arr[Arr[RankAssets]]. Assets table to make charts of ranking.
+///   ranking: (Arr[RsChampions]) A row will be generated for each RsChampions.
+Arr *fleasdb_ranking_assets (Arr *ranking);
 
 /// Writes a fleas log entry. 'msg' can not finish in '\n'
 void fleasdb_flog_write (char *msg);

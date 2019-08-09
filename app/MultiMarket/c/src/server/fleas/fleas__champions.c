@@ -15,25 +15,25 @@ char *fleas__champions_process(AsyncActor *ac, Map *mrq) {
   Map *rp = map_new();
 
   if (str_eq(rq, "getNParams")) {
-    void fn (void *null) {
+    void fn () {
       int nparams = conf_champions_nparams();
       map_put(rp, "nparams", nparams == -1 ? js_wn() : js_wi(nparams));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "setNParams")) {
     CGI_GET_INT(nparams, mrq, "nparams")
-    void fn (void *null) { conf_set_champions_nparams(nparams); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { conf_set_champions_nparams(nparams); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
   if (str_eq(rq, "data")) {
     CGI_GET_INT(nparams, mrq, "nparams")
-    void fn (void *null) {
+    void fn () {
       map_put(rp, "table", fleasdb_champions_read_js(nparams));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 

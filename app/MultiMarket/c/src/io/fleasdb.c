@@ -2,10 +2,14 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "io/fleasdb.h"
+#include "dmc/date.h"
 #include "io/io.h"
 #include "io/quotes.h"
+#include "io/conf.h"
+#include "io/accdb.h"
 #include "data/Rs.h"
 #include "data/Model.h"
+#include "data/Nick.h"
 #include "data/dfleas/dfleas__models.h"
 #include "DEFS.h"
 
@@ -13,7 +17,7 @@ static char *fleas_dir = NULL;
 static char *bests_dir = NULL;
 static char *charts_dir = NULL;
 static char *champions_dir = NULL;
-static char *bests_db = NULL;
+static char *ranking_db = NULL;
 static char *flog_db = NULL;
 
 void fleasdb_init() {
@@ -21,14 +25,14 @@ void fleasdb_init() {
   bests_dir = path_cat(fleas_dir, "_bests", NULL);
   charts_dir = path_cat(fleas_dir, "_charts", NULL);
   champions_dir = path_cat(fleas_dir, "_champions", NULL);
-  bests_db = path_cat(fleas_dir, "bests.db", NULL);
+  ranking_db = path_cat(fleas_dir, "ranking.db", NULL);
   flog_db = path_cat(fleas_dir, "flog.db", NULL);
   if (!file_exists(fleas_dir)) {
     file_mkdir(fleas_dir);
     file_mkdir(bests_dir);
     file_mkdir(charts_dir);
     file_mkdir(champions_dir);
-    file_write(bests_db, "[]");
+    file_write(ranking_db, "[]");
     file_write(flog_db, "[]");
   }
 }
@@ -191,12 +195,18 @@ Arr *fleasdb_champions_read (int nparams) {
 Js *fleasdb_champions_read_js (int nparams) {
   if (!champions_dir) EXC_ILLEGAL_STATE("'champions_dir' was not intiliazed")
 
-  char *f = path_cat(champions_dir, str_f("%d.db", nparams), NULL);
-  if (!file_exists(f)) {
-    return (Js *)"[]";
-  }
+  // Arr[char]
+  Arr *models = dfleas__models_names();
 
-  return (Js *)file_read(f);
+  int ffilter (RsChampions *rs) {
+    char *model = rsChampions_model(rs);
+    int fcontains (char *md) { return str_eq(model, md); }
+    return it_contains(it_from(models), (FPRED)fcontains);
+  }
+  return arr_to_js(
+    it_to(it_filter(it_from(fleasdb_champions_read(nparams)), (FPRED)ffilter)),
+    (FTO)rsChampions_to_js
+  );
 }
 
 // Returns Js -> Opt[RsChart]
@@ -272,6 +282,123 @@ void fleasdb_champions_write (int nparams, Arr *rss) {
 
   char *f = path_cat(champions_dir, str_f("%d.db", nparams), NULL);
   file_write(f, (char *)arr_to_js(rss, (FTO)rsChampions_to_js));
+}
+
+// Returns Arr[RsChampions]
+Arr *fleasdb_ranking (void) {
+  int fsort (RsChampions *r1, RsChampions *r2) {
+    return rsAssets_assets(rs_assets(rsWeb_result(rsChampions_result(r1)))) <
+      rsAssets_assets(rs_assets(rsWeb_result(rsChampions_result(r2))));
+  }
+  It *remove_duplicates (It *it) {
+    int feq (RsChampions *r1, RsChampions *r2) {
+      return str_eq(
+        flea_name(rs_flea(rsWeb_result(rsChampions_result(r1)))),
+        flea_name(rs_flea(rsWeb_result(rsChampions_result(r2))))
+      );
+    }
+    Arr *dup;
+    Arr *rest;
+    it_duplicates(&dup, &rest, it, (FCMP)feq);
+    return it_from(rest);
+  }
+
+  Arr *r = arr_from_js((Js *)file_read(ranking_db), (FFROM)rsChampions_from_js);
+  if (arr_size(r)) {
+    r = it_to(
+      it_take(
+        it_sort(
+          remove_duplicates(it_cat(
+            it_from(r),
+            it_cat(
+              it_take(it_from(fleasdb_champions_read(1)), 1),
+              it_cat(
+                it_take(it_from(fleasdb_champions_read(2)), 1),
+                it_cat(
+                  it_take(it_from(fleasdb_champions_read(3)), 1),
+                  it_take(it_from(fleasdb_champions_read(4)), 1)
+                )
+              )
+            )
+          )),
+          (FCMP)fsort
+        ),
+        40
+      )
+    );
+  } else {
+    r = it_to(
+      it_sort(
+        it_cat(
+          it_take(it_from(fleasdb_champions_read(1)), 10),
+          it_cat(
+            it_take(it_from(fleasdb_champions_read(2)), 10),
+            it_cat(
+              it_take(it_from(fleasdb_champions_read(3)), 10),
+              it_take(it_from(fleasdb_champions_read(4)), 10)
+            )
+          )
+        ),
+        (FCMP)fsort
+      )
+    );
+  }
+
+  file_write(ranking_db, (char *)arr_to_js(r, (FTO)rsChampions_to_js));
+  return r;
+}
+
+// Returns Arr[Arr[Opt[RankAssets]]]
+// ranking is Arr[RsChampions]
+Arr *fleasdb_ranking_assets (Arr *ranking) {
+  if (!arr_size(ranking)){
+    return arr_new();
+  }
+
+  // Arr[char]
+  Arr *dates = quotes_dates();
+  Qmatrix *opens = opt_nget(quotes_opens());
+  Qmatrix *closes = opt_nget(quotes_closes());
+  if (arr_size(dates) != HISTORIC_QUOTES || !opens || !closes) {
+    EXC_ILLEGAL_STATE(
+      "arr_size(dates) != HISTORIC_QUOTES || !opens || !closes"
+    )
+  }
+
+  if (!str_eq(conf_activity(), ACT_SLEEPING2)) {
+    time_t now = date_now();
+    if (str_greater("06", date_f(now, "%H"))) {
+      now = date_add(now, -1);
+    }
+    arr_remove(dates, 0);
+    arr_push(dates, date_to_str(now));
+    char *fn (Nick *nk) { return nick_name(nk); }
+    // Arr[char]
+    Arr *nicks = it_to(it_map(it_from(qmatrix_nicks(opens)), (FCOPY)fn));
+    QmatrixValues row = accdb_dailyq_read(nicks);
+    qmatrix_add(qmatrix_values(opens), row);
+    qmatrix_add(qmatrix_values(closes), row);
+  }
+
+  // Arr[Arr[Opt[RankAssets]]]
+  Arr *r = arr_new();
+  EACH(ranking, RsChampions, rs) {
+    Model *model = opt_nget(dfleas__models_get(rsChampions_model(rs)));
+    if (!model) {
+      arr_push(r, arr_new());
+      continue;
+    }
+
+    Darr *params = rsWeb_params(rsChampions_result(rs));
+    // Arr[RankAssets]
+    Arr *asts = model_assets_historic(model, params, dates, opens, closes);
+    if (arr_size(asts) > MAXIMUM_HISTORIC_RANKING) {
+      arr_remove_range(asts, 0, arr_size(asts) - MAXIMUM_HISTORIC_RANKING);
+    }
+    arr_push(r, asts);
+  }_EACH
+
+  return r;
 }
 
 Js *fleasdb_flog_to_js (void) {

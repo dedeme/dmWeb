@@ -12,6 +12,7 @@ import SysMain from "./sys/SysMain.js";
 import FleasMain from "./fleas/FleasMain.js";
 import AccMain from "./acc/AccMain.js";
 import DailyMain from "./daily/DailyMain.js";
+import RankingMain from "./ranking/RankingMain.js";
 
 const app = "MultiMarket";
 const version = "201903";
@@ -139,6 +140,8 @@ export default class Main {
         new DailyMain(self).show();
       } else if (module === "fleas") {
         new FleasMain(self).show();
+      } else if (module === "ranking") {
+        new RankingMain(self).show();
       } else {
         alert("Module '" + module + "' is unknown");
         location.assign(Main.urlBase);

@@ -12,11 +12,11 @@ void historic_update (AsyncActor *ac) {
   // Arr[Nick]
   Arr *nicks = NULL;
   int model_id = -1;
-  void fn (void *null) {
+  void fn () {
     nicks = nicks_list();
     model_id = nicks_model();
   }
-  asyncActor_wait(ac, fn, NULL);
+  asyncActor_wait(ac, fn);
 
   Nick *model = NULL;
   EACH(nicks, Nick, nk)
@@ -29,17 +29,17 @@ void historic_update (AsyncActor *ac) {
     model = arr_get(nicks, 0);
   }
 
-  void fn2 (void *null) {
+  void fn2 () {
     log_info(str_f("Reading model %s", nick_name(model)));
   }
-  asyncActor_wait(ac, fn2, NULL);
+  asyncActor_wait(ac, fn2);
 
   model_id = nick_id(model);
   net_update_historic(ac, model_id);
 
   EACH(nicks, Nick, nk)
-    void fn3 (void *null) { log_info(str_f("Reading %s", nick_name(nk))); }
-    asyncActor_wait(ac, fn3, NULL);
+    void fn3 () { log_info(str_f("Reading %s", nick_name(nk))); }
+    asyncActor_wait(ac, fn3);
 
     int nk_id = nick_id(nk);
     if (!io_active()) break;

@@ -12,13 +12,13 @@ char *sys__servers__codes_process(AsyncActor *ac, Map *mrq) {
   if (str_eq(rq, "setCodes")) {
     CGI_GET_INT(id, mrq, "id")
     CGI_GET_ARR(codes, mrq, "codes")
-    void fn (void *null) {
+    void fn () {
       servers_set_codes(
         id,
         arr_from_it(it_map(arr_to_it(codes), (FCOPY)serverCode_from_js))
       );
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
 

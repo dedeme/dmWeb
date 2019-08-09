@@ -13,7 +13,7 @@ char *fleas__wgs__dtable_process(AsyncActor *ac, Map *mrq) {
   Map *rp = map_new();
 
   if (str_eq(rq, "nicks")) {
-    void fn (void *null) {
+    void fn () {
       int ffilter (Nick *nk) { return nick_is_sel(nk); }
       void *fmap (Nick *nk) { return nick_name(nk); }
       map_put(rp, "nicks", arr_to_js(
@@ -24,7 +24,7 @@ char *fleas__wgs__dtable_process(AsyncActor *ac, Map *mrq) {
         (FTO)js_ws
       ));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 

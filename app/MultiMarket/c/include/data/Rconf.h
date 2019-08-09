@@ -6,7 +6,7 @@
 #ifndef DATA_RCONF_H
   #define DATA_RCONF_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 
 /*--*/
 

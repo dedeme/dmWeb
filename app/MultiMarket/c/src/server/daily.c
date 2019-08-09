@@ -15,20 +15,20 @@ char *daily_process(AsyncActor *ac, Map *mrq) {
   Map *rp = map_new();
 
   if (str_eq(rq, "idata")) {
-    void fn (void *null) {
+    void fn () {
       map_put(rp, "state", js_ws(conf_activity()));
-      Server *sv = opt_oget(sbox_get(), NULL);
+      Server *sv = opt_nget(sbox_get());
       map_put(rp, "server", js_ws(sv ? server_name(sv) : "No set"));
       map_put(rp, "cos", dailydb_cos());
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "update")) {
-    void fn (void *null) {
+    void fn () {
       dailydb_update_charts();
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
 

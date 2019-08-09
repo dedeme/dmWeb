@@ -10,8 +10,8 @@ bin/MultiMarket : src/multimarket.c include/multimarket.h lib/liblocalcompilatio
 		-L$(LIB_PATH_dmc) -ldmc \
 		-lgc -lpthread -lm
 
-lib/liblocalcompilation/liblocalcompilation.a : lib/liblocalcompilation/obj/multimarket.o lib/liblocalcompilation/obj/io/io.o lib/liblocalcompilation/obj/DEFS.o lib/liblocalcompilation/obj/server.o lib/liblocalcompilation/obj/io/log.o lib/liblocalcompilation/obj/server/hub.o lib/liblocalcompilation/obj/io/backups.o lib/liblocalcompilation/obj/io/trash.o lib/liblocalcompilation/obj/io/conf.o lib/liblocalcompilation/obj/server/sys.o lib/liblocalcompilation/obj/server/sys/sys__main.o lib/liblocalcompilation/obj/server/sys/sys__home.o lib/liblocalcompilation/obj/io/fleasdb.o lib/liblocalcompilation/obj/io/quotes.o lib/liblocalcompilation/obj/io/nicks.o lib/liblocalcompilation/obj/io/servers.o lib/liblocalcompilation/obj/io/net.o lib/liblocalcompilation/obj/io/accdb.o lib/liblocalcompilation/obj/io/managerdb.o lib/liblocalcompilation/obj/data/dfleas/dfleas__models.o lib/liblocalcompilation/obj/data/Model.o lib/liblocalcompilation/obj/data/Facc.o lib/liblocalcompilation/obj/data/broker.o lib/liblocalcompilation/obj/data/Qmatrix.o lib/liblocalcompilation/obj/data/Nick.o lib/liblocalcompilation/obj/data/Flea.o lib/liblocalcompilation/obj/data/Gen.o lib/liblocalcompilation/obj/data/Order.o lib/liblocalcompilation/obj/data/Rs.o lib/liblocalcompilation/obj/data/NickSets.o lib/liblocalcompilation/obj/data/ModelMxMn.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx2.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx3A.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx3B.o lib/liblocalcompilation/obj/data/dfleas/dfleas__GA.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr2.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr3.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr3a.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MA.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MA2.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM1.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2A.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2Aa.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2Ab.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2B.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM4.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack1.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack2.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack2a.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack2b.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin1.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin2.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin2a.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin2b.o lib/liblocalcompilation/obj/data/ModelParams.o lib/liblocalcompilation/obj/data/Manager.o lib/liblocalcompilation/obj/data/Acc.o lib/liblocalcompilation/obj/io/sbox.o lib/liblocalcompilation/obj/data/DailyEntry.o lib/liblocalcompilation/obj/data/HistoricEntry.o lib/liblocalcompilation/obj/data/Quote.o lib/liblocalcompilation/obj/data/Server.o lib/liblocalcompilation/obj/data/Rconf.o lib/liblocalcompilation/obj/data/NickClose.o lib/liblocalcompilation/obj/data/EMsg.o lib/liblocalcompilation/obj/scheduler/fleas.o lib/liblocalcompilation/obj/server/sys/sys__settings.o lib/liblocalcompilation/obj/server/sys/sys__chpass.o lib/liblocalcompilation/obj/server/sys/sys__backups.o lib/liblocalcompilation/obj/server/sys/sys__schedule.o lib/liblocalcompilation/obj/io/calendar.o lib/liblocalcompilation/obj/data/MarketDay.o lib/liblocalcompilation/obj/data/Timetable.o lib/liblocalcompilation/obj/server/sys/sys__nicks.o lib/liblocalcompilation/obj/server/sys/nicks/sys__nicks__wnick.o lib/liblocalcompilation/obj/server/sys/nicks/sys__nicks__editor.o lib/liblocalcompilation/obj/server/sys/sys__servers.o lib/liblocalcompilation/obj/server/sys/servers/sys__servers__names.o lib/liblocalcompilation/obj/server/sys/servers/sys__servers__codes.o lib/liblocalcompilation/obj/server/sys/servers/sys__servers__download.o lib/liblocalcompilation/obj/server/sys/sys__annotations.o lib/liblocalcompilation/obj/server/sys/sys__models.o lib/liblocalcompilation/obj/scheduler/management.o lib/liblocalcompilation/obj/server/fleas.o lib/liblocalcompilation/obj/server/fleas/fleas__main.o lib/liblocalcompilation/obj/server/fleas/fleas__bests.o lib/liblocalcompilation/obj/server/fleas/fleas__charts.o lib/liblocalcompilation/obj/server/fleas/fleas__model.o lib/liblocalcompilation/obj/server/fleas/fleas__champions.o lib/liblocalcompilation/obj/server/fleas/wgs/fleas__wgs__wcharts.o lib/liblocalcompilation/obj/server/fleas/wgs/fleas__wgs__dtable.o lib/liblocalcompilation/obj/server/acc.o lib/liblocalcompilation/obj/server/acc/acc__downloader.o lib/liblocalcompilation/obj/server/acc/acc__companies.o lib/liblocalcompilation/obj/server/acc/acc__balance.o lib/liblocalcompilation/obj/server/acc/acc__trading.o lib/liblocalcompilation/obj/server/acc/acc__profits.o lib/liblocalcompilation/obj/server/daily.o lib/liblocalcompilation/obj/io/dailydb.o lib/liblocalcompilation/obj/scheduler.o lib/liblocalcompilation/obj/scheduler/historic.o lib/liblocalcompilation/obj/scheduler/acc.o
-	ar rcs lib/liblocalcompilation/liblocalcompilation.a lib/liblocalcompilation/obj/multimarket.o lib/liblocalcompilation/obj/io/io.o lib/liblocalcompilation/obj/DEFS.o lib/liblocalcompilation/obj/server.o lib/liblocalcompilation/obj/io/log.o lib/liblocalcompilation/obj/server/hub.o lib/liblocalcompilation/obj/io/backups.o lib/liblocalcompilation/obj/io/trash.o lib/liblocalcompilation/obj/io/conf.o lib/liblocalcompilation/obj/server/sys.o lib/liblocalcompilation/obj/server/sys/sys__main.o lib/liblocalcompilation/obj/server/sys/sys__home.o lib/liblocalcompilation/obj/io/fleasdb.o lib/liblocalcompilation/obj/io/quotes.o lib/liblocalcompilation/obj/io/nicks.o lib/liblocalcompilation/obj/io/servers.o lib/liblocalcompilation/obj/io/net.o lib/liblocalcompilation/obj/io/accdb.o lib/liblocalcompilation/obj/io/managerdb.o lib/liblocalcompilation/obj/data/dfleas/dfleas__models.o lib/liblocalcompilation/obj/data/Model.o lib/liblocalcompilation/obj/data/Facc.o lib/liblocalcompilation/obj/data/broker.o lib/liblocalcompilation/obj/data/Qmatrix.o lib/liblocalcompilation/obj/data/Nick.o lib/liblocalcompilation/obj/data/Flea.o lib/liblocalcompilation/obj/data/Gen.o lib/liblocalcompilation/obj/data/Order.o lib/liblocalcompilation/obj/data/Rs.o lib/liblocalcompilation/obj/data/NickSets.o lib/liblocalcompilation/obj/data/ModelMxMn.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx2.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx3A.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx3B.o lib/liblocalcompilation/obj/data/dfleas/dfleas__GA.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr2.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr3.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr3a.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MA.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MA2.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM1.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2A.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2Aa.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2Ab.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2B.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM4.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack1.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack2.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack2a.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack2b.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin1.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin2.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin2a.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin2b.o lib/liblocalcompilation/obj/data/ModelParams.o lib/liblocalcompilation/obj/data/Manager.o lib/liblocalcompilation/obj/data/Acc.o lib/liblocalcompilation/obj/io/sbox.o lib/liblocalcompilation/obj/data/DailyEntry.o lib/liblocalcompilation/obj/data/HistoricEntry.o lib/liblocalcompilation/obj/data/Quote.o lib/liblocalcompilation/obj/data/Server.o lib/liblocalcompilation/obj/data/Rconf.o lib/liblocalcompilation/obj/data/NickClose.o lib/liblocalcompilation/obj/data/EMsg.o lib/liblocalcompilation/obj/scheduler/fleas.o lib/liblocalcompilation/obj/server/sys/sys__settings.o lib/liblocalcompilation/obj/server/sys/sys__chpass.o lib/liblocalcompilation/obj/server/sys/sys__backups.o lib/liblocalcompilation/obj/server/sys/sys__schedule.o lib/liblocalcompilation/obj/io/calendar.o lib/liblocalcompilation/obj/data/MarketDay.o lib/liblocalcompilation/obj/data/Timetable.o lib/liblocalcompilation/obj/server/sys/sys__nicks.o lib/liblocalcompilation/obj/server/sys/nicks/sys__nicks__wnick.o lib/liblocalcompilation/obj/server/sys/nicks/sys__nicks__editor.o lib/liblocalcompilation/obj/server/sys/sys__servers.o lib/liblocalcompilation/obj/server/sys/servers/sys__servers__names.o lib/liblocalcompilation/obj/server/sys/servers/sys__servers__codes.o lib/liblocalcompilation/obj/server/sys/servers/sys__servers__download.o lib/liblocalcompilation/obj/server/sys/sys__annotations.o lib/liblocalcompilation/obj/server/sys/sys__models.o lib/liblocalcompilation/obj/scheduler/management.o lib/liblocalcompilation/obj/server/fleas.o lib/liblocalcompilation/obj/server/fleas/fleas__main.o lib/liblocalcompilation/obj/server/fleas/fleas__bests.o lib/liblocalcompilation/obj/server/fleas/fleas__charts.o lib/liblocalcompilation/obj/server/fleas/fleas__model.o lib/liblocalcompilation/obj/server/fleas/fleas__champions.o lib/liblocalcompilation/obj/server/fleas/wgs/fleas__wgs__wcharts.o lib/liblocalcompilation/obj/server/fleas/wgs/fleas__wgs__dtable.o lib/liblocalcompilation/obj/server/acc.o lib/liblocalcompilation/obj/server/acc/acc__downloader.o lib/liblocalcompilation/obj/server/acc/acc__companies.o lib/liblocalcompilation/obj/server/acc/acc__balance.o lib/liblocalcompilation/obj/server/acc/acc__trading.o lib/liblocalcompilation/obj/server/acc/acc__profits.o lib/liblocalcompilation/obj/server/daily.o lib/liblocalcompilation/obj/io/dailydb.o lib/liblocalcompilation/obj/scheduler.o lib/liblocalcompilation/obj/scheduler/historic.o lib/liblocalcompilation/obj/scheduler/acc.o
+lib/liblocalcompilation/liblocalcompilation.a : lib/liblocalcompilation/obj/multimarket.o lib/liblocalcompilation/obj/io/io.o lib/liblocalcompilation/obj/DEFS.o lib/liblocalcompilation/obj/server.o lib/liblocalcompilation/obj/io/log.o lib/liblocalcompilation/obj/server/hub.o lib/liblocalcompilation/obj/io/backups.o lib/liblocalcompilation/obj/io/trash.o lib/liblocalcompilation/obj/io/conf.o lib/liblocalcompilation/obj/server/sys.o lib/liblocalcompilation/obj/server/sys/sys__main.o lib/liblocalcompilation/obj/server/sys/sys__home.o lib/liblocalcompilation/obj/io/fleasdb.o lib/liblocalcompilation/obj/io/quotes.o lib/liblocalcompilation/obj/io/nicks.o lib/liblocalcompilation/obj/io/servers.o lib/liblocalcompilation/obj/io/net.o lib/liblocalcompilation/obj/io/accdb.o lib/liblocalcompilation/obj/io/managerdb.o lib/liblocalcompilation/obj/data/dfleas/dfleas__models.o lib/liblocalcompilation/obj/data/Model.o lib/liblocalcompilation/obj/data/Facc.o lib/liblocalcompilation/obj/data/broker.o lib/liblocalcompilation/obj/data/Qmatrix.o lib/liblocalcompilation/obj/data/Nick.o lib/liblocalcompilation/obj/data/Rank.o lib/liblocalcompilation/obj/data/Rs.o lib/liblocalcompilation/obj/data/Flea.o lib/liblocalcompilation/obj/data/Gen.o lib/liblocalcompilation/obj/data/Order.o lib/liblocalcompilation/obj/data/ModelMxMn.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx.o lib/liblocalcompilation/obj/data/dfleas/approx/approx__4.o lib/liblocalcompilation/obj/data/dfleas/approx/ApproxBase.o lib/liblocalcompilation/obj/data/dfleas/dfleas__fmt.o lib/liblocalcompilation/obj/data/dfleas/approx/approx__3A.o lib/liblocalcompilation/obj/data/dfleas/approx/approx__3B.o lib/liblocalcompilation/obj/data/dfleas/approx/approx__2.o lib/liblocalcompilation/obj/data/dfleas/dfleas__GA.o lib/liblocalcompilation/obj/data/dfleas/ga/ga__3.o lib/liblocalcompilation/obj/data/dfleas/ga/GABase.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr.o lib/liblocalcompilation/obj/data/dfleas/incr/incr__3.o lib/liblocalcompilation/obj/data/dfleas/incr/IncrBase.o lib/liblocalcompilation/obj/data/dfleas/incr/incr__2.o lib/liblocalcompilation/obj/data/dfleas/incr/incr__3a.o lib/liblocalcompilation/obj/data/dfleas/incr/incr__3aa.o lib/liblocalcompilation/obj/data/dfleas/incr/incr__3ab.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MA.o lib/liblocalcompilation/obj/data/dfleas/ma/ma__3.o lib/liblocalcompilation/obj/data/dfleas/ma/ma__2.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM.o lib/liblocalcompilation/obj/data/dfleas/mm/mm__4.o lib/liblocalcompilation/obj/data/dfleas/mm/MMBase.o lib/liblocalcompilation/obj/data/dfleas/mm/mm__2A.o lib/liblocalcompilation/obj/data/dfleas/mm/mm__2Aa.o lib/liblocalcompilation/obj/data/dfleas/mm/mm__2Ab.o lib/liblocalcompilation/obj/data/dfleas/mm/mm__2B.o lib/liblocalcompilation/obj/data/dfleas/mm/mm__1.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack.o lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__2.o lib/liblocalcompilation/obj/data/dfleas/mmBack/MMBackBase.o lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__2a.o lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__2b.o lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__1.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin.o lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__2.o lib/liblocalcompilation/obj/data/dfleas/mmWin/MMWinBase.o lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__2a.o lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__2b.o lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__1.o lib/liblocalcompilation/obj/data/ModelParams.o lib/liblocalcompilation/obj/data/Manager.o lib/liblocalcompilation/obj/data/Acc.o lib/liblocalcompilation/obj/io/sbox.o lib/liblocalcompilation/obj/data/DailyEntry.o lib/liblocalcompilation/obj/data/HistoricEntry.o lib/liblocalcompilation/obj/data/Quote.o lib/liblocalcompilation/obj/data/Server.o lib/liblocalcompilation/obj/data/Rconf.o lib/liblocalcompilation/obj/data/NickClose.o lib/liblocalcompilation/obj/data/EMsg.o lib/liblocalcompilation/obj/scheduler/fleas.o lib/liblocalcompilation/obj/server/sys/sys__settings.o lib/liblocalcompilation/obj/server/sys/sys__chpass.o lib/liblocalcompilation/obj/server/sys/sys__backups.o lib/liblocalcompilation/obj/server/sys/sys__schedule.o lib/liblocalcompilation/obj/io/calendar.o lib/liblocalcompilation/obj/data/MarketDay.o lib/liblocalcompilation/obj/data/Timetable.o lib/liblocalcompilation/obj/server/sys/sys__nicks.o lib/liblocalcompilation/obj/server/sys/nicks/sys__nicks__wnick.o lib/liblocalcompilation/obj/server/sys/nicks/sys__nicks__editor.o lib/liblocalcompilation/obj/server/sys/sys__servers.o lib/liblocalcompilation/obj/server/sys/servers/sys__servers__names.o lib/liblocalcompilation/obj/server/sys/servers/sys__servers__codes.o lib/liblocalcompilation/obj/server/sys/servers/sys__servers__download.o lib/liblocalcompilation/obj/server/sys/sys__annotations.o lib/liblocalcompilation/obj/server/sys/sys__models.o lib/liblocalcompilation/obj/scheduler/management.o lib/liblocalcompilation/obj/server/fleas.o lib/liblocalcompilation/obj/server/fleas/fleas__main.o lib/liblocalcompilation/obj/server/fleas/fleas__bests.o lib/liblocalcompilation/obj/server/fleas/fleas__charts.o lib/liblocalcompilation/obj/server/fleas/fleas__model.o lib/liblocalcompilation/obj/server/fleas/fleas__champions.o lib/liblocalcompilation/obj/server/fleas/wgs/fleas__wgs__wcharts.o lib/liblocalcompilation/obj/server/fleas/wgs/fleas__wgs__dtable.o lib/liblocalcompilation/obj/server/acc.o lib/liblocalcompilation/obj/server/acc/acc__downloader.o lib/liblocalcompilation/obj/server/acc/acc__companies.o lib/liblocalcompilation/obj/server/acc/acc__balance.o lib/liblocalcompilation/obj/server/acc/acc__trading.o lib/liblocalcompilation/obj/server/acc/acc__profits.o lib/liblocalcompilation/obj/server/daily.o lib/liblocalcompilation/obj/io/dailydb.o lib/liblocalcompilation/obj/server/ranking.o lib/liblocalcompilation/obj/scheduler.o lib/liblocalcompilation/obj/scheduler/historic.o lib/liblocalcompilation/obj/scheduler/acc.o
+	ar rcs lib/liblocalcompilation/liblocalcompilation.a lib/liblocalcompilation/obj/multimarket.o lib/liblocalcompilation/obj/io/io.o lib/liblocalcompilation/obj/DEFS.o lib/liblocalcompilation/obj/server.o lib/liblocalcompilation/obj/io/log.o lib/liblocalcompilation/obj/server/hub.o lib/liblocalcompilation/obj/io/backups.o lib/liblocalcompilation/obj/io/trash.o lib/liblocalcompilation/obj/io/conf.o lib/liblocalcompilation/obj/server/sys.o lib/liblocalcompilation/obj/server/sys/sys__main.o lib/liblocalcompilation/obj/server/sys/sys__home.o lib/liblocalcompilation/obj/io/fleasdb.o lib/liblocalcompilation/obj/io/quotes.o lib/liblocalcompilation/obj/io/nicks.o lib/liblocalcompilation/obj/io/servers.o lib/liblocalcompilation/obj/io/net.o lib/liblocalcompilation/obj/io/accdb.o lib/liblocalcompilation/obj/io/managerdb.o lib/liblocalcompilation/obj/data/dfleas/dfleas__models.o lib/liblocalcompilation/obj/data/Model.o lib/liblocalcompilation/obj/data/Facc.o lib/liblocalcompilation/obj/data/broker.o lib/liblocalcompilation/obj/data/Qmatrix.o lib/liblocalcompilation/obj/data/Nick.o lib/liblocalcompilation/obj/data/Rank.o lib/liblocalcompilation/obj/data/Rs.o lib/liblocalcompilation/obj/data/Flea.o lib/liblocalcompilation/obj/data/Gen.o lib/liblocalcompilation/obj/data/Order.o lib/liblocalcompilation/obj/data/ModelMxMn.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx.o lib/liblocalcompilation/obj/data/dfleas/approx/approx__4.o lib/liblocalcompilation/obj/data/dfleas/approx/ApproxBase.o lib/liblocalcompilation/obj/data/dfleas/dfleas__fmt.o lib/liblocalcompilation/obj/data/dfleas/approx/approx__3A.o lib/liblocalcompilation/obj/data/dfleas/approx/approx__3B.o lib/liblocalcompilation/obj/data/dfleas/approx/approx__2.o lib/liblocalcompilation/obj/data/dfleas/dfleas__GA.o lib/liblocalcompilation/obj/data/dfleas/ga/ga__3.o lib/liblocalcompilation/obj/data/dfleas/ga/GABase.o lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr.o lib/liblocalcompilation/obj/data/dfleas/incr/incr__3.o lib/liblocalcompilation/obj/data/dfleas/incr/IncrBase.o lib/liblocalcompilation/obj/data/dfleas/incr/incr__2.o lib/liblocalcompilation/obj/data/dfleas/incr/incr__3a.o lib/liblocalcompilation/obj/data/dfleas/incr/incr__3aa.o lib/liblocalcompilation/obj/data/dfleas/incr/incr__3ab.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MA.o lib/liblocalcompilation/obj/data/dfleas/ma/ma__3.o lib/liblocalcompilation/obj/data/dfleas/ma/ma__2.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM.o lib/liblocalcompilation/obj/data/dfleas/mm/mm__4.o lib/liblocalcompilation/obj/data/dfleas/mm/MMBase.o lib/liblocalcompilation/obj/data/dfleas/mm/mm__2A.o lib/liblocalcompilation/obj/data/dfleas/mm/mm__2Aa.o lib/liblocalcompilation/obj/data/dfleas/mm/mm__2Ab.o lib/liblocalcompilation/obj/data/dfleas/mm/mm__2B.o lib/liblocalcompilation/obj/data/dfleas/mm/mm__1.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack.o lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__2.o lib/liblocalcompilation/obj/data/dfleas/mmBack/MMBackBase.o lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__2a.o lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__2b.o lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__1.o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin.o lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__2.o lib/liblocalcompilation/obj/data/dfleas/mmWin/MMWinBase.o lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__2a.o lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__2b.o lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__1.o lib/liblocalcompilation/obj/data/ModelParams.o lib/liblocalcompilation/obj/data/Manager.o lib/liblocalcompilation/obj/data/Acc.o lib/liblocalcompilation/obj/io/sbox.o lib/liblocalcompilation/obj/data/DailyEntry.o lib/liblocalcompilation/obj/data/HistoricEntry.o lib/liblocalcompilation/obj/data/Quote.o lib/liblocalcompilation/obj/data/Server.o lib/liblocalcompilation/obj/data/Rconf.o lib/liblocalcompilation/obj/data/NickClose.o lib/liblocalcompilation/obj/data/EMsg.o lib/liblocalcompilation/obj/scheduler/fleas.o lib/liblocalcompilation/obj/server/sys/sys__settings.o lib/liblocalcompilation/obj/server/sys/sys__chpass.o lib/liblocalcompilation/obj/server/sys/sys__backups.o lib/liblocalcompilation/obj/server/sys/sys__schedule.o lib/liblocalcompilation/obj/io/calendar.o lib/liblocalcompilation/obj/data/MarketDay.o lib/liblocalcompilation/obj/data/Timetable.o lib/liblocalcompilation/obj/server/sys/sys__nicks.o lib/liblocalcompilation/obj/server/sys/nicks/sys__nicks__wnick.o lib/liblocalcompilation/obj/server/sys/nicks/sys__nicks__editor.o lib/liblocalcompilation/obj/server/sys/sys__servers.o lib/liblocalcompilation/obj/server/sys/servers/sys__servers__names.o lib/liblocalcompilation/obj/server/sys/servers/sys__servers__codes.o lib/liblocalcompilation/obj/server/sys/servers/sys__servers__download.o lib/liblocalcompilation/obj/server/sys/sys__annotations.o lib/liblocalcompilation/obj/server/sys/sys__models.o lib/liblocalcompilation/obj/scheduler/management.o lib/liblocalcompilation/obj/server/fleas.o lib/liblocalcompilation/obj/server/fleas/fleas__main.o lib/liblocalcompilation/obj/server/fleas/fleas__bests.o lib/liblocalcompilation/obj/server/fleas/fleas__charts.o lib/liblocalcompilation/obj/server/fleas/fleas__model.o lib/liblocalcompilation/obj/server/fleas/fleas__champions.o lib/liblocalcompilation/obj/server/fleas/wgs/fleas__wgs__wcharts.o lib/liblocalcompilation/obj/server/fleas/wgs/fleas__wgs__dtable.o lib/liblocalcompilation/obj/server/acc.o lib/liblocalcompilation/obj/server/acc/acc__downloader.o lib/liblocalcompilation/obj/server/acc/acc__companies.o lib/liblocalcompilation/obj/server/acc/acc__balance.o lib/liblocalcompilation/obj/server/acc/acc__trading.o lib/liblocalcompilation/obj/server/acc/acc__profits.o lib/liblocalcompilation/obj/server/daily.o lib/liblocalcompilation/obj/io/dailydb.o lib/liblocalcompilation/obj/server/ranking.o lib/liblocalcompilation/obj/scheduler.o lib/liblocalcompilation/obj/scheduler/historic.o lib/liblocalcompilation/obj/scheduler/acc.o
 
 lib/liblocalcompilation/obj/multimarket.o : include/multimarket.h src/multimarket.c include/io/io.h src/io/io.c include/DEFS.h src/DEFS.c include/server.h src/server.c include/scheduler.h src/scheduler.c include/io/log.h src/io/log.c include/io/conf.h src/io/conf.c include/io/backups.h src/io/backups.c include/io/trash.h src/io/trash.c include/io/nicks.h src/io/nicks.c include/io/quotes.h src/io/quotes.c include/io/servers.h src/io/servers.c include/io/calendar.h src/io/calendar.c include/io/fleasdb.h src/io/fleasdb.c include/io/accdb.h src/io/accdb.c include/io/sbox.h src/io/sbox.c include/io/dailydb.h src/io/dailydb.c include/io/managerdb.h src/io/managerdb.c include/data/dfleas/dfleas__models.h src/data/dfleas/dfleas__models.c include/scheduler/fleas.h src/scheduler/fleas.c
 	gcc $(CFLAGS) -c src/multimarket.c -o lib/liblocalcompilation/obj/multimarket.o \
@@ -38,7 +38,7 @@ lib/liblocalcompilation/obj/io/log.o : include/io/log.h src/io/log.c include/io/
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/server/hub.o : include/server/hub.h src/server/hub.c include/DEFS.h src/DEFS.c include/io/backups.h src/io/backups.c include/io/conf.h src/io/conf.c include/server/sys.h src/server/sys.c include/server/fleas.h src/server/fleas.c include/server/acc.h src/server/acc.c include/server/daily.h src/server/daily.c
+lib/liblocalcompilation/obj/server/hub.o : include/server/hub.h src/server/hub.c include/DEFS.h src/DEFS.c include/io/backups.h src/io/backups.c include/io/conf.h src/io/conf.c include/server/sys.h src/server/sys.c include/server/fleas.h src/server/fleas.c include/server/acc.h src/server/acc.c include/server/daily.h src/server/daily.c include/server/ranking.h src/server/ranking.c
 	gcc $(CFLAGS) -c src/server/hub.c -o lib/liblocalcompilation/obj/server/hub.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
@@ -73,12 +73,12 @@ lib/liblocalcompilation/obj/server/sys/sys__home.o : include/server/sys/sys__hom
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/io/fleasdb.o : include/io/fleasdb.h src/io/fleasdb.c include/io/io.h src/io/io.c include/io/quotes.h src/io/quotes.c include/data/Rs.h src/data/Rs.c include/data/Model.h src/data/Model.c include/data/dfleas/dfleas__models.h src/data/dfleas/dfleas__models.c include/DEFS.h src/DEFS.c
+lib/liblocalcompilation/obj/io/fleasdb.o : include/io/fleasdb.h src/io/fleasdb.c include/io/io.h src/io/io.c include/io/quotes.h src/io/quotes.c include/io/conf.h src/io/conf.c include/io/accdb.h src/io/accdb.c include/data/Rs.h src/data/Rs.c include/data/Model.h src/data/Model.c include/data/Nick.h src/data/Nick.c include/data/dfleas/dfleas__models.h src/data/dfleas/dfleas__models.c include/DEFS.h src/DEFS.c include/data/Rank.h src/data/Rank.c
 	gcc $(CFLAGS) -c src/io/fleasdb.c -o lib/liblocalcompilation/obj/io/fleasdb.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/io/quotes.o : include/io/quotes.h src/io/quotes.c include/io/nicks.h src/io/nicks.c include/io/log.h src/io/log.c include/io/io.h src/io/io.c include/data/Nick.h src/data/Nick.c include/data/NickClose.h src/data/NickClose.c include/DEFS.h src/DEFS.c include/data/Quote.h src/data/Quote.c include/data/EMsg.h src/data/EMsg.c include/data/Qmatrix.h src/data/Qmatrix.c include/data/NickSets.h src/data/NickSets.c
+lib/liblocalcompilation/obj/io/quotes.o : include/io/quotes.h src/io/quotes.c include/io/nicks.h src/io/nicks.c include/io/log.h src/io/log.c include/io/io.h src/io/io.c include/data/Nick.h src/data/Nick.c include/data/NickClose.h src/data/NickClose.c include/DEFS.h src/DEFS.c include/data/Quote.h src/data/Quote.c include/data/EMsg.h src/data/EMsg.c include/data/Qmatrix.h src/data/Qmatrix.c
 	gcc $(CFLAGS) -c src/io/quotes.c -o lib/liblocalcompilation/obj/io/quotes.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
@@ -108,12 +108,12 @@ lib/liblocalcompilation/obj/io/managerdb.o : include/io/managerdb.h src/io/manag
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__models.o : include/data/dfleas/dfleas__models.h src/data/dfleas/dfleas__models.c include/data/Model.h src/data/Model.c include/data/dfleas/dfleas__Approx.h src/data/dfleas/dfleas__Approx.c include/data/dfleas/dfleas__Approx2.h src/data/dfleas/dfleas__Approx2.c include/data/dfleas/dfleas__Approx3A.h src/data/dfleas/dfleas__Approx3A.c include/data/dfleas/dfleas__Approx3B.h src/data/dfleas/dfleas__Approx3B.c include/data/dfleas/dfleas__GA.h src/data/dfleas/dfleas__GA.c include/data/dfleas/dfleas__Incr2.h src/data/dfleas/dfleas__Incr2.c include/data/dfleas/dfleas__Incr3.h src/data/dfleas/dfleas__Incr3.c include/data/dfleas/dfleas__Incr3a.h src/data/dfleas/dfleas__Incr3a.c include/data/dfleas/dfleas__MA.h src/data/dfleas/dfleas__MA.c include/data/dfleas/dfleas__MA2.h src/data/dfleas/dfleas__MA2.c include/data/dfleas/dfleas__MM1.h src/data/dfleas/dfleas__MM1.c include/data/dfleas/dfleas__MM2A.h src/data/dfleas/dfleas__MM2A.c include/data/dfleas/dfleas__MM2Aa.h src/data/dfleas/dfleas__MM2Aa.c include/data/dfleas/dfleas__MM2Ab.h src/data/dfleas/dfleas__MM2Ab.c include/data/dfleas/dfleas__MM2B.h src/data/dfleas/dfleas__MM2B.c include/data/dfleas/dfleas__MM4.h src/data/dfleas/dfleas__MM4.c include/data/dfleas/dfleas__MMBack1.h src/data/dfleas/dfleas__MMBack1.c include/data/dfleas/dfleas__MMBack2.h src/data/dfleas/dfleas__MMBack2.c include/data/dfleas/dfleas__MMBack2a.h src/data/dfleas/dfleas__MMBack2a.c include/data/dfleas/dfleas__MMBack2b.h src/data/dfleas/dfleas__MMBack2b.c include/data/dfleas/dfleas__MMWin1.h src/data/dfleas/dfleas__MMWin1.c include/data/dfleas/dfleas__MMWin2.h src/data/dfleas/dfleas__MMWin2.c include/data/dfleas/dfleas__MMWin2a.h src/data/dfleas/dfleas__MMWin2a.c include/data/dfleas/dfleas__MMWin2b.h src/data/dfleas/dfleas__MMWin2b.c include/data/ModelParams.h src/data/ModelParams.c
+lib/liblocalcompilation/obj/data/dfleas/dfleas__models.o : include/data/dfleas/dfleas__models.h src/data/dfleas/dfleas__models.c include/data/Model.h src/data/Model.c include/data/dfleas/dfleas__Approx.h src/data/dfleas/dfleas__Approx.c include/data/dfleas/dfleas__GA.h src/data/dfleas/dfleas__GA.c include/data/dfleas/dfleas__Incr.h src/data/dfleas/dfleas__Incr.c include/data/dfleas/dfleas__MA.h src/data/dfleas/dfleas__MA.c include/data/dfleas/dfleas__MM.h src/data/dfleas/dfleas__MM.c include/data/dfleas/dfleas__MMBack.h src/data/dfleas/dfleas__MMBack.c include/data/dfleas/dfleas__MMWin.h src/data/dfleas/dfleas__MMWin.c include/data/ModelParams.h src/data/ModelParams.c
 	gcc $(CFLAGS) -c src/data/dfleas/dfleas__models.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__models.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/Model.o : include/data/Model.h src/data/Model.c include/data/Facc.h src/data/Facc.c include/data/Nick.h src/data/Nick.c include/data/broker.h src/data/broker.c include/DEFS.h src/DEFS.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/data/Rs.h src/data/Rs.c include/data/Qmatrix.h src/data/Qmatrix.c include/data/NickSets.h src/data/NickSets.c include/data/ModelMxMn.h src/data/ModelMxMn.c
+lib/liblocalcompilation/obj/data/Model.o : include/data/Model.h src/data/Model.c include/data/Facc.h src/data/Facc.c include/data/Nick.h src/data/Nick.c include/data/broker.h src/data/broker.c include/data/Rank.h src/data/Rank.c include/DEFS.h src/DEFS.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/data/Rs.h src/data/Rs.c include/data/Qmatrix.h src/data/Qmatrix.c include/data/ModelMxMn.h src/data/ModelMxMn.c
 	gcc $(CFLAGS) -c src/data/Model.c -o lib/liblocalcompilation/obj/data/Model.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
@@ -128,13 +128,23 @@ lib/liblocalcompilation/obj/data/broker.o : include/data/broker.h src/data/broke
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/Qmatrix.o : include/data/Qmatrix.h src/data/Qmatrix.c
+lib/liblocalcompilation/obj/data/Qmatrix.o : include/data/Qmatrix.h src/data/Qmatrix.c include/DEFS.h src/DEFS.c
 	gcc $(CFLAGS) -c src/data/Qmatrix.c -o lib/liblocalcompilation/obj/data/Qmatrix.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
 lib/liblocalcompilation/obj/data/Nick.o : include/data/Nick.h src/data/Nick.c
 	gcc $(CFLAGS) -c src/data/Nick.c -o lib/liblocalcompilation/obj/data/Nick.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/Rank.o : include/data/Rank.h src/data/Rank.c include/data/Rs.h src/data/Rs.c
+	gcc $(CFLAGS) -c src/data/Rank.c -o lib/liblocalcompilation/obj/data/Rank.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/Rs.o : include/data/Rs.h src/data/Rs.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c
+	gcc $(CFLAGS) -c src/data/Rs.c -o lib/liblocalcompilation/obj/data/Rs.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
@@ -153,138 +163,208 @@ lib/liblocalcompilation/obj/data/Order.o : include/data/Order.h src/data/Order.c
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/Rs.o : include/data/Rs.h src/data/Rs.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c
-	gcc $(CFLAGS) -c src/data/Rs.c -o lib/liblocalcompilation/obj/data/Rs.o \
-		-Iinclude \
-		-I$(LIB_INCLUDE_dmc)
-
-lib/liblocalcompilation/obj/data/NickSets.o : include/data/NickSets.h src/data/NickSets.c
-	gcc $(CFLAGS) -c src/data/NickSets.c -o lib/liblocalcompilation/obj/data/NickSets.o \
-		-Iinclude \
-		-I$(LIB_INCLUDE_dmc)
-
 lib/liblocalcompilation/obj/data/ModelMxMn.o : include/data/ModelMxMn.h src/data/ModelMxMn.c
 	gcc $(CFLAGS) -c src/data/ModelMxMn.c -o lib/liblocalcompilation/obj/data/ModelMxMn.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx.o : include/data/dfleas/dfleas__Approx.h src/data/dfleas/dfleas__Approx.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
+lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx.o : include/data/dfleas/dfleas__Approx.h src/data/dfleas/dfleas__Approx.c include/data/Model.h src/data/Model.c include/data/dfleas/approx/approx__4.h src/data/dfleas/approx/approx__4.c include/data/dfleas/approx/approx__3A.h src/data/dfleas/approx/approx__3A.c include/data/dfleas/approx/approx__3B.h src/data/dfleas/approx/approx__3B.c include/data/dfleas/approx/approx__2.h src/data/dfleas/approx/approx__2.c
 	gcc $(CFLAGS) -c src/data/dfleas/dfleas__Approx.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx2.o : include/data/dfleas/dfleas__Approx2.h src/data/dfleas/dfleas__Approx2.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__Approx2.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx2.o \
+lib/liblocalcompilation/obj/data/dfleas/approx/approx__4.o : include/data/dfleas/approx/approx__4.h src/data/dfleas/approx/approx__4.c include/data/dfleas/approx/ApproxBase.h src/data/dfleas/approx/ApproxBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/approx/approx__4.c -o lib/liblocalcompilation/obj/data/dfleas/approx/approx__4.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx3A.o : include/data/dfleas/dfleas__Approx3A.h src/data/dfleas/dfleas__Approx3A.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__Approx3A.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx3A.o \
+lib/liblocalcompilation/obj/data/dfleas/approx/ApproxBase.o : include/data/dfleas/approx/ApproxBase.h src/data/dfleas/approx/ApproxBase.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/approx/ApproxBase.c -o lib/liblocalcompilation/obj/data/dfleas/approx/ApproxBase.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx3B.o : include/data/dfleas/dfleas__Approx3B.h src/data/dfleas/dfleas__Approx3B.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__Approx3B.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__Approx3B.o \
+lib/liblocalcompilation/obj/data/dfleas/dfleas__fmt.o : include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c
+	gcc $(CFLAGS) -c src/data/dfleas/dfleas__fmt.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__fmt.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__GA.o : include/data/dfleas/dfleas__GA.h src/data/dfleas/dfleas__GA.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
+lib/liblocalcompilation/obj/data/dfleas/approx/approx__3A.o : include/data/dfleas/approx/approx__3A.h src/data/dfleas/approx/approx__3A.c include/data/dfleas/approx/ApproxBase.h src/data/dfleas/approx/ApproxBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/approx/approx__3A.c -o lib/liblocalcompilation/obj/data/dfleas/approx/approx__3A.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/approx/approx__3B.o : include/data/dfleas/approx/approx__3B.h src/data/dfleas/approx/approx__3B.c include/data/dfleas/approx/ApproxBase.h src/data/dfleas/approx/ApproxBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/approx/approx__3B.c -o lib/liblocalcompilation/obj/data/dfleas/approx/approx__3B.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/approx/approx__2.o : include/data/dfleas/approx/approx__2.h src/data/dfleas/approx/approx__2.c include/data/dfleas/approx/ApproxBase.h src/data/dfleas/approx/ApproxBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/approx/approx__2.c -o lib/liblocalcompilation/obj/data/dfleas/approx/approx__2.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/dfleas__GA.o : include/data/dfleas/dfleas__GA.h src/data/dfleas/dfleas__GA.c include/data/Model.h src/data/Model.c include/data/dfleas/ga/ga__3.h src/data/dfleas/ga/ga__3.c
 	gcc $(CFLAGS) -c src/data/dfleas/dfleas__GA.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__GA.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr2.o : include/data/dfleas/dfleas__Incr2.h src/data/dfleas/dfleas__Incr2.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__Incr2.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr2.o \
+lib/liblocalcompilation/obj/data/dfleas/ga/ga__3.o : include/data/dfleas/ga/ga__3.h src/data/dfleas/ga/ga__3.c include/data/dfleas/ga/GABase.h src/data/dfleas/ga/GABase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/ga/ga__3.c -o lib/liblocalcompilation/obj/data/dfleas/ga/ga__3.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr3.o : include/data/dfleas/dfleas__Incr3.h src/data/dfleas/dfleas__Incr3.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__Incr3.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr3.o \
+lib/liblocalcompilation/obj/data/dfleas/ga/GABase.o : include/data/dfleas/ga/GABase.h src/data/dfleas/ga/GABase.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/ga/GABase.c -o lib/liblocalcompilation/obj/data/dfleas/ga/GABase.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr3a.o : include/data/dfleas/dfleas__Incr3a.h src/data/dfleas/dfleas__Incr3a.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__Incr3a.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr3a.o \
+lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr.o : include/data/dfleas/dfleas__Incr.h src/data/dfleas/dfleas__Incr.c include/data/Model.h src/data/Model.c include/data/dfleas/incr/incr__3.h src/data/dfleas/incr/incr__3.c include/data/dfleas/incr/incr__2.h src/data/dfleas/incr/incr__2.c include/data/dfleas/incr/incr__3a.h src/data/dfleas/incr/incr__3a.c include/data/dfleas/incr/incr__3aa.h src/data/dfleas/incr/incr__3aa.c include/data/dfleas/incr/incr__3ab.h src/data/dfleas/incr/incr__3ab.c
+	gcc $(CFLAGS) -c src/data/dfleas/dfleas__Incr.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__Incr.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MA.o : include/data/dfleas/dfleas__MA.h src/data/dfleas/dfleas__MA.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
+lib/liblocalcompilation/obj/data/dfleas/incr/incr__3.o : include/data/dfleas/incr/incr__3.h src/data/dfleas/incr/incr__3.c include/data/dfleas/incr/IncrBase.h src/data/dfleas/incr/IncrBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/incr/incr__3.c -o lib/liblocalcompilation/obj/data/dfleas/incr/incr__3.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/incr/IncrBase.o : include/data/dfleas/incr/IncrBase.h src/data/dfleas/incr/IncrBase.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/incr/IncrBase.c -o lib/liblocalcompilation/obj/data/dfleas/incr/IncrBase.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/incr/incr__2.o : include/data/dfleas/incr/incr__2.h src/data/dfleas/incr/incr__2.c include/data/dfleas/incr/IncrBase.h src/data/dfleas/incr/IncrBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/incr/incr__2.c -o lib/liblocalcompilation/obj/data/dfleas/incr/incr__2.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/incr/incr__3a.o : include/data/dfleas/incr/incr__3a.h src/data/dfleas/incr/incr__3a.c include/data/dfleas/incr/IncrBase.h src/data/dfleas/incr/IncrBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/incr/incr__3a.c -o lib/liblocalcompilation/obj/data/dfleas/incr/incr__3a.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/incr/incr__3aa.o : include/data/dfleas/incr/incr__3aa.h src/data/dfleas/incr/incr__3aa.c include/data/dfleas/incr/IncrBase.h src/data/dfleas/incr/IncrBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/incr/incr__3aa.c -o lib/liblocalcompilation/obj/data/dfleas/incr/incr__3aa.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/incr/incr__3ab.o : include/data/dfleas/incr/incr__3ab.h src/data/dfleas/incr/incr__3ab.c include/data/dfleas/incr/IncrBase.h src/data/dfleas/incr/IncrBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/incr/incr__3ab.c -o lib/liblocalcompilation/obj/data/dfleas/incr/incr__3ab.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/dfleas__MA.o : include/data/dfleas/dfleas__MA.h src/data/dfleas/dfleas__MA.c include/data/Model.h src/data/Model.c include/data/dfleas/ma/ma__3.h src/data/dfleas/ma/ma__3.c include/data/dfleas/ma/ma__2.h src/data/dfleas/ma/ma__2.c
 	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MA.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MA.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MA2.o : include/data/dfleas/dfleas__MA2.h src/data/dfleas/dfleas__MA2.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MA2.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MA2.o \
+lib/liblocalcompilation/obj/data/dfleas/ma/ma__3.o : include/data/dfleas/ma/ma__3.h src/data/dfleas/ma/ma__3.c include/data/dfleas/ga/GABase.h src/data/dfleas/ga/GABase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/ma/ma__3.c -o lib/liblocalcompilation/obj/data/dfleas/ma/ma__3.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MM1.o : include/data/dfleas/dfleas__MM1.h src/data/dfleas/dfleas__MM1.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MM1.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM1.o \
+lib/liblocalcompilation/obj/data/dfleas/ma/ma__2.o : include/data/dfleas/ma/ma__2.h src/data/dfleas/ma/ma__2.c include/data/dfleas/ga/GABase.h src/data/dfleas/ga/GABase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/ma/ma__2.c -o lib/liblocalcompilation/obj/data/dfleas/ma/ma__2.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2A.o : include/data/dfleas/dfleas__MM2A.h src/data/dfleas/dfleas__MM2A.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MM2A.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2A.o \
+lib/liblocalcompilation/obj/data/dfleas/dfleas__MM.o : include/data/dfleas/dfleas__MM.h src/data/dfleas/dfleas__MM.c include/data/Model.h src/data/Model.c include/data/dfleas/mm/mm__4.h src/data/dfleas/mm/mm__4.c include/data/dfleas/mm/mm__2A.h src/data/dfleas/mm/mm__2A.c include/data/dfleas/mm/mm__2Aa.h src/data/dfleas/mm/mm__2Aa.c include/data/dfleas/mm/mm__2Ab.h src/data/dfleas/mm/mm__2Ab.c include/data/dfleas/mm/mm__2B.h src/data/dfleas/mm/mm__2B.c include/data/dfleas/mm/mm__1.h src/data/dfleas/mm/mm__1.c
+	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MM.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2Aa.o : include/data/dfleas/dfleas__MM2Aa.h src/data/dfleas/dfleas__MM2Aa.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MM2Aa.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2Aa.o \
+lib/liblocalcompilation/obj/data/dfleas/mm/mm__4.o : include/data/dfleas/mm/mm__4.h src/data/dfleas/mm/mm__4.c include/data/dfleas/mm/MMBase.h src/data/dfleas/mm/MMBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mm/mm__4.c -o lib/liblocalcompilation/obj/data/dfleas/mm/mm__4.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2Ab.o : include/data/dfleas/dfleas__MM2Ab.h src/data/dfleas/dfleas__MM2Ab.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MM2Ab.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2Ab.o \
+lib/liblocalcompilation/obj/data/dfleas/mm/MMBase.o : include/data/dfleas/mm/MMBase.h src/data/dfleas/mm/MMBase.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mm/MMBase.c -o lib/liblocalcompilation/obj/data/dfleas/mm/MMBase.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2B.o : include/data/dfleas/dfleas__MM2B.h src/data/dfleas/dfleas__MM2B.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MM2B.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM2B.o \
+lib/liblocalcompilation/obj/data/dfleas/mm/mm__2A.o : include/data/dfleas/mm/mm__2A.h src/data/dfleas/mm/mm__2A.c include/data/dfleas/mm/MMBase.h src/data/dfleas/mm/MMBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mm/mm__2A.c -o lib/liblocalcompilation/obj/data/dfleas/mm/mm__2A.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MM4.o : include/data/dfleas/dfleas__MM4.h src/data/dfleas/dfleas__MM4.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MM4.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MM4.o \
+lib/liblocalcompilation/obj/data/dfleas/mm/mm__2Aa.o : include/data/dfleas/mm/mm__2Aa.h src/data/dfleas/mm/mm__2Aa.c include/data/dfleas/mm/MMBase.h src/data/dfleas/mm/MMBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mm/mm__2Aa.c -o lib/liblocalcompilation/obj/data/dfleas/mm/mm__2Aa.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack1.o : include/data/dfleas/dfleas__MMBack1.h src/data/dfleas/dfleas__MMBack1.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MMBack1.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack1.o \
+lib/liblocalcompilation/obj/data/dfleas/mm/mm__2Ab.o : include/data/dfleas/mm/mm__2Ab.h src/data/dfleas/mm/mm__2Ab.c include/data/dfleas/mm/MMBase.h src/data/dfleas/mm/MMBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mm/mm__2Ab.c -o lib/liblocalcompilation/obj/data/dfleas/mm/mm__2Ab.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack2.o : include/data/dfleas/dfleas__MMBack2.h src/data/dfleas/dfleas__MMBack2.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MMBack2.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack2.o \
+lib/liblocalcompilation/obj/data/dfleas/mm/mm__2B.o : include/data/dfleas/mm/mm__2B.h src/data/dfleas/mm/mm__2B.c include/data/dfleas/mm/MMBase.h src/data/dfleas/mm/MMBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mm/mm__2B.c -o lib/liblocalcompilation/obj/data/dfleas/mm/mm__2B.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack2a.o : include/data/dfleas/dfleas__MMBack2a.h src/data/dfleas/dfleas__MMBack2a.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MMBack2a.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack2a.o \
+lib/liblocalcompilation/obj/data/dfleas/mm/mm__1.o : include/data/dfleas/mm/mm__1.h src/data/dfleas/mm/mm__1.c include/data/dfleas/mm/MMBase.h src/data/dfleas/mm/MMBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mm/mm__1.c -o lib/liblocalcompilation/obj/data/dfleas/mm/mm__1.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack2b.o : include/data/dfleas/dfleas__MMBack2b.h src/data/dfleas/dfleas__MMBack2b.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MMBack2b.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack2b.o \
+lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack.o : include/data/dfleas/dfleas__MMBack.h src/data/dfleas/dfleas__MMBack.c include/data/Model.h src/data/Model.c include/data/dfleas/mmBack/mmBack__2.h src/data/dfleas/mmBack/mmBack__2.c include/data/dfleas/mmBack/mmBack__2a.h src/data/dfleas/mmBack/mmBack__2a.c include/data/dfleas/mmBack/mmBack__2b.h src/data/dfleas/mmBack/mmBack__2b.c include/data/dfleas/mmBack/mmBack__1.h src/data/dfleas/mmBack/mmBack__1.c
+	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MMBack.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMBack.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin1.o : include/data/dfleas/dfleas__MMWin1.h src/data/dfleas/dfleas__MMWin1.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MMWin1.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin1.o \
+lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__2.o : include/data/dfleas/mmBack/mmBack__2.h src/data/dfleas/mmBack/mmBack__2.c include/data/dfleas/mmBack/MMBackBase.h src/data/dfleas/mmBack/MMBackBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mmBack/mmBack__2.c -o lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__2.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin2.o : include/data/dfleas/dfleas__MMWin2.h src/data/dfleas/dfleas__MMWin2.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MMWin2.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin2.o \
+lib/liblocalcompilation/obj/data/dfleas/mmBack/MMBackBase.o : include/data/dfleas/mmBack/MMBackBase.h src/data/dfleas/mmBack/MMBackBase.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mmBack/MMBackBase.c -o lib/liblocalcompilation/obj/data/dfleas/mmBack/MMBackBase.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin2a.o : include/data/dfleas/dfleas__MMWin2a.h src/data/dfleas/dfleas__MMWin2a.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MMWin2a.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin2a.o \
+lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__2a.o : include/data/dfleas/mmBack/mmBack__2a.h src/data/dfleas/mmBack/mmBack__2a.c include/data/dfleas/mmBack/MMBackBase.h src/data/dfleas/mmBack/MMBackBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mmBack/mmBack__2a.c -o lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__2a.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin2b.o : include/data/dfleas/dfleas__MMWin2b.h src/data/dfleas/dfleas__MMWin2b.c include/data/Flea.h src/data/Flea.c include/data/Order.h src/data/Order.c include/DEFS.h src/DEFS.c include/data/Model.h src/data/Model.c
-	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MMWin2b.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin2b.o \
+lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__2b.o : include/data/dfleas/mmBack/mmBack__2b.h src/data/dfleas/mmBack/mmBack__2b.c include/data/dfleas/mmBack/MMBackBase.h src/data/dfleas/mmBack/MMBackBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mmBack/mmBack__2b.c -o lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__2b.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__1.o : include/data/dfleas/mmBack/mmBack__1.h src/data/dfleas/mmBack/mmBack__1.c include/data/dfleas/mmBack/MMBackBase.h src/data/dfleas/mmBack/MMBackBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mmBack/mmBack__1.c -o lib/liblocalcompilation/obj/data/dfleas/mmBack/mmBack__1.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin.o : include/data/dfleas/dfleas__MMWin.h src/data/dfleas/dfleas__MMWin.c include/data/Model.h src/data/Model.c include/data/dfleas/mmWin/mmWin__2.h src/data/dfleas/mmWin/mmWin__2.c include/data/dfleas/mmWin/mmWin__2a.h src/data/dfleas/mmWin/mmWin__2a.c include/data/dfleas/mmWin/mmWin__2b.h src/data/dfleas/mmWin/mmWin__2b.c include/data/dfleas/mmWin/mmWin__1.h src/data/dfleas/mmWin/mmWin__1.c
+	gcc $(CFLAGS) -c src/data/dfleas/dfleas__MMWin.c -o lib/liblocalcompilation/obj/data/dfleas/dfleas__MMWin.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__2.o : include/data/dfleas/mmWin/mmWin__2.h src/data/dfleas/mmWin/mmWin__2.c include/data/dfleas/mmWin/MMWinBase.h src/data/dfleas/mmWin/MMWinBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mmWin/mmWin__2.c -o lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__2.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/mmWin/MMWinBase.o : include/data/dfleas/mmWin/MMWinBase.h src/data/dfleas/mmWin/MMWinBase.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mmWin/MMWinBase.c -o lib/liblocalcompilation/obj/data/dfleas/mmWin/MMWinBase.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__2a.o : include/data/dfleas/mmWin/mmWin__2a.h src/data/dfleas/mmWin/mmWin__2a.c include/data/dfleas/mmWin/MMWinBase.h src/data/dfleas/mmWin/MMWinBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mmWin/mmWin__2a.c -o lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__2a.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__2b.o : include/data/dfleas/mmWin/mmWin__2b.h src/data/dfleas/mmWin/mmWin__2b.c include/data/dfleas/mmWin/MMWinBase.h src/data/dfleas/mmWin/MMWinBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mmWin/mmWin__2b.c -o lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__2b.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__1.o : include/data/dfleas/mmWin/mmWin__1.h src/data/dfleas/mmWin/mmWin__1.c include/data/dfleas/mmWin/MMWinBase.h src/data/dfleas/mmWin/MMWinBase.c include/data/dfleas/dfleas__fmt.h src/data/dfleas/dfleas__fmt.c include/data/Model.h src/data/Model.c
+	gcc $(CFLAGS) -c src/data/dfleas/mmWin/mmWin__1.c -o lib/liblocalcompilation/obj/data/dfleas/mmWin/mmWin__1.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
@@ -510,6 +590,11 @@ lib/liblocalcompilation/obj/server/daily.o : include/server/daily.h src/server/d
 
 lib/liblocalcompilation/obj/io/dailydb.o : include/io/dailydb.h src/io/dailydb.c include/io/io.h src/io/io.c include/data/Nick.h src/data/Nick.c include/data/Acc.h src/data/Acc.c include/data/Rs.h src/data/Rs.c include/io/accdb.h src/io/accdb.c include/io/quotes.h src/io/quotes.c include/io/nicks.h src/io/nicks.c include/io/log.h src/io/log.c
 	gcc $(CFLAGS) -c src/io/dailydb.c -o lib/liblocalcompilation/obj/io/dailydb.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
+lib/liblocalcompilation/obj/server/ranking.o : include/server/ranking.h src/server/ranking.c include/io/conf.h src/io/conf.c include/io/sbox.h src/io/sbox.c include/io/dailydb.h src/io/dailydb.c include/io/fleasdb.h src/io/fleasdb.c include/data/Server.h src/data/Server.c include/data/Model.h src/data/Model.c include/data/dfleas/dfleas__models.h src/data/dfleas/dfleas__models.c
+	gcc $(CFLAGS) -c src/server/ranking.c -o lib/liblocalcompilation/obj/server/ranking.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 

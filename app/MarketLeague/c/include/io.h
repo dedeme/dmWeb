@@ -38,4 +38,11 @@ DataLeague *io_mk_league (Arr *nicks, enum LeagueGroup group);
 /// Returns data updated
 DataAll *io_update (DataAll *data);
 
+/// Returns an error or "". Errors are:
+///   "previus != current;division [1, 2, 3];group[DAILY, SHORT, MEDIUM, LONG]"
+///   "group1 != group2;group1[DAILY, SHORT, MEDIUM, LONG];group2;"
+///   "number;expected [number];actual [number]"
+///   "replace;old [nick];new [nick]"
+char *io_check_nicks (DataAll *data);
+
 #endif

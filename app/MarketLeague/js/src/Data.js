@@ -610,6 +610,47 @@ export class Data {
     );
   }
   /*--*/
+
+  /**
+   * @param {string} oldNick
+   * @param {string} newNick
+   * @return {void }
+   */
+  replace (oldNick, newNick) {
+    /** @param {!Array<string>} a */
+    function replaceArr (a) {
+      for (let i = 0; i < a.length; ++i) {
+        if (a[i] === oldNick) {
+          a[i] = newNick;
+          break;
+        }
+      }
+    }
+
+    /** @param {!PreviousGroup} gr */
+    function replaceGroup (gr) {
+      replaceArr(gr.first);
+      replaceArr(gr.second);
+      replaceArr(gr.third);
+    }
+
+    replaceGroup(this._previous.dailyG);
+    replaceGroup(this._previous.shortG);
+    replaceGroup(this._previous.mediumG);
+    replaceGroup(this._previous.longG);
+
+    /** @param {!LeagueGroup} l */
+    function replaceLeagueGroup (l) {
+      replaceArr(l.first.nicks);
+      replaceArr(l.second.nicks);
+      replaceArr(l.third.nicks);
+    }
+
+    replaceLeagueGroup(this._current.dailyG);
+    replaceLeagueGroup(this._current.shortG);
+    replaceLeagueGroup(this._current.mediumG);
+    replaceLeagueGroup(this._current.longG);
+  }
 }
 
 

@@ -219,4 +219,10 @@ DataAll *dataAll_from_js (Js *js);
 
 /*--*/
 
+/// Returns Kv[Arr[char]] with [error, nick-list (all nicks of data)].<p>
+/// Errors can be:
+///   "previus != current;division [1, 2, 3];group[DAILY, SHORT, MEDIUM, LONG]"
+///   "group1 != group2;group1[DAILY, SHORT, MEDIUM, LONG];group2;"
+Kv *dataAll_check_nicks (DataAll *this);
+
 #endif

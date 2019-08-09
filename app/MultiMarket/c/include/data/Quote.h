@@ -6,7 +6,7 @@
 #ifndef DATA_QUOTE_H
   #define DATA_QUOTE_H
 
-#include "dmc/std.h"
+#include "dmc/async.h"
 
 /*--*/
 

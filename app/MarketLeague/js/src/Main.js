@@ -181,6 +181,17 @@ export default class Main {
           "data": JSON.parse(data)
         };
         const rp = await Main.client.rq(rq);
+        const error = rp["error"];
+        if (error !== "") {
+          if (error.startsWith("replace")) {
+            const parts = error.split(";");
+            data.replace(parts[1], parts[2]);
+            Store.put(appStore, JSON.stringify(data));
+          } else {
+            alert(error);
+          }
+          location.assign("");
+        }
         const data2 = rp["data"];
         Store.put(appStore, JSON.stringify(data2));
         d = Data.fromJs(data2);

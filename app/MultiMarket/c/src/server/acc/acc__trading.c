@@ -18,7 +18,7 @@ char *acc__trading_process(AsyncActor *ac, Map *mrq) {
   Map *rp = map_new();
 
   if (str_eq(rq, "idata")) {
-    void fn (void *null) {
+    void fn () {
       // Arr[AccEntry]
       Arr *annotations = accdb_diary_read();
       AccLedPf *rs = accLedPf_new(annotations);
@@ -54,7 +54,7 @@ char *acc__trading_process(AsyncActor *ac, Map *mrq) {
       REPEAT(orderCos_nsells(os))
         char *nick = arr_get(nicks, *scos++);
         int ffind (AccPfEntry *e) { return str_eq(accPfEntry_nick(e), nick); }
-        AccPfEntry *e = opt_oget(it_find(arr_to_it(pf), (FPRED)ffind), NULL);
+        AccPfEntry *e = opt_nget(it_find(arr_to_it(pf), (FPRED)ffind));
         if (e) {
           double q = accdb_dailyq_read_nick(nick);
           int stocks = accPfEntry_stocks(e);
@@ -90,7 +90,7 @@ char *acc__trading_process(AsyncActor *ac, Map *mrq) {
       ModelParams *mps = managerdb_default();
       map_put(rp, "params", darr_to_js(modelParams_params(mps)));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 

@@ -16,16 +16,16 @@ char *fleas__bests_process(AsyncActor *ac, Map *mrq) {
   Map *rp = map_new();
 
   if (str_eq(rq, "getModel")) {
-    void fn (void *null) {
+    void fn () {
       map_put(rp, "model", js_ws(conf_fleas_model()));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "setModel")) {
     CGI_GET_STR(model, mrq, "model")
-    void fn (void *null) { conf_set_fleas_model(model); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { conf_set_fleas_model(model); }
+    asyncActor_wait(ac, fn);
     return cgi_empty();
   }
   if (str_eq(rq, "data")) {
@@ -36,7 +36,7 @@ char *fleas__bests_process(AsyncActor *ac, Map *mrq) {
       map_put(rp, "params", js_wa(arr_new()));
       map_put(rp, "table", js_wa(arr_new()));
     } else {
-      void fn (void *null) {
+      void fn () {
         Model *m = opt_get(md);
         // Arr[Js]
         Arr *params = arr_new();
@@ -47,7 +47,7 @@ char *fleas__bests_process(AsyncActor *ac, Map *mrq) {
         map_put(rp, "params", js_wa(params));
         map_put(rp, "table", fleasdb_bests_read_js(model));
       }
-      asyncActor_wait(ac, fn, NULL);
+      asyncActor_wait(ac, fn);
     }
     return cgi_ok(rp);
   }

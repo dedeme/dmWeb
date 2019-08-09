@@ -38,27 +38,25 @@ static int iavg (int old, int new) {
 }
 
 static void run (AsyncActor *ac) {
-  void fnLog1 (void *null) {
+  void fnLog1 () {
     log_info("Fleas started");
   }
-  asyncActor_run(ac, fnLog1, NULL);
+  asyncActor_wait(ac, fnLog1);
 
   // Arr[char]
   Arr *dates;
   Qmatrix *closes;
   Qmatrix *opens;
-  NickSets *sets;
-  void fn (void *null) {
+  void fn () {
     conf_set_fleas_running(1);
     fleasdb_flog_clear();
     dates = quotes_dates();
-    closes = opt_oget(quotes_closes(), NULL);
-    opens = opt_oget(quotes_opens(), NULL);
-    sets = opt_oget(quotes_sets(), NULL);
+    closes = opt_nget(quotes_closes());
+    opens = opt_nget(quotes_opens());
   }
-  asyncActor_wait(ac, fn, NULL);
+  asyncActor_wait(ac, fn);
 
-  if (!arr_size(dates) || !closes || !opens || !sets) {
+  if (!arr_size(dates) || !closes || !opens) {
     return;
   }
 
@@ -73,15 +71,14 @@ static void run (AsyncActor *ac) {
   Arr *models = dfleas__models();
 
   EACH(models, Model, md) {
-    asyncActor_wait(
-      ac, (FPROC)fleasdb_flog_write, str_f("%s\n", title(model_name(md)))
-    );
+    void fn () { fleasdb_flog_write(str_f("%s\n", title(model_name(md)))); }
+    asyncActor_wait(ac, fn);
 
     int nparams = arr_size(model_param_cf(md));
 
     Rs *rs_selected = rs_new(
       flea_new(date, 0, 0, nparams),
-      rsAssets_new(0, 0, 0),
+      rsAssets_new(-INITIAL_CAPITAL, 0, 0),
       rsProfits_new(-100, 0, -100)
     );
     Rs *old_rs_selected = rs_selected;
@@ -94,7 +91,7 @@ static void run (AsyncActor *ac) {
       rs
     )
       Flea *f = rs_flea(rsWeb_result(rsBests_result(rs)));
-      RsAssets *assets = model_assets(md, f, sets, opens, closes);
+      RsAssets *assets = model_assets(md, f, opens, closes);
       arr_push(rss_old, rs_new(f, assets, rsProfits_new(0, 0, 0)));
     _EACH
 
@@ -115,11 +112,12 @@ static void run (AsyncActor *ac) {
 
       int max_cycles = INSERTION_CYCLE + CYCLES * nparams;
       RANGE0(cy, max_cycles)
-        asyncActor_wait(
-          ac,
-          (FPROC)fleasdb_flog_write,
-          str_f("Model: %s. Cycle: %d / %d", model_name(md), cy + 1, max_cycles)
-        );
+        void fn () {
+          fleasdb_flog_write(str_f(
+            "Model: %s. Cycle: %d / %d", model_name(md), cy + 1, max_cycles
+          ));
+        }
+        asyncActor_wait(ac, fn);
 
         if (cy == INSERTION_CYCLE || cy == max_cycles - 1) {
           arr_insert_arr(rss, 0, rss_old);
@@ -132,7 +130,7 @@ static void run (AsyncActor *ac) {
           Flea *fnew = flea_mutate(
             rs_flea(arr_get(rss, rss_sizec)), date, cy + 1, id++
           );
-          RsAssets *assets = model_assets(md, fnew, sets, opens, closes);
+          RsAssets *assets = model_assets(md, fnew, opens, closes);
           arr_push(rss, rs_new(fnew, assets, rsProfits_new(0, 0, 0)));
 
           ++rss_sizec;
@@ -187,73 +185,74 @@ static void run (AsyncActor *ac) {
           sum += rsAssets_assets(rs_assets(rs));
         _EACH
         double avg = sum / size;
-        asyncActor_wait(
-          ac,
-          (FPROC)fleasdb_flog_write,
-          str_f("Survivers: %d. Avg: %.2f", size, avg)
-        );
+        {
+          void fn () {
+            fleasdb_flog_write(str_f(
+              "Survivers: %d. Avg: %.2f", size, avg
+            ));
+          }
+          asyncActor_wait(ac, fn);
+        }
       _RANGE
 
       // Calculate profits -----------------------------------------------------
 
-      double max_assets = -INITIAL_CAPITAL;
-      EACH_IX(rss, Rs, rs, i)
+      EACH_IX(rss, Rs, rs, i) {
         Flea *fl = rs_flea(rs);
         RsAssets *assets = rs_assets(rs);
-        double as = rsAssets_assets(assets);
-        RsProfits *prfs = model_profits(md, fl, sets, opens, closes);
-        arr_set(rss, i, rs_new(rs_flea(rs), assets, prfs));
-        if (as > max_assets) max_assets = as;
-      _EACH
+        RsProfits *prfs = model_profits(md, fl, opens, closes);
+        arr_set(rss, i, rs_new(fl, assets, prfs));
+      }_EACH
 
-      double max_sel = -1000;
+      // Select flea -----------------------------------------------------------
+
+      double max_sel = rsAssets_assets(rs_assets(rs_selected));
       int rss_size = arr_size(rss);
-      EACH_IX(rss, Rs, rs, ix)
-        if(
-          rsProfits_sel(rs_profits(rs)) > max_sel &&
-          rsAssets_assets(rs_assets(rs)) > max_assets * CUT_PROFITS
-        ) {
+      EACH_IX(rss, Rs, rs, ix) {
+        double assets = rsAssets_assets(rs_assets(rs));
+        if(assets > max_sel) {
+          max_sel = assets;
           rs_selected = rs;
           Flea *f = rs_flea(rs);
           RsProfits *ps = rs_profits(rs);
-          max_sel = rsProfits_sel(ps);
-          asyncActor_wait(
-            ac,
-            (FPROC)fleasdb_flog_write,
-            str_f(
-              "Selected Flea (%d/%d): %s-%d-%d -> %.4f * (1 - %.4f) = %.4f",
+          void fn () {
+            fleasdb_flog_write(str_f(
+              "Selected Flea (%d/%d): %s-%d-%d -> %.2f | %.4f",
               ix, rss_size, flea_date(f), flea_cycle(f), flea_id(f),
-              rsProfits_avg(ps), rsProfits_var(ps), max_sel
-            )
-          );
+              assets, rsProfits_sel(ps)
+            ));
+          }
+          asyncActor_wait(ac, fn);
         }
-      _EACH
+      }_EACH
 
-      void fn (void *null) { fleas_running = conf_fleas_running(); }
-      asyncActor_wait(ac, fn, NULL);
+      void fn () { fleas_running = conf_fleas_running(); }
+      asyncActor_wait(ac, fn);
 
       if (
-        !fleas_running ||
-        rsProfits_sel(rs_profits(old_rs_selected)) >=
-        rsProfits_sel(rs_profits(rs_selected))
+        rsAssets_assets(rs_assets(old_rs_selected)) >=
+        rsAssets_assets(rs_assets(rs_selected))
       ) {
         rs_selected = old_rs_selected;
 
         Flea *f = rs_flea(rs_selected);
         RsProfits *ps = rs_profits(rs_selected);
-        max_sel = rsProfits_sel(ps);
-        asyncActor_wait(
-          ac,
-          (FPROC)fleasdb_flog_write,
-          str_f(
-            "Flea Finally Selected: %s-%d-%d -> %.4f * (1 - %.4f) = %.4f",
+        max_sel = rsAssets_assets(rs_assets(rs_selected));
+        void fn () {
+          fleasdb_flog_write(str_f(
+            "Flea Finally Selected: %s-%d-%d -> %.2f | %.4f",
             flea_date(f), flea_cycle(f), flea_id(f),
-            rsProfits_avg(ps), rsProfits_var(ps), max_sel
-          )
-        );
+            max_sel, rsProfits_sel(ps)
+          ));
+        }
+        asyncActor_wait(ac, fn);
         break;
       }
       old_rs_selected = rs_selected;
+
+      if (!fleas_running) {
+        break;
+      }
     }
 
     if (!fleas_running) {
@@ -264,28 +263,30 @@ static void run (AsyncActor *ac) {
       md, rs_flea(rs_selected), dates, opens, closes
     );
 
-    void fn (void *null) {
-      // Arr[RsWeb]
-      Arr *rs_web = arr_new();
-      EACH(rss, Rs, rs)
-        arr_push(rs_web, rsWeb_new(rs, model_params(md, rs_flea(rs))));
-      _EACH
-      fleasdb_model_write(
-        model_name(md), model_param_jss(md), date, rs_web
-      );
+    {
+      void fn () {
+        // Arr[RsWeb]
+        Arr *rs_web = arr_new();
+        EACH(rss, Rs, rs)
+          arr_push(rs_web, rsWeb_new(rs, model_params(md, rs_flea(rs))));
+        _EACH
+        fleasdb_model_write(
+          model_name(md), model_param_jss(md), date, rs_web
+        );
 
-      fleasdb_bests_add(model_name(md), rsBests_new(
-        date, rsWeb_new(rs_selected, model_params(md, rs_flea(rs_selected)))
-      ));
+        fleasdb_bests_add(model_name(md), rsBests_new(
+          date, rsWeb_new(rs_selected, model_params(md, rs_flea(rs_selected)))
+        ));
 
-      fleasdb_charts_write(model_name(md), charts);
+        fleasdb_charts_write(model_name(md), charts);
 
-      fleasdb_champions_add(rsChampions_new(
-        model_name(md),
-        rsWeb_new(rs_selected, model_params(md, rs_flea(rs_selected)))
-      ));
+        fleasdb_champions_add(rsChampions_new(
+          model_name(md),
+          rsWeb_new(rs_selected, model_params(md, rs_flea(rs_selected)))
+        ));
+      }
+      asyncActor_wait(ac, fn);
     }
-    asyncActor_wait(ac, fn, NULL);
 
   }_EACH
 
@@ -305,10 +306,10 @@ static void run (AsyncActor *ac) {
   _EACH
 
   IEACH(nparamss, nparams)
-    void fn (void *null) {
+    void fn () {
       // Arr[RsChampions]
       Arr *rss = arr_new();
-      EACH_IX(fleasdb_champions_read(nparams), RsChampions, rsCh, ix)
+      EACH_IX(fleasdb_champions_read(nparams), RsChampions, rsCh, ix) {
         char *model = rsChampions_model(rsCh);
         // Opt[Model]
         Opt *omd = dfleas__models_get(model);
@@ -324,8 +325,8 @@ static void run (AsyncActor *ac) {
         Flea *fl = rs_flea(rs);
         RsAssets *old_assets = rs_assets(rs);
         RsProfits *old_profits = rs_profits(rs);
-        RsAssets *assets = model_assets(md, fl, sets, opens, closes);
-        RsProfits *profits = model_profits(md, fl, sets, opens, closes);
+        RsAssets *assets = model_assets(md, fl, opens, closes);
+        RsProfits *profits = model_profits(md, fl, opens, closes);
         double avg = davg(rsProfits_avg(old_profits), rsProfits_avg(profits));
         double var = davg(rsProfits_var(old_profits), rsProfits_var(profits));
         Rs *new_rs = rs_new(
@@ -338,14 +339,14 @@ static void run (AsyncActor *ac) {
           rsProfits_new(avg, var, avg * (1 - var))
         );
         arr_push(rss, rsChampions_new(model, rsWeb_new(new_rs, params)));
-      _EACH
+      }_EACH
 
       int fsort (RsChampions *r1, RsChampions *r2) {
-        double s1 = rsProfits_sel(
-          rs_profits(rsWeb_result(rsChampions_result(r1)))
+        double s1 = rsAssets_assets(
+          rs_assets(rsWeb_result(rsChampions_result(r1)))
         );
-        double s2 = rsProfits_sel(
-          rs_profits(rsWeb_result(rsChampions_result(r2)))
+        double s2 = rsAssets_assets(
+          rs_assets(rsWeb_result(rsChampions_result(r2)))
         );
         return s2 > s1;
       }
@@ -355,26 +356,20 @@ static void run (AsyncActor *ac) {
       }
       fleasdb_champions_write(nparams, rss);
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
   _EACH
 
-  // Garbage collector
-  dates = NULL;
-  closes = NULL;
-  opens = NULL;
-  sets = NULL;
-
-  void fn2 (void *null) {
+  void fn2 () {
     conf_set_fleas_running(0);
   }
-  asyncActor_wait(ac, fn2, NULL);
+  asyncActor_wait(ac, fn2);
 
-  void fnLog2 (void *null) {
+  void fnLog2 () {
     log_info("Fleas finished");
   }
-  asyncActor_run(ac, fnLog2, NULL);
+  asyncActor_wait(ac, fnLog2);
 }
 
 void fleas_run(AsyncActor *ac) {
-  async_thread((FPROC)run, ac);
+  async_thread_detached((FPROC)run, ac);
 }

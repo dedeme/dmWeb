@@ -57,7 +57,13 @@ export default class Wnick {
     ;
 
     const isSel = nick.isSel
-      ? Ui.link(this.setIsSel.bind(this)).add(img("flag1", _("Selection")))
+      ? Ui.link(this.setIsSel.bind(this))
+        .add(img(
+          this._volume > 0 && this._volume < 1500000
+            ? "flag2"
+            : "flag1",
+          _("Selection")
+        ))
       : Ui.link(this.setIsSel.bind(this)).add(emptyBt(_("Selection")))
     ;
 

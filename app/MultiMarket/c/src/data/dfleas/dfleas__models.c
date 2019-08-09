@@ -4,29 +4,12 @@
 #include "data/dfleas/dfleas__models.h"
 #include "data/Model.h"
 #include "data/dfleas/dfleas__Approx.h"
-#include "data/dfleas/dfleas__Approx2.h"
-#include "data/dfleas/dfleas__Approx3A.h"
-#include "data/dfleas/dfleas__Approx3B.h"
 #include "data/dfleas/dfleas__GA.h"
-#include "data/dfleas/dfleas__Incr2.h"
-#include "data/dfleas/dfleas__Incr3.h"
-#include "data/dfleas/dfleas__Incr3a.h"
+#include "data/dfleas/dfleas__Incr.h"
 #include "data/dfleas/dfleas__MA.h"
-#include "data/dfleas/dfleas__MA2.h"
-#include "data/dfleas/dfleas__MM1.h"
-#include "data/dfleas/dfleas__MM2A.h"
-#include "data/dfleas/dfleas__MM2Aa.h"
-#include "data/dfleas/dfleas__MM2Ab.h"
-#include "data/dfleas/dfleas__MM2B.h"
-#include "data/dfleas/dfleas__MM4.h"
-#include "data/dfleas/dfleas__MMBack1.h"
-#include "data/dfleas/dfleas__MMBack2.h"
-#include "data/dfleas/dfleas__MMBack2a.h"
-#include "data/dfleas/dfleas__MMBack2b.h"
-#include "data/dfleas/dfleas__MMWin1.h"
-#include "data/dfleas/dfleas__MMWin2.h"
-#include "data/dfleas/dfleas__MMWin2a.h"
-#include "data/dfleas/dfleas__MMWin2b.h"
+#include "data/dfleas/dfleas__MM.h"
+#include "data/dfleas/dfleas__MMBack.h"
+#include "data/dfleas/dfleas__MMWin.h"
 
 // Arr[Model]
 static Arr *models = NULL;
@@ -34,30 +17,25 @@ static Arr *models = NULL;
 void dfleas__models_init (void) {
   models = arr_new();
 
-  arr_push(models, dfleas__Approx());
-  arr_push(models, dfleas__Approx2());
-  arr_push(models, dfleas__Approx3A());
-  arr_push(models, dfleas__Approx3B());
-  arr_push(models, dfleas__GA());
-  arr_push(models, dfleas__Incr2());
-  arr_push(models, dfleas__Incr3());
-//  arr_push(models, dfleas__Incr3a());
-  arr_push(models, dfleas__MA());
-  arr_push(models, dfleas__MA2());
-  arr_push(models, dfleas__MM1());
-  arr_push(models, dfleas__MM2A());
-//  arr_push(models, dfleas__MM2Aa());
-//  arr_push(models, dfleas__MM2Ab());
-  arr_push(models, dfleas__MM2B());
-  arr_push(models, dfleas__MM4());
-  arr_push(models, dfleas__MMBack1());
-  arr_push(models, dfleas__MMBack2());
-//  arr_push(models, dfleas__MMBack2a());
-//  arr_push(models, dfleas__MMBack2b());
-  arr_push(models, dfleas__MMWin1());
-  arr_push(models, dfleas__MMWin2());
-//  arr_push(models, dfleas__MMWin2a());
-//  arr_push(models, dfleas__MMWin2b());
+  // 'a' is Arr[Model]
+  void add (Arr *a) {
+    EACH(a, Model, m)
+      arr_push(models, m);
+    _EACH
+  }
+
+  add(dfleas__Incr_models());
+  add(dfleas__Approx_models());
+  add(dfleas__GA_models());
+  add(dfleas__MA_models());
+  add(dfleas__MM_models());
+  add(dfleas__MMBack_models());
+  add(dfleas__MMWin_models());
+
+  int fn (Model *m1, Model *m2) {
+    return str_greater(model_name(m1), model_name(m2));
+  }
+  arr_sort(models, (FCMP)fn);
 }
 
 // Arr[Model]
@@ -86,5 +64,5 @@ Opt *dfleas__models_get (char *name) {
 ModelParams *dfleas__models_default (void) {
   Darr *ps = darr_new();
   darr_push(ps, 0.018827);
-  return modelParams_new(dfleas__MMBack1(), ps);
+  return modelParams_new(dfleas__MMBack_default(), ps);
 }

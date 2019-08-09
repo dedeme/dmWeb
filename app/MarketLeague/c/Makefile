@@ -10,8 +10,8 @@ bin/MarketLeague : src/marketleague.c include/marketleague.h lib/liblocalcompila
 		-L$(LIB_PATH_dmc) -ldmc \
 		-lgc -lpthread -lm
 
-lib/liblocalcompilation/liblocalcompilation.a : lib/liblocalcompilation/obj/marketleague.o lib/liblocalcompilation/obj/io.o lib/liblocalcompilation/obj/Match.o lib/liblocalcompilation/obj/Mark.o lib/liblocalcompilation/obj/DEFS.o lib/liblocalcompilation/obj/Data.o
-	ar rcs lib/liblocalcompilation/liblocalcompilation.a lib/liblocalcompilation/obj/marketleague.o lib/liblocalcompilation/obj/io.o lib/liblocalcompilation/obj/Match.o lib/liblocalcompilation/obj/Mark.o lib/liblocalcompilation/obj/DEFS.o lib/liblocalcompilation/obj/Data.o
+lib/liblocalcompilation/liblocalcompilation.a : lib/liblocalcompilation/obj/marketleague.o lib/liblocalcompilation/obj/io.o lib/liblocalcompilation/obj/Match.o lib/liblocalcompilation/obj/Mark.o lib/liblocalcompilation/obj/Data.o lib/liblocalcompilation/obj/DEFS.o
+	ar rcs lib/liblocalcompilation/liblocalcompilation.a lib/liblocalcompilation/obj/marketleague.o lib/liblocalcompilation/obj/io.o lib/liblocalcompilation/obj/Match.o lib/liblocalcompilation/obj/Mark.o lib/liblocalcompilation/obj/Data.o lib/liblocalcompilation/obj/DEFS.o
 
 lib/liblocalcompilation/obj/marketleague.o : include/marketleague.h src/marketleague.c include/io.h src/io.c include/Data.h src/Data.c
 	gcc $(CFLAGS) -c src/marketleague.c -o lib/liblocalcompilation/obj/marketleague.o \
@@ -33,12 +33,13 @@ lib/liblocalcompilation/obj/Mark.o : include/Mark.h src/Mark.c include/Match.h s
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
+lib/liblocalcompilation/obj/Data.o : include/Data.h src/Data.c
+	gcc $(CFLAGS) -c src/Data.c -o lib/liblocalcompilation/obj/Data.o \
+		-Iinclude \
+		-I$(LIB_INCLUDE_dmc)
+
 lib/liblocalcompilation/obj/DEFS.o : include/DEFS.h src/DEFS.c
 	gcc $(CFLAGS) -c src/DEFS.c -o lib/liblocalcompilation/obj/DEFS.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/Data.o : include/Data.h src/Data.c
-	gcc $(CFLAGS) -c src/Data.c -o lib/liblocalcompilation/obj/Data.o \
-		-Iinclude \
-		-I$(LIB_INCLUDE_dmc)

@@ -77,8 +77,10 @@ int main (int argc, char *argv[]) {
     Iserver *sv = iserver_new(PORT);
 
     AsyncActor *ac = asyncActor_new(ACTOR_SLEEP);
-    pthread_t *server_th = async_thread((FPROC)server_run, tp_new(ac, sv));
-    pthread_t *scheduler_th = async_thread((FPROC)scheduler_run, ac);
+    void fn1 () { server_run(ac, sv); }
+    pthread_t *server_th = async_thread(fn1);
+    void fn2 () { scheduler_run(ac); }
+    pthread_t *scheduler_th = async_thread(fn2);
 
     async_join(server_th);
     async_join(scheduler_th);

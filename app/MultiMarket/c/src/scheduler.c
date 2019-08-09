@@ -21,11 +21,11 @@ static void sleeping1 (AsyncActor *ac) {
   int hour = atoi(date_f(date_now(), "%H"));
   if (hour > ACT_HISTORIC_START && hour < ACT_HISTORIC_END) {
     if (io_active ()) {
-      void fn (void *null) {
+      void fn () {
         conf_set_activity(ACT_HISTORIC);
         log_info("To Historic");
       }
-      asyncActor_wait(ac, fn, NULL);
+      asyncActor_wait(ac, fn);
     }
   }
 }
@@ -37,11 +37,11 @@ static void historic (AsyncActor *ac) {
   if (io_active ()) management_update(ac);
   if (io_active ()) fleas_run(ac);
   if (io_active ()) {
-    void fn (void *null) {
+    void fn () {
       conf_set_activity(ACT_SLEEPING2);
       log_info("To Sleeping (2)");
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
   }
 }
 
@@ -53,27 +53,27 @@ static void sleeping2 (AsyncActor *ac) {
   }
   sleeping2_time = now;
   if (io_active () && calendar_is_open(now)) {
-    void fn (void *null) {
+    void fn () {
       conf_set_activity(ACT_ACTIVATING);
       log_info("To Activating");
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
   }
 }
 
 static void activating (AsyncActor *ac) {
   if (io_active ()) {
-    void fn1 (void *null) {
+    void fn1 () {
       dailydb_reset();
       sbox_next();
     }
-    asyncActor_wait(ac, fn1, NULL);
+    asyncActor_wait(ac, fn1);
     net_update_daily(ac);
-    void fn2 (void *null) {
+    void fn2 () {
       conf_set_activity(ACT_ACTIVE);
       log_info("To Active");
     }
-    asyncActor_wait(ac, fn2, NULL);
+    asyncActor_wait(ac, fn2);
   }
 }
 
@@ -86,34 +86,34 @@ static void active (AsyncActor *ac) {
   active_time = now;
 
   net_update_daily(ac);
-  void fn (void *null) { dailydb_update(); }
-  asyncActor_wait(ac, fn, NULL);
+  void fn () { dailydb_update(); }
+  asyncActor_wait(ac, fn);
 
   if (io_active () && !calendar_is_open(now)) {
-    void fn (void *null) {
+    void fn () {
       conf_set_activity(ACT_DEACTIVATING);
       log_info("To Deactivating");
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
   }
 }
 
 static void deactivating (AsyncActor *ac) {
   net_update_daily(ac);
   if (io_active ()) {
-    void fn (void *null) {
+    void fn () {
       conf_set_activity(ACT_SLEEPING1);
       log_info("To Sleeping (1)");
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
   }
 }
 
 void scheduler_run (AsyncActor *ac) {
   while (io_active ()) {
     char *activity = NULL;
-    void fn (void *null) { activity = conf_activity(); }
-    asyncActor_wait(ac, fn, NULL);
+    void fn () { activity = conf_activity(); }
+    asyncActor_wait(ac, fn);
 
     if (str_eq(activity, ACT_SLEEPING1)) {
       sleeping1(ac);

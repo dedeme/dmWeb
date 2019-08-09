@@ -16,10 +16,10 @@ char *fleas__model_process(AsyncActor *ac, Map *mrq) {
 
   if (str_eq(rq, "getDates")) {
     CGI_GET_STR(model, mrq, "model");
-    void fn (void *null) {
+    void fn () {
       map_put(rp, "dates", arr_to_js(fleasdb_model_dates(model), (FTO)js_ws));
     }
-    asyncActor_wait(ac, fn, NULL);
+    asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
   if (str_eq(rq, "data")) {
@@ -39,10 +39,10 @@ char *fleas__model_process(AsyncActor *ac, Map *mrq) {
       ));
       arr_push(params, model_param_jss(m));
       map_put(rp, "params", js_wa(params));
-      void fn (void *null) {
+      void fn () {
         map_put(rp, "table", fleasdb_model_read_js(model_name(m), date));
       }
-      asyncActor_wait(ac, fn, NULL);
+      asyncActor_wait(ac, fn);
     }
     return cgi_ok(rp);
   }

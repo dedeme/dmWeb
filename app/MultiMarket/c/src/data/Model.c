@@ -6,6 +6,7 @@
 #include "data/Facc.h"
 #include "data/Nick.h"
 #include "data/broker.h"
+#include "data/Rank.h"
 #include "DEFS.h"
 
 /* .
@@ -80,39 +81,7 @@ double model_ref(Model *this, Darr *params, void *co) {
   return this->fref(params, co);
 }
 
-// set is Arr[char]
-static Qmatrix *qset(Qmatrix *mx, Arr *set) {
-  int set_contains(Nick *nk) {
-    int fcontains (Nick *n) { return str_eq(nick_name(nk), nick_name(n)); }
-    return it_contains(arr_to_it(set), (FPRED)fcontains);
-  }
-
-  Iarr *ixs = iarr_new();
-  // Arr[Nick]
-  Arr *nicks = arr_new();
-  EACH_IX(qmatrix_nicks(mx), Nick, nk, ix)
-    if (set_contains(nk)) {
-      arr_push(nicks, nk);
-      iarr_push(ixs, ix);
-    }
-  _EACH
-
-  QmatrixValues *values = GC_MALLOC(HISTORIC_QUOTES * sizeof(QmatrixValues));
-  QmatrixValues *mx_rows = qmatrix_values(mx);
-  QmatrixValues *new_rows = values;
-  REPEAT(HISTORIC_QUOTES)
-    QmatrixValues vs = ATOMIC(iarr_size(ixs) * sizeof(double));
-    IEACH_IX(ixs, nk_ix, i)
-      vs[i] = (*mx_rows)[nk_ix];
-    _EACH
-    *new_rows++ = vs;
-    ++mx_rows;
-  _REPEAT
-
-  return qmatrix_new(nicks, values);
-}
-
-static RsAssets *calculate_assets(
+RsAssets *model_assets(
   Model *this, Flea *f, Qmatrix *opens, Qmatrix *closes
 ) {
   Darr *params = this->fparams(f);
@@ -150,59 +119,62 @@ static RsAssets *calculate_assets(
   _REPEAT
 
   return rsAssets_new(
-    facc_assets(acc, ncos, qmatrix_values(closes)[HISTORIC_QUOTES - 1]),
+    facc_assets(acc, ncos, closes, HISTORIC_QUOTES - 1),
     nbuys,
     nsells
   );
 }
 
-RsAssets *model_assets(
-  Model *this, Flea *f, NickSets *sets, Qmatrix *opens, Qmatrix *closes
+// Returns Arr[RankAssets]
+Arr *model_assets_historic(
+  Model *this, Darr *params, Arr *dates, Qmatrix *opens, Qmatrix *closes
 ) {
-  RsAssets *calc(Arr *set) {
-    return calculate_assets(this, f, qset(opens, set), qset(closes, set));
-  }
+  // Arr[RankAssets]
+  Arr *r = arr_new();
 
-  RsAssets *r1;
-  void c1 (void *null) { r1 = calc(nickSets_win(sets)); }
-  pthread_t *th1 = async_thread(c1, NULL);
+  int ncos = arr_size(qmatrix_nicks(opens));
+  char **dts = (char **)arr_start(dates);
+  QmatrixValues *opensv = qmatrix_values(opens);
+  QmatrixValues *closesv = qmatrix_values(closes);
 
-  RsAssets *r2;
-  void c2 (void *null) { r2 = calc(nickSets_loss(sets)); }
-  pthread_t *th2 = async_thread(c2, NULL);
+  void **cos = arr_start(this->fcos(params, ncos, qmatrix_values(closes)));
+  Facc *acc = facc_new(ncos);
+  OrderCos *os = orderCos_new(ncos);
+  int ix = 0;
+  REPEAT(HISTORIC_QUOTES)
+    char *date = *dts++;
+    QmatrixValues ops = *opensv++;
+    QmatrixValues cls = *closesv++;
 
-  RsAssets *r3;
-  void c3 (void *null) { r3 = calc(nickSets_semi_win(sets)); }
-  pthread_t *th3 = async_thread(c3, NULL);
+    RANGE0(i, orderCos_nsells(os))
+      int nco = orderCos_sells(os)[i];
+      double price = ops[nco];
+      if (price < 0) price = (*(closesv - 2))[nco];
+      facc_sell(acc, nco, price);
+    _REPEAT
+    RANGE0(i, orderCos_nbuys(os))
+      int nco = orderCos_buys(os)[i];
+      double price = ops[nco];
+      if (price < 0) price = (*(closesv - 2))[nco];
+      if (!facc_buy(acc, nco, price)) break;
+    _REPEAT
 
-  RsAssets *r4;
-  void c4 (void *null) { r4 = calc(nickSets_semi_loss(sets)); }
-  pthread_t *th4 = async_thread(c4, NULL);
+    os = orderCos_new(ncos);
+    RANGE0(nco, ncos)
+      orderCos_add(os, nco, this->forder(params, cos[nco], cls[nco]));
+    _RANGE
 
+    arr_push(r, rankAssets_new(date, facc_assets(acc, ncos, closes, ix++)));
+  _REPEAT
 
-  async_join(th1);
-  async_join(th2);
-  async_join(th3);
-  async_join(th4);
-
-  return rsAssets_new(
-    ( rsAssets_assets(r1) +rsAssets_assets(r2) +
-      rsAssets_assets(r3) + rsAssets_assets(r4)
-    ) / 4.0,
-    ( rsAssets_buys(r1) +rsAssets_buys(r2) +
-      rsAssets_buys(r3) + rsAssets_buys(r4)
-    ) / 4,
-    ( rsAssets_sells(r1) +rsAssets_sells(r2) +
-      rsAssets_sells(r3) + rsAssets_sells(r4)
-    ) / 4
-  );
+  return r;
 }
 
 static double normalize(double min, double dif, double value) {
   return (value - min) / dif;
 }
 
-static RsProfits *calculate_profits(
+RsProfits *model_profits(
   Model *this, Flea *f, Qmatrix *opens, Qmatrix *closes
 ) {
   Darr *params = this->fparams(f);
@@ -267,48 +239,6 @@ static RsProfits *calculate_profits(
   double mdv = sum_n / cos_size;
 
   return rsProfits_new(avg, mdv, avg * (1 - mdv));
-}
-
-RsProfits *model_profits(
-  Model *this, Flea *f, NickSets *sets, Qmatrix *opens, Qmatrix *closes
-) {
-  RsProfits *calc(Arr *set) {
-    return calculate_profits(this, f, qset(opens, set), qset(closes, set));
-  }
-
-  RsProfits *r1;
-  void c1 (void *null) { r1 = calc(nickSets_win(sets)); }
-  pthread_t *th1 = async_thread(c1, NULL);
-
-  RsProfits *r2;
-  void c2 (void *null) { r2 = calc(nickSets_loss(sets)); }
-  pthread_t *th2 = async_thread(c2, NULL);
-
-  RsProfits *r3;
-  void c3 (void *null) { r3 = calc(nickSets_semi_win(sets)); }
-  pthread_t *th3 = async_thread(c3, NULL);
-
-  RsProfits *r4;
-  void c4 (void *null) { r4 = calc(nickSets_semi_loss(sets)); }
-  pthread_t *th4 = async_thread(c4, NULL);
-
-
-  async_join(th1);
-  async_join(th2);
-  async_join(th3);
-  async_join(th4);
-
-  return rsProfits_new(
-    ( rsProfits_avg(r1) +rsProfits_avg(r2) +
-      rsProfits_avg(r3) + rsProfits_avg(r4)
-    ) / 4.0,
-    ( rsProfits_var(r1) +rsProfits_var(r2) +
-      rsProfits_var(r3) + rsProfits_var(r4)
-    ) / 4.0,
-    ( rsProfits_sel(r1) +rsProfits_sel(r2) +
-      rsProfits_sel(r3) + rsProfits_sel(r4)
-    ) / 4.0
-  );
 }
 
 RsCharts *model_charts(

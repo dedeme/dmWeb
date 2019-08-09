@@ -306,7 +306,7 @@ export default class Nicks {
 
   /** @return {!Promise} */
   async download () {
-    const nickList = this._nickSelId === -1
+    const nickList = this._nickSelId < 0
       ? this._nickList.map(n => n.id)
       : [this._nickSelId]
     ;
@@ -356,7 +356,7 @@ export default class Nicks {
 
   /** @return {!Promise} */
   async test () {
-    const nickList = this._nickSelId === -1
+    const nickList = this._nickSelId < 0
       ? this._nickList.map(n => n.id)
       : [this._nickSelId]
     ;

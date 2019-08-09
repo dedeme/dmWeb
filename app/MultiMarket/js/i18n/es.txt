@@ -65,7 +65,7 @@ All CO's = Todas las Cías.
 # src/acc/Companies.js: 353
 All Companies = Todas las empresas
 
-# src/sys/Home.js: 90
+# src/sys/Home.js: 93
 All log entries will be deleted.\nContinue? = Todas las entradas del registro será borradas.\n¿Continuar?
 
 # src/sys/Backups.js: 116
@@ -97,11 +97,13 @@ Ammount = Cantidad
 # src/sys/Annotations.js: 453
 Annotations = Asientos
 
-# src/Main.js: 93
+# src/Main.js: 94
 Application exit? = ¿Salir de la aplicación?
 
 # src/acc/Balance.js: 161
 # src/fleas/wgs/Dtable.js: 176
+# src/ranking/RankingMain.js: 116
+# src/ranking/RankingMain.js: 156
 Assets = Activo
 
 # src/sys/home/Flog.js: 85
@@ -128,7 +130,7 @@ Backups = Copias de seguridad
 # src/acc/AccMain.js: 78
 Balance = Balance
 
-# src/fleas/FleasMain.js: 72
+# src/fleas/FleasMain.js: 58
 Bests = Mejores
 
 # src/acc/Balance.js: 258
@@ -144,6 +146,7 @@ Buy = Compra
 
 # src/acc/Trading.js: 401
 # src/fleas/wgs/Dtable.js: 180
+# src/ranking/RankingMain.js: 120
 Buys = Compras
 
 # src/sys/Models.js: 120
@@ -160,7 +163,7 @@ Cash = Caja
 # src/sys/Annotations.js: 466
 Cash: = Caja:
 
-# src/fleas/FleasMain.js: 75
+# src/fleas/FleasMain.js: 61
 Champions = Ganadores
 
 # src/sys/Settings.js: 73
@@ -169,7 +172,7 @@ Change Language to %0 = Cambiar el idioma a %0
 # src/sys/Settings.js: 48
 Change Password = Cambiar la contraseña
 
-# src/fleas/FleasMain.js: 70
+# src/fleas/FleasMain.js: 56
 Charts = Gráficos
 
 # src/sys/Chpass.js: 111
@@ -177,7 +180,7 @@ Charts = Gráficos
 Check gray squares = Marcar los cuadrados grises
 
 # src/sys/Backups.js: 289
-# src/sys/Home.js: 54
+# src/sys/Home.js: 57
 Clear = Eliminar
 
 # src/sys/Backups.js: 194
@@ -311,7 +314,7 @@ Delete %0? = ¿Eliminar %0?
 
 # src/sys/Schedule.js: 296
 # src/sys/Schedule.js: 344
-# src/sys/nicks/Wnick.js: 96
+# src/sys/nicks/Wnick.js: 102
 # src/sys/Servers.js: 264
 Delete '%0'? = ¿Eliminar '%0'?
 
@@ -351,7 +354,7 @@ Download or test successfully done = Descarga o test correcto
 # src/sys/Nicks.js: 346
 Download successfully done = Descarga correcta
 
-# src/sys/Home.js: 115
+# src/sys/Home.js: 118
 End fleas running? = ¿Detener las pulgas?
 
 # src/acc/Balance.js: 164
@@ -372,7 +375,7 @@ Fees = Comisiones
 # src/sys/servers/Download.js: 443
 Fields order = Orden de los campos
 
-# src/sys/Home.js: 56
+# src/sys/Home.js: 59
 Fleas = Pulgas
 
 # src/sys/Home.js: 46
@@ -381,10 +384,10 @@ Fleas Data = Datos de las pulgas
 # src/sys/home/Flog.js: 52
 Fleas Log = Registro de las pulgas
 
-# src/sys/Home.js: 110
+# src/sys/Home.js: 113
 Fleas running = Pulgas trabajando
 
-# src/sys/Home.js: 122
+# src/sys/Home.js: 125
 Fleas stopped = Pulgas detenidas
 
 # src/sys/Schedule.js: 180
@@ -394,7 +397,7 @@ General Time Table = Horario general
 # src/core/Auth.js: 105
 Grey squares checks are wrong = Las casillas grises están mal marcadas
 
-# src/Main.js: 130
+# src/Main.js: 131
 Help & Credits = Ayuda & créditos
 
 # src/sys/Servers.js: 104
@@ -421,6 +424,7 @@ Holidays = Fiestas
 Home = Inicio
 
 # src/fleas/wgs/Dtable.js: 175
+# src/ranking/RankingMain.js: 83
 Id = Id
 
 # src/sys/Annotations.js: 224
@@ -455,8 +459,8 @@ List = Lista
 # src/sys/home/Log.js: 52
 # src/sys/home/Log.js: 190
 # src/sys/home/Flog.js: 125
-# src/sys/Home.js: 52
-# src/sys/Home.js: 64
+# src/sys/Home.js: 55
+# src/sys/Home.js: 67
 Log = Registro
 
 # src/sys/Chpass.js: 131
@@ -470,8 +474,9 @@ Logout-message = <p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>
 Make backup = Hacer copia
 
 # src/acc/AccMain.js: 72
-# src/fleas/FleasMain.js: 66
-# src/sys/Home.js: 47
+# src/fleas/FleasMain.js: 52
+# src/sys/Home.js: 50
+# src/ranking/RankingMain.js: 44
 # src/daily/DailyMain.js: 106
 Management = Control
 
@@ -491,6 +496,7 @@ Min = Min
 # src/sys/Models.js: 197
 # src/sys/nicks/Wnick.js: 53
 # src/sys/nicks/Wnick.js: 55
+# src/ranking/RankingMain.js: 82
 Model = Modelo
 
 # src/fleas/Bests.js: 87
@@ -607,17 +613,23 @@ Password successfully changed = La contraseña se cambió correctamente
 Pay Back = Plazo de recuperación
 
 # src/fleas/wgs/Dtable.js: 177
+# src/ranking/RankingMain.js: 117
 Pf. Avg = Media Bf.
 
 # src/fleas/wgs/Dtable.js: 178
+# src/ranking/RankingMain.js: 118
 Pf. MDV = Var. Bf.
 
 # src/fleas/wgs/Dtable.js: 179
+# src/ranking/RankingMain.js: 119
 Pf. Sel = Sel. Bf.
 
 # src/acc/Companies.js: 356
 # src/daily/DailyMain.js: 97
 Portfolio = Cartera
+
+# src/ranking/RankingMain.js: 158
+Positions = Posiciones
 
 # src/acc/Trading.js: 297
 # src/sys/Annotations.js: 135
@@ -653,6 +665,9 @@ Quotes were modified with corrections.<br>See Log. = Las cotizaciones fueron mod
 
 # src/sys/nicks/Editor.js: 372
 Quotes were successfully modified = Las cotizaciones se modificaron correctamente
+
+# src/sys/Home.js: 49
+Ranking = Clasificación
 
 # src/sys/Models.js: 212
 Regularize = Regularizar
@@ -694,7 +709,7 @@ Row end = Fin de fila
 # src/sys/servers/Download.js: 453
 Row start = Inicio de fila
 
-# src/sys/Home.js: 58
+# src/sys/Home.js: 61
 Run = Activar
 
 # src/sys/Schedule.js: 176
@@ -707,8 +722,8 @@ See = Ver
 # src/sys/servers/Download.js: 417
 Selected = Seleccionado
 
-# src/sys/nicks/Wnick.js: 60
-# src/sys/nicks/Wnick.js: 61
+# src/sys/nicks/Wnick.js: 65
+# src/sys/nicks/Wnick.js: 67
 # src/daily/DailyMain.js: 103
 Selection = Selección
 
@@ -722,6 +737,7 @@ Sell = Venta
 # src/acc/Trading.js: 407
 # src/acc/Balance.js: 182
 # src/fleas/wgs/Dtable.js: 181
+# src/ranking/RankingMain.js: 121
 Sells = Ventas
 
 # src/sys/Servers.js: 238
@@ -789,7 +805,7 @@ Step = Paso
 # src/sys/Annotations.js: 192
 Stocks = Acciones
 
-# src/sys/Home.js: 61
+# src/sys/Home.js: 64
 Stop = Detener
 
 # src/sys/servers/Download.js: 411
