@@ -13,7 +13,7 @@ import ListSorter from "../../dmjs/ListSorter.js";
 import Server from "../../data/Server.js"; //eslint-disable-line
 import {Rconf} from "../../data/Server.js"; //eslint-disable-line
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /**
  * @param {string} id

@@ -11,7 +11,7 @@
 char *sys__schedule_process(AsyncActor *ac, Map *mrq) {
   // Map[Js]
   Map *rp = map_new();
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
 
   if (str_eq(rq, "general")) {
     void (fn)() {
@@ -22,7 +22,7 @@ char *sys__schedule_process(AsyncActor *ac, Map *mrq) {
   }
 
   if (str_eq(rq, "setGeneral")) {
-    CGI_GET(Timetable *, timetable, timetable_from_js, mrq, "timetable")
+    CGI_GET(Timetable *, timetable, timetable_from_js, mrq)
     void (fn)() { calendar_set_general(timetable); }
     asyncActor_wait(ac, fn);
     return cgi_empty();
@@ -39,7 +39,7 @@ char *sys__schedule_process(AsyncActor *ac, Map *mrq) {
   if (str_eq(rq, "setHolidays")) {
     // Arr[char]
     Arr *fget(Js *js) { return arr_from_js(js, (FFROM)js_rs); }
-    CGI_GET(Arr *, holidays, fget, mrq, "holidays")
+    CGI_GET(Arr *, holidays, fget, mrq)
     void (fn)() { calendar_set_holidays(holidays); }
     asyncActor_wait(ac, fn);
     return cgi_empty();
@@ -57,8 +57,8 @@ char *sys__schedule_process(AsyncActor *ac, Map *mrq) {
   if (str_eq(rq, "setSpecialDays")) {
     // Arr[char]
     Arr *fget(Js *js) { return arr_from_js(js, (FFROM)marketDay_from_js); }
-    CGI_GET(Arr *, special_days, fget, mrq, "specialDays")
-    void (fn)() { calendar_set_special_days(special_days); }
+    CGI_GET(Arr *, specialDays, fget, mrq)
+    void (fn)() { calendar_set_special_days(specialDays); }
     asyncActor_wait(ac, fn);
     return cgi_empty();
   }

@@ -13,7 +13,7 @@ import Main from "../../Main.js";
 import Operations from "../../wgs/Operations.js";
 import Chart from "./Chart.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 function mkHistoric (box, div, nick, hs) {
   const bt = $("button").html("Close");
@@ -52,7 +52,7 @@ function mkGrTd (box, div, nick, profits, qs, hs) {
           .add($("span").html(nick)))
         .add($("td"))
         .add($("td").style("text-align:right;width:40%")
-          .add($("span").html(new Dec(profits * 100, 2).toEu() + "%"))
+          .add($("span").html(new Dec(profits * 100, 2).toIso() + "%"))
           .add($("span").html("&nbsp;&nbsp;"))
           .add(Ui.img(profits < 0 ? "loose" : "win")
             .style("vertical-align:top")
@@ -181,7 +181,7 @@ export default class Wcharts {
           "<img src='img/loose.png' style='vertical-align:top'> : " +
           negatives + " | " +
           "% : " +
-          new Dec(ttProfits * 100 / (positives + negatives), 2).toEu());
+          new Dec(ttProfits * 100 / (positives + negatives), 2).toIso());
       }
     );
   }

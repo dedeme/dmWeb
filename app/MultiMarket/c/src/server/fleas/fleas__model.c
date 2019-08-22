@@ -10,12 +10,12 @@
 
 // mrq is Map[Js]
 char *fleas__model_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
   // Map[Js]
   Map *rp = map_new();
 
   if (str_eq(rq, "getDates")) {
-    CGI_GET_STR(model, mrq, "model");
+    CGI_GET_STR(model, mrq);
     void fn () {
       map_put(rp, "dates", arr_to_js(fleasdb_model_dates(model), (FTO)js_ws));
     }
@@ -23,8 +23,8 @@ char *fleas__model_process(AsyncActor *ac, Map *mrq) {
     return cgi_ok(rp);
   }
   if (str_eq(rq, "data")) {
-    CGI_GET_STR(model, mrq, "model");
-    CGI_GET_STR(date, mrq, "date");
+    CGI_GET_STR(model, mrq);
+    CGI_GET_STR(date, mrq);
     // Opt[Model]
     Opt *md = dfleas__models_get(model);
     if (opt_is_empty(md)) {

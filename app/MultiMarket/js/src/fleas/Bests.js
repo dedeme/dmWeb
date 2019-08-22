@@ -8,7 +8,7 @@ import Ui from "../dmjs/Ui.js";
 import Lmenu from "./wgs/Lmenu.js";
 import Dtable from "./wgs/Dtable.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Settings page. */
 export default class Bests {

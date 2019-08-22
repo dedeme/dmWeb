@@ -10,7 +10,7 @@ import Ui from "../dmjs/Ui.js";
 // eslint-disable-next-line
 import Co from "./data/Co.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Small chart. */
 export default class ChBig {
@@ -43,7 +43,7 @@ export default class ChBig {
     const self = this;
     function formatN (n, d) {
       if (self._dailyMain.lang === "es") {
-        return new Dec(n, d).toEu();
+        return new Dec(n, d).toIso();
       }
       return new Dec(n, d).toEn();
     }

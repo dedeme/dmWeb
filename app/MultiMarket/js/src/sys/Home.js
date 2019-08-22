@@ -9,7 +9,7 @@ import Log from "./home/Log.js";
 import Flog from "./home/Flog.js";
 import Wrule from "../wgs/Wrule.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Sys Home page. */
 export default class Home {

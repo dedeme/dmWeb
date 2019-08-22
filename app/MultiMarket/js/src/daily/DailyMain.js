@@ -15,7 +15,7 @@ import Summary from "./Summary.js";
 import Cos from "./Cos.js";
 const selStore = "${app}__sel";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** DailyMain page. */
 export default class DailyMain {
@@ -193,7 +193,7 @@ export default class DailyMain {
 
     function formatN (n) {
       if (lang === "es") {
-        return new Dec(n, 2).toEu();
+        return new Dec(n, 2).toIso();
       }
       return new Dec(n, 2).toEn();
     }

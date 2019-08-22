@@ -83,7 +83,7 @@ char *hub_rp (AsyncActor *ac, char *rq) {
   }
 
   //..................................... logout
-  CGI_GET_STR(module, m, "module");
+  CGI_GET_STR(module, m);
 
   if (str_eq(module, "logout")) {
     backups_make_automatic();

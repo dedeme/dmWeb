@@ -8,7 +8,7 @@ import SysMain from "./SysMain.js"; //eslint-disable-line
 import {_, _args} from "../I18n.js";
 import Ui from "../dmjs/Ui.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Backups page. */
 export default class Backups {

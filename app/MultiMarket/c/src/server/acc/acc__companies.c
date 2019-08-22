@@ -21,7 +21,7 @@
 
 // mrq is Map[Js]
 char *acc__companies_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
   // Map[Js]
   Map *rp = map_new();
 
@@ -60,13 +60,13 @@ char *acc__companies_process(AsyncActor *ac, Map *mrq) {
     return cgi_ok(rp);
   }
   if (str_eq(rq, "setAllCos")) {
-    CGI_GET_BOOL(value, mrq, "value")
+    CGI_GET_BOOL(value, mrq)
     void fn () { conf_set_acc_all_cos(value); }
     asyncActor_wait(ac, fn);
     return cgi_empty();
   }
   if (str_eq(rq, "historic")) {
-    CGI_GET_STR(nick, mrq, "nick")
+    CGI_GET_STR(nick, mrq)
     void fn () {
       // Arr[AccEntry]
       Arr *annotations = accdb_diary_read();

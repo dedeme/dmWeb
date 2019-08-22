@@ -7,7 +7,7 @@
 
 // mrq is Map[Js]
 char *acc__downloader_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
 
   if (str_eq(rq, "download")) {
     net_update_daily(ac);

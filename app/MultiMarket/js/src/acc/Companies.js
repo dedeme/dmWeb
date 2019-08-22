@@ -11,7 +11,7 @@ import Dec from "../dmjs/Dec.js";
 import ModalBox from "../dmjs/ModalBox.js";
 import Operations from "../wgs/Operations.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 function led (url, color) {
   return $("div")
@@ -73,7 +73,7 @@ function mkGr (price, qs) {
 
   ctx.font = "10px sans";
   for (let i = 0; i < 5; ++i) {
-    const tx = new Dec(base + step * i, 2).toEu();
+    const tx = new Dec(base + step * i, 2).toIso();
     const text = ctx.measureText(tx);
     ctx.fillText(tx, (40 - text.width), 150 - 35 * i);
 
@@ -186,7 +186,7 @@ function mkGrBig (box, div, nick, refDay, price, ds, qs) {
 
   ctx.font = "12px sans";
   for (let i = 0; i < 5; ++i) {
-    const tx = new Dec(base + step * i, 2).toEu();
+    const tx = new Dec(base + step * i, 2).toIso();
     const text = ctx.measureText(tx);
     ctx.fillText(tx, (80 - text.width), 295 - 70 * i);
 
@@ -289,7 +289,7 @@ function mkGrTd (box, div, nick, url, price, profits, ds, qs, hs) {
         .add($("td").style("text-align:right;width:40%")
           .add($("span")
             .html(
-              new Dec(profits * 100, 2).toEu() + "%&nbsp;&nbsp;"
+              new Dec(profits * 100, 2).toIso() + "%&nbsp;&nbsp;"
             ))
           .add(Ui.img(profits < 0 ? "loose" : "win")
             .style("vertical-align:top;")
@@ -338,7 +338,7 @@ export default class Companies {
   /** @private */
   formatN (n) {
     if (this._lang === "es") {
-      return new Dec(n, 2).toEu();
+      return new Dec(n, 2).toIso();
     }
     return new Dec(n, 2).toEn();
   }

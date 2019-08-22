@@ -6,7 +6,7 @@ import Domo from "../dmjs/Domo.js";
 import Ui from "../dmjs/Ui.js";
 import DateDm from "../dmjs/DateDm.js";
 import Dec from "../dmjs/Dec.js";
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 function blanks (tx, width) {
   while (tx.length < width) {
@@ -16,7 +16,7 @@ function blanks (tx, width) {
 }
 
 function fm (n, dec, width) {
-  return blanks(new Dec(n, dec).toEu(), width);
+  return blanks(new Dec(n, dec).toIso(), width);
 }
 
 /** Company char. */

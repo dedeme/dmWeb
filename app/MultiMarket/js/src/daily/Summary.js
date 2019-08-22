@@ -10,7 +10,7 @@ import Dec from "../dmjs/Dec.js";
 import Clock from "../dmjs/Clock.js";
 import ChBig from "./ChBig.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Update page. */
 export default class Summary {
@@ -42,7 +42,7 @@ export default class Summary {
     const self = this;
     function formatN (n, d) {
       if (self._dailyMain.lang === "es") {
-        return new Dec(n, d).toEu();
+        return new Dec(n, d).toIso();
       }
       return new Dec(n, d).toEn();
     }

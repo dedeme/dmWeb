@@ -5,7 +5,8 @@
 #include "data/Model.h"
 #include "data/dfleas/incr/incr__3.h"
 #include "data/dfleas/incr/incr__2.h"
-#include "data/dfleas/incr/incr__3a.h"
+#include "data/dfleas/incr/incr__3a53.h"
+#include "data/dfleas/incr/incr__3a58.h"
 #include "data/dfleas/incr/incr__3aa.h"
 #include "data/dfleas/incr/incr__3ab.h"
 
@@ -15,7 +16,8 @@ Arr *dfleas__Incr_models (void) {
   Arr *mds = arr_new();
   arr_push(mds, incr__3());
   arr_push(mds, incr__2());
-  arr_push(mds, incr__3a());
+  arr_push(mds, incr__3a53());
+  arr_push(mds, incr__3a58());
   arr_push(mds, incr__3aa());
   arr_push(mds, incr__3ab());
   return mds;

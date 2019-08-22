@@ -17,7 +17,7 @@ import Settings from "./Settings.js";
 import Backups from "./Backups.js";
 import {_} from "../I18n.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Sys Main page. */
 export default class SysMain {

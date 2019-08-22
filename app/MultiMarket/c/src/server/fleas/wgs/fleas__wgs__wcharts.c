@@ -7,14 +7,14 @@
 
 // mrq is Map[Js]
 char *fleas__wgs__wcharts_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_INT(rq, mrq, "rq")
+  CGI_GET_INT(rq, mrq)
   // Map[Js]
   Map *rp = map_new();
 
   // From Bests
   if (rq == 0) {
-    CGI_GET_STR(model, mrq, "model")
-    CGI_GET_STR(nick, mrq, "nick")
+    CGI_GET_STR(model, mrq)
+    CGI_GET_STR(nick, mrq)
     void fn () {
       map_put(rp, "data", fleasdb_charts_read_js(model, nick));
     }
@@ -23,10 +23,10 @@ char *fleas__wgs__wcharts_process(AsyncActor *ac, Map *mrq) {
   }
   // From champions
   if (rq == 1) {
-    CGI_GET_STR(model, mrq, "model")
-    CGI_GET_STR(nick, mrq, "nick")
-    CGI_GET_INT(group, mrq, "group")
-    CGI_GET_STR(flea, mrq, "flea")
+    CGI_GET_STR(model, mrq)
+    CGI_GET_STR(nick, mrq)
+    CGI_GET_INT(group, mrq)
+    CGI_GET_STR(flea, mrq)
     void fn () {
       map_put(rp, "data", fleasdb_champions_chart_read_js(
         group, model, nick, flea

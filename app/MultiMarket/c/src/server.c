@@ -44,7 +44,7 @@ void server_run (AsyncActor *ac, Iserver *server) {
         EXC_IO(iserverRq_error(rq))
       CATCH(ex)
         if (error_counter == 5) {
-          void fn () { log_exception(ex); }
+          void fn () { log_info(exc_msg(ex)); }
           asyncActor_wait(ac, fn);
         }
         ++error_counter;

@@ -11,7 +11,7 @@
 
 // mrq is Map[Js]
 char *fleas__bests_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
   // Map[Js]
   Map *rp = map_new();
 
@@ -23,13 +23,13 @@ char *fleas__bests_process(AsyncActor *ac, Map *mrq) {
     return cgi_ok(rp);
   }
   if (str_eq(rq, "setModel")) {
-    CGI_GET_STR(model, mrq, "model")
+    CGI_GET_STR(model, mrq)
     void fn () { conf_set_fleas_model(model); }
     asyncActor_wait(ac, fn);
     return cgi_empty();
   }
   if (str_eq(rq, "data")) {
-    CGI_GET_STR(model, mrq, "model");
+    CGI_GET_STR(model, mrq);
     // Opt[Model]
     Opt *md = dfleas__models_get(model);
     if (opt_is_empty(md)) {

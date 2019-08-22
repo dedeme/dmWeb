@@ -11,7 +11,7 @@
 #include "server/fleas/wgs/fleas__wgs__dtable.h"
 
 char *fleas_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(source, mrq, "source")
+  CGI_GET_STR(source, mrq)
 
   if (str_eq(source, "FleasMain")) return fleas__main_process(ac, mrq);
   if (str_eq(source, "bests")) return fleas__bests_process(ac, mrq);

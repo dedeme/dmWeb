@@ -10,7 +10,7 @@ import Server from "../../data/Server.js"; //eslint-disable-line
 
 // VIEW ------------
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Names option. */
 export default class Names {

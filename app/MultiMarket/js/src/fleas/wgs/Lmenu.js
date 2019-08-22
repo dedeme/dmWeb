@@ -5,7 +5,7 @@
 import Domo from "../../dmjs/Domo.js";
 import Ui from "../../dmjs/Ui.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Left menu widget. */
 export default class Lmenu {

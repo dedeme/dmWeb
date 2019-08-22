@@ -11,8 +11,8 @@
 // All Map[Js]
 static Map *download (void *actor, Map *mrq) {
   AsyncActor *ac = actor;
-  CGI_GET_INT(nk_id, mrq, "nickId")
-  EMsg *e = net_update_historic(ac, nk_id);
+  CGI_GET_INT(nkId, mrq)
+  EMsg *e = net_update_historic(ac, nkId);
   Map *rp = map_new();
   map_put(rp, "err", js_wi(eMsg_error(e)));
   map_put(rp, "msg", js_ws(eMsg_msg(e)));
@@ -23,7 +23,7 @@ static Map *download (void *actor, Map *mrq) {
 char *sys__nicks_process(AsyncActor *ac, Map *mrq) {
   // Map[Js]
   Map *rp = map_new();
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
 
   if (str_eq(rq, "idata")) {
     void fn () {
@@ -50,29 +50,29 @@ char *sys__nicks_process(AsyncActor *ac, Map *mrq) {
   }
 
   if (str_eq(rq, "newNick")) {
-    CGI_GET_STR(nick, mrq, "nick")
+    CGI_GET_STR(nick, mrq)
     void fn () { map_put(rp, "ok", js_wb(nicks_add(nick))); }
     asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 
   if (str_eq(rq, "setNickSelId")) {
-    CGI_GET_INT(id, mrq, "id")
+    CGI_GET_INT(id, mrq)
     void fn () { conf_set_nick_sel_id(id); }
     asyncActor_wait(ac, fn);
     return cgi_empty();
   }
 
   if (str_eq(rq, "modNick")) {
-    CGI_GET_INT(nk_id, mrq, "nickId")
-    CGI_GET_STR(nk_name, mrq, "nickName")
+    CGI_GET_INT(nickId, mrq)
+    CGI_GET_STR(nickName, mrq)
     void fn () {
       int ok = 0;
       // Opt[Nick]
-      Opt *onk = nicks_get(nk_id);
+      Opt *onk = nicks_get(nickId);
       if (opt_is_full(onk)) {
         Nick *nk = opt_get(onk);
-        nick_set_name(nk, nk_name);
+        nick_set_name(nk, nickName);
         ok = nicks_modify(nk);
       }
       map_put(rp, "ok", js_wb(ok));
@@ -87,9 +87,9 @@ char *sys__nicks_process(AsyncActor *ac, Map *mrq) {
   }
 
   if (str_eq(rq, "test")) {
-    CGI_GET_INT(nk_id, mrq, "nickId")
+    CGI_GET_INT(nickId, mrq)
     void fn () {
-      EMsg *e = tp_e1(quotes_editor_read(nk_id));
+      EMsg *e = tp_e1(quotes_editor_read(nickId));
       map_put(rp, "err", js_wi(eMsg_error(e)));
       map_put(rp, "msg", js_ws(eMsg_msg(e)));
     }

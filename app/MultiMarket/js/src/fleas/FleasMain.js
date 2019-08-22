@@ -13,7 +13,7 @@ import Champions from "./Champions.js";
 import Charts from "./Charts.js";
 import Model from "./Model.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Fleas Main page. */
 export default class FleasMain {

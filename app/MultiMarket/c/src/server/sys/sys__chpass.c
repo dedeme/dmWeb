@@ -6,12 +6,12 @@
 
 // mrq is Map[Js]
 char *sys__chpass_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(user, mrq, "user")
-  CGI_GET_STR(pass, mrq, "pass")
-  CGI_GET_STR(new_pass, mrq, "newPass")
+  CGI_GET_STR(user, mrq)
+  CGI_GET_STR(pass, mrq)
+  CGI_GET_STR(newPass, mrq)
 
   char *r = NULL;
-  void fn () { r = cgi_change_pass(user, pass, new_pass); }
+  void fn () { r = cgi_change_pass(user, pass, newPass); }
   asyncActor_wait(ac, fn);
   return r;
 }

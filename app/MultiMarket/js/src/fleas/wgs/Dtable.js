@@ -12,7 +12,7 @@ import {_} from "../../I18n.js";
 import Main from "../../Main.js";
 import Wcharts from "../wgs/Wcharts.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 const DATE_MODEL = 0;
 const FLEA = 1;
@@ -201,12 +201,12 @@ export default class Dtable {
       let cs = [
         $("td").klass("header").style("text-align:right").text(String(i + 1)),
         $("td").klass("menu").text(fleaName),
-        $("td").klass("fnumber").text(new Dec(e[ASSETS], 2).toEu()),
-        $("td").klass("fnumber").text(new Dec(e[AVG] * 100, 2).toEu() + "%"),
-        $("td").klass("fnumber").text(new Dec(e[MDV] * 100, 2).toEu() + "%"),
-        $("td").klass("fnumber").text(new Dec(e[SEL] * 100, 2).toEu() + "%"),
-        $("td").klass("fnumber").text(new Dec(e[BUYS], 0).toEu()),
-        $("td").klass("fnumber").text(new Dec(e[SELLS], 0).toEu())
+        $("td").klass("fnumber").text(new Dec(e[ASSETS], 2).toIso()),
+        $("td").klass("fnumber").text(new Dec(e[AVG] * 100, 2).toIso() + "%"),
+        $("td").klass("fnumber").text(new Dec(e[MDV] * 100, 2).toIso() + "%"),
+        $("td").klass("fnumber").text(new Dec(e[SEL] * 100, 2).toIso() + "%"),
+        $("td").klass("fnumber").text(new Dec(e[BUYS], 0).toIso()),
+        $("td").klass("fnumber").text(new Dec(e[SELLS], 0).toIso())
       ];
       let formats = self._params[1];
       let pops = [];
@@ -231,7 +231,7 @@ export default class Dtable {
       }
       cs = cs.concat(formats.map((p, i) => {
         const r = $("td").klass("param").text(
-          p[0] + new Dec(e[PARAMS][i] * p[1], p[2]).toEu() + p[3]
+          p[0] + new Dec(e[PARAMS][i] * p[1], p[2]).toIso() + p[3]
         );
         if (self._isChampions) {
           r.att("title", pops[i]);

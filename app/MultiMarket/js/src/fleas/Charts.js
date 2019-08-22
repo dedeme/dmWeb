@@ -8,7 +8,7 @@ import Ui from "../dmjs/Ui.js";
 import Lmenu from "./wgs/Lmenu.js";
 import Wcharts from "./wgs/Wcharts.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Charts page. */
 export default class Charts {

@@ -8,7 +8,7 @@ import Ui from "../dmjs/Ui.js";
 import It from "../dmjs/It.js";
 import ChSmall from "./ChSmall.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 
 const ORDER_DAY = 0;

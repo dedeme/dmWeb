@@ -9,7 +9,7 @@
 char *sys__settings_process(AsyncActor *ac, Map *mrq) {
   // Map[Js]
   Map *rp = map_new();
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
 
   if (str_eq(rq, "getLang")) {
     void fn () { map_put(rp, "lang", js_ws(conf_lang())); }
@@ -17,7 +17,7 @@ char *sys__settings_process(AsyncActor *ac, Map *mrq) {
     return cgi_ok(rp);
   }
   if (str_eq(rq, "setLang")) {
-    CGI_GET_STR(lang, mrq, "lang")
+    CGI_GET_STR(lang, mrq)
     void fn () { conf_set_lang(lang); }
     asyncActor_wait(ac, fn);
     return cgi_empty();

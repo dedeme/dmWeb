@@ -10,7 +10,7 @@ import Dec from "../dmjs/Dec.js";
 import DateDm from "../dmjs/DateDm.js";
 import DatePicker from "../dmjs/DatePicker.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 const controlBase = (id, value) => {
   if (value === "") {
@@ -33,7 +33,7 @@ const controlDouble = (lang, id, value) => {
   if (
     (lang === "es" &&
       (
-        !Dec.isNumberEu(value) || Dec.newEu(value, 4).value <= 0 ||
+        !Dec.isNumberIso(value) || Dec.newIso(value, 4).value <= 0 ||
         value.indexOf(".") !== -1
       )
     ) ||
@@ -138,7 +138,7 @@ export default class Annotations {
         this.sendAnn(
           "se", v(dtf), v(nkf), Number(v(stf)),
           this._lang === "es"
-            ? Dec.newEu(v(prf), 4).value
+            ? Dec.newIso(v(prf), 4).value
             : Dec.newEn(v(prf), 4).value,
           ""
         );
@@ -177,7 +177,7 @@ export default class Annotations {
         this.sendAnn(
           "bu", v(dtf), v(nkf), Number(v(stf)),
           this._lang === "es"
-            ? Dec.newEu(v(prf), 4).value
+            ? Dec.newIso(v(prf), 4).value
             : Dec.newEn(v(prf), 4).value,
           ""
         );
@@ -211,7 +211,7 @@ export default class Annotations {
         this.sendAnn(
           "in", v(dtf), "", 0,
           this._lang === "es"
-            ? Dec.newEu(v(amf), 4).value
+            ? Dec.newIso(v(amf), 4).value
             : Dec.newEn(v(amf), 4).value,
           ""
         );
@@ -243,7 +243,7 @@ export default class Annotations {
         this.sendAnn(
           "wi", v(dtf), "", 0,
           this._lang === "es"
-            ? Dec.newEu(v(amf), 4).value
+            ? Dec.newIso(v(amf), 4).value
             : Dec.newEn(v(amf), 4).value,
           ""
         );
@@ -277,7 +277,7 @@ export default class Annotations {
         this.sendAnn(
           "pr", v(dtf), "", 0,
           this._lang === "es"
-            ? Dec.newEu(v(amf), 4).value
+            ? Dec.newIso(v(amf), 4).value
             : Dec.newEn(v(amf), 4).value,
           v(def)
         );
@@ -313,7 +313,7 @@ export default class Annotations {
         this.sendAnn(
           "fe", v(dtf), "", 0,
           this._lang === "es"
-            ? Dec.newEu(v(amf), 4).value
+            ? Dec.newIso(v(amf), 4).value
             : Dec.newEn(v(amf), 4).value,
           v(def)
         );
@@ -349,7 +349,7 @@ export default class Annotations {
         this.sendAnn(
           "pd", v(dtf), "", 0,
           this._lang === "es"
-            ? Dec.newEu(v(amf), 4).value
+            ? Dec.newIso(v(amf), 4).value
             : Dec.newEn(v(amf), 4).value,
           v(def)
         );
@@ -385,7 +385,7 @@ export default class Annotations {
         this.sendAnn(
           "nd", v(dtf), "", 0,
           this._lang === "es"
-            ? Dec.newEu(v(amf), 4).value
+            ? Dec.newIso(v(amf), 4).value
             : Dec.newEn(v(amf), 4).value,
           v(def)
         );
@@ -508,7 +508,7 @@ export default class Annotations {
     );
     const fNumber = (n, d) => {
       const nm = new Dec(n, d);
-      return this._lang === "es" ? nm.toEu() : nm.toEn();
+      return this._lang === "es" ? nm.toIso() : nm.toEn();
     };
 
     this._cash.removeAll().html(fNumber(cash, 2));
@@ -585,7 +585,7 @@ export default class Annotations {
    */
   async sendAnn (type, date, nick, i, db, str) { // ------------------- sendAnn
     const ddm =
-      this._lang === "es" ? DateDm.fromEu(date) : DateDm.fromEn(date);
+      this._lang === "es" ? DateDm.fromIso(date) : DateDm.fromEn(date);
     const d = ddm.toBase();
     const ann =
       type === "se" || type === "bu" ? [type, 0, d, nick, i, db]

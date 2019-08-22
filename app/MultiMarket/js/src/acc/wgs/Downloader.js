@@ -8,7 +8,7 @@ import Main from "../../Main.js";
 import Domo from "../../dmjs/Domo.js";
 import Ui from "../../dmjs/Ui.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Downloader widget. */
 export default class Downloader {

@@ -10,7 +10,7 @@ import It from "../dmjs/It.js";
 import Dec from "../dmjs/Dec.js";
 import DateDm from "../dmjs/DateDm.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 const ALL = 0;
 const YEAR = 1;
@@ -59,7 +59,7 @@ const mkCanvas = (data, type) => {
 
   ctx.font = "12px sans";
   for (let i = 0; i < 5; ++i) {
-    const tx = new Dec(base + step * i, 0).toEu();
+    const tx = new Dec(base + step * i, 0).toIso();
     const text = ctx.measureText(tx);
     ctx.fillText(tx, (95 - text.width), 175 - 40 * i);
 
@@ -156,7 +156,7 @@ export default class Profits {
    */
   async show () {
     const formatN = n => this._lang === "es"
-      ? new Dec(n, 2).toEu()
+      ? new Dec(n, 2).toIso()
       : new Dec(n, 2).toEn()
     ;
     const rq = {

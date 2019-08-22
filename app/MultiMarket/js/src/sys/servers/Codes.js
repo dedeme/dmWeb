@@ -12,7 +12,7 @@ import {ServerCode} from "../../data/Server.js"; //eslint-disable-line
 
 // VIEW ------------
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Codes option. */
 export default class Codes {

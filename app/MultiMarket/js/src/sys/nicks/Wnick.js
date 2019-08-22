@@ -11,7 +11,7 @@ import Nick from "../../data/Nick.js"; //eslint-disable-line
 
 // VIEW ------------
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 const img = (id, title) => Ui.img(id).att("title", title);
 const limg = (id, title) => Ui.lightImg(id).att("title", title);
 const emptyBt = (title) => $("div")
@@ -71,7 +71,7 @@ export default class Wnick {
       this._nicks.edit(nick.id);
     }).klass("link").text(nick.name);
     if (this._volume > 0) {
-      nk.att("title", new Dec(this._volume, 0).toEu());
+      nk.att("title", new Dec(this._volume, 0).toIso());
     }
 
     return $("table")

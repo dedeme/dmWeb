@@ -7,7 +7,7 @@ import DateDm from "../../dmjs/DateDm.js";
 import {_} from "../../I18n.js";
 import Main from "../../Main.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Log used in Home page */
 export default class Log {
@@ -115,7 +115,7 @@ export default class Log {
     this._area.value(this._text
       .filter(e => this._error ? e.charAt(0) === "E" : true)
       .filter(e => {
-        const d = DateDm.fromEu(e.substring(1, 11));
+        const d = DateDm.fromIso(e.substring(1, 11));
         if (this._day) {
           return d.eq(now) || d.eq(now1);
         }

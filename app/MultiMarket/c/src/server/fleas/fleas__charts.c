@@ -8,7 +8,7 @@
 
 // mrq is Map[Js]
 char *fleas__charts_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
   // Map[Js]
   Map *rp = map_new();
 
@@ -20,7 +20,7 @@ char *fleas__charts_process(AsyncActor *ac, Map *mrq) {
     return cgi_ok(rp);
   }
   if (str_eq(rq, "nicks")) {
-    CGI_GET_STR(model, mrq, "model")
+    CGI_GET_STR(model, mrq)
     void fn () {
       conf_set_fleas_model(model);
       map_put(rp, "list", fleasdb_charts_read_nicks_js(model));

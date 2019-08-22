@@ -8,7 +8,7 @@ import {_} from "../I18n.js";
 import Ui from "../dmjs/Ui.js";
 import Dec from "../dmjs/Dec.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 const bpIn = $("input").att("type", "text");
 const bpLa = $("span").klass("frame").html("---");
@@ -114,11 +114,11 @@ const calc = (type) => {
     opLabel.html("---");
     const v = pentry.value().trim();
     let tx = "---";
-    if (v !== "" && Dec.isNumberEu(v)) {
+    if (v !== "" && Dec.isNumberIso(v)) {
       if (type === "buy") {
-        tx = new Dec(Dec.newEu(v, 2).value * 1.01, 2).toEu();
+        tx = new Dec(Dec.newIso(v, 2).value * 1.01, 2).toIso();
       } else {
-        tx = new Dec(Dec.newEu(v, 2).value * 0.99, 2).toEu();
+        tx = new Dec(Dec.newIso(v, 2).value * 0.99, 2).toIso();
       }
     }
     plabel.removeAll().html(tx);
@@ -139,19 +139,19 @@ const calc = (type) => {
       const val21 = val11;
       const val31 = new Dec(val0.value - val11.value * 2, 0);
       scheck10.disabled(false);
-      sentry10.value(val10.toEu());
+      sentry10.value(val10.toIso());
       sentry10.disabled(false);
       scheck11.disabled(false);
-      sentry11.value(val11.toEu());
+      sentry11.value(val11.toIso());
       sentry11.disabled(false);
 
-      slabel20.removeAll().klass("disabled").html(val20.toEu());
+      slabel20.removeAll().klass("disabled").html(val20.toIso());
       scheck21.checked(false);
       scheck21.disabled(true);
-      sentry21.value(val21.toEu());
+      sentry21.value(val21.toIso());
       sentry21.disabled(true);
 
-      slabel31.removeAll().klass("disabled").html(val31.toEu());
+      slabel31.removeAll().klass("disabled").html(val31.toIso());
 
       // ----------------------
 
@@ -214,12 +214,12 @@ const calc = (type) => {
       sentry11.value(sentry10.value());
       sentry11.disabled(true);
 
-      slabel20.removeAll().klass("enabled").html(val20.toEu());
+      slabel20.removeAll().klass("enabled").html(val20.toIso());
       scheck21.disabled(false);
-      sentry21.value(val21.toEu());
+      sentry21.value(val21.toIso());
       sentry21.disabled(false);
 
-      slabel31.removeAll().klass("disabled").html(val31.toEu());
+      slabel31.removeAll().klass("disabled").html(val31.toIso());
     } else {
       fCheck0();
     }
@@ -248,12 +248,12 @@ const calc = (type) => {
       sentry10.value(sentry11.value());
       sentry10.disabled(true);
 
-      slabel20.removeAll().klass("enabled").html(val20.toEu());
+      slabel20.removeAll().klass("enabled").html(val20.toIso());
       scheck21.disabled(false);
-      sentry21.value(val21.toEu());
+      sentry21.value(val21.toIso());
       sentry21.disabled(false);
 
-      slabel31.removeAll().klass("disabled").html(val31.toEu());
+      slabel31.removeAll().klass("disabled").html(val31.toIso());
     } else {
       fCheck0();
     }
@@ -354,7 +354,7 @@ export default class Trading {
 
   formatN (n, dec) {
     const d = new Dec(n, dec);
-    return this._lang === "es" ? d.toEu() : d.toEn();
+    return this._lang === "es" ? d.toIso() : d.toEn();
   }
 
   /**

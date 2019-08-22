@@ -1,151 +1,247 @@
-// Copyright 2-Jan-2018 ºDeme
+// Copyright 18-Aug-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-goog.provide("Main");
+import Domo from "./dmjs/Domo.js"; //eslint-disable-line
+import Client from "./dmjs/Client.js";
+import Ui from "./dmjs/Ui.js";
+import It from "./dmjs/It.js";
+import Menu from "./dmjs/Menu.js";
+import Expired from "./core/Expired.js";
+import Auth from "./core/Auth.js";
+import {I18n, _, _args} from "./I18n.js";
+import Bye from "./core/Bye.js";
 
-goog.require("github_dedeme");
-goog.require("I18n");
-goog.require("Dom");
-goog.require("user_Expired");
-goog.require("user_Auth");
-goog.require("user_Chpass");
-goog.require("Conf");
-goog.require("Db");
-goog.require("Bye");
-goog.require("paths_Control");
-goog.require("index_Control");
-goog.require("module_Control");
-goog.require("code_Control");
+import Conf from "./data/Conf.js";
+import Dpath from "./data/Dpath.js";
+import Paths from "./Paths.js";
+import Index from "./Index.js";
+import Module from "./Module.js";
+import Code from "./Code.js";
 
-Main = class {
+const app = "CDoc";
+const version = "201909";
+const langStore = `${app}__lang`;
+const captchaAuthStore = `${app}__captcha`;
+const captchaChpassStore = `${app}__captchaCh`;
+
+const $ = e => Ui.$(e);
+
+let client = null;
+
+/**
+    Main page.
+**/
+export default class Main {
+
   constructor () {
+    client = new Client(true, app, () => {
+      new Expired(this).show();
+    });
     /**
-     * @private
-     * @type {Conf}
-     */
-    this._conf = null;
-    /** @private */
-    this._client = new Client(
-      Main.app(),
-      () => { new user_Expired(this).show(); }
-    );
-    /** @private */
-    this._dom = new Dom(this);
+        @type {!Conf}
+    **/
+    this._conf = new Conf("@", "es", true);
+
+    this._menu = $("div");
+    this._credits = $("a")
+      .att("href", "doc/about.html")
+      .att("target", "blank");
+    this._view = $("div");
   }
 
-  /** @return {string} */
-  static app () {
-    return "CDoc";
-  }
-
-  /** @return {string} */
-  static version () {
-    return "201803";
-  }
-
-  /** @return {string} */
-  static langStore () {
-    return Main.app() + "__lang";
-  }
-
-  /** @return {string} */
-  static captchaAuthStore () {
-    return Main.app() + "__captcha";
-  }
-
-  /** @return {string} */
-  static captchaChpassStore () {
-    return Main.app() + "__captchaCh";
-  }
-
-  /** @return {!Conf} */
-  conf () {
-    if (this._conf === null) {
-      throw ("conf is null");
-    }
+  /**
+      @return {!Conf}
+  **/
+  get conf () {
     return this._conf;
   }
 
-  /** @return {!Client} */
-  client () {
-    return this._client;
+  /**
+      @return {!Domo}
+  **/
+  get view () {
+    return this._view;
   }
 
-  /** @return {!Dom} */
-  dom () {
-    return this._dom;
-  }
-
-  run () {
-    const self = this;
-    const client = self._client;
-    client.connect(ok => {
-      if (ok) {
-        const data = {"page": "Main", "rq": "get"};
-        client.send0(data, rp => {
-          self._conf = Conf.restore(
-            /** @type {!Array<?>} */ (JSON.parse(rp["conf"]))
-          );
-          if (self._conf.lang() === "es") I18n.es(); else I18n.en();
-
-          const url = Ui.url();
-          let path = url["0"];
-          if (path === undefined) {
-            path = self._conf.path();
-            location.assign("?" + self._conf.path());
-          } else {
-            const data = {
-              "page": "Main",
-              "rq": "set",
-              "conf": self._conf.serialize()
-            };
-            client.send0(data, rp => {
-              if (path === "@") {
-                this._client.setPageId();
-                new paths_Control(self).run();
-              } else if (path.indexOf("@") === -1) {
-                new index_Control(self).run();
-              } else {
-                if (!url["1"]) {
-                  new module_Control(self).run();
-                } else {
-                  new code_Control(self).run();
-                }
-              }
-            });
-          }
-        });
-      } else {
-        new user_Auth(self, self._client).show();
-      }
-    });
-  }
-
-  // menu ------------------------------
+  // View ----------------------------------------------------------------------
 
   /**
-   * @return {void}
-   */
+      @private
+      @return {!Domo}
+  **/
+  get wg () {
+    return $("div")
+      .add(this._menu)
+      .add(this._view)
+      .add($("p").html("&nbsp;"))
+      .add($("hr"))
+      .add($("table").klass("main")
+        .add($("tr")
+          .add($("td").add(this._credits))
+          .add($("td")
+            .style("text-align: right;font-size: 10px;" +
+              "color:#808080;font-size:x-small;")
+            .html(`- © ºDeme. ${Main.app} (${Main.version}) -`))))
+    ;
+  }
+
+  /**
+      @return {void}
+  **/
+  show () {
+    $("@body").removeAll().add(this.wg);
+    this.update();
+  }
+
+  // Control -------------------------------------------------------------------
+
   bye () {
-    const self = this;
-    const data = {"rq": "logout"};
-    self._client.send0(data, rp => { new Bye(self).show(); });
+    if (!confirm(_("Application exit?"))) {
+      return;
+    }
+    const rq = {
+      "page": "Main",
+      "rq": "setPath",
+      "option": Ui.url()["0"] || "@"
+    };
+    Main.client.rq(rq);
+    const rq2 = {
+      "page": "logout"
+    };
+    Main.client.rq(rq2);
+
+    new Bye(this).show();
   }
 
   /**
-   * @param {string} page
-   * @return {void}
-   */
-  go (page) {
+      @return {!Promise}
+  **/
+  async update () {
     const self = this;
-//    self.conf().setPage(page);
-//    self.sendConf(() => { self.run(); });
+
+    async function go () {
+      const rq = {
+        "page": "Main",
+        "rq": "idata"
+      };
+
+      const /** !Object<string, !Array<?>> */ rp = await Main.client.rq(rq);
+      self._conf = Conf.fromJs(rp["conf"]);
+      const /** !Array<Dpath> */ dpaths = rp["paths"].map(Dpath.fromJs);
+
+      if (self.conf.lang === "en") I18n.en();
+      else I18n.es();
+
+      self._credits.html("<small>" + _("Help & Credits") + "</small>");
+
+      const url = Ui.url();
+      const /** string */ page = url["0"] || self.conf.path;
+
+      const menu = new Menu();
+      menu.addLeft(
+        $("a").att("href", Main.urlBase + "?@").att("id", "menu_@")
+          .add(Ui.img("asterisk").style("vertical-align:middle"))
+      );
+      It.from(dpaths).filter(p =>
+        p.valid && p.show
+      ).sort((p1, p2) =>
+        p1.id.toUpperCase() > p2.id.toUpperCase() ? 1 : -1
+      ).each(p => {
+        menu.addLeft(Menu.separator());
+        menu.addLeft(Menu.mkLink(p.id, p.id));
+      });
+      menu.addRight(Menu.mkClose(() => self.bye()));
+      self._menu.removeAll().add(menu.wg);
+
+      if (page === "@") {
+        menu.setSelected(page);
+        new Paths(self).show(dpaths);
+      } else {
+        const ix = page.indexOf("@");
+        const mp = ix === -1 ? [page, null] : page.split("@");
+        if (mp.length > 2) {
+          alert(_args(_("'%0': url with 2 or more '@'"), page));
+          location.assign(Main.urlBase);
+        }
+        const [module, path] = [mp[0], mp[1]];
+        menu.setSelected(module);
+        if (url["1"]) {
+          new Code(self).show(module, path, url["1"]);
+        } else if (path === null) {
+          new Index(self).show(module);
+        } else {
+          new Module(self).show(module, path);
+        }
+      }
+    }
+
+    const url = Ui.url();
+    const /** string */ page = url["0"] || "@";
+
+    if (page === "@") {
+      const /** boolean */ ok = await Main.client.connect();
+      if (ok) go();
+      else new Auth(this).show();
+    } else {
+      go();
+    }
   }
 
+  // Static --------------------------------------------------------------------
 
-  // settings --------------------------
+  /**
+      @return {string }
+  **/
+  static get urlBase () {
+    let path = window.location.href;
+    const ix = path.indexOf("?");
+    path = ix === -1 ? path : path.substring(0, ix);
+    return path;
+  }
 
+  /**
+      @return {string} Application name
+  **/
+  static get app () {
+    return app;
+  }
+
+  /**
+      @return {string} Application version
+  **/
+  static get version () {
+    return version;
+  }
+
+  /**
+      @return {string} Key for language data store
+  **/
+  static get langStore () {
+    return langStore;
+  }
+
+  /**
+      @return {string} Key for authentication captcha data store
+  **/
+  static get captchaAuthStore () {
+    return captchaAuthStore;
+  }
+
+  /**
+      @return {string} Key for change pass captcha data store
+  **/
+  static get captchaChpassStore () {
+    return captchaChpassStore;
+  }
+
+  /**
+      @return {!Client}
+  **/
+  static get client () {
+    if (client === null) {
+      throw new Error("Client is not initialized");
+    }
+    return client;
+  }
 
 }
-new Main().run();
-

@@ -10,7 +10,7 @@ import Main from "../Main.js";  //eslint-disable-line
 import Menu from "../wgs/Menu.js";
 import {_} from "../I18n.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Ranking Main page. */
 export default class RankingMain {
@@ -95,7 +95,7 @@ export default class RankingMain {
       const suffix = fmt[3];
       body.push($("td").klass("fnumber").html(
         prefix +
-        new Dec(params[i] * multiplicator, decimals).toEu() +
+        new Dec(params[i] * multiplicator, decimals).toIso() +
         suffix
       ));
     });
@@ -121,12 +121,12 @@ export default class RankingMain {
       $("td").klass("header").html(_("Sells"))
     ];
     const body = [
-      $("td").klass("fnumber").html(new Dec(assets, 2).toEu()),
-      $("td").klass("fnumber").html(new Dec(avg * 100, 2).toEu() + "%"),
-      $("td").klass("fnumber").html(new Dec(mdv * 100, 2).toEu() + "%"),
-      $("td").klass("fnumber").html(new Dec(sel * 100, 2).toEu() + "%"),
-      $("td").klass("fnumber").html(new Dec(buys, 0).toEu()),
-      $("td").klass("fnumber").html(new Dec(sells, 0).toEu()),
+      $("td").klass("fnumber").html(new Dec(assets, 2).toIso()),
+      $("td").klass("fnumber").html(new Dec(avg * 100, 2).toIso() + "%"),
+      $("td").klass("fnumber").html(new Dec(mdv * 100, 2).toIso() + "%"),
+      $("td").klass("fnumber").html(new Dec(sel * 100, 2).toIso() + "%"),
+      $("td").klass("fnumber").html(new Dec(buys, 0).toIso()),
+      $("td").klass("fnumber").html(new Dec(sells, 0).toIso()),
     ];
     return $("table").att("align", "center").klass("white")
       .add($("tr").adds(head))
@@ -198,7 +198,7 @@ export default class RankingMain {
       const tx = new Dec(
         isPos ? 40 - step * i : base + step * i,
         0
-      ).toEu();
+      ).toIso();
       const text = ctx.measureText(tx);
       ctx.fillText(
         tx,

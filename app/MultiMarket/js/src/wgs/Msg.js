@@ -7,7 +7,7 @@ import ModalBox from "../dmjs/ModalBox.js";
 import {_} from "../I18n.js";
 import {MSG} from "../consts.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** MsgModal widget */
 export default class Msg {

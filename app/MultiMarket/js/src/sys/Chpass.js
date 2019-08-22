@@ -8,7 +8,7 @@ import Client from "../dmjs/Client.js";
 import Ui from "../dmjs/Ui.js";
 import Captcha from "../dmjs/Captcha.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Change password page. */
 export default class Chpass {

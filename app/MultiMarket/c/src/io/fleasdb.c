@@ -297,10 +297,7 @@ Arr *fleasdb_ranking (void) {
         flea_name(rs_flea(rsWeb_result(rsChampions_result(r2))))
       );
     }
-    Arr *dup;
-    Arr *rest;
-    it_duplicates(&dup, &rest, it, (FCMP)feq);
-    return it_from(rest);
+    return it_from(tp_e2(it_duplicates(it, (FCMP)feq)));
   }
 
   Arr *r = arr_from_js((Js *)file_read(ranking_db), (FFROM)rsChampions_from_js);

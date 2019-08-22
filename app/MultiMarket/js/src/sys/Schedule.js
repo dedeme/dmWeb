@@ -14,7 +14,7 @@ import MarketDay from "../data/MarketDay.js";
 import Wrule from "../wgs/Wrule.js";
 import Whour from "../wgs/Whour.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 function formatN (n) {
   if (n < 10) return "0" + String(n);

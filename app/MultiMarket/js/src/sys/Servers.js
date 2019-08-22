@@ -14,7 +14,7 @@ import Download from "./servers/Download.js";
 import Menu from "../wgs/Menu.js";
 import Nick from "../data/Nick.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 const NAMES = "names";
 const DAILY = "daily";

@@ -10,7 +10,7 @@
 
 // mrq is Map[Js]
 char *sys__annotations_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
   // Map[Js]
   Map *rp = map_new();
 
@@ -30,7 +30,7 @@ char *sys__annotations_process(AsyncActor *ac, Map *mrq) {
     return cgi_ok(rp);
   }
   if (str_eq(rq, "new")) {
-    CGI_GET(AccEntry *, ann, accEntry_from_js, mrq, "ann")
+    CGI_GET(AccEntry *, ann, accEntry_from_js, mrq)
     void fn () {
       accdb_diary_add(ann);
     }
@@ -38,8 +38,8 @@ char *sys__annotations_process(AsyncActor *ac, Map *mrq) {
     return cgi_empty();
   }
   if (str_eq(rq, "remove")) {
-    CGI_GET_INT(id, mrq, "id");
-    CGI_GET_STR(date, mrq, "date");
+    CGI_GET_INT(id, mrq);
+    CGI_GET_STR(date, mrq);
     char *year = str_left(date, 4);
     void fn () {
       accdb_diary_remove(year, id);

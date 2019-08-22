@@ -6,7 +6,7 @@ import Domo from "../../dmjs/Domo.js";
 import Ui from "../../dmjs/Ui.js";
 import Dec from "../../dmjs/Dec.js";
 import {_} from "../../I18n.js";
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Company char. */
 export default class Chart {
@@ -137,7 +137,7 @@ export default class Chart {
 
     ctx.font = numberFont;
     for (let i = 0; i < 5; ++i) {
-      const tx = new Dec(base + step * i, 2).toEu();
+      const tx = new Dec(base + step * i, 2).toIso();
       const text = ctx.measureText(tx);
       ctx.fillText(
         tx,

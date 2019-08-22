@@ -20,7 +20,7 @@ const langStore = `${app}__lang`;
 const captchaAuthStore = `${app}__captcha`;
 const captchaChpassStore = `${app}__captchaCh`;
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 let client = null;
 

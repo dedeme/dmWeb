@@ -8,7 +8,7 @@ import Ui from "../dmjs/Ui.js";
 import Lmenu from "./wgs/Lmenu.js";
 import Dtable from "./wgs/Dtable.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Model page. */
 export default class Model {

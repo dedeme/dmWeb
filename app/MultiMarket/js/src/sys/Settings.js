@@ -7,7 +7,7 @@ import {_, _args} from "../I18n.js";
 import Ui from "../dmjs/Ui.js";
 import Chpass from "./Chpass.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Settings page. */
 export default class Settings {

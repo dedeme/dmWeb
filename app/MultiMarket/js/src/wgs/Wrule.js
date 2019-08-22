@@ -3,7 +3,7 @@
 
 import Ui from "../dmjs/Ui.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Wrule widget. */
 export default class Wrule {

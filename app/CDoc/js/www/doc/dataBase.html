@@ -1,0 +1,687 @@
+<!doctyp html>
+<html>
+  <head>
+  <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+  <meta http-equiv='Pragma' content='no-cache' />
+  <meta name='lang' content='es' />
+  <meta name='author' content='ºDeme.' />
+  <link rel='icon' type='image/png' href='img/favicon.png' />
+  <link rel='stylesheet' href='../styles.css' type='text/css' />
+  <style>
+    code {color: #408060;}
+  </style>
+  </head>
+  <body style="background-color: #fafafb">
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>Main Directory</h2>
+
+    <!-------------->
+    <h3>backups</h3>
+
+    <p><code>data/backups</code></p>
+
+    <p>Structure:</p>
+    <pre>
+      Directory with a file for each backup.
+      Files has extension ".zip"
+    </pre>
+
+    <!-------------->
+    <h3>tmp</h3>
+
+    <p><code>data/tmp</code></p>
+
+    <p>Structure:</p>
+    <pre>
+      Directory with temporary files.
+    </pre>
+
+    <!-------------->
+    <h3>trash</h3>
+
+    <p><code>data/trash</code></p>
+
+    <p>Structure:</p>
+    <pre>
+      Directory with a file for each trash-backup.
+      Files has extension ".zip"
+    </pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>data</h2>
+
+    <!-------------->
+    <h3>calendar.db</h3>
+
+    <p><code>data/calendar.db</code></p>
+
+    <p>Information about market open and close.</p>
+
+    <p>Structure:</p>
+    <pre>
+      {
+        "general": <b>Timetable</b>,
+        "holidays": [ String ]
+        "specialDays": [ <b>MarketDay</b> ]
+      }
+      Where <b>Timetable</b> is [
+        (0) hopen: Int -- General open hour
+        (1) hminute: Int -- General open minute
+        (2) hopen: Int -- General open hour
+        (3) hminute: Int -- General open minute
+      ]
+      and <b>MarketDay</b> is [
+        (0) date: String -- Date
+        (1) hopen: Int -- General open hour
+        (2) hminute: Int -- General open minute
+        (3) hopen: Int -- General open hour
+        (4) hminute: Int -- General open minute
+      ]</pre>
+
+    <!-------------->
+    <h3>conf.db</h3>
+
+    <p><code>data/conf.db</code></p>
+
+    <p>Global variables.</p>
+
+    <p>Structure:</p>
+
+    <pre>
+      {
+        "activity": String -- Scheduler activity state
+        "fleasRunning": Bool -- If fleas thread is active
+        "lang": String --  Language
+        "nickSelId": Int -- Selected nick in browser page Sys->Nicks
+        "serverSelId": Int -- Selected nick in browser page Sys->Servers
+        "serverTab": String -- Selected configuration in browser page Sys->Servers
+        "sysPage": String -- Current browser page
+      }</pre>
+
+    <!-------------->
+    <h3>log.db</h3>
+
+    <p><code>data/log.db</code></p>
+
+    <p>Log entries.</p>
+
+    <p>Structure:</p>
+
+    <pre>
+      [ String ] -- Maximun entries: LOG_MAX_ENTRIES (30)</pre>
+
+    <!-------------->
+    <h3>nicks.db</h3>
+
+    <p><code>data/nicks.db</code></p>
+
+    <p>Companies list with their qualifications.</p>
+
+    <p>Structure:</p>
+    <pre>
+      [
+        (0) nextId: Int -- Ids generator
+        (1) model: Int -- Id of nick model
+        (2) nicks: [
+          (0) id: Int -- Identifier
+          (1) name: String -- Nick name (e.g. TEF)
+          (2) is_sel: Boolean
+        ]
+      ]</pre>
+
+    <!---------------->
+    <h3>servers.db</h3>
+
+    <p><code>data/servers.db</code></p>
+
+    <p>Urls of historic servers and companies codes.</p>
+
+    <p>Each server must have a implementation for each service that
+       it gives: Daily or Historic.</p>
+
+    <ul>
+      <li><i>Daily service</i> gives current quote of every company.</li>
+      <li><i>Historic service</i> gives date, open, close, maximum, minimum and
+          volume of last days for each company.</li>
+    </ul>
+
+    <p>Structure:</p>
+    <pre>
+      [
+        nextId: Int -- Ids generator
+        list: [<b>Server</b>]
+      ]
+      where <b>Server</b> is : [
+          (0) id: Int -- Identifier
+          (1) sort_name: String -- Not more than 5 characters (e.g. "INVER")
+          (2) name: String -- Complete name (e.g. Invertia)
+          (4) daily_conf: Opt <b>Rconf</b>
+          (5) historic_conf: Opt <b>Rconf</b>
+          (6) codes: [
+              (0) nick_id: Int -- Nick identifier
+              (1) code: Opt[String] -- Server code of nick
+            ]
+        ]
+      ]
+      where <b>Rconf</b> is [
+        (0) url: String
+        (1) sel: int
+            - if its value is 'SERVER_STOPPED':
+              Configuration will no be used.
+            - if its value is 'SERVER_ACTIVE':
+              Configuration will be used.
+            - if its value is 'SERVER_SELECTED':
+              Configuration will be used and
+              *daily_conf: (more than one allowed) It will be used to evaluate
+                           next day operations.
+              *historic_conf: (only one server allowed) Qualified 'vote'
+        (2) is_date_eu: Boolean
+        (3) date_separator: String -- converted to char
+        (4) is_iso_number: Boolean
+        (5) fields_type: String
+              * 'C' (Code) | 'Q' (Quote) combination for daily_conf
+              * 'D' (Date) | 'O' (Open) | 'C' (Close) | 'X' (maXimum) |
+                  'N' (miNimum) | 'V' (Volume) combination for historic_conf
+        (6) table_start: String -- Sequence of codes separates by '|'
+        (7) table_end: String -- Sequence of codes separates by '|'
+        (8) row_start: String -- Sequence of codes separates by '|'
+        (9) row_end: String -- Sequence of codes separates by '|'
+        (10)cols_start: Arr[String] -- A sequence of codes separates by '|' for
+                                       each field.
+        (11)cols_end: Arr[String] -- A sequence of codes separates by '|' for
+                                     each field.
+      ]</pre>
+
+    <!-------------->
+    <h3>version.txt</h3>
+
+    <p><code>data/version.txt</code></p>
+
+    <p>Data base identifier.</p>
+
+    <p>Structure:</p>
+
+    <pre>
+      String in plain text</pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>data/quotes</h2>
+
+    <!------------>
+    <h3><i>nicks</i>.db</h3>
+
+    <p><code>data/quotes/<i>NICK</i>.db</code></p>
+
+    <p>Several files with quotes of companies.</p>
+
+    <p>Structure of each file:</p>
+    <pre>
+      Each file has the name: '<i>nickName</i>.db'.
+      Each file is a number of lines with the following structure:
+
+      20190404:39.7000:39.9300:40.2900:39.7000:898111:false
+
+      That is:
+
+      date:open:close:maximum:minimum:volume:manuallyModified</pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>data/fleas</h2>
+
+    <!------------>
+    <h3>bests.db</h3>
+
+    <p><code>data/fleas/bests.db</code></p>
+
+    <p>Bests fleas of any model.</p>
+
+    <p>Structure:</p>
+
+    <pre>
+      {
+        "last40": [ <b>RsChampions</b> ] (TRACED_CHAMPIONS (40) entries)
+        "bests": [ <b>RsChampions</b> ] (TOTAL_CHAMPIONS (1000) entries)
+      }
+
+      Where <b>RsChampions</b> is: [
+          (0) model: String -- Flea model
+          (1) <b>RsWeb</b>
+        ]
+
+      Where <b>RsWeb</b> is:
+          (1) <b>Rs</b>
+          (2) params: [
+              (0) value1: double -- Param value in rate per one
+              (-) value-: double
+              --- So many as fles parameters
+            ]
+        ]
+
+      Where <b>Rs</b> is: [
+        (0) flea: <b>Flea</b> -- Flea data
+        (1) assets: <b>RsAssets</b> -- Simulation results data
+        (2) profits: <b>RsProfits</b> -- Profits data
+      ]
+
+      Where <b>Flea</b> is: [
+        (0) date: String -- Date of creation
+        (1) cycle: Int -- Cycle of creation
+        (2) id: Int -- Number or creation
+        (3) gen: <b>Gen</b> -- Flea parameters
+      ]
+      and <b>RsAssets</b>  is: [
+          (0) assets: Double -- €
+          (1) buys: Int -- Buys number
+          (2) sells: Int -- Sell number
+        ]
+      and <b>RsProfits</b> is: [
+          (0) avg: Double -- Profits average in rate per one
+          (1) var: Double -- Profits variance in rate per one
+          (2) sel: Double -- 'avg' corrected with 'var' in rate per one
+        ]
+
+      Where <b>Gen</b> is: [
+          (0) value0: double -- Value between 0 and 1
+          (-) value-: double
+          --- So many as Gen parameters
+        ]</pre>
+
+    <!-------------->
+    <h3>flog.db</h3>
+
+    <p><code>data/fleas/flog.db</code></p>
+
+    <p>Fleas log entries.</p>
+
+    <p>Structure:</p>
+
+    <pre>
+      [ String ]</pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>data/fleas/<i>MODELS</i></h2>
+
+    <!------------>
+    <h3><i>conf.db</i></h3>
+
+    <p><code>data/fleas/<i>MODEL</i>/conf.db</code></p>
+
+    <p>Parameters to show configuration.</p>
+
+    <p>Structure:</p>
+
+    <pre>
+      [
+        (0) params0: [
+            (0) prefix: String -- Some text before number or ""
+            (1) multiplicator: Double -- (normaly '1', for % '100'
+            (2) decimal: Int -- Decimal positions
+            (3) postfix: String -- Some text after number or ""
+          ]
+        (-) params-: [...]
+        --- So many as flea parameters
+      ]</pre>
+
+    <!------------>
+    <h3><i>dates</i></h3>
+
+    <p><code>data/fleas/<i>MODEL</i>/<i>date</i></code></p>
+
+    <p>FLEA_MODEL_DATES (10) files with daily results.</p>
+
+    <p>Structure of each file:</p>
+
+    <h3>Old</h3>
+    <pre>
+      [
+        (0) flea: <b>Flea</b> -- Flea data
+        (1) params: [
+            (0) value0: Double -- Param value in rate per one
+            (-) value-: Double
+            --- So many as flea parameters
+          ]
+        (2) assets: Double -- Assets (€) resulting from simulation
+        (3) pfAvg: Double -- Profits average in rate per one
+        (4) pfV: Double -- Profits variance in rate per one
+        (5) pfSel: Double -- Profits average corrected with variance in rate per one
+        (6) buys: Int -- Buys number from simulation
+        (7) sells: Int -- Sells number from simulation
+      ]
+      Where <b>Flea</b> is: [
+        (0) date: String -- Date of creation
+        (1) cycle: Int -- Cycle of creation
+        (2) id: Int -- Number or creation
+        (3) gen: <b>Gen</b> -- Flea parameters
+      ]
+      Where <b>Gen</b> is: [
+        (0) value0: double -- Value between 0 and 1
+        (-) value-: double
+        --- So mane as Gen parameters
+      ]</pre>
+
+    <h3>New</h3>
+    <pre>
+      [ <b>RsWeb</b> ]
+
+      Where <b>RsWeb</b> is:
+          (1) <b>Rs</b>
+          (2) params: [
+              (0) value1: Double -- Param value in rate per one
+              (-) value-: Double
+              --- So many as flea parameters
+            ]
+        ]
+
+      Where <b>Rs</b> is: [
+        (0) flea: <b>Flea</b> -- Flea data
+        (1) assets: <b>RsAssets</b> -- Simulation results data
+        (2) profits: <b>RsProfits</b> -- Profits data
+      ]
+
+      Where <b>Flea</b> is: [
+        (0) date: String -- Date of creation
+        (1) cycle: Int -- Cycle of creation
+        (2) id: Int -- Number or creation
+        (3) gen: <b>Gen</b> -- Flea parameters
+      ]
+      and <b>RsAssets</b>  is: [
+          (0) assets: Double -- €
+          (1) buys: Int -- Buys number
+          (2) sells: Int -- Sell number
+        ]
+      and <b>RsProfits</b> is: [
+          (0) avg: Double -- Profits average in rate per one
+          (1) var: Double -- Profits variance in rate per one
+          (2) sel: Double -- 'avg' corrected with 'var' in rate per one
+        ]
+
+      Where <b>Gen</b> is: [
+          (0) value0: double -- Value between 0 and 1
+          (-) value-: double
+          --- So many as Gen parameters
+        ]</pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>data/fleas/_bests</h2>
+
+    <!------------>
+    <h3><i>models</i></h3>
+
+    <p><code>data/fleas/_bests/<i>model</i></code></p>
+
+    <p>One file for each model with the historical daily best flea.</p>
+
+    <p>Structure of each file:</p>
+
+    <h3>Old</h3>
+    <pre>
+      [
+        (0) date: String -- Result date
+        (1) flea: <b>Flea</b> -- Flea data
+        (2) params: [
+            (0) value1: double -- Param value in rate per one
+            (-) value-: double
+            --- So many as fles parameters
+          ]
+        (3) assets: Double -- Assets (€) resulting from simulation
+        (4) pfAvg: Double -- Profits average in rate per one
+        (5) pfV: Double -- Profits variance in rate per one
+        (6) pfSel: Double -- Profits average corrected with variance in rate per one
+        (7) buys: Int -- Buys number from simulation
+        (8) sells: Int -- Sells number from simulation
+      ]
+      Where <b>Flea</b> is: [
+        (0) date: String -- Date of creation
+        (1) cycle: Int -- Cycle of creation
+        (2) id: Int -- Number or creation
+        (3) gen: <b>Gen</b> -- Flea parameters
+      ]
+      Where <b>Gen</b> is: [
+        (0) value0: double -- Value between 0 and 1
+        (-) value-: double
+        --- So mane as Gen parameters
+      ]</pre>
+
+    <h3>New</h3>
+    <pre>
+      [ <b>RsBests</b> ]
+
+      Where <b>RsBests</b> is: [
+          (0) date: String -- Result date
+          (1) <b>RsWeb</b>
+        ]
+
+      Where <b>RsWeb</b> is:
+          (1) <b>Rs</b>
+          (2) params: [
+              (0) value1: double -- Param value in rate per one
+              (-) value-: double
+              --- So many as fles parameters
+            ]
+        ]
+
+      Where <b>Rs</b> is: [
+        (0) flea: <b>Flea</b> -- Flea data
+        (1) assets: <b>RsAssets</b> -- Simulation results data
+        (2) profits: <b>RsProfits</b> -- Profits data
+      ]
+
+      Where <b>Flea</b> is: [
+        (0) date: String -- Date of creation
+        (1) cycle: Int -- Cycle of creation
+        (2) id: Int -- Number or creation
+        (3) gen: <b>Gen</b> -- Flea parameters
+      ]
+      and <b>RsAssets</b>  is: [
+          (0) assets: Double -- €
+          (1) buys: Int -- Buys number
+          (2) sells: Int -- Sell number
+        ]
+      and <b>RsProfits</b> is: [
+          (0) avg: Double -- Profits average in rate per one
+          (1) var: Double -- Profits variance in rate per one
+          (2) sel: Double -- 'avg' corrected with 'var' in rate per one
+        ]
+
+      Where <b>Gen</b> is: [
+          (0) value0: double -- Value between 0 and 1
+          (-) value-: double
+          --- So many as Gen parameters
+        ]</pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>data/fleas/_charts</h2>
+
+    <!------------>
+    <h3><i>models</i></h3>
+
+    <p><code>data/fleas/_charts/<i>model</i></code></p>
+
+    <p>One file for each model with chart data.</p>
+
+    <p>Structure of each file:</p>
+
+    <pre>
+      [
+        [
+          (0) nick: String -- nick
+          (1) profits: Double -- Profits
+          (2) quotes: [
+              (0) date: String
+              (1) close: Double
+              (2) ref: Double
+            ]
+          (3) operations [
+              [
+                (0) buySell: Int -- 0 = Sell, 1 = Buy
+                (1) stocks: Int -- Number of stoks bought or sold
+                (2) price: Double -- Price for stock
+              ]
+            ]
+        ]
+      ]</pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>data/fleas/_champions</h2>
+
+    <!------------>
+    <h3><i>NParameters</i></h3>
+
+    <p><code>data/fleas/_champions/<i>nparameters</i>.db</code></p>
+
+    <p>One file for each parameter number.</p>
+
+    <p>Structure of each file:</p>
+
+    <pre>
+      [ <b>RsChampions</b> ]
+
+      Where <b>RsChampions</b> is: [
+          (0) model: String -- Model name
+          (1) <b>RsWeb</b>
+        ]
+
+      Where <b>RsWeb</b> is:
+          (1) <b>Rs</b>
+          (2) params: [
+              (0) value1: double -- Param value in rate per one
+              (-) value-: double
+              --- So many as fles parameters
+            ]
+        ]
+
+      Where <b>Rs</b> is: [
+        (0) flea: <b>Flea</b> -- Flea data
+        (1) assets: <b>RsAssets</b> -- Simulation results data
+        (2) profits: <b>RsProfits</b> -- Profits data
+      ]
+
+      Where <b>Flea</b> is: [
+        (0) date: String -- Date of creation
+        (1) cycle: Int -- Cycle of creation
+        (2) id: Int -- Number or creation
+        (3) gen: <b>Gen</b> -- Flea parameters
+      ]
+      and <b>RsAssets</b>  is: [
+          (0) assets: Double -- €
+          (1) buys: Int -- Buys number
+          (2) sells: Int -- Sell number
+        ]
+      and <b>RsProfits</b> is: [
+          (0) avg: Double -- Profits average in rate per one
+          (1) var: Double -- Profits variance in rate per one
+          (2) sel: Double -- 'avg' corrected with 'var' in rate per one
+        ]
+
+      Where <b>Gen</b> is: [
+          (0) value0: double -- Value between 0 and 1
+          (-) value-: double
+          --- So many as Gen parameters
+        ]</pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>data/acc</h2>
+
+    <!------------>
+    <h3><i>Quotes</i></h3>
+
+    <p><code>data/acc/quotes.db</code></p>
+
+    <p>Daily quotes.</p>
+
+    <p>Structure:</p>
+
+    <pre>
+    {
+      <i>nick</i>: Double -- One for each nick ("TEF", "ELE", etc.)
+    }</pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>data/acc/diaries</h2>
+
+    <!------------>
+    <h3><i>Year</i></h3>
+
+    <p><code>data/acc/diaries/<i>year</i></code></p>
+
+    <p>One file for each year.</p>
+
+    <p>Structure of each file:</p>
+
+    <pre>
+    [
+      (0) nextId: Double
+      (1) [<b>AccEntry</b>]
+    ]
+
+    Where <b>AccEntry</b> is: [
+        (0) operation: String -- one of "se", "bu", "in", "wi", "pr", "fe",
+                                        "pd", "nd", "cl"
+        (1) id: Int -- Entry identifier
+        (2) date: String -- Operation date
+        (3) if cl -> noting
+               se-by -> nick: String -- Operation (sell or buy) nick
+               Otherwise -> ammount: Double -- Operation amount
+        (4) if cl, in, wi -> Nothing
+               se, bu -> stocks: Int -- Number of stocks
+               Otherwise -> Description: String -- Operation description
+        (5) if se, bu -> price: Double -- Stock price (of one)
+               Otherwise -> Nothing
+      ]</pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>data/acc/historic</h2>
+
+    <!------------>
+    <h3><i>Year</i></h3>
+
+    <p><code>data/acc/historic/<i>year</i></code></p>
+
+    <p>One file for each year.</p>
+
+    <p>Structure of each file:</p>
+
+    <pre>
+    [<b>AccHEntry</b>]
+
+    Where <b>AccHEntry</b> is [
+        (0) date: String -- Entry date
+        (1) profits: [<b>AccHProfits</b>]
+      ]
+
+    Where <b>AccHProfits</b> is [
+        (0) real: Double -- Real profits
+        (1) acc: Dounble -- Accounting profits
+        (2) risk: Double -- Risk profits
+      ]
+    ]</pre>
+
+    <!------------------------------------------------------------------------>
+    <hr>
+    <h2>Dependencies</h2>
+
+    <pre>
+      backups
+      ||- trash [restore, autorestore]
+      |- tmp [make, restore]
+      ---------
+
+      nicks.db
+      ||- quotes [add, remove, modify]
+      |-- servers.db [add, remove]
+      ---------
+    </pre>
+
+  </body>
+</html>

@@ -10,7 +10,7 @@
 
 // mrq is Map[Js]
 char *sys__home_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
   // Map[Js]
   Map *rp = map_new();
 

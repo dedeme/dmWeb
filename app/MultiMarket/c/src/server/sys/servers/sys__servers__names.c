@@ -6,14 +6,14 @@
 #include "io/servers.h"
 
 char *sys__servers__names_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
   // Map[Js]
   Map *rp = map_new();
 
   if (str_eq(rq, "changeNames")) {
-    CGI_GET_INT(id, mrq, "id")
-    CGI_GET_STR(shortName, mrq, "shortName")
-    CGI_GET_STR(name, mrq, "name")
+    CGI_GET_INT(id, mrq)
+    CGI_GET_STR(shortName, mrq)
+    CGI_GET_STR(name, mrq)
     void fn () {
       map_put(rp, "ok", js_wb(servers_set_names(id, shortName, name)));
     }

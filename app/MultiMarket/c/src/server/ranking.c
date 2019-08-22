@@ -41,7 +41,7 @@ static void rp_data (Map *rp, int sel) {
 
 // mrq is Map[Js]
 char *ranking_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
   // Map[Js]
   Map *rp = map_new();
 
@@ -56,7 +56,7 @@ char *ranking_process(AsyncActor *ac, Map *mrq) {
   }
 
   if (str_eq(rq, "newSel")) {
-    CGI_GET_INT(sel, mrq, "sel")
+    CGI_GET_INT(sel, mrq)
     void fn () {
       conf_set_ranking_selected(sel);
       rp_data(rp, sel);

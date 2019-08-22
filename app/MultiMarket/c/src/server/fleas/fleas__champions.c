@@ -10,7 +10,7 @@
 
 // mrq is Map[Js]
 char *fleas__champions_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
   // Map[Js]
   Map *rp = map_new();
 
@@ -23,13 +23,13 @@ char *fleas__champions_process(AsyncActor *ac, Map *mrq) {
     return cgi_ok(rp);
   }
   if (str_eq(rq, "setNParams")) {
-    CGI_GET_INT(nparams, mrq, "nparams")
+    CGI_GET_INT(nparams, mrq)
     void fn () { conf_set_champions_nparams(nparams); }
     asyncActor_wait(ac, fn);
     return cgi_empty();
   }
   if (str_eq(rq, "data")) {
-    CGI_GET_INT(nparams, mrq, "nparams")
+    CGI_GET_INT(nparams, mrq)
     void fn () {
       map_put(rp, "table", fleasdb_champions_read_js(nparams));
     }

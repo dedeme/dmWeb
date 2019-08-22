@@ -8,7 +8,7 @@ import Domo from "../dmjs/Domo.js";  //eslint-disable-line
 import Ui from "../dmjs/Ui.js";
 import Dec from "../dmjs/Dec.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 const balanceSeparator = () => $("td").klass("separator");
 
@@ -83,7 +83,7 @@ export default class Balance {
     const d = new Dec(n, dec);
     return n === Infinity ? "∞"
       : n === -Infinity ? "-∞"
-        : this._lang === "es" ? d.toEu() : d.toEn();
+        : this._lang === "es" ? d.toIso() : d.toEn();
   }
 
   sortf () {

@@ -5,7 +5,7 @@ import Main from "../Main.js";
 import {_, _args} from "../I18n.js";
 import Ui from "../dmjs/Ui.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Expired page. */
 export default class Expired {

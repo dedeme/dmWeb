@@ -8,7 +8,7 @@ import Ui from "../dmjs/Ui.js";
 import Main from "../Main.js";
 import {I18n, _} from "../I18n.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Authentication pages. */
 export default class Auth {

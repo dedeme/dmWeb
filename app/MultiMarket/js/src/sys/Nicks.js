@@ -15,7 +15,7 @@ import Nick from "../data/Nick.js";
 import Editor from "./nicks/Editor.js";
 import ListMaker from "./nicks/ListMaker.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /**
  * @param {!Array<!Nick>} list

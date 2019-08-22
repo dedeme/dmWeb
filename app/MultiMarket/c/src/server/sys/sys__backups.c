@@ -8,7 +8,7 @@
 
 // mrq is Map[Js]
 char *sys__backups_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
   // Map[Js]
   Map *rp = map_new();
 
@@ -31,7 +31,7 @@ char *sys__backups_process(AsyncActor *ac, Map *mrq) {
     return cgi_empty();
   }
   if (str_eq(rq, "restoreAppend")) {
-    CGI_GET_STR(data, mrq, "data");
+    CGI_GET_STR(data, mrq);
     void fn () { backups_restore_append(data); }
     asyncActor_wait(ac, fn);
     return cgi_empty();
@@ -47,7 +47,7 @@ char *sys__backups_process(AsyncActor *ac, Map *mrq) {
     return cgi_ok(rp);
   }
   if (str_eq(rq, "autorestore")) {
-    CGI_GET_STR(file, mrq, "file");
+    CGI_GET_STR(file, mrq);
     void fn () { backups_autorestore(file); }
     asyncActor_wait(ac, fn);
     return cgi_empty();
@@ -58,7 +58,7 @@ char *sys__backups_process(AsyncActor *ac, Map *mrq) {
     return cgi_empty();
   }
   if (str_eq(rq, "restoreTrash")) {
-    CGI_GET_STR(file, mrq, "file");
+    CGI_GET_STR(file, mrq);
     void fn () { trash_restore(file); }
     asyncActor_wait(ac, fn);
     return cgi_empty();

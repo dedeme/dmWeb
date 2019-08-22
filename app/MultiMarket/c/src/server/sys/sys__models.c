@@ -13,7 +13,7 @@
 char *sys__models_process(AsyncActor *ac, Map *mrq) {
   // Map[Js]
   Map *rp = map_new();
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
 
   if (str_eq(rq, "idata")) {
     void fn () {
@@ -62,9 +62,9 @@ char *sys__models_process(AsyncActor *ac, Map *mrq) {
   }
 
   if (str_eq(rq, "update")) {
-    CGI_GET_STR(nick, mrq, "nick");
-    CGI_GET_STR(model, mrq, "model");
-    CGI_GET(Darr *, params, darr_from_js, mrq, "params");
+    CGI_GET_STR(nick, mrq);
+    CGI_GET_STR(model, mrq);
+    CGI_GET(Darr *, params, darr_from_js, mrq);
     void fn () {
       map_put(rp, "ok", js_wb(!managerdb_set_nick (nick, model, params)));
     }

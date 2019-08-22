@@ -15,7 +15,7 @@ import Balance from "./Balance.js";
 import Trading from "./Trading.js";
 import Profits from "./Profits.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Acc Main page. */
 export default class AccMain {

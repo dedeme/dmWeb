@@ -104,7 +104,7 @@
 /// Avg days of champions
 #define CHAMPIONS_AVG 10
 
-/// Number total of champion fleas
+/// Number total of champion fleas per group
 #define TOTAL_CHAMPIONS 500
 
 /// Quotes number in account charts

@@ -5,7 +5,7 @@ import Domo from "../dmjs/Domo.js"; //eslint-disable-line
 import Ui from "../dmjs/Ui.js";
 import It from "../dmjs/It.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 function formatN (n) {
   if (n < 10) return "0" + String(n);

@@ -11,7 +11,7 @@
 char *sys__servers_process(AsyncActor *ac, Map *mrq) {
   // Map[Js]
   Map *rp = map_new();
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
 
   if (str_eq(rq, "idata")) {
     void (fn)() {
@@ -34,28 +34,28 @@ char *sys__servers_process(AsyncActor *ac, Map *mrq) {
   }
 
   if (str_eq(rq, "new")) {
-    CGI_GET_STR(short_name, mrq, "shortName")
-    void (fn)() { map_put(rp, "ok", js_wb(servers_add(short_name))); }
+    CGI_GET_STR(shortName, mrq)
+    void (fn)() { map_put(rp, "ok", js_wb(servers_add(shortName))); }
     asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 
   if (str_eq(rq, "del")) {
-    CGI_GET_INT(id, mrq, "id")
+    CGI_GET_INT(id, mrq)
     void (fn)() { servers_remove(id); }
     asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }
 
   if (str_eq(rq, "setServerSelId")) {
-    CGI_GET_INT(id, mrq, "id")
+    CGI_GET_INT(id, mrq)
     void (fn)() { conf_set_server_sel_id(id); }
     asyncActor_wait(ac, fn);
     return cgi_empty();
   }
 
   if (str_eq(rq, "setServerTab")) {
-    CGI_GET_STR(id, mrq, "id")
+    CGI_GET_STR(id, mrq)
     void (fn)() { conf_set_server_tab(id); }
     asyncActor_wait(ac, fn);
     return cgi_empty();

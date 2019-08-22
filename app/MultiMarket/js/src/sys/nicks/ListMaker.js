@@ -6,7 +6,7 @@ import Ui from "../../dmjs/Ui.js";
 import {_} from "../../I18n.js";
 import Wnick from "./Wnick.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Nick page -> List. */
 export default class ListMaker {

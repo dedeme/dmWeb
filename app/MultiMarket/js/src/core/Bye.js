@@ -5,7 +5,7 @@ import Main from "../Main.js";
 import {_args, _} from "../I18n.js";
 import Ui from "../dmjs/Ui.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 /** Bye page. */
 export default class Bye {
   /**

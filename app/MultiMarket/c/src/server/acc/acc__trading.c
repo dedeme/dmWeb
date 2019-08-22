@@ -13,7 +13,7 @@
 
 // mrq is Map[Js]
 char *acc__trading_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
   // Map[Js]
   Map *rp = map_new();
 

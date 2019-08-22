@@ -6,7 +6,7 @@ import Ui from "../../dmjs/Ui.js";
 import {_} from "../../I18n.js";
 import Main from "../../Main.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Fleas log launched in Home page */
 export default class Flog {

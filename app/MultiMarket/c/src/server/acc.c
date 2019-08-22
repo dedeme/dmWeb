@@ -9,7 +9,7 @@
 #include "server/acc/acc__profits.h"
 
 char *acc_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(source, mrq, "source")
+  CGI_GET_STR(source, mrq)
 
   if (str_eq(source, "Downloader")) return acc__downloader_process(ac, mrq);
   if (str_eq(source, "Companies")) return acc__companies_process(ac, mrq);

@@ -13,7 +13,7 @@ import Nick from "../../data/Nick.js";
 import Quote from "../../data/Quote.js";
 import Wrule from "../../wgs/Wrule.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 const INIT = "init";
 const DISABLED = "disabled";

@@ -7,7 +7,7 @@
 
 // mrq is Map[Js]
 char *sys__main_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(rq, mrq, "rq")
+  CGI_GET_STR(rq, mrq)
   // Map[Js]
   Map *rp = map_new();
 
@@ -17,7 +17,7 @@ char *sys__main_process(AsyncActor *ac, Map *mrq) {
     return cgi_ok(rp);
   }
   if (str_eq(rq, "go")) {
-    CGI_GET_STR(option, mrq, "option")
+    CGI_GET_STR(option, mrq)
     void fn () { conf_set_sys_page(option); }
     asyncActor_wait(ac, fn);
     return cgi_empty();

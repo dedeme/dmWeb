@@ -19,7 +19,7 @@
 #include "server/sys/sys__models.h"
 
 char *sys_process(AsyncActor *ac, Map *mrq) {
-  CGI_GET_STR(source, mrq, "source")
+  CGI_GET_STR(source, mrq)
 
   if (str_eq(source, "SysMain")) return sys__main_process(ac, mrq);
   if (str_eq(source, "Home")) return sys__home_process(ac, mrq);

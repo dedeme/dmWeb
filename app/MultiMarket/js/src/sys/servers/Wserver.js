@@ -11,7 +11,7 @@ import Server from "../../data/Server.js"; //eslint-disable-line
 
 // VIEW ------------
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 const img = (id, title) => Ui.img(id).att("title", title);
 const emptyBt = (title) => $("div")
   .style("padding:5px;" +

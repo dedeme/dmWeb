@@ -14,7 +14,7 @@ import NumberField from "../dmjs/NumberField.js";
 import {Manager, ManagerEntry, ModelMxMn, ManagerFormat}
   from "../data/Manager.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
 /** Models page. */
 export default class Models {
@@ -151,7 +151,7 @@ export default class Models {
             const f = e.paramFmts[ix];
             return $("td").klass("number").text(
               f.prefix +
-              new Dec(p * f.multiplicator, f.decimals).toEu() +
+              new Dec(p * f.multiplicator, f.decimals).toIso() +
               f.suffix
             );
           }))))
@@ -180,7 +180,7 @@ export default class Models {
             const f = e.paramFmts[ix];
             return $("td").klass("number").text(
               f.prefix +
-              new Dec(p * f.multiplicator, f.decimals).toEu() +
+              new Dec(p * f.multiplicator, f.decimals).toIso() +
               f.suffix
             ).att("title", e.paramCfs[ix].name);
           }
