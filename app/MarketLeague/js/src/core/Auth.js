@@ -8,25 +8,28 @@ import Ui from "../dmjs/Ui.js";
 import Main from "../Main.js";
 import {I18n, _} from "../I18n.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
-/** Authentication pages. */
+/**
+    Authentication pages.
+**/
 export default class Auth {
   /**
-   * @param {!Main} main Main page
-   */
+      @param {!Main} main Main page
+  **/
   constructor (main) {
     /**
-     * @private
-     * @type {!Main}
-     */
+        @private
+        @type {!Main}
+    **/
     this._main = main;
   }
 
-  // VIEW ----------------------------------------
-  // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+  // VIEW ----------------------------------------------------------------------
 
-  /** @return {void} */
+  /**
+      @return {void}
+  **/
   show () {
     const main = this._main;
     const captchaStore = Main.captchaAuthStore;
@@ -49,13 +52,12 @@ export default class Auth {
       .att("id", "accept")
       .value(_("Accept"));
 
-    /** @type {!Captcha} */
-    const captcha = new Captcha(captchaStore, 3);
+    const /** !Captcha */ captcha = new Captcha(captchaStore, 3);
 
     /**
-     * Change selected language
-     * @return {void}
-     */
+        Change selected language
+        @return {void}
+    **/
     const changeLanguage = () => {
       Store.put(
         Main.langStore,
@@ -65,13 +67,13 @@ export default class Auth {
     };
 
     /**
-     * Accept button pressed
-     * @param {string} user User
-     * @param {string} pass Password
-     * @param {boolean} persistent If is 'true' connection lasts until its
-     *    maximum.
-     * @return {Promise}
-     */
+        Accept button pressed
+        @param {string} user User
+        @param {string} pass Password
+        @param {boolean} persistent If is 'true' connection lasts until its
+          maximum.
+        @return {Promise}
+    **/
     const faccept = async (user, pass, persistent) => {
       if (user === "") {
         alert(_("User name is missing"));
@@ -93,9 +95,9 @@ export default class Auth {
     };
 
     /**
-     * @private
-     * @return {!Domo} Page body
-     */
+        @private
+        @return {!Domo} Page body
+    **/
     function body () {
       const counter = captcha.counter();
       const counterLimit = captcha.counterLimit();

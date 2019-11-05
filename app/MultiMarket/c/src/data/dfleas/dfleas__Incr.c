@@ -9,6 +9,8 @@
 #include "data/dfleas/incr/incr__3a58.h"
 #include "data/dfleas/incr/incr__3aa.h"
 #include "data/dfleas/incr/incr__3ab.h"
+#include "data/dfleas/incr/incr__3a58a.h"
+#include "data/dfleas/incr/incr__3a58b.h"
 
 // Returns Arr[Model]
 Arr *dfleas__Incr_models (void) {
@@ -20,5 +22,7 @@ Arr *dfleas__Incr_models (void) {
   arr_push(mds, incr__3a58());
   arr_push(mds, incr__3aa());
   arr_push(mds, incr__3ab());
+  arr_push(mds, incr__3a58a());
+  arr_push(mds, incr__3a58b());
   return mds;
 }

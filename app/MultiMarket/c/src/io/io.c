@@ -52,6 +52,6 @@ void io_clear_tmp (void) {
 }
 
 char *io_time_stamp (void) {
-  DateTm *tm = date_tm_now();
+  DateTm *tm = dateTm_now();
   return str_f("%lld", ((long long) tm->tv_sec) + tm->tv_usec);
 }

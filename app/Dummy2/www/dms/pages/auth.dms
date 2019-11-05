@@ -1,0 +1,178 @@
+// Copyright 01-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"../common/i18n" import
+"../dm/wg" import
+"../dm/client" import
+"../dm/captcha" import
+"../dm/location" import
+
+(i18n,_) : _ =>
+
+// MODEL
+
+{} wrap,ref : Auth =
+{} wrap,ref : Client =
+
+( App =
+  {"app": App} data
+) new =>
+
+// VIEW
+
+( Auth =
+  this,Auth Auth <<
+  Auth "app" obj,get : App =
+  App "app" obj,get : app =
+  this,Client : App "client" obj,get : <<
+  App "view" obj,get : View =
+
+  "${app}__captcha" : captchaStore =
+  "${app}__lang" : langStore =
+
+  langStore store,take () ("es") wrap,option : i18n,init
+
+  "Pass" wg,field { att: id "UserIn" } ui,$ : UserIn =
+
+  "Accept" wg,pass { att: id "Pass" } ui,$ : Pass =
+
+  "input" {
+    att: type "checkbox"
+    style: "vertical-align: middle"
+  } ui,$ : Persistent =
+
+  "input" {
+    att: type "button"
+    style: "width:100px;"
+    att: id "Accept"
+    value: ("Accept":_)
+    on: { click:
+      (
+        UserIn (value) ui,prop
+        Pass (value) ui,prop
+        Persistent (checked) ui,prop
+        this,accept
+      )
+    }
+  } ui,$ : Accept =
+
+  captchaStore 3 captcha,new : Captcha =
+  Captcha captcha,counter : counter =
+  Captcha "counterLimit" obj,get : counterLimit =
+
+  (
+    [
+      "tr" {} [
+        "td" {
+          style: "padding: 10px 0px 0px 10px;text-align:right;"
+          html: ("User":_)
+        }
+        "td" { style: "padding: 10px 10px 0px 10px;" }[ UserIn ]
+      ]
+      "tr" {} [
+        "td" {
+          style: "padding: 10px 0px 0px 10px;text-align:right;"
+          html: ("Password":_)
+        }
+        "td" { style: "padding: 10px 10px 5px 10px;" }[ Pass ]
+      ]
+      "tr" {} [
+        "td" {
+          att: colspan "2"
+          style: ("border-top:1px solid #c9c9c9;"
+                  "padding: 5px 10px 10px;text-align:right;" +)
+        } [
+          "table" {
+            style: ("border-collapse : collapse;"
+                    "border : 0px;"
+                    "width : 100%;" + +)
+          } [
+            "tr" {} [
+              "td" { att: align "center", att: colspan "2" } [
+                Persistent
+                "span" { html: ("&nbsp;" "Keep connected":_ +) }
+              ]
+            ]
+            "tr" {} [
+              "td" {} [
+                (this,ChangeLanguage wg,link) {
+                  class "link"
+                  html: (
+                    langStore store,take
+                    ( "es" == ("EN") ("ES") elif)
+                    ( "EN")
+                    wrap,option
+                  )
+                }
+              ]
+              "td" { att: align "right" } [ Accept ]
+            ]
+          ]
+
+        ]
+      ]
+    ]
+  ) rows =>
+
+  (
+    "table" {
+      att: align "center"
+      style: (
+        "background-color: #f8f8f8;"
+        "border-collapse: collapse;" +
+        "padding: 10px;" +
+        "border: 1px solid rgb(110,130,150);" +)
+      }
+      [ "tr" {} [
+          "td" {
+            att: colspan "2"
+            style: (
+              "background-color:#e8e8e8;"
+              "border-bottom:1px solid #c9c9c9;" +
+              "padding: 10px;" +
+              "color:#505050;" + )
+            html: ("<big><big><b>" "Login":_ "</big></big></b>" + +) }]
+      ] rows + ui,$
+  ) body =>
+
+  View { removeAll } [
+    "div" {
+      class: "title"
+      html: ("&nbsp;<br>${app}<br>&nbsp;") }
+    "div" {} [ body ]
+  ] ui,$-
+
+  UserIn { focus } ui,$-
+
+@) show =>
+
+// CONTROL
+
+(
+  langStore
+    langStore store,take
+    ( "es" == ("en") ("es") elif)
+    ( "es")
+    wrap,option
+    store,put
+
+  this,Auth >> this,show
+) ChangeLanguage =
+
+( persistent =; pass =; user =
+  ( user "" ==)
+  ( "User name is missing":_ sys,alert)
+  else
+  ( pass "" ==)
+  ( "Password is missing":_ sys,alert)
+  else
+  (
+    this,Client >> : user : pass : persistent !
+    ( @i
+      toStr sys,alert
+      "" location,assign
+    )
+    client,authentication
+  )
+  if
+) accept =>

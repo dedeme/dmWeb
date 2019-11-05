@@ -30,12 +30,16 @@ Arr *backups_list (void) {
   return file_dir(backups_d());
 }
 
+static void backups_makef (Tp *t) {
+  ext_zip(tp_e1(t), tp_e2(t));
+}
+
 char *backups_make (void) {
   io_clear_tmp();
   char *name = str_f("%sBackup%s.zip", APP_NAME, date_to_str(date_now()));
   char *source = io_data_dir();
   char *target = path_cat(io_tmp_dir(), name, NULL);
-  ext_zip(source, target);
+  async_thread_detached((FPROC)backups_makef, tp_new(source, target));
   return name;
 }
 

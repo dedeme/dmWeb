@@ -1,0 +1,14 @@
+#!/bin/bash
+if [ -e __tmp ]
+then
+  rm -fR __tmp
+fi
+mkdir __tmp
+cd __tmp
+git clone --branch 201909 https://github.com/dedeme/libdmstk.git
+cd ..
+
+cp -R __tmp/libdmstk/src/* ./
+rm -fR __tmp
+
+

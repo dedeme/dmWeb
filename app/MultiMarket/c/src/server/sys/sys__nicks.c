@@ -11,8 +11,8 @@
 // All Map[Js]
 static Map *download (void *actor, Map *mrq) {
   AsyncActor *ac = actor;
-  CGI_GET_INT(nkId, mrq)
-  EMsg *e = net_update_historic(ac, nkId);
+  CGI_GET_INT(nickId, mrq)
+  EMsg *e = net_update_historic(ac, nickId);
   Map *rp = map_new();
   map_put(rp, "err", js_wi(eMsg_error(e)));
   map_put(rp, "msg", js_ws(eMsg_msg(e)));

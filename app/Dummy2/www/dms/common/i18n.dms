@@ -1,0 +1,29 @@
+// Generate by 'i18n.dms'. Don't modify
+
+{
+  "en": {
+    "Accept": "Accept"
+    "Help & Credits": "Help & Credits"
+    "Keep connected": "Keep connected"
+    "Login": "Login"
+    "Password": "Password"
+    "User": "User"
+  }
+  "es": {
+    "Accept": "Aceptar"
+    "Help & Credits": "Ayuda & créditos"
+    "Keep connected": "Mantenerse conectado"
+    "Login": "Identificación"
+    "Password": "Contraseña"
+    "User": "Usuario"
+  }
+} data : Dics =
+
+"en" wrap,ref : Dic =
+
+(this,Dic swap <<) init =>
+
+( key =
+  this,Dics : this,Dic >> : obj,get : Cdic =
+  Cdic key obj,has? (Cdic key obj,get) (key) elif
+) _ =>

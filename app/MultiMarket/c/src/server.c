@@ -18,9 +18,9 @@ static void request (Tp *ac_rq) {
   AsyncActor *ac = tp_e1(ac_rq);
   IserverRq *rq = tp_e2(ac_rq);
   TRY
-    DateTm *now = date_tm_now();
+    DateTm *now = dateTm_now();
     char *msg = hub_rp(ac, opt_get(iserverRq_msg(rq)));
-    if (date_tm_df(date_tm_now(), now) < 14000) {
+    if (dateTm_df(dateTm_now(), now) < 14000) {
       char *e = iserverRq_write(rq, msg);
       if (*e) THROW(exc_io_t) e _THROW
     } else {
@@ -86,6 +86,7 @@ void server_run (AsyncActor *ac, Iserver *server) {
         ));
       }
       asyncActor_wait(ac, fn);
+      sys_sleep(SERVER_ERROR_SLEEP);
       error_counter = 0;
     }
 

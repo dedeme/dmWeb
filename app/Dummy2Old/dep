@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd dms
+./dep
+cd ../js
+./dep
+cd ..

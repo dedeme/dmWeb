@@ -316,6 +316,7 @@ export default class Nicks {
     let msg = "";
     this._msg.show(true);
     for (const nickId of nickList) {
+      alert(nickId); // -------------------------------------------
       const nick = this._nickList.find(n => n.id === nickId);
       if (nick === undefined) {
         continue;

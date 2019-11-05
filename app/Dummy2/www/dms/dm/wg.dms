@@ -1,0 +1,70 @@
+// Copyright 02-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+( tp =
+  targetId =
+  "input" {
+    att: type tp
+    onEv: {
+      keydown
+      (
+        targetId
+        (
+          e
+          tId
+          `
+          if (e.keyCode === 13) {
+            e.preventDefault();
+            document.getElementById(tId).focus();
+          }
+          `
+        )
+        ffi,v
+      )
+    }
+  } ui,$
+) fieldPass. =>
+
+("text" this,fieldPass.) field =>
+
+("password" this,fieldPass.) pass =>
+
+( El =
+  El {
+    onEv : {
+      keydown
+      (
+        El
+        (
+          e
+          el
+          `
+          if (e.keyCode === 110) {
+            e.preventDefault();
+            const start = el.selectionStart;
+            const end = el.selectionEnd;
+            const text = el.value;
+            el.value = text.substring(0, start) + "," + text.substring(end);
+            el.selectionStart = start + 1;
+            el.selectionEnd = start + 1;
+          }
+          `
+        )
+        ffi,v
+      )
+    }
+  } ui,$
+) changePoint =>
+
+( id =
+  id "." str,index -1 == (id ".png" +) (id) elif : id =
+  "img" { att: src ("img/" id +) } ui,$
+) img =>
+
+(
+  this,img { style: "opcity:0.4" } ui,$
+) lightImg =>
+
+( fn =>
+  "span" { style "cursor:pointer", on: {click: (fn)} } ui,$
+) link =>

@@ -23,6 +23,9 @@
 /// Time to server sleep (milliseconds)
 #define SERVER_SLEEP 10
 
+/// Time to server sleep (milliseconds) when reading errors
+#define SERVER_ERROR_SLEEP 120000
+
 /// Time to scheduler sleep (milliseconds)
 #define SCHEDULER_SLEEP 50
 
@@ -90,10 +93,10 @@
 #define MIN_TO_BET 16000
 
 /// Minimum operations to survive (divisor: days / minSells)
-#define MIN_SELLS 15
+#define MIN_SELLS 30
 
 /// Maximun operations to survive (divisor: days / maxSells)
-#define MAX_SELLS 11
+#define MAX_SELLS 15
 
 /// Maximun number of fleas in "_best"
 #define MAXIMUM_HISTORIC_BESTS 252

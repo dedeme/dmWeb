@@ -1,0 +1,73 @@
+// Copyright 28-Oct-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"dm/client" import
+"pages/auth" import
+"common/i18n" import
+
+(i18n,_) : _ =>
+
+// Model
+
+"Dummy2" : app =
+"201909" : version =
+
+{
+  "app": app
+  "version": version
+  "client" : 1 app ("Witout implementation" puts) client,new
+  "lang": "en"
+  "menu": ""
+
+  "menuDiv": "div" ui,$
+  "view": "div" ui,$
+} data AppData =
+
+// View
+
+(
+  "div" {} [
+    (AppData "menuDiv" obj,get) {} []
+    (AppData "view" obj,get)
+    "p" { html: "&nbsp;" }
+    "hr"
+    "table" { class: "main" } [
+      "tr" {} [
+        "td" {} [
+          "a" {
+            att: href "doc/about.html"
+            att: target "blank"
+            html: ("<small>" "Help & Credits":_  "</small>" + +)
+          }
+        ]
+        "td" {
+          style: ("text-align: right;font-size: 10px;"
+                  "color:#808080;font-size:x-small;" +)
+          html: ("- © ºDeme. ${app} (${version}) -")
+        }]]]
+  ui,$
+) wg =>
+
+(
+  "@body" { removeAll } [ wg ] ui,$
+) show =>
+
+// Control
+
+( App =
+  "run" sys,alert
+) appRun =>
+
+(
+  AppData "client" obj,get
+  (
+    ( AppData appRun)
+    ( AppData auth,new auth,show)
+    elif
+  )
+  client,connect
+) update =>
+
+show
+update
+

@@ -1,0 +1,130 @@
+// Copyright 28-Oct-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+300 : klen. =
+
+(
+  this,klen. cryp,key
+) crypPass =>
+
+( # FExpired# =; appName# =; dmCgi?# =
+  {
+    "dmCgi?": dmCgi?#
+    "appName": appName#
+    "FExpired": FExpired#
+    "connectionId": ""
+  } data
+) new =>
+
+( "dmCgi?" obj,get) dmCgi?. =>
+( "appName" obj,get) appName. =>
+( "FExpired" obj,get) fExpired. =>
+( "connectionId" obj,get) connectionId. =>
+
+( Cl =
+  "Client_sessionId_" : Cl this,appName. : + store,take
+  ()
+  ( "0" b64.encode)
+  wrap,option
+) sessionId. =>
+
+( value =; Cl =
+  "Client_sessionId_" Cl this,appName. + : value : store,put
+) setSessionId. =>
+
+( Cl =
+  "Client_key_" : Cl this,appName. : + store,take
+  ()
+  ( "0" b64.encode)
+  wrap,option
+) key. =>
+
+( value =; Cl =
+  "Client_key_" Cl this,appName. + : value : store,put
+) setKey. =>
+
+( Cl =
+  "Client_user_" : Cl this,appName. : + store,take
+  ()
+  ( "0" b64.encode)
+  wrap,option
+) user. =>
+
+( value =; Cl =
+  "Client_user_" Cl this,appName. + : value : store,put
+) setUser. =>
+
+( # Fn# =; rq# =; Cl# = //  rq is in B64
+  Cl# this,dmCgi?. ("cgi-bin/ccgi.sh") ("") elif
+    Cl# this,appName.  ":" rq# + +
+      Fn#
+      com,localRq
+) sendServer. =>
+
+( # fn# =>; Cl# =
+  Cl#
+  dup this,sessionId. : sessionId# =
+
+  sessionId#
+    (
+      ( rp# =
+        (
+          rp# sessionId# cryp,decryp js,ro : Jsrp# =
+          Jsrp# "key" obj,get js,rs : key# =
+          key# "" : ==
+          ( 0 fn#)
+          (
+            Jsrp# "connectionId" obj,get js,rs : cId# =
+            Cl# key# this,setKey.
+            Cl# "connectionId" cId# obj,set
+            1 fn#
+          )
+          elif
+        )
+        ( E =
+          "RAW SERVER RESPONSE:\n${rp#}\n"
+            "CLIENT ERROR:\n${E exc,msg}\n" + sys,log
+        )
+        try
+      )
+      ( e =
+        "CLIENT ERROR:\n${e}" sys,log
+      )
+      wrap,either
+    ) this,sendServer.
+) connect =>
+
+( # fn# =>; expiration =; pass =; user# =; Cl# =
+  Cl# this,appName. this,crypPass : key# =
+  pass this,crypPass : p# =
+  expiration ("1") ("0") elif : exp =
+
+  Cl# ":" "${user#}:${p#}:${exp}" key# cryp,cryp +
+    (
+      ( rp# =
+        (
+          rp# key# cryp,decryp js,ro : Jsrp# =
+          Jsrp# "sessionId" obj,get js,rs : sessionId# =
+          sessionId# "" : ==
+          ( 0 fn#)
+          (
+            Jsrp# "key" obj,get js,rs : newKey# =
+            Cl# newKey# this,setKey.
+            Cl# sessionId# this,setSessionId.
+            Cl# user# this.setUser.
+            1 fn#
+          )
+          elif
+        )
+        ( E =
+          "RAW SERVER RESPONSE:\n${rp#}\n"
+            "CLIENT ERROR:\n${E exc,msg}\n" + sys,log
+        )
+        try
+      )
+      ( e =
+        "CLIENT ERROR:\n${e}" sys,log
+      )
+      wrap,either
+    ) this,sendServer.
+) authentication =>

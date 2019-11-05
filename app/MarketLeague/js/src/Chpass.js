@@ -1,4 +1,4 @@
-// Copyright 24-Jul-2019 ºDeme
+// Copyright 26-Aug-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 import Main from "./Main.js";
@@ -8,36 +8,29 @@ import Client from "./dmjs/Client.js";
 import Ui from "./dmjs/Ui.js";
 import Captcha from "./dmjs/Captcha.js";
 
-const $ = Ui.$;
+const $ = e => Ui.$(e);
 
-/** Change password page. */
+/**
+    Change password page.
+**/
 export default class Chpass {
 
   /**
-   * @param {!Main} main Main page
-   */
+      @param {!Main} main Main page
+  **/
   constructor (main) {
 
     this._main = main;
-
-    // VIEW --------
-    // TTTTTTTTTTTTT
-
     this._captcha = new Captcha(Main.captchaChpassStore, 3);
-
     this._pass = Ui.pass("newPass");
-
     this._newPass = Ui.pass("newPass2").att("id", "newPass");
-
     this._newPass2 = Ui.pass("accept").att("id", "newPass2");
-
     this._accept = $("input")
       .att("type", "button")
       .style("width:110px;")
       .att("id", "accept")
       .value(_("Accept"))
       .on("click", this.changePass.bind(this));
-
     this._cancel = $("input")
       .att("type", "button")
       .style("width:110px;")
@@ -45,13 +38,12 @@ export default class Chpass {
       .on("click", main.update.bind(main));
   }
 
-  // VIEW ----------------------------------------
-  // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+  // VIEW ----------------------------------------------------------------------
 
   /**
-   * @private
-   * @return {!Domo}
-   */
+      @private
+      @return {!Domo}
+  **/
   get wg () {
     const rows = [
       $("tr")
@@ -139,21 +131,20 @@ export default class Chpass {
   }
 
   /**
-   * @return {void}
-   */
+      @return {void}
+  **/
   show () {
     this._main.view.removeAll().add(this.wg);
     this._pass.e.focus();
   }
 
-  // CONTROL -------------------------------------
-  // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+  // CONTROL -------------------------------------------------------------------
 
   /**
-   * Changes password
-   * @private
-   * @return {Promise}
-   */
+      Changes password
+      @private
+      @return {Promise}
+  **/
   async changePass () {
     const passv = this._pass.value().trim();
     const newPassv = this._newPass.value().trim();
@@ -193,6 +184,7 @@ export default class Chpass {
     }
 
     const rq = {
+      "page": "Settings",
       "rq": "chpass",
       "user": Main.client.user(),
       "pass": Client.crypPass(passv),

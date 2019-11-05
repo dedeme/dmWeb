@@ -5,23 +5,26 @@ import Main from "../Main.js";
 import {_args, _} from "../I18n.js";
 import Ui from "../dmjs/Ui.js";
 
-const $ = Ui.$;
-/** Bye page. */
+const $ = e => Ui.$(e);
+
+/**
+    Bye page.
+**/
 export default class Bye {
   /**
-   * @param {!Main} main Main page
-   */
+      @param {!Main} main Main page
+  **/
   constructor (main) {
     /**
-     * @private
-     * @type {!Main}
-     */
+        @private
+        @type {!Main}
+    **/
     this._main = main;
   }
 
   /**
-   * @return {void}
-   */
+      @return {void}
+  **/
   show () {
     this._main.view.removeAll().add(
       $("div")

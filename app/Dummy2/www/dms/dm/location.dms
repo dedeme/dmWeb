@@ -1,0 +1,6 @@
+// Copyright 04-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+(
+  (url "location.assign(url);") ffi,v
+) assign =>

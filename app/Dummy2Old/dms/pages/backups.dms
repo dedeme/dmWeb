@@ -1,0 +1,192 @@
+// Copyright 27-Sep-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"../dm/cgi" import
+"../dm/ext" import
+
+( version =; appName =; Rq =
+
+  ( // () -> String
+    time,now time,toDate
+  ) mkDate =>
+
+  ( // () -> String
+    time,now time,toDateTime
+  ) mkTime =>
+
+  ( // () -> ()
+    cgi,home "tmp" path,+ dup
+    file,del
+    file,mkdir
+  ) clearTmp =>
+
+  ( // () -> List<String>
+    cgi,home "backups" path,+ file,dir
+  ) readBackups =>
+
+  ( // () -> ()
+    time,now : t0 =
+    t0 -7 time,addDays : t1 =
+    t0 time,broke : TmBk =
+    TmBk "day" obj,get
+      TmBk "month" obj,get
+        TmBk "year" obj,get 1 -
+          time,newDate : t2 =
+
+    t1 time,toDate : d1 =
+    t2 time,toDate : d2 =
+
+    "        " wrap,ref : Previous =
+    cgi,home "backups" path,+ file,dir dup (>) lst,sort
+    ( f =
+      f path,onlyName : name =
+      (
+        ( cgi,home "backups" f path,+ path,+ file,del )
+        ( name 4 str,left : Previous >> 4 str,left : ==)
+        if
+      )
+      ( name d1 > !)
+      elif
+      (
+        ( cgi,home "backups" f path,+ path,+ file,del )
+        ( name 6 str,left : Previous >> 6 str,left : ==)
+        if
+      )
+      ( name d2 > !)
+      if
+
+      Previous name <<
+    )
+    lst,each
+
+  ) filterBackups =>
+
+  ( // () -> List<String>
+    cgi,home "trash" path,+ file,dir
+  ) readTrash =>
+
+  ( // () -> ()
+    cgi,home "data" path,+
+      cgi,home "trash" mkTime ".zip" + path,+ path,+
+        ext,zip
+  ) toTrash =>
+
+  ( version =; appName =  // (String, String) -> String
+    cgi,home "tmp" "back.zip" path,+ path,+ : source =
+    cgi,home "tmp" path,+ : target =
+    source target ext,unzip
+
+    cgi,home "tmp" "data" "version.txt" path,+ path,+ path,+ : fversion =
+    ( "restore:version is wrong")
+    else
+    ( "")
+    ( version fversion file,read ==)
+    elif
+    ( "restore:version does not exist")
+    ( fversion file,exists? !)
+    if
+  ) unzip =>
+
+  // Start ---------------------------------------------------------------------
+
+  ("Field 'rq' is missing" fail) (Rq "rq" obj,has? !) if
+  Rq "rq" obj,get js,rs : rq =
+
+  ( "Value '" rq "' not allowed for 'rq'" + + fail)
+  else
+  (
+    cgi,home "trash" path,+ : dir =
+    dir file,del
+    dir file,mkdir
+    cgi,none
+  )
+  ( "clearTrash" rq ==)
+  elif
+  (
+    Rq "file" obj,get js,rs : f =
+    cgi,home "data" path,+ : dataDir =
+    cgi,home "trash" f path,+ path,+ : backupFile =
+
+    toTrash
+    dataDir file,del
+    backupFile cgi,home ext,unzip
+    cgi,none
+  )
+  ( "restoreTrash" rq ==)
+  elif
+  (
+    Rq "file" obj,get js,rs : f =
+    cgi,home "data" path,+ : dataDir =
+    cgi,home "backups" f path,+ path,+ : backupFile =
+
+    toTrash
+    dataDir file,del
+    backupFile cgi,home ext,unzip
+    cgi,none
+  )
+  ( "autorestore" rq ==)
+  elif
+  (
+    appName version unzip : err =
+    (
+      cgi,home "data" path,+ : dataDir =
+      cgi,home "tmp" "data" path,+ path,+ : tmpDataDir =
+      toTrash
+      dataDir file,del
+      tmpDataDir dataDir file,rename
+      clearTmp
+    )
+    (err "" ==)
+    if
+    { "fail": err js,ws } data cgi,ok
+  )
+  ( "restoreEnd" rq ==)
+  elif
+  (
+    clearTmp
+    cgi,none
+  )
+  ( "restoreAbort" rq ==)
+  elif
+  ( Rq "data" obj,get js,rs b64,decodeBytes : Bs =
+    cgi,home "tmp" "back.zip" path,+ path,+ file,aopen dup
+    Bs file,writeBin
+    file,close
+    cgi,none
+  )
+  ( "restoreAppend" rq ==)
+  elif
+  (
+    clearTmp
+    cgi,home "tmp" "back.zip" path,+ path,+ file,wopen file,close
+    cgi,none
+  )
+  ( "restoreStart" rq ==)
+  elif
+  (
+    cgi,home "data" path,+
+      cgi,home : "backups" : mkDate ".zip" + : path,+ path,+
+        ext,zip
+    filterBackups
+  )
+  ( "logout" rq ==)
+  elif
+  (
+    appName "Backup" mkDate ".zip" + + + : f =
+    cgi,home "data" path,+
+      cgi,home "tmp" f path,+ path,+
+        ext,zip
+    {"name": f js,ws} data cgi,ok
+  )
+  ( "backup" rq ==)
+  elif
+  (
+    {
+      "backups": readBackups (js,ws) lst,map js,wa
+      "trash": readTrash (js,ws) lst,map js,wa
+    } data cgi,ok
+  )
+  ( "lists" rq ==)
+  if
+) process =>
+/// (String, String, Obj<JSON>) -> String

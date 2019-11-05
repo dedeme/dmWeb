@@ -119,3 +119,4 @@ lib/liblocalcompilation/obj/pages/code.o : include/pages/code.h src/pages/code.c
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc) \
 		-I$(LIB_INCLUDE_tx)
+
