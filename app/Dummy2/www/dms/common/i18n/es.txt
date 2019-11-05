@@ -16,9 +16,6 @@ Change Language to %0 = Cambiar el lenguaje a %0
 Change Password = Cambiar la contraseña
 
 # ORPHAN
-Check gray squares = Marcar las casillas grises
-
-# ORPHAN
 Click %0 to continue. = Click %0 para continuar.
 
 # ORPHAN
@@ -76,9 +73,6 @@ New password is missing = Falta la nueva contraseña
 Nick = Nick
 
 # ORPHAN
-Password is missing = Falta la contraseña
-
-# ORPHAN
 Password successfully changed = La contraseña se cambió correctamente
 
 # ORPHAN
@@ -112,29 +106,35 @@ Third = Tercera
 Third Division = Tercera división
 
 # ORPHAN
-User name is missing = Falta el nombre del usuario
-
-# ORPHAN
-Wrong password = La contraseña es incorrecta
-
-# ORPHAN
 here = aquí
 
-# www/dms/pages/auth.dms: 44
+# www/dms/pages/auth.dms: 50
 Accept = Aceptar
+
+# www/dms/pages/auth.dms: 149
+Check gray squares = Marcar las casillas grises
 
 # www/dms/dummy2.dms: 40
 Help & Credits = Ayuda & créditos
 
-# www/dms/pages/auth.dms: 77
+# www/dms/pages/auth.dms: 92
 Keep connected = Mantenerse conectado
 
-# www/dms/pages/auth.dms: 118
+# www/dms/pages/auth.dms: 174
 Login = Identificación
 
-# www/dms/pages/auth.dms: 59
+# www/dms/pages/auth.dms: 74
 Password = Contraseña
 
-# www/dms/pages/auth.dms: 52
+# www/dms/pages/auth.dms: 209
+Password is missing = Falta la contraseña
+
+# www/dms/pages/auth.dms: 67
 User = Usuario
+
+# www/dms/pages/auth.dms: 206
+User name is missing = Falta el nombre del usuario
+
+# www/dms/pages/auth.dms: 131
+Wrong password = La contraseña es incorrecta
 

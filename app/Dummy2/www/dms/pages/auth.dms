@@ -22,15 +22,17 @@
 
 ( Auth =
   this,Auth Auth <<
-  Auth "app" obj,get : App =
-  App "app" obj,get : app =
-  this,Client : App "client" obj,get : <<
-  App "view" obj,get : View =
+  Auth .app : App =
+  App .app : app =
+  this,Client : App .client : <<
+  App .view : View =
 
   "${app}__captcha" : captchaStore =
   "${app}__lang" : langStore =
 
   langStore store,take () ("es") wrap,option : i18n,init
+
+  captchaStore 3 captcha,new : Captcha =
 
   "Pass" wg,field { att: id "UserIn" } ui,$ : UserIn =
 
@@ -48,6 +50,7 @@
     value: ("Accept":_)
     on: { click:
       (
+        Captcha
         UserIn (value) ui,prop
         Pass (value) ui,prop
         Persistent (checked) ui,prop
@@ -56,43 +59,40 @@
     }
   } ui,$ : Accept =
 
-  captchaStore 3 captcha,new : Captcha =
-  Captcha captcha,counter : counter =
-  Captcha "counterLimit" obj,get : counterLimit =
-
   (
     [
       "tr" {} [
         "td" {
           style: "padding: 10px 0px 0px 10px;text-align:right;"
-          html: ("User":_)
-        }
-        "td" { style: "padding: 10px 10px 0px 10px;" }[ UserIn ]
-      ]
+          html: ("User":_) }
+        "td" { style: "padding: 10px 10px 0px 10px;"
+          } [
+          UserIn ]]
       "tr" {} [
         "td" {
           style: "padding: 10px 0px 0px 10px;text-align:right;"
-          html: ("Password":_)
-        }
-        "td" { style: "padding: 10px 10px 5px 10px;" }[ Pass ]
-      ]
+          html: ("Password":_) }
+        "td" { style: "padding: 10px 10px 5px 10px;"
+          } [
+          Pass ]]
       "tr" {} [
         "td" {
           att: colspan "2"
-          style: ("border-top:1px solid #c9c9c9;"
-                  "padding: 5px 10px 10px;text-align:right;" +)
-        } [
+          style: `
+            border-top:1px solid #c9c9c9;
+            padding: 5px 10px 10px;text-align:right;`
+          } [
           "table" {
-            style: ("border-collapse : collapse;"
-                    "border : 0px;"
-                    "width : 100%;" + +)
+            style: `
+              border-collapse : collapse;
+              border : 0px;
+              width : 100%;`
           } [
             "tr" {} [
-              "td" { att: align "center", att: colspan "2" } [
+              "td" { att: align "center", att: colspan "2"
+              } [
                 Persistent
-                "span" { html: ("&nbsp;" "Keep connected":_ +) }
-              ]
-            ]
+                "span" { html: ("&nbsp;" "Keep connected":_ +) }]]
             "tr" {} [
               "td" {} [
                 (this,ChangeLanguage wg,link) {
@@ -102,28 +102,57 @@
                     ( "es" == ("EN") ("ES") elif)
                     ( "EN")
                     wrap,option
-                  )
-                }
-              ]
-              "td" { att: align "right" } [ Accept ]
-            ]
-          ]
+                  ) }]
+              "td" { att: align "right"
+                } [
+                Accept ]]]]]
 
-        ]
-      ]
-    ]
+      Captcha captcha,counter : 0 : >
+      (
+        "tr" {} [
+          "td" {
+            att: colspan "2"
+            style: `
+              border-top:1px solid #c9c9c9;
+              padding: 10px 10px 10px;text-align:right;`
+          } [
+            "table" {
+              att: align "center"
+              style: `
+                background-color: rgb(250, 250, 250);
+                border: 1px solid rgb(110,130,150);
+                font-family: sans;font-size: 14px;
+                padding: 4px;border-radius: 4px;`
+            } [
+              "tr" {} [ "td" { html: ("Wrong password":_) } ]]]]
+      )
+      if
+
+      Captcha captcha,counter : Captcha .counterLimit : >
+      (
+        "tr" {} [
+          "td" { att: colspan "2", att: align "center" } [
+            (Captcha captcha,mkWg) ]]
+        "tr" {} [
+          "td" {
+            att: colspan "2"
+            style: "padding: 5px 0px 5px 10px;text-align:center;"
+            html: ("Check gray squares":_) }]
+      )
+      if
+    ] data
   ) rows =>
 
   (
     "table" {
       att: align "center"
-      style: (
-        "background-color: #f8f8f8;"
-        "border-collapse: collapse;" +
-        "padding: 10px;" +
-        "border: 1px solid rgb(110,130,150);" +)
-      }
-      [ "tr" {} [
+      style: `
+        background-color: #f8f8f8;
+        border-collapse: collapse;
+        padding: 10px;
+        border: 1px solid rgb(110,130,150);`
+      } [
+        "tr" {} [
           "td" {
             att: colspan "2"
             style: (
@@ -131,8 +160,8 @@
               "border-bottom:1px solid #c9c9c9;" +
               "padding: 10px;" +
               "color:#505050;" + )
-            html: ("<big><big><b>" "Login":_ "</big></big></b>" + +) }]
-      ] rows + ui,$
+            html: ("<big><big><b>" "Login":_ "</big></big></b>" + +) }]]
+      rows + ui,$
   ) body =>
 
   View { removeAll } [
@@ -159,20 +188,38 @@
   this,Auth >> this,show
 ) ChangeLanguage =
 
-( persistent =; pass =; user =
-  ( user "" ==)
-  ( "User name is missing":_ sys,alert)
-  else
-  ( pass "" ==)
-  ( "Password is missing":_ sys,alert)
-  else
+( @issl :: persistent =; pass =; user =; Captcha =
+
+  Captcha captcha,counter : Captcha .counterLimit : >
+  Captcha captcha,match !
+  &&
   (
-    this,Client >> : user : pass : persistent !
-    ( @i
-      toStr sys,alert
-      "" location,assign
-    )
-    client,authentication
+    "Grey squares checks are wrong":_ sys,alert
+    this,Auth >> this,show
   )
-  if
+  (
+    ( user "" ==)
+    ( "User name is missing":_ sys,alert)
+    else
+    ( pass "" ==)
+    ( "Password is missing":_ sys,alert)
+    else
+    (
+      this,Client >> : user : pass : persistent !
+      ( @i dup puts
+        (
+          Captcha captcha,reset
+          "" location,assign
+        )
+        (
+          Captcha captcha,inc
+          this,Auth >> this,show
+        )
+        elif
+      )
+      client,authentication
+    )
+    if
+  )
+  elif
 ) accept =>

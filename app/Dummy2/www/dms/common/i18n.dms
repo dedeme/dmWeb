@@ -3,19 +3,27 @@
 {
   "en": {
     "Accept": "Accept"
+    "Check gray squares": "Check gray squares"
     "Help & Credits": "Help & Credits"
     "Keep connected": "Keep connected"
     "Login": "Login"
     "Password": "Password"
+    "Password is missing": "Password is missing"
     "User": "User"
+    "User name is missing": "User name is missing"
+    "Wrong password": "Wrong password"
   }
   "es": {
     "Accept": "Aceptar"
+    "Check gray squares": "Marcar las casillas grises"
     "Help & Credits": "Ayuda & créditos"
     "Keep connected": "Mantenerse conectado"
     "Login": "Identificación"
     "Password": "Contraseña"
+    "Password is missing": "Falta la contraseña"
     "User": "Usuario"
+    "User name is missing": "Falta el nombre del usuario"
+    "Wrong password": "La contraseña es incorrecta"
   }
 } data : Dics =
 

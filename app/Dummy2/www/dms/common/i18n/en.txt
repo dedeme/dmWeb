@@ -16,9 +16,6 @@ Change Language to %0 = Change Language to %0
 Change Password = Change Password
 
 # ORPHAN
-Check gray squares = Check gray squares
-
-# ORPHAN
 Click %0 to continue. = Click %0 to continue.
 
 # ORPHAN
@@ -76,9 +73,6 @@ New password is missing = New password is missing
 Nick = Nick
 
 # ORPHAN
-Password is missing = Password is missing
-
-# ORPHAN
 Password successfully changed = Password successfully changed
 
 # ORPHAN
@@ -112,29 +106,35 @@ Third = Third
 Third Division = Third Division
 
 # ORPHAN
-User name is missing = User name is missing
-
-# ORPHAN
-Wrong password = Wrong password
-
-# ORPHAN
 here = here
 
-# www/dms/pages/auth.dms: 44
+# www/dms/pages/auth.dms: 50
 Accept = Accept
+
+# www/dms/pages/auth.dms: 149
+Check gray squares = Check gray squares
 
 # www/dms/dummy2.dms: 40
 Help & Credits = Help & Credits
 
-# www/dms/pages/auth.dms: 77
+# www/dms/pages/auth.dms: 92
 Keep connected = Keep connected
 
-# www/dms/pages/auth.dms: 118
+# www/dms/pages/auth.dms: 174
 Login = Login
 
-# www/dms/pages/auth.dms: 59
+# www/dms/pages/auth.dms: 74
 Password = Password
 
-# www/dms/pages/auth.dms: 52
+# www/dms/pages/auth.dms: 209
+Password is missing = Password is missing
+
+# www/dms/pages/auth.dms: 67
 User = User
+
+# www/dms/pages/auth.dms: 206
+User name is missing = User name is missing
+
+# www/dms/pages/auth.dms: 131
+Wrong password = Wrong password
 

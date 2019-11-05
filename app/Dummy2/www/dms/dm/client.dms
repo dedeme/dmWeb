@@ -5,58 +5,62 @@
 
 (
   this,klen. cryp,key
-) crypPass =>
+) crypPass. =>
 
-( # FExpired# =; appName# =; dmCgi?# =
+( @lsi :: # FExpired# =; appName# =; dmCgi?# =
   {
     "dmCgi?": dmCgi?#
     "appName": appName#
     "FExpired": FExpired#
     "connectionId": ""
   } data
-) new =>
-
-( "dmCgi?" obj,get) dmCgi?. =>
-( "appName" obj,get) appName. =>
-( "FExpired" obj,get) fExpired. =>
-( "connectionId" obj,get) connectionId. =>
+@l) new =>
+/// (Int, String, () -> Void) -> Client
+///   dmCgi?: If is 'true' server is accessed through 'dmcgi'.
+///   appName: Used to customize LocalStore.
+///   FExpired: Function to launch expired page.
+///   return: Object with following fields:
+///     - dmCgi?
+///     - appName
+///     - FExpirec
+///     - connectionId (String): Connection identifier
 
 ( Cl =
-  "Client_sessionId_" : Cl this,appName. : + store,take
+  "Client_sessionId_" : Cl .appName : + store,take
   ()
   ( "0" b64.encode)
   wrap,option
 ) sessionId. =>
 
 ( value =; Cl =
-  "Client_sessionId_" Cl this,appName. + : value : store,put
+  "Client_sessionId_" Cl .appName + : value : store,put
 ) setSessionId. =>
 
 ( Cl =
-  "Client_key_" : Cl this,appName. : + store,take
+  "Client_key_" : Cl .appName : + store,take
   ()
   ( "0" b64.encode)
   wrap,option
 ) key. =>
 
 ( value =; Cl =
-  "Client_key_" Cl this,appName. + : value : store,put
+  "Client_key_" Cl .appName + : value : store,put
 ) setKey. =>
 
 ( Cl =
-  "Client_user_" : Cl this,appName. : + store,take
+  "Client_user_" : Cl .appName : + store,take
   ()
   ( "0" b64.encode)
   wrap,option
 ) user. =>
 
 ( value =; Cl =
-  "Client_user_" Cl this,appName. + : value : store,put
+  "Client_user_" Cl .appName + : value : store,put
 ) setUser. =>
 
 ( # Fn# =; rq# =; Cl# = //  rq is in B64
-  Cl# this,dmCgi?. ("cgi-bin/ccgi.sh") ("") elif
-    Cl# this,appName.  ":" rq# + +
+  Cl# .dmCgi? ("cgi-bin/ccgi.sh") ("") elif
+    Cl# .appName  ":" rq# + +
       Fn#
       com,localRq
 ) sendServer. =>
@@ -70,13 +74,13 @@
       ( rp# =
         (
           rp# sessionId# cryp,decryp js,ro : Jsrp# =
-          Jsrp# "key" obj,get js,rs : key# =
+          Jsrp# .key js,rs : key# =
           key# "" : ==
           ( 0 fn#)
           (
-            Jsrp# "connectionId" obj,get js,rs : cId# =
+            Jsrp# .connectionId js,rs : cId# =
             Cl# key# this,setKey.
-            Cl# "connectionId" cId# obj,set
+            Cl# "connectionId" cId# obj,put
             1 fn#
           )
           elif
@@ -93,10 +97,14 @@
       wrap,either
     ) this,sendServer.
 ) connect =>
+/// (Client, Int -> Void) => Void
+///   Cl: Client
+///   fn: Callback that receives '1' or '0' acording as conncection was
+///       successfuly or not.
 
 ( # fn# =>; expiration =; pass =; user# =; Cl# =
-  Cl# this,appName. this,crypPass : key# =
-  pass this,crypPass : p# =
+  Cl# .appName this,crypPass. : key# =
+  pass this,crypPass. : p# =
   expiration ("1") ("0") elif : exp =
 
   Cl# ":" "${user#}:${p#}:${exp}" key# cryp,cryp +
@@ -104,14 +112,14 @@
       ( rp# =
         (
           rp# key# cryp,decryp js,ro : Jsrp# =
-          Jsrp# "sessionId" obj,get js,rs : sessionId# =
+          Jsrp# .sessionId js,rs : sessionId# =
           sessionId# "" : ==
           ( 0 fn#)
           (
-            Jsrp# "key" obj,get js,rs : newKey# =
+            Jsrp# .key js,rs : newKey# =
             Cl# newKey# this,setKey.
             Cl# sessionId# this,setSessionId.
-            Cl# user# this.setUser.
+            Cl# user# this,setUser.
             1 fn#
           )
           elif

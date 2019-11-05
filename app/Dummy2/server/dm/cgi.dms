@@ -44,15 +44,15 @@
 // Users -----------------------------------------------------------------------
 
 ( Users =  // (List<String>) -> Void
-  this,Cgi. "home" obj,get : "users.db" : path,+
-    Users (js,ws) lst,map js,wa : this,Cgi. "fkey" obj,get : cryp,cryp
+  this,Cgi. .home : "users.db" : path,+
+    Users (js,ws) lst,map js,wa : this,Cgi. .fkey : cryp,cryp
       file,write
 ) writeUsers. =>
 
 ( // () -> List<String>
-  this,Cgi. "home" obj,get : "users.db" : path,+
+  this,Cgi. .home : "users.db" : path,+
   file,read
-    this,Cgi. "fkey" obj,get cryp,decryp
+    this,Cgi. .fkey cryp,decryp
     js,ra
     (js,rs) lst,map
 ) readUsers. =>
@@ -130,20 +130,20 @@
 // Sessions --------------------------------------------------------------------
 
 ( Sessions =  // (List<Js>) -> Void  . Js is a JSON array
-  this,Cgi. "home" obj,get : "sessions.db" : path,+
-    Sessions js,wa : this,Cgi. "fkey" obj,get : cryp,cryp
+  this,Cgi. .home : "sessions.db" : path,+
+    Sessions js,wa : this,Cgi. .fkey : cryp,cryp
   file,write
 ) writeSessions. =>
 
 (   // () -> List<Js>. Js is a JSON array
-  this,Cgi. "home" obj,get : "sessions.db" : path,+
-  file,read : this,Cgi. "fkey" obj,get : cryp,decryp : js,ra
+  this,Cgi. .home : "sessions.db" : path,+
+  file,read : this,Cgi. .fkey : cryp,decryp : js,ra
 ) readSessions. =>
 
 ( expiration =; comKey =; id =; sessionId =
     // (String, String, String, Int) -> Void
     // If expiration is 0 tNoExpiration is used
-  (this,tNoExpiration.) else (expiration) (expiration) if : lapse =
+  expiration (expiration) (this,tNoExpiration.) elif : lapse =
   time,now lapse time,add : tm =
 
   this,readSessions.
@@ -177,7 +177,7 @@
 
 // Public interface ------------------------------------------------------------
 
-( this,Cgi. "home" obj,get)
+( this,Cgi. .home)
 home =>
 /// () -> String
 /// Returns 'home' directory.
@@ -214,7 +214,7 @@ home =>
     this,klen cryp,genk : sessionId =
     this,klen cryp,genk : key =
     sessionId : user : key
-      expiration (this,Cgi. "tExpiration" obj,get) (0) elif
+      expiration (this,Cgi. .tExpiration) (0) elif
       this,addSession.
     {
       "level": level js,ws
@@ -264,7 +264,7 @@ home =>
   ( Ss =
     {
       "key": Ss js,ra 2 get
-      "conId": Ss js,ra 3 get
+      "connectionId": Ss js,ra 3 get
     } data wrap,some
   )
   ( wrap,none)
@@ -322,7 +322,7 @@ changePass =>
 
 (
   js,wo
-    this,Cgi. "key" obj,get
+    this,Cgi. .key
     ( cryp,cryp)
     ( "Cgi has not been initialized")
     wrap,option
