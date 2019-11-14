@@ -2,5 +2,9 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 (
+  ("location.href") ffi,s
+@s) href =>
+
+( @s
   (url "location.assign(url);") ffi,v
 ) assign =>

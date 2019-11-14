@@ -3,9 +3,12 @@
 
 300 : klen. =
 
-(
+( @s
   this,klen. cryp,key
-) crypPass. =>
+@s) crypPass =>
+/// s::Tx -> s::Code
+///   Tx  : Text to encrypt
+///   Code: Encripted text
 
 ( @lsi :: # FExpired# =; appName# =; dmCgi?# =
   {
@@ -13,9 +16,9 @@
     "appName": appName#
     "FExpired": FExpired#
     "connectionId": ""
-  } data
-@l) new =>
-/// (Int, String, () -> Void) -> Client
+  } map,from
+@m) new =>
+/// (i::dmcgi?, s::appName, (@ @)::FExpired) -> m::Client
 ///   dmCgi?: If is 'true' server is accessed through 'dmcgi'.
 ///   appName: Used to customize LocalStore.
 ///   FExpired: Function to launch expired page.
@@ -25,47 +28,50 @@
 ///     - FExpirec
 ///     - connectionId (String): Connection identifier
 
-( Cl =
+( @m :: Cl =
   "Client_sessionId_" : Cl .appName : + store,take
   ()
   ( "0" b64.encode)
   wrap,option
-) sessionId. =>
+@s) sessionId. =>
 
-( value =; Cl =
+( @sm :: value =; Cl =
   "Client_sessionId_" Cl .appName + : value : store,put
 ) setSessionId. =>
 
-( Cl =
+( @m :: Cl =
   "Client_key_" : Cl .appName : + store,take
   ()
   ( "0" b64.encode)
   wrap,option
-) key. =>
+@s) key. =>
 
-( value =; Cl =
+( @sm :: value =; Cl =
   "Client_key_" Cl .appName + : value : store,put
 ) setKey. =>
 
-( Cl =
-  "Client_user_" : Cl .appName : + store,take
-  ()
-  ( "0" b64.encode)
-  wrap,option
-) user. =>
-
-( value =; Cl =
+( @sm :: value =; Cl =
   "Client_user_" Cl .appName + : value : store,put
 ) setUser. =>
 
-( # Fn# =; rq# =; Cl# = //  rq is in B64
+( @lsm :: # Fn# =; rq# =; Cl# = //  rq is in B64
   Cl# .dmCgi? ("cgi-bin/ccgi.sh") ("") elif
     Cl# .appName  ":" rq# + +
       Fn#
       com,localRq
 ) sendServer. =>
 
-( # fn# =>; Cl# =
+( @m :: Cl =
+  "Client_user_" : Cl .appName : + store,take
+  ()
+  ( "0" b64.encode)
+  wrap,option
+@s) user =>
+/// (m::Cl) -> s::Id
+///   Cl: Client
+///   Id: Identifier.
+
+( @lm :: # fn# =>; Cl# =
   Cl#
   dup this,sessionId. : sessionId# =
 
@@ -80,7 +86,7 @@
           (
             Jsrp# .connectionId js,rs : cId# =
             Cl# key# this,setKey.
-            Cl# "connectionId" cId# obj,put
+            Cl# "connectionId" cId# map,put
             1 fn#
           )
           elif
@@ -97,17 +103,17 @@
       wrap,either
     ) this,sendServer.
 ) connect =>
-/// (Client, Int -> Void) => Void
+/// (m::Cl, (@i @)::fn) => @
 ///   Cl: Client
 ///   fn: Callback that receives '1' or '0' acording as conncection was
 ///       successfuly or not.
 
-( # fn# =>; expiration =; pass =; user# =; Cl# =
-  Cl# .appName this,crypPass. : key# =
-  pass this,crypPass. : p# =
+( @lissm :: # fn# =>; expiration =; pass =; user# =; Cl# =
+  Cl# .appName this,crypPass : key# =
+  pass this,crypPass : p# =
   expiration ("1") ("0") elif : exp =
 
-  Cl# ":" "${user#}:${p#}:${exp}" key# cryp,cryp +
+  Cl# : ":" "${user#}:${p#}:${exp}" key# cryp,cryp +
     (
       ( rp# =
         (
@@ -136,3 +142,67 @@
       wrap,either
     ) this,sendServer.
 ) authentication =>
+/// (m::Cl, s::user, s::pass, i::expiration, (@i @)::fn) => @
+///   Cl: Client.
+///   user: User identifier.
+///   pass: User password.
+///   expiration: 1 means temporary connection and 0 permanent one.
+///   fn: Callback which receive:
+///     0: If authentication failed.
+///     1: If authentication succeeded.
+
+( @ilmm :: # withConnectionId =; fn# =>; Rq =; Cl# =
+  withConnectionId (Rq : "connectionId" : Cl# .connectionId js,ws : map,put) if
+
+  Cl#
+    dup this,sessionId. ":"
+      Rq js,wo : Cl# this,key. : cryp,cryp + +
+    (
+      ( rp# =
+        (
+          rp# Cl# this,key. cryp,decryp js,ro Jsrp# =
+          ( Jsrp# fn#)
+          ( E =
+            "RAW SERVER RESPONSE:\n${rp#}\n"
+              "CLIENT ERROR:\n${E exc,msg}\n" + sys,log
+          )
+          try
+        )
+        ( E =
+          (
+            rp# "nosession" cryp,decryp js,ro Jsrp# =
+            Jsrp# "expired" map,has? (Jsrp# .expired js,rb) (0) elif
+            ( Cl# dup .FExpired run)
+            ( E exc,msg fail)
+            elif
+          )
+          ( E =
+            "RAW SERVER RESPONSE:\n${rp#}\n"
+              "CLIENT ERROR:\n${E exc,msg}\n" + sys,log
+          )
+          try
+        )
+        try
+      )
+      ( e =
+        "CLIENT ERROR:\n${e}" sys,log
+      )
+      wrap,either
+    ) this,sendServer.
+) send. =>
+
+( @lmm 0 this,send.)
+rq =>
+/// (m::Cl, m::Rq, (@m @)::fn) => @
+/// Request without connection identifier.
+///   Cl: Client
+///   Rq: Request. It is a map of JSON.
+///   fn: Callback which receive a map of JSON.
+
+( @lmm 1 this,send.)
+send =>
+/// (m::Cl, m::Rq, (@m @)::fn) => @
+/// Request with connection identifier.
+///   Cl: Client
+///   Rq: Request. It is a map of JSON.
+///   fn: Callback which receive a map of JSON.

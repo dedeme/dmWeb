@@ -7,41 +7,32 @@
 "../dm/captcha" import
 "../dm/location" import
 
-(i18n,_) : _ =>
-
 // MODEL
 
-{} wrap,ref : Auth =
-{} wrap,ref : Client =
-
-( App =
-  {"app": App} data
-) new =>
+( @m)
+new =>
 
 // VIEW
 
-( Auth =
-  this,Auth Auth <<
-  Auth .app : App =
-  App .app : app =
-  this,Client : App .client : <<
-  App .view : View =
+( @m :: # Auth# =
+  Auth# .app : app =
+  Auth# .view : View =
 
   "${app}__captcha" : captchaStore =
   "${app}__lang" : langStore =
 
   langStore store,take () ("es") wrap,option : i18n,init
 
-  captchaStore 3 captcha,new : Captcha =
+  captchaStore 3 captcha,new : Captcha# =
 
-  "Pass" wg,field { att: id "UserIn" } ui,$ : UserIn =
+  "Pass" wg,field { att: id "UserIn" } ui,$+ : UserIn =
 
-  "Accept" wg,pass { att: id "Pass" } ui,$ : Pass =
+  "Accept" wg,pass { att: id "Pass" } ui,$+ : Pass =
 
   "input" {
     att: type "checkbox"
     style: "vertical-align: middle"
-  } ui,$ : Persistent =
+  } ui,$+ : Persistent =
 
   "input" {
     att: type "button"
@@ -50,14 +41,15 @@
     value: ("Accept":_)
     on: { click:
       (
-        Captcha
+        Auth#
+        Captcha#
         UserIn (value) ui,prop
         Pass (value) ui,prop
         Persistent (checked) ui,prop
         this,accept
       )
     }
-  } ui,$ : Accept =
+  } ui,$+ : Accept =
 
   (
     [
@@ -95,7 +87,7 @@
                 "span" { html: ("&nbsp;" "Keep connected":_ +) }]]
             "tr" {} [
               "td" {} [
-                (this,ChangeLanguage wg,link) {
+                ((Auth# this,ChangeLanguage run) wg,link) {
                   class "link"
                   html: (
                     langStore store,take
@@ -107,7 +99,7 @@
                 } [
                 Accept ]]]]]
 
-      Captcha captcha,counter : 0 : >
+      Captcha# captcha,counter : 0 : >
       (
         "tr" {} [
           "td" {
@@ -128,11 +120,11 @@
       )
       if
 
-      Captcha captcha,counter : Captcha .counterLimit : >
+      Captcha# captcha,counter : Captcha# .counterLimit : >
       (
         "tr" {} [
           "td" { att: colspan "2", att: align "center" } [
-            (Captcha captcha,mkWg) ]]
+            (Captcha# captcha,mkWg) ]]
         "tr" {} [
           "td" {
             att: colspan "2"
@@ -161,7 +153,7 @@
               "padding: 10px;" +
               "color:#505050;" + )
             html: ("<big><big><b>" "Login":_ "</big></big></b>" + +) }]]
-      rows + ui,$
+      rows + ui,$+
   ) body =>
 
   View { removeAll } [
@@ -169,15 +161,15 @@
       class: "title"
       html: ("&nbsp;<br>${app}<br>&nbsp;") }
     "div" {} [ body ]
-  ] ui,$-
+  ] ui,$
 
-  UserIn { focus } ui,$-
+  UserIn { focus } ui,$
 
 @) show =>
 
 // CONTROL
 
-(
+( @m :: Auth =
   langStore
     langStore store,take
     ( "es" == ("en") ("es") elif)
@@ -185,17 +177,17 @@
     wrap,option
     store,put
 
-  this,Auth >> this,show
+  Auth this,show
 ) ChangeLanguage =
 
-( @issl :: persistent =; pass =; user =; Captcha =
+( @issmm :: # persistent =; pass =; user =; Captcha# =; Auth# =
 
-  Captcha captcha,counter : Captcha .counterLimit : >
-  Captcha captcha,match !
+  Captcha# captcha,counter : Captcha# .counterLimit : >
+  Captcha# captcha,match !
   &&
   (
     "Grey squares checks are wrong":_ sys,alert
-    this,Auth >> this,show
+    Auth# this,show
   )
   (
     ( user "" ==)
@@ -205,15 +197,15 @@
     ( "Password is missing":_ sys,alert)
     else
     (
-      this,Client >> : user : pass : persistent !
-      ( @i dup puts
+      Auth# .client : user : pass : persistent !
+      ( @i
         (
-          Captcha captcha,reset
+          Captcha# captcha,reset
           "" location,assign
         )
         (
-          Captcha captcha,inc
-          this,Auth >> this,show
+          Captcha# captcha,inc
+          Auth# this,show
         )
         elif
       )

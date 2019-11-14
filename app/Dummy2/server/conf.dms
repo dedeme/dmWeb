@@ -21,29 +21,29 @@
 /// () -> Void
 
 ( // () -> Map<Js>  .
-  this,Path. >> file,read js,rm
-) getJs =>
+  this,Path. >> file,read js,ro
+@m) getJs =>
 
-( JsValues = // (Map<Js>) -> Void
-  this,Path. >> JsValues js,wm file,write
+( @m:: JsValues = // (Map<Js>) -> Void
+  this,Path. >> JsValues js,wo file,write
 ) setJs. =>
 
-( this,getJs "lang" map,get >> js,rs)
-getLang =>
+( this,getJs .lang js,rs @s)
+lang =>
 /// () -> String
 
-( lang =
-  this,getJs "lang" lang js,ws map,put+
+( @s:: lang =
+  this,getJs : "lang" : lang js,ws : map,put+
   this,setJs.
 )
 setLang =>
 /// (String) -> Void
 
-( this,getJs "menu" map,get >> js,rs)
-getMenu =>
+( this,getJs .menu map,get js,rs @s)
+menu =>
 /// () -> String
 
-( option =
+( @s:: option =
   this,getJs "menu" option js,ws map,put+
   this,setJs.
 )

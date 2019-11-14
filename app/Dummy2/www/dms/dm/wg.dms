@@ -1,8 +1,7 @@
 // Copyright 02-Nov-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-( tp =
-  targetId =
+( @ss:: tp =; targetId =
   "input" {
     att: type tp
     onEv: {
@@ -22,14 +21,14 @@
         ffi,v
       )
     }
-  } ui,$
-) fieldPass. =>
+  } ui,$+
+@<Element>) fieldPass. =>
 
-("text" this,fieldPass.) field =>
+(@s:: "text" this,fieldPass. :: @<Element>) field =>
 
-("password" this,fieldPass.) pass =>
+(@s:: "password" this,fieldPass. :: @<Element>) pass =>
 
-( El =
+( @<Element>:: El =
   El {
     onEv : {
       keydown
@@ -53,18 +52,18 @@
         ffi,v
       )
     }
-  } ui,$
-) changePoint =>
+  } ui,$+
+@<Element>) changePoint =>
 
-( id =
+( @s:: id =
   id "." str,index -1 == (id ".png" +) (id) elif : id =
-  "img" { att: src ("img/" id +) } ui,$
-) img =>
+  "img" { att: src ("img/" id +) } ui,$+
+@<Element>) img =>
 
-(
-  this,img { style: "opcity:0.4" } ui,$
-) lightImg =>
+( @s
+  this,img { style: "opcity:0.4" } ui,$+
+@<Element>) lightImg =>
 
-( fn =>
-  "span" { style "cursor:pointer", on: {click: (fn)} } ui,$
-) link =>
+( @l:: # fn# =>
+  "span" { style "cursor:pointer", on: {click: (fn#)} } ui,$+
+@<Element>) link =>

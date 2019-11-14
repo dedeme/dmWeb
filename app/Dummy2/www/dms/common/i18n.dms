@@ -2,36 +2,108 @@
 
 {
   "en": {
+    "'%0' can not be read": "'%0' can not be read"
+    "'%0' is an empty file": "'%0' is an empty file"
     "Accept": "Accept"
+    "All the data will be replaced": "ATENTION!: All the data will be replaced.\nContinue?"
+    "Automatic Backups": "Automatic Backups"
+    "Backup file is missing": "Backup file is missin"
+    "Backups": "Backups"
+    "Cancel": "Cancel"
+    "Change Language to %0": "Change Language to %0"
+    "Change Password": "Change Password"
     "Check gray squares": "Check gray squares"
+    "Clear": "Clear"
+    "Click %0 to continue.": "Click %0 to continue."
+    "Confirm password": "Confirm password"
+    "Confirm password is missing": "'Confirm password' is missing"
+    "Create": "Create"
+    "Current password": "Current password"
+    "Current password is missing": "'Current password' is missing"
+    "Download": "Download"
+    "Fail trying to change password": "Fail trying to change password"
+    "Grey squares checks are wrong": "Grey squares checks are wrong"
     "Help & Credits": "Help & Credits"
     "Keep connected": "Keep connected"
     "Login": "Login"
+    "Logout-message": "<p>%0 has finished.</p><p><b>Good by!</b></p>"
+    "Make backup": "Make backup"
+    "New password": "New password"
+    "New password and confirm password do not match": "New password and confirm password do not match"
+    "New password is missing": "'New password' is missing"
     "Password": "Password"
     "Password is missing": "Password is missing"
+    "Password successfully changed": "Password successfully changed"
+    "Restore": "Restore"
+    "Restore backup": "Restore backup"
+    "Session is expired.": "Session is expired."
+    "Settings": "Settings"
+    "Trash": "Trash"
+    "Update": "Update"
     "User": "User"
     "User name is missing": "User name is missing"
     "Wrong password": "Wrong password"
-  }
+    "here": "here"
+  } map,from
   "es": {
+    "'%0' can not be read": "'%0' no puede ser leido"
+    "'%0' is an empty file": "'%0' es un archivo vacío"
     "Accept": "Aceptar"
-    "Check gray squares": "Marcar las casillas grises"
+    "All the data will be replaced": "¡ATENCIÓN!. Todos los datos serán reemplazados.\n¿Continuar?"
+    "Automatic Backups": "Backups automáticos"
+    "Backup file is missing": "No se ha indicado el archivo de backup"
+    "Backups": "Copias de seguridad"
+    "Cancel": "Cancelar"
+    "Change Language to %0": "Cambiar el idioma a %0"
+    "Change Password": "Cambiar la contraseña"
+    "Check gray squares": "Marcar los cuadrados grises"
+    "Clear": "Eliminar"
+    "Click %0 to continue.": "Hacer click %0 para continuar."
+    "Confirm password": "Confirmar la contraseña"
+    "Confirm password is missing": "Falta la confirmación de la contraseña"
+    "Create": "Crear"
+    "Current password": "Contraseña actual"
+    "Current password is missing": "Falta indicar la contraseña actual"
+    "Download": "Descarga"
+    "Fail trying to change password": "Fallo intentando cambiar la contraseña"
+    "Grey squares checks are wrong": "Las casillas grises están mal marcadas"
     "Help & Credits": "Ayuda & créditos"
     "Keep connected": "Mantenerse conectado"
     "Login": "Identificación"
+    "Logout-message": "<p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>"
+    "Make backup": "Hacer copia"
+    "New password": "Nueva contraseña"
+    "New password and confirm password do not match": "La nueva contraseña y su confirmación no coinciden"
+    "New password is missing": "Falta indicar la nueva contraseña"
     "Password": "Contraseña"
-    "Password is missing": "Falta la contraseña"
+    "Password is missing": "Falta indicar la contraseña"
+    "Password successfully changed": "La contraseña se cambió correctamente"
+    "Restore": "Restauración"
+    "Restore backup": "Restaurar copia"
+    "Session is expired.": "La sesión ha expirado."
+    "Settings": "Configuración"
+    "Trash": "Papelera"
+    "Update": "Actualizar"
     "User": "Usuario"
-    "User name is missing": "Falta el nombre del usuario"
+    "User name is missing": "Falta indicar el nombre del usuario"
     "Wrong password": "La contraseña es incorrecta"
-  }
-} data : Dics =
+    "here": "aquí"
+  } map,from
+} map,from : Dics =
 
 "en" wrap,ref : Dic =
 
 (this,Dic swap <<) init =>
 
 ( key =
-  this,Dics : this,Dic >> : obj,get : Cdic =
-  Cdic key obj,has? (Cdic key obj,get) (key) elif
+  this,Dics : this,Dic >> : map,get : Cdic =
+  Cdic key map,has? (Cdic key map,get) (key) elif
 ) _ =>
+
+( @ls :: 0 lst,right data Rpls =; wrap,ref S =
+  9
+  (i =; Rpls size (S ("%" i toStr + : Rpls lst,pop0 : str,replace) ^^) if)
+  for
+  S ("%%" : "%" : str,replace) ^^
+  S >>
+@s) __ =>

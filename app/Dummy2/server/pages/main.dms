@@ -5,16 +5,16 @@
 "../conf" import
 
 ( Rq =
-  ("Field 'rq' is missing" fail) (Rq "rq" obj,has? !) if
-  Rq "rq" obj,get js,rs : rq =
+  Rq "rq" map,has? ! ("Field 'rq' is missing" fail) if
+  Rq .rq js,rs : rq =
 
-  ( "Value '" rq "' not allowed for 'rq'" + + fail)
-  else
-  ( Rq "option" obj,get js,rs conf,setMenu; cgi,none)
-  ( "setMenu" rq ==)
-  elif
-  ( { "db": conf,getJs js,wm } data : cgi,ok)
   ( "getDb" rq ==)
+  ( { "db": conf,getJs : js,wo } map,from : cgi,ok)
+  else
+  ( "setMenu" rq ==)
+  ( Rq .option js,rs conf,setMenu; cgi,none)
+  else
+  ( "Value '" rq "' not allowed for 'rq'" + + fail)
   if
 ) process =>
 // OBJ<Js>

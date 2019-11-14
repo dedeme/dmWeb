@@ -1,12 +1,16 @@
 // Copyright 25-Sep-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+"../www/dms/common/i18n" import
 "dm/cgi" import
 "conf" import
 "pages/main" import
 "pages/settings" import
 "pages/chpass" import
 "pages/backups" import
+
+(i18n._) : _ =>
+(i18n.__) : __ =>
 
 "Dummy2" appName =
 "201909" dataVersion =
@@ -33,19 +37,18 @@ appName : "\nData version: " : dataVersion : "\n" + + + version =
   if
 ) appInit =>
 
-( Rq =; sessionId =
-  ("Field 'page' is missing" fail) (Rq "page" obj,has? !) if
-  Rq "page" obj,get js,rs : page =
+( @ms Rq =; sessionId =
+  ("Field 'page' is missing" fail) (Rq "page" map,has? !) if
+  Rq .page js,rs : page =
 
   ( page "Main" ==)
   ( Rq main,process)
   else
   ( page "logout" ==)
   (
-    sessionId cgi,delSession : rt =  // Dummy return
-    Rq "rq" "logout" js,ws obj,put
-    Rq "" "" backups, process  // Add automatic backup
-    rt
+    sessionId cgi,delSession; pop
+    Rq "rq" "logout" js,ws map,put
+    Rq appName version backups,process  // Add automatic backup
   )
   else
   (page "Settings" ==)
@@ -59,7 +62,7 @@ appName : "\nData version: " : dataVersion : "\n" + + + version =
   else
   ( "Value '" page "' not allowed for 'page'" + + fail)
   if
-) process =>
+@s) process =>
 
 // Start ---------------------------------------------------------------------
 
@@ -90,27 +93,24 @@ else //........................................................... NORMAL DATA
   rq ix str,left : sessionId =
   rq ix 1 + str,right : crypData =
 
-  ( "nosession" cgi,setKey; cgi,expired sys,print)
+  sessionId cgi,getSession
   ( Ss =
-    Ss "key" obj,get js,rs : key =
-    Ss "conId" obj,get js,rs : connectionId =
+    Ss .key js,rs : key =
+    Ss .connectionId js,rs : connectionId =
 
     key cgi,setKey
     crypData key cryp,decryp : js,ro : Rq =
 
+    Rq "connectionId" map,has?
+    ( Rq .connectionId js,rs : connectionId : == (0) (1) elif)
     ( 0)
-    else
-    ( (1) else (0) (Rq "connectionId" obj,get : connectionId : ==) if)
-    (Rq "connectionId" obj,has?)
-    if
+    elif
 
-    ( sessionId Rq process sys,print)
-    else
     ( "nosession" cgi,setKey; cgi,expired sys,print)
-    ()
-    if
+    ( sessionId Rq process sys,print)
+    elif
   )
-  (sessionId cgi,getSession)
+  ( "nosession" cgi,setKey; cgi,expired sys,print)
   wrap,option
 )
 if

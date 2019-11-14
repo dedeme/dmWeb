@@ -4,13 +4,16 @@
 "../dm/cgi" import
 "../conf" import
 
-( Rq =
-  ("Field 'rq' is missing" fail) (Rq "rq" obj,has? !) if
-  Rq "rq" obj,get js,rs : rq =
+( @m :: Rq =
+  Rq "rq" map,has? ! ("Field 'rq' is missing" fail) if
+  Rq .rq js,rs : rq =
 
-  ( "Value '" rq "' not allowed for 'rq'" + + fail)
+  ( "lang" rq ==)
+  ( conf,lang "es" == ("en") ("es") elif : conf,setLang; cgi,none)
   else
-  ( Rq "lang" obj,get js,rs conf,setLang; cgi,none)
-  ( "setLang" rq ==)
+  ( "chpass" rq ==)
+  ( Rq .user js,rs : Rq .pass js,rs : Rq .newPass js,rs : cgi,changePass)
+  else
+  ( "Value '" rq "' not allowed for 'rq'" + + fail)
   if
-) process =>
+@s) process =>

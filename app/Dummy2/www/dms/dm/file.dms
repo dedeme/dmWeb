@@ -1,0 +1,66 @@
+// Copyright 13-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+( @<Element>
+  (e "return e.files.length;") ffi,i
+) inputSize =>
+
+( @i<Element>
+  (e ix "return e.files[0];", File) ffi,o
+) inputGet =>
+
+( @<File>
+  (f "return f.lastModified;") ffi,f
+) lastModified =>
+
+( @<File>
+  (f "return f.name;") ffi,s
+) name =>
+
+( @<File>
+  (f "return f.size;") ffi,i
+) size =>
+
+( @<File>
+  (f "return f.type;") ffi,s
+) type =>
+
+( @ii<File>
+  (f start end "return f.slice(start, end);", JsBlob) ffi,o
+) slice =>
+
+( @illll<File>:: #
+  step# =; FnFail =; fnEnd# =>; fnAppend# =>; fnStart =>; File# =
+  step# wrap,ref : Counter# =;
+
+  chan,new : Ch =
+  ( null =
+    ("return new FileReader();", FileReader) ffi,o : Fr# =
+
+    Fr# FnFail ffi,fn (fr fn "fr.onerror = fn") ffi,v
+
+    Fr#
+    (
+      Fr# (reader "return new Uint8Array(reader.result);", Blob) ffi,o : Bs =
+      Bs blob,size
+      (
+        chan,new : Ch =
+        ( null =
+          Counter# >> : start =
+          start step# + : end =
+          Counter# end <<
+          Fr# : File# start end this,slice
+            (reader bl "reader.readAsArrayBuffer(bl);") ffi,v
+        ) Ch chan,recv
+        Ch Bs fnAppend#
+      )
+      ( fnEnd#)
+      elif
+    ) ffi,fn (fr fn "fr.onloadend = fn") ffi,v
+
+    Fr# : File# 0 step# this,slice
+      (reader bl "reader.readAsArrayBuffer(bl);") ffi,v
+  ) Ch chan,recv
+
+  Ch File# fnStart
+) read =>

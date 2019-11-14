@@ -13,7 +13,7 @@
 "KqpJp4K96QqtVjmXwhVcST9l+u1XUPL6K9HQfEEGMGcToMGUrzNQxCzlg2g+" +
 "Hg55i7iiKbA0ogENhEIFjMG+wmFDNzgjvDnNYOaPTQ7l4C8aaPsEfl3sugiw" + dmKey. =
 
-{} data Cgi. =
+{} map,from Cgi. =
 /*
   fkey: String     // key to encrypt files
   key: Opt<String> // key to communications.
@@ -24,10 +24,10 @@
 ( tExpiration =; home =
 
   this,Cgi.
-    "fkey"        : this,dmKey. this,dmKey. size cryp,key : obj,put+
-    "key"         : wrap,none : obj,put+
-    "home"        : home : obj,put+
-    "tExpiration" : tExpiration : obj,put
+    "fkey"        : this,dmKey. this,dmKey. size cryp,key : map,put+
+    "key"         : wrap,none : map,put+
+    "home"        : home : map,put+
+    "tExpiration" : tExpiration : map,put
 
   home file,exists? ! (home file,mkdir) if
 
@@ -110,7 +110,7 @@
   newPass this,klen cryp,key : newPassK =
   oldPass this,klen cryp,key : oldPassK =
 
-  [0] data : Changed =
+  0 wrap,ref : Changed =
   this,readUsers.
     ( u =;
       u ":" str,split : Ds =;
@@ -183,7 +183,7 @@ home =>
 /// Returns 'home' directory.
 
 ( k =;
-  this,Cgi. : "key" : k wrap,some : obj,put
+  this,Cgi. : "key" : k wrap,some : map,put
 ) setKey =>
 /// (String) -> Void
 /// Sets the key which 'cgi ok' and 'cgi err' will use. This function is called
@@ -197,7 +197,7 @@ home =>
     {
       "key": "" js,ws
       "connectionId": "" js,ws
-    } data
+    } map,from
   )
   wrap,option
   this,ok
@@ -220,14 +220,14 @@ home =>
       "level": level js,ws
       "sessionId": sessionId js,ws
       "key": key js,ws
-    } data
+    } map,from
   )
   (
     {
       "level": "" js,ws
       "sessionId": "" js,ws
       "key": "" js,ws
-    } data
+    } map,from
   )
   wrap,option
   this,ok
@@ -265,7 +265,7 @@ home =>
     {
       "key": Ss js,ra 2 get
       "connectionId": Ss js,ra 3 get
-    } data wrap,some
+    } map,from wrap,some
   )
   ( wrap,none)
   wrap,option
@@ -289,7 +289,7 @@ home =>
     ( "0" == (user ukey level putUser.; 1) (0) elif)
     ( 0)
     wrap,option
-    js.wb obj,put+ this,ok
+    js.wb map,put+ this,ok
 ) addUser =>
 
 ( user =; akey =; admin =
@@ -298,7 +298,7 @@ home =>
     ( "0" == (user delUser.; 1) (0) elif)
     ( 0)
     wrap,option
-    js.wb obj,put+ this,ok
+    js.wb map,put+ this,ok
 ) delUser =>
 
 ( level =;user =; akey =; admin =
@@ -307,10 +307,10 @@ home =>
     ( "0" == (user level changeLevel.; 1) (0) elif)
     ( 0)
     wrap,option
-    js.wb obj,put+ this,ok
+    js.wb map,put+ this,ok
 ) changeLevel =>
 
-( this,changePass. r =; {} "ok" r js,wb obj,put+ this,ok)
+( @sss this,changePass. r =; {} map,from "ok" r js,wb map,put+ this,ok @s)
 changePass =>
 /// (String, String, String) -> JSON: {ok: Boolean}
 /// Changes user password.
@@ -320,26 +320,26 @@ changePass =>
 ///   return : JSON: {ok:true|false}, sets to true if operation
 ///            succeeded. A fail can come up if 'user' authentication fails.
 
-(
+( @m
   js,wo
     this,Cgi. .key
     ( cryp,cryp)
     ( "Cgi has not been initialized")
     wrap,option
-) ok =>
+@s) ok =>
 /// (Map<JSON>) -> String
 
 (
-  {} this,ok
-) none =>
+  {} map,from this,ok
+@s) none =>
 /// () -> String
 
-( msg =
-  { "error": msg js,ws } data this,ok
-) error =>
+( @s:: msg =
+  { "error": msg js,ws } map,from this,ok
+@s) error =>
 /// (String) -> String
 
 (
-  { "expired": 1 js,wb } data this,ok
-) expired =>
+  { "expired": 1 js,wb } map,from this,ok
+@s) expired =>
 /// () -> String

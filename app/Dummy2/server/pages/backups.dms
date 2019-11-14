@@ -4,7 +4,7 @@
 "../dm/cgi" import
 "../dm/ext" import
 
-( version =; appName =; Rq =
+( @ssm:: version =; appName =; Rq =
 
   ( // () -> String
     time,now time,toDate
@@ -24,14 +24,11 @@
     cgi,home "backups" path,+ file,dir
   ) readBackups =>
 
-  ( // () -> ()
+  (
     time,now : t0 =
     t0 -7 time,addDays : t1 =
     t0 time,broke : TmBk =
-    TmBk "day" obj,get
-      TmBk "month" obj,get
-        TmBk "year" obj,get 1 -
-          time,newDate : t2 =
+    TmBk .day : TmBk .month : TmBk .year 1 - : time,newDate : t2 =
 
     t1 time,toDate : d1 =
     t2 time,toDate : d2 =
@@ -40,26 +37,28 @@
     cgi,home "backups" path,+ file,dir dup (>) lst,sort
     ( f =
       f path,onlyName : name =
-      (
-        ( cgi,home "backups" f path,+ path,+ file,del )
-        ( name 4 str,left : Previous >> 4 str,left : ==)
-        if
-      )
-      ( name d1 > !)
-      elif
+
+      ( name d2 > !)
       (
         ( cgi,home "backups" f path,+ path,+ file,del )
         ( name 6 str,left : Previous >> 6 str,left : ==)
         if
       )
-      ( name d2 > !)
+      else
+      ( name d1 > !)
+      (
+        ( cgi,home "backups" f path,+ path,+ file,del )
+        ( name 4 str,left : Previous >> 4 str,left : ==)
+        if
+      )
+      else
       if
 
       Previous name <<
     )
     lst,each
-
   ) filterBackups =>
+  /// @ -> @
 
   ( // () -> List<String>
     cgi,home "trash" path,+ file,dir
@@ -77,33 +76,32 @@
     source target ext,unzip
 
     cgi,home "tmp" "data" "version.txt" path,+ path,+ path,+ : fversion =
-    ( "restore:version is wrong")
-    else
-    ( "")
-    ( version fversion file,read ==)
-    elif
-    ( "restore:version does not exist")
     ( fversion file,exists? !)
+    ( "restore:version does not exist")
+    else
+    ( version fversion file,read ==)
+    ( "")
+    else
+    ( "restore:version is wrong")
     if
   ) unzip =>
 
   // Start ---------------------------------------------------------------------
 
-  ("Field 'rq' is missing" fail) (Rq "rq" obj,has? !) if
-  Rq "rq" obj,get js,rs : rq =
+  ("Field 'rq' is missing" fail) (Rq "rq" map,has? !) if
+  Rq .rq js,rs : rq =
 
-  ( "Value '" rq "' not allowed for 'rq'" + + fail)
-  else
+  ( "clearTrash" rq ==)
   (
     cgi,home "trash" path,+ : dir =
     dir file,del
     dir file,mkdir
     cgi,none
   )
-  ( "clearTrash" rq ==)
-  elif
+  else
+  ( "restoreTrash" rq ==)
   (
-    Rq "file" obj,get js,rs : f =
+    Rq .file js,rs : f =
     cgi,home "data" path,+ : dataDir =
     cgi,home "trash" f path,+ path,+ : backupFile =
 
@@ -112,10 +110,10 @@
     backupFile cgi,home ext,unzip
     cgi,none
   )
-  ( "restoreTrash" rq ==)
-  elif
+  else
+  ( "autorestore" rq ==)
   (
-    Rq "file" obj,get js,rs : f =
+    Rq .file js,rs : f =
     cgi,home "data" path,+ : dataDir =
     cgi,home "backups" f path,+ path,+ : backupFile =
 
@@ -124,10 +122,11 @@
     backupFile cgi,home ext,unzip
     cgi,none
   )
-  ( "autorestore" rq ==)
-  elif
+  else
+  ( "restoreEnd" rq ==)
   (
     appName version unzip : err =
+    err "" ==
     (
       cgi,home "data" path,+ : dataDir =
       cgi,home "tmp" "data" path,+ path,+ : tmpDataDir =
@@ -136,57 +135,58 @@
       tmpDataDir dataDir file,rename
       clearTmp
     )
-    (err "" ==)
     if
-    { "fail": err js,ws } data cgi,ok
+    { "fail": err js,ws } map,from cgi,ok
   )
-  ( "restoreEnd" rq ==)
-  elif
+  else
+  ( "restoreAbort" rq ==)
   (
     clearTmp
     cgi,none
   )
-  ( "restoreAbort" rq ==)
-  elif
-  ( Rq "data" obj,get js,rs b64,decodeBytes : Bs =
+  else
+  ( "restoreAppend" rq ==)
+  ( Rq .data js,rs b64,decodeBytes : Bs =
     cgi,home "tmp" "back.zip" path,+ path,+ file,aopen dup
     Bs file,writeBin
     file,close
     cgi,none
   )
-  ( "restoreAppend" rq ==)
-  elif
+  else
+  ( "restoreStart" rq ==)
   (
     clearTmp
     cgi,home "tmp" "back.zip" path,+ path,+ file,wopen file,close
     cgi,none
   )
-  ( "restoreStart" rq ==)
-  elif
+  else
+  ( "logout" rq ==)
   (
     cgi,home "data" path,+
       cgi,home : "backups" : mkDate ".zip" + : path,+ path,+
         ext,zip
     filterBackups
+    cgi,none
   )
-  ( "logout" rq ==)
-  elif
+  else
+  ( "backup" rq ==)
   (
     appName "Backup" mkDate ".zip" + + + : f =
     cgi,home "data" path,+
       cgi,home "tmp" f path,+ path,+
         ext,zip
-    {"name": f js,ws} data cgi,ok
+    {"name": f js,ws} map,from cgi,ok
   )
-  ( "backup" rq ==)
-  elif
+  else
+  ( "lists" rq ==)
   (
     {
       "backups": readBackups (js,ws) lst,map js,wa
       "trash": readTrash (js,ws) lst,map js,wa
-    } data cgi,ok
+    } map,from cgi,ok
   )
-  ( "lists" rq ==)
+  else
+  ( "Value '" rq "' not allowed for 'rq'" + + fail)
   if
-) process =>
+@s) process =>
 /// (String, String, Obj<JSON>) -> String
