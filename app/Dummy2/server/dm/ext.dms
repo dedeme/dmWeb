@@ -1,1 +1,95 @@
-/dm/dmstack/lib/libdmstk/src/dm/ext.dms
+// Copyright 06-Sep-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Functions using external programs.
+
+( url =
+  "wget -q --no-cache -O - " url + sys,cmd
+  dup size (0 get) (pop; "") elif
+) wget =>
+/// Calls "wget -q -O - 'url'" and returns the text read.
+/// If the reading fails, it returns an empty string.
+///   String: Url to call.
+///   ------
+///   String: Url contents or "" if reading failed.
+
+( text =; icon =
+  "zenity --info --icon-name=\"" icon "\" --text=\"" text "\" 2>/dev/null"
+    + + + + sys,cmd
+  size ! ("Fail running zenity." fail) if
+) zenityMsg  =>
+/// Shows a message box. It calls:
+///       zenity --notification --window-icon='icon' --text='text'
+///   String: Icon to show. One of gnome icon stock. For example: info,
+///           dialog-warning, dialog-error, dialog-information, face-wink, etc.
+///   String: Message to show.
+///   ------
+///   [EMPTY]
+
+( text =; title =
+
+  "zenity --entry --title=\"" title "\" --text=\"" text "\" 2>/dev/null"
+    + + + + sys,cmd
+    () ("Command error" fail) wrap,option str,trim
+) zenityEntry =>
+/// Reads a text using a GUI box. It calls:
+///       zenity --entry --title='title' --text='prompt'
+///   String: Title of box.
+///   String: Text for prompt. It is possible set a default response adding
+///           in the prompt: \" --entry-text \"[text_to_add]
+///   ------
+///   String: User input with starting and trailing spaces removed.
+///           If user clicks on 'cancel', it returns an empty string.
+
+( target =; source =
+  file,cwd : cwd =
+  target "/" str,starts? (target) (cwd target path,+)  elif
+    target =
+  source path,name : name =
+
+  source path,parent file,cd
+
+  name file,directory?
+  ("zip -q -r " : target : " " : name : " 2>&1" + + + +)
+  ("zip -q " : target : " " : name : " 2>&1" + + + +)
+  elif
+  sys,cmd Result =
+
+  cwd file,cd
+
+  Result
+  ( r =;
+    target file,exists? !
+    ("Target file '" : target : "' not found\n" : r + + + fail)
+    if
+  )
+  ( "Fail running zip." fail)
+  wrap,option
+) zip =>
+/// Compresses source in target. It calls:
+///   zip -q 'target' 'source' 2>&1
+/// if 'target' already exists, source will be added to it. If you require a
+/// fresh target file, you have to delete it previously.
+///   source: Can be a file or directory,
+///   target: Zip file. If it is a relative path, it hangs on source parent.
+
+
+( target =; source =
+  target file,directory? ! ("'" : target : "' is not a directory" fail) if
+  "unzip -q -o " : source : " -d " : target : " 2>&1" + + + +
+    sys,cmd Result =
+
+  Result
+  ( r =;
+    r "" != (r fail) if
+  )
+  ( "Fail running unzip." fail)
+  wrap,option
+) unzip =>
+/// Uncompresses source in target. It calls:
+///   unzip -q 'source' -d 'target' 2>&1
+///
+///   source: Zip file.
+///   target: A directory. It it does not exist, it is created.
+
+empty? assert
