@@ -1,0 +1,94 @@
+// Generate by 'i18n.dms'. Don't modify
+
+{
+  "en": {
+    "Accept": "Accept"
+    "Cancel": "Cancel"
+    "Change Language to %0": "Cambiar el idioma a %0"
+    "Change Password": "Change Password"
+    "Check gray squares": "Check gray squares"
+    "Click %0 to continue.": "Click %0 to continue."
+    "Confirm password": "Confirm password"
+    "Confirm password is missing": "'Confirm password' is missing"
+    "Current password": "Current password"
+    "Current password is missing": "'Current password' is missing"
+    "Fail trying to change password": "Fail trying to change password"
+    "Grey squares checks are wrong": "Grey squares checks are wrong"
+    "Keep connected": "Keep connected"
+    "Libraries": "Libraries"
+    "Login": "Login"
+    "Logout-message": "<p>%0 has finished.</p><p><b>Good by!</b></p>"
+    "Name '%0' contains '%1'.\nCharacters '%2' are not valid.": "Name '%0' contains '%1'.\nCharacters '%2' are not valid."
+    "Name '%0' contains blanks": "Name '%0' contains blanks"
+    "Name '%0' is repeated": "Name '%0' is repeated"
+    "Name is missing": "Name is missing"
+    "New password": "New password"
+    "New password and confirm password do not match": "New password and confirm password do not match"
+    "New password is missing": "'New password' is missing"
+    "Password": "Password"
+    "Password is missing": "Password is missing"
+    "Password successfully changed": "Password successfully changed"
+    "Path is missing": "Path is missing"
+    "Session is expired.": "Session is expired."
+    "There are no libraries": "There are no libraries"
+    "This library can not be selected, because it does not exist": "This library can not be selected, because it does not exist"
+    "User": "User"
+    "User name is missing": "User name is missing"
+    "Wrong password": "Wrong password"
+    "here": "here"
+  } map,from
+  "es": {
+    "Accept": "Aceptar"
+    "Cancel": "Cancelar"
+    "Change Language to %0": "Change Language to %0"
+    "Change Password": "Cambiar la contraseña"
+    "Check gray squares": "Marcar los cuadrados grises"
+    "Click %0 to continue.": "Hacer click %0 para continuar."
+    "Confirm password": "Confirmar la contraseña"
+    "Confirm password is missing": "Falta la confirmación de la contraseña"
+    "Current password": "Contraseña actual"
+    "Current password is missing": "Falta por indicar la contraseña actual"
+    "Fail trying to change password": "Fallo intentando cambiar la contraseña"
+    "Grey squares checks are wrong": "Las casillas grises están mal marcadas"
+    "Help & Credits": "Ayuda & créditos"
+    "Keep connected": "Mantenerse conectado"
+    "Libraries": "Librerías"
+    "Login": "Identificación"
+    "Logout-message": "<p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>"
+    "Name '%0' contains '%1'.\nCharacters '%2' are not valid.": "El nombre '%0' contiene '%1'.\nLos carácteres '%2' no son válidos."
+    "Name '%0' contains blanks": "El nombre '%0' contiene espacios en blanco"
+    "Name '%0' is repeated": "El nombre está repetido"
+    "Name is missing": "Falta el nombre"
+    "New password": "Nueva contraseña"
+    "New password and confirm password do not match": "La nueva contraseña y su confirmación no coinciden."
+    "New password is missing": "Falta por indicar la nueva contraseña"
+    "Password": "Contraseña"
+    "Password is missing": "Falta por indicar la contraseña"
+    "Password successfully changed": "La contraseña se cambió correctamente"
+    "Path is missing": "Falta la ruta"
+    "Session is expired.": "La sesión ha expirado."
+    "There are no libraries": "No hay librerías"
+    "This library can not be selected, because it does not exist": "Esta librería no puede ser seleccionada por que no existe"
+    "User": "Usuario"
+    "User name is missing": "Falta por indicar el nombre del usuario"
+    "Wrong password": "La contraseña es incorrecta"
+    "here": "aquí"
+  } map,from
+} map,from : Dics =
+
+"en" wrap,ref : Dic =
+
+(@+s this,Dic swap << @-) init =>
+
+( @+s key =
+  this,Dics : this,Dic >> : map,get : Cdic =
+  Cdic key map,has? (Cdic key map,get) (key) elif
+@-s) _ =>
+
+( @+sl:: 0 lst,right data Rpls =; wrap,ref S =
+  9
+  (i =; Rpls size (S ("%" i toStr + : Rpls lst,pop0 : str,replace) ^^) if)
+  for
+  S ("%%" : "%" : str,replace) ^^
+  S >>
+@-s) __ =>

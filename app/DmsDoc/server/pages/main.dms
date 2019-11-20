@@ -1,0 +1,22 @@
+// Copyright 14-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"../dm/cgi" import
+"../io" import
+
+( Rq =
+  Rq "rq" map,has? ! ("Field 'rq' is missing" fail) if
+  Rq .rq js,rs : rq =
+
+  ( "getDb" rq ==)
+  (
+    {
+      "conf": io,readConf
+      "libs": io,readLibs
+    } map,from : cgi,ok
+  )
+  else
+  ( "Value '" rq "' not allowed for 'rq'" + + fail)
+  if
+) process =>
+// OBJ<Js>

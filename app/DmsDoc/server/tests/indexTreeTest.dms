@@ -1,0 +1,33 @@
+// Copyright 20-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+("../../www/dms/common/indexTree" : t) import
+
+"indexTreeTrest:" sys,println
+
+lst,new wrap,some "root" "" t,new : tree =
+
+tree .id "root" expect
+tree .doc "" expect
+tree .tree (()) expect
+tree .tree >> : Root =
+
+lst,new wrap,some "A" "" t,new : dA =
+lst,new wrap,some "B" "" t,new : dB =
+Root dA lst,push+ dB lst,push
+
+wrap,none "a" "Doc" t,new : fa =
+wrap,none "b" "Doc" t,new : fb =
+dA .tree >> fa lst,push+ fb lst,push
+
+tree t,toStr
+`
+root:
+  A:
+    a: Doc
+    b: Doc
+  B:
+` expect
+
+
+"  Finished" sys,println

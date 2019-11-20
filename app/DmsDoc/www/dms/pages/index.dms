@@ -1,0 +1,48 @@
+// Copyright 20-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"../dm/wg" import
+
+( @+ms:: lib =; Pg =
+  Pg
+  "lib" lib map,put+
+  "pgDiv" "div" { class: "frame" } ui,$+ map,put+
+@-m) new =>
+
+( @+m:: Pg =
+  "@title" { text: (Pg .lib " - " APP + +) } ui,$
+  Pg .view { removeAll } [ (Pg .pgDiv) ] ui,$
+  Pg this,update.
+@-) show =>
+
+( @+
+  "table" { att: align "center" } [
+    "tr" {} [
+      "td" {} [
+        "div" {
+          class: "frame2"
+          html: (
+            "Library not found.":_ "<br><br>"
+            "Click <a href='?@'>here</a> to continue.":_
+            + +)
+        }]]]
+  ui,$+
+@-<Element>) emptyTable. =>
+
+// Control
+
+( @+m:: Pg# =
+  Pg# .client
+  {
+    "page": "index" js,ws
+    "id": Pg# .lib js,ws
+  } map,from
+  ( Rq =
+
+    Pg# .pgDiv { removeAll }
+      [ (this,emptyTable.) ]
+    ui,$
+
+  )
+  client,send
+@-) update. =>

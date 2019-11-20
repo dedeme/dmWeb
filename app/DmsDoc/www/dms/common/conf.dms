@@ -1,0 +1,25 @@
+// Copyright 14-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"serial" import
+
+[
+  ["lang": "es", (js,rs), (js,ws)]
+  ["menu": "@", (js,rs), (js,ws)]
+  ["showAll?": 1, (js,rb), (js,wb)]
+] Base. =
+
+( @+
+  this,Base. serial,new
+@-m) new =>
+/// @ -> @m.
+
+( @+m
+  this,Base. serial,toJs
+@-s) toJs =>
+/// @m -> @s
+
+( @+s
+  this,Base. serial,fromJs
+@-m) fromJs =>
+/// @s -> @m

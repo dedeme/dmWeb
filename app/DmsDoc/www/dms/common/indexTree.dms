@@ -1,0 +1,63 @@
+// Copyright 20-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"serial" import
+
+[
+  ["id": "", (js,rs), (js,ws)]
+  ["doc": "", (js,rs), (js,ws)]
+  ["tree": (), (this,fromJs.), (this,toJs.)]
+] Base. =
+
+( @+lss:: doc =; id =; Tree =
+  this,Base. serial,new
+  "id" id map,put+
+  "doc" doc map,put+
+  "tree" Tree map,put+
+@-m) new =>
+/// @lss -> @m
+///   id: Node name
+///   doc: Node documentation
+///   Tree: Option
+///     - None: Node is file
+///     - Some @l: Node is directory and @l is a list of indexTree's
+
+( @+l
+  ( (this,toJs) lst,toJs)
+  ( pop; js,wn)
+  wrap,option
+@-s) toJs. =>
+
+( @+s:: s =;
+  s js,null?
+  ( lst,new)
+  ( lst,new : s (this,fromJs) lst,fromJs: lst,push)
+  elif
+@-l) fromJs. =>
+
+( @+m
+  this,Base. serial,toJs
+@-s) toJs =>
+/// @m -> @s
+
+( @+s
+  this,Base. serial,fromJs
+@-m) fromJs =>
+/// @s -> @m
+
+( @+m::
+  ( @+ms:: indent =; T =
+    T .tree
+    (
+      "${indent}${T .id}:\n"
+      ( T =; seed =
+        seed :: T : indent "  " + : toStr1 :: +
+      )
+      lst,reduce
+    )
+    ( "${indent}${T .id}: ${T .doc}\n")
+    wrap,option
+  @-s) toStr1 =>
+
+  "" toStr1
+@-s) toStr =>

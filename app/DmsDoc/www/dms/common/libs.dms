@@ -1,0 +1,45 @@
+// Copyright 15-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+0
+dup : ID =
+++ dup : PATH =
+++ dup : SHOW? =
+++ : EXISTS? =
+
+( @+
+  lst,new
+@-l) new =>
+
+( @+lssi:: show? =; lpath =; id =; Ls =
+  Ls [id, lpath, 1, 0] data lst,push+
+  ( R1 =; R2 =; R1 0 get : R2 0 get : >) lst,sort
+@-) add =>
+
+( @+ls:: id =; Ls =
+  Ls ( this,ID get : id : ==) lst,indexf : ix =
+  ix -1 != (Ls ix lst,remove) if
+@-) remove =>
+
+( @+lsssi:: show? =; lpath =; newId =; id =; Ls =
+  Ls id this,remove
+  Ls newId lpath show? this,add
+@-) modify =>
+
+( @+l
+  ( R =;
+    [R 0 get js,ws, R 1 get js,ws, R 2 get js,wb, R 3 get js,wb] data
+      js,wa
+  ) lst,toJs
+@-s) toJs =>
+
+( @+s
+  ( js,ra : R =;
+    [R 0 get js,rs, R 1 get js,rs, R 2 get js,rb, R 3 get js,rb] data
+  ) lst,fromJs
+@-l) fromJs =>
+
+( @+l
+  (R =; 0 R this,SHOW? get (R this,EXISTS? get (pop 1) if) if) lst,filter
+    (this,ID get) lst,map
+@-l) readIds =>
