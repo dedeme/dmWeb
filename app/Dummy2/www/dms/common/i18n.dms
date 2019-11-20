@@ -14,6 +14,7 @@
     "Change Password": "Change Password"
     "Check gray squares": "Check gray squares"
     "Clear": "Clear"
+    "Clear trash?": "Clear trash?"
     "Click %0 to continue.": "Click %0 to continue."
     "Confirm password": "Confirm password"
     "Confirm password is missing": "'Confirm password' is missing"
@@ -58,6 +59,7 @@
     "Change Password": "Cambiar la contraseña"
     "Check gray squares": "Marcar los cuadrados grises"
     "Clear": "Eliminar"
+    "Clear trash?": "¿Vaciar la papelera?"
     "Click %0 to continue.": "Hacer click %0 para continuar."
     "Confirm password": "Confirmar la contraseña"
     "Confirm password is missing": "Falta la confirmación de la contraseña"
@@ -93,17 +95,17 @@
 
 "en" wrap,ref : Dic =
 
-(this,Dic swap <<) init =>
+(@+s this,Dic swap << @-) init =>
 
-( key =
+( @+s key =
   this,Dics : this,Dic >> : map,get : Cdic =
   Cdic key map,has? (Cdic key map,get) (key) elif
-) _ =>
+@-s) _ =>
 
-( @ls :: 0 lst,right data Rpls =; wrap,ref S =
+( @+sl:: 0 lst,right data Rpls =; wrap,ref S =
   9
   (i =; Rpls size (S ("%" i toStr + : Rpls lst,pop0 : str,replace) ^^) if)
   for
   S ("%%" : "%" : str,replace) ^^
   S >>
-@s) __ =>
+@-s) __ =>

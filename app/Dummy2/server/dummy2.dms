@@ -18,7 +18,7 @@
 3600 expiration =
 appName : "\nData version: " : dataVersion : "\n" + + + version =
 
-( // () -> Void
+( @+
   (fname = cgi,home fname path,+ file,mkdir)
   mkdir =>
 
@@ -35,10 +35,10 @@ appName : "\nData version: " : dataVersion : "\n" + + + version =
     "backups" mkdir
   )
   if
-) appInit =>
+@-) appInit =>
 
-( @ms Rq =; sessionId =
-  ("Field 'page' is missing" fail) (Rq "page" map,has? !) if
+( @+sm:: Rq =; sessionId =
+   Rq "page" map,has? ! ("Field 'page' is missing" fail) if
   Rq .page js,rs : page =
 
   ( page "Main" ==)
@@ -62,13 +62,14 @@ appName : "\nData version: " : dataVersion : "\n" + + + version =
   else
   ( "Value '" page "' not allowed for 'page'" + + fail)
   if
-@s) process =>
+@-s) process =>
 
 // Start ---------------------------------------------------------------------
 
 appDir expiration cgi,init
 appInit
 conf,init
+
 
 sys,args 0 get rq =
 rq ":" str,index ix =
@@ -115,4 +116,4 @@ else //........................................................... NORMAL DATA
 )
 if
 
-
+empty? assert

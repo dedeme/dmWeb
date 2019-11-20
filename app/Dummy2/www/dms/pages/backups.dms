@@ -6,7 +6,7 @@
 "../dm/file" import
 "../dm/location" import
 
-( @m::
+( @+m::
   "backups" : lst,new : map,put+
   "trash" : lst,new : map,put+
 
@@ -23,11 +23,11 @@
     map,put+
   "backList": "div" ui,$+ : map,put+
   "trashList": "div" ui,$+ : map,put+
-@m) new =>
+@-m) new =>
 
 // View
 
-( @m:: # Pg# =
+( @+m:: # Pg# =
   Pg# .view { removeAll } [
     "table" { style: "width:100%;text-align:center" } [
       "tr" {} [
@@ -90,9 +90,9 @@
   ]]
   ui,$
   Pg# this,update.
-) show =>
+@-) show =>
 
-( @ll<Element>:: # fn# =>; Ls =; Wg =
+( @+<Element>ll:: # fn# =>; Ls =; Wg =
   "table"
   { class: "main" }
   Ls (<) lst,sort; Ls
@@ -104,32 +104,32 @@
   ) lst,map
   ui,$+ : Table =
   Wg { removeAll } [ Table ] ui,$
-) fillList. =>
+@-) fillList. =>
 
-( @ii:: ix =; total =
+( @+ii:: ix =; total =
   ix 100. * total / float,round float,toInt toStr : width =
   "div" {
     style: ("background-color:#000080;width:${width}%;height:6px")
   } ui,$+
-@<Element>) progress. =>
+@-<Element>) progress. =>
 
-( @m:: Pg =
+( @+m:: Pg =
   Pg .restoreButtonDiv { removeAll } [ (Pg .restoreBar) ] ui,$
-) startProgress. =>
+@-) startProgress. =>
 
-( @iim:: ix =; total =; Pg =
+( @+mii:: ix =; total =; Pg =
   Pg .restoreBar { removeAll } [ (total ix this,progress.) ] ui,$
-) appendProgress. =>
+@-) appendProgress. =>
 
-( @m:: Pg =
+( @+m:: Pg =
   Pg .restoreBar { removeAll } [ (1 1 this,progress.) ] ui,$
-) endProgress. =>
+@-) endProgress. =>
 
 // Control ---------------------------------------------------------------------
 
-( @m:: # Pg# =
+( @+m:: # Pg# =
 
-  ( @ss:: rq =; f =
+  ( @+ss:: rq =; f =
     "All the data will be replaced":_ sys,confirm
     (
       Pg# .client
@@ -142,25 +142,25 @@
       client,send
     )
     if
-  ) fn# =>
+  @-) fn# =>
 
   Pg# .client
   {
     "page": "Backups" js,ws
     "rq": "lists" js,ws
   } map,from
-  ( @m:: Rp =
+  ( @+m:: Rp =
     Pg# .backList : Rp .backups (js,rs) lst,fromJs : (
       "autorestore" fn#
     ) this,fillList.
     Pg# .trashList : Rp .trash (js,rs) lst,fromJs : (
       "restoreTrash" fn#
     ) this,fillList.
-  )
+  @-)
   client,send
-) update. =>
+@-) update. =>
 
-( @m:: # Pg# =
+( @+m:: # Pg# =
   Pg# .downloadFileName { removeAll } [ ("wait.gif" wg,img) ] ui,$
 
   Pg# .client
@@ -168,15 +168,15 @@
     "page": "Backups" js,ws
     "rq": "backup" js,ws
   } map,from
-  ( @m:: .name js,rs : fileName =
+  ( @+m:: .name js,rs : fileName =
     Pg# .downloadFileName {
       html: ("<a href='tmp/" fileName "'>backup.zip</a>" + +)
     } ui,$
-  )
+  @-)
   client,send
-) backupDownload. =>
+@-) backupDownload. =>
 
-( @m:: # Pg# =
+( @+m:: # Pg# =
 
   Pg# .restoreInput file,inputSize
   (
@@ -189,7 +189,7 @@
       "All the data will be replaced":_ sys,confirm
       (
         F#
-        ( @<File>L<l>:: null =; Ch =
+        ( @+l<File>:: null =; Ch =
           Pg# this,startProgress.
 
           Pg# .client
@@ -201,8 +201,8 @@
           client,send
 
           "" Ch chan,send
-        )
-        ( @<Blob>L<l>:: Bs =; Ch =
+        @-)
+        ( @+l<Blob>:: Bs =; Ch =
           FileRead# >> : ix =
           FileRead# : ix Bs blob,size + : <<
           Pg# ix fileSize# this,appendProgress.
@@ -217,7 +217,7 @@
           client,send
 
           "" Ch chan,send
-        )
+        @-)
         (
           Pg# this,endProgress.
 
@@ -266,9 +266,9 @@
   )
   ( "Backup file is missing":_ sys,alert)
   elif
-) backupRestore. =>
+@-) backupRestore. =>
 
-( @m:: # Pg# =
+( @+m:: # Pg# =
   "Clear trash?":_ sys,confirm
   (
     Pg# .client
@@ -280,4 +280,4 @@
     client,send
   )
   if
-) clearTrash. =>
+@-) clearTrash. =>

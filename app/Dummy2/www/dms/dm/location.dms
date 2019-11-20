@@ -1,10 +1,1 @@
-// Copyright 04-Nov-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-(
-  ("location.href") ffi,s
-@s) href =>
-
-( @s
-  (url "location.assign(url);") ffi,v
-) assign =>
+/dm/dmstack/lib/libdmstkjs/src/dm/location.dms

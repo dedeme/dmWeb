@@ -8,7 +8,7 @@
 
 enum {STEP};
 
-#define STEP_TO_SELL_VALUE 0.075
+#define STEP_TO_SELL_VALUE 0.0348
 
 // Step to operate is q + q * x, where x >= MAX_STEP && x <= MIN_STEP
 #define MAX_STEP 0.05

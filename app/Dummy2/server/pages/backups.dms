@@ -4,7 +4,7 @@
 "../dm/cgi" import
 "../dm/ext" import
 
-( @ssm:: version =; appName =; Rq =
+( @+mss:: version =; appName =; Rq =
 
   ( // () -> String
     time,now time,toDate
@@ -24,7 +24,7 @@
     cgi,home "backups" path,+ file,dir
   ) readBackups =>
 
-  (
+  ( @+
     time,now : t0 =
     t0 -7 time,addDays : t1 =
     t0 time,broke : TmBk =
@@ -40,15 +40,15 @@
 
       ( name d2 > !)
       (
+        name 6 str,left : Previous >> 6 str,left : ==
         ( cgi,home "backups" f path,+ path,+ file,del )
-        ( name 6 str,left : Previous >> 6 str,left : ==)
         if
       )
       else
       ( name d1 > !)
       (
+        name 4 str,left : Previous >> 4 str,left : ==
         ( cgi,home "backups" f path,+ path,+ file,del )
-        ( name 4 str,left : Previous >> 4 str,left : ==)
         if
       )
       else
@@ -57,7 +57,7 @@
       Previous name <<
     )
     lst,each
-  ) filterBackups =>
+  @-) filterBackups =>
   /// @ -> @
 
   ( // () -> List<String>
@@ -88,7 +88,7 @@
 
   // Start ---------------------------------------------------------------------
 
-  ("Field 'rq' is missing" fail) (Rq "rq" map,has? !) if
+  Rq "rq" map,has? ! ("Field 'rq' is missing" fail) if
   Rq .rq js,rs : rq =
 
   ( "clearTrash" rq ==)
@@ -188,5 +188,5 @@
   else
   ( "Value '" rq "' not allowed for 'rq'" + + fail)
   if
-@s) process =>
+@-s) process =>
 /// (String, String, Obj<JSON>) -> String

@@ -5,7 +5,7 @@
 "../dm/captcha" import
 "../dm/client" import
 
-( @m:: # Pg# =
+( @+m:: # Pg# =
   "${Pg# .app}__captchaCh" : captchaStore =
   Pg# : "captcha" : captchaStore 3 captcha,new : map,put
   Pg# : "pass" : "newPass" wg,pass : map,put
@@ -25,9 +25,9 @@
     on: { click: (Pg# Pg# .update run) }
   } ui,$+ : map,put
   Pg#
-@m) new =>
+@-m) new =>
 
-( @m:: Pg =
+( @+m:: Pg =
 
   "table" {
     att: align "center"
@@ -128,9 +128,9 @@
   ui,$
 
   Pg .pass { focus } ui,$
-) show =>
+@-) show =>
 
-( @m:: # Pg# =
+( @+m:: # Pg# =
   Pg# .pass (value) ui,prop str,trim : passv =
   Pg# .newPass (value) ui,prop str,trim : newPassv =
   Pg# .newPass2 (value) ui,prop str,trim : newPassv2 =
@@ -193,5 +193,5 @@
     client,send
   )
   if
-) changePass. =>
+@-) changePass. =>
 

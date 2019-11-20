@@ -9,12 +9,12 @@
 
 // MODEL
 
-( @m)
+( @+m @-m)
 new =>
 
 // VIEW
 
-( @m :: # Auth# =
+( @+m:: # Auth# =
   Auth# .app : app =
   Auth# .view : View =
 
@@ -165,11 +165,11 @@ new =>
 
   UserIn { focus } ui,$
 
-@) show =>
+@-) show =>
 
 // CONTROL
 
-( @m :: Auth =
+( @+m:: Auth =
   langStore
     langStore store,take
     ( "es" == ("en") ("es") elif)
@@ -178,9 +178,9 @@ new =>
     store,put
 
   Auth this,show
-) ChangeLanguage =
+@-) ChangeLanguage =
 
-( @issmm :: # persistent =; pass =; user =; Captcha# =; Auth# =
+( @+mmssi:: # persistent =; pass =; user =; Captcha# =; Auth# =
 
   Captcha# captcha,counter : Captcha# .counterLimit : >
   Captcha# captcha,match !
@@ -198,7 +198,7 @@ new =>
     else
     (
       Auth# .client : user : pass : persistent !
-      ( @i
+      ( @+i
         (
           Captcha# captcha,reset
           "" location,assign
@@ -208,10 +208,10 @@ new =>
           Auth# this,show
         )
         elif
-      )
+      @-)
       client,authentication
     )
     if
   )
   elif
-) accept =>
+@-) accept =>

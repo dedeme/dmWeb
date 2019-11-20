@@ -7,15 +7,15 @@
 "../dm/location" import
 "chpass" import
 
-( @m
+( @+m
   "langDiv" : "div" { html: "&nbsp;" } ui,$+ : map,put+
   "update" : (this,show) : map,put+
-@m)
+@-m)
 new =>
 
 // View
 
-( @m :: # Pg# =
+( @+m:: # Pg# =
   Pg# .view { removeAll } [
     "div" { style: "text-align:center" } [
       "div" { class: "head", html: ("Settings":_) }
@@ -31,11 +31,11 @@ new =>
               } ]]]]]
   ] ui,$
   Pg# this,update.
-) show =>
+@-) show =>
 
 // Control
 
-( @m :: Pg# =
+( @+m:: Pg# =
   Pg# .langDiv { removeAll } [
     ((Pg# this,goChangeLang.) wg,link) {
       class: "link",
@@ -45,9 +45,9 @@ new =>
           __)
     }
   ] ui,$
-) update. =>
+@-) update. =>
 
-( @m :: Pg =
+( @+m:: Pg =
   Pg .client
   {
     "page": "Settings" js,ws
@@ -55,8 +55,8 @@ new =>
   } map,from
   ( "" location,assign)
   client,send
-) goChangeLang. =>
+@-) goChangeLang. =>
 
-( @m Pg =
+( @+m:: Pg =
   Pg chpass,new chpass,show;
-) goChangePass. =>
+@-) goChangePass. =>

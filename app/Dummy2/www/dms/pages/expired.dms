@@ -3,7 +3,7 @@
 
 "../common/i18n" import
 
-( @m
+( @+m
   dup .app : app =
   "<a href=''>" "here":_ "</a>" + + : link =
 
@@ -23,5 +23,5 @@
             html: (( "<p>" "Session is expired.":_ "</p><p><b>"
                      "Click %0 to continue.":_ (link) __ "</b></p>") ++) }]]]
   ] ui,$
-) show =>
+@-) show =>
 

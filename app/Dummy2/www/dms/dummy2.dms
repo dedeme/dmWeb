@@ -38,7 +38,7 @@
 
 // View
 
-(
+( @+
   "div" {} [
     (AppData .menuDiv) {} []
     (AppData .view)
@@ -59,15 +59,15 @@
           html: ("- © ºDeme. ${app} (${version}) -")
         }]]]
   ui,$+
-) wg =>
+@-<Element>) wg =>
 
-(
-  "@body" { removeAll } [ wg ] ui,$+
-) show =>
+( @+
+  "@body" { removeAll } [ wg ] ui,$
+@-) show =>
 
 // Control
 
-( App# =
+( @+m App# =
   App# .client
   {
     "page": "Main" js,ws
@@ -111,9 +111,9 @@
    App# Mn# menu this,go
   )
   client,send
-) appRun =>
+@-) appRun =>
 
-(
+( @+
   this,AppData .client
   (
     ( this,AppData appRun)
@@ -121,9 +121,9 @@
     elif
   )
   client,connect
-) update =>
+@-) update =>
 
-(
+( @+
   this,AppData .client
   {
     "page": "logout" js,ws
@@ -132,9 +132,9 @@
     this,AppData bye,new bye,show
   )
   client,send
-) fbye =>
+@-) fbye =>
 
-( pgMn =; Mn =; App =
+( @+mms pgMn =; Mn =; App =
   Mn pgMn menu,setSelected
 
   ( this,menuCreate pgMn ==)
@@ -160,8 +160,9 @@
   } map,from
   ()
   client,send
-) go =>
+@-) go =>
 
 show
 update
 
+empty? assert

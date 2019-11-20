@@ -3,11 +3,11 @@
 
 "../common/i18n" import
 
-( @m)
+( @+m @-m)
 new =>
 
-( @m
+( @+m
   .view { removeAll } [
     "div" { style: "text-align:center" } [
       "div" { class: "head", html: ("Update":_) } ]  ] ui,$
-) show =>
+@-) show =>

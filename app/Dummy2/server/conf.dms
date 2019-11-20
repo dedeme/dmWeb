@@ -5,8 +5,9 @@
 
 [] Path. =
 
-(
+( @+
   this,Path. : cgi,home "data/conf.db" path,+ : lst,push
+  this, Path. >> file,exists? !
   (
     this,Path. >>
       {
@@ -15,9 +16,8 @@
       } data js,wo
       file,write
   )
-  (this, Path. >> file,exists? !)
   if
-) init =>
+@-) init =>
 /// () -> Void
 
 ( // () -> Map<Js>  .

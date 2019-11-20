@@ -11,7 +11,7 @@ enum {STEP};
 #define STEP_TO_BUY_VALUE 0.0028
 
 // Step to operate is q + q * x, where x >= MAX_STEP && x <= MIN_STEP
-#define MAX_STEP 0.10
+#define MAX_STEP 0.06
 
 // Step to operate is q + q * x, where x >= MAX_STEP && x <= MIN_STEP
 #define MIN_STEP 0.005
