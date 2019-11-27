@@ -14,6 +14,7 @@ dup : ID. =
 (@+l:: this,ID. lst,get @-s) id =>
 (@+l:: this,PATH. lst,get @-s) lpath =>
 (@+l:: this,SHOW?. lst,get @-i) show? =>
+(@+li:: v =; this,SHOW?. v lst,set @-) setShow? =>
 (@+l:: this,EXISTS?. lst,get @-i) exists? =>
 (@+li:: v =; this,EXISTS?. v lst,set @-) setExists? =>
 

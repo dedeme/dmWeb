@@ -57,7 +57,8 @@
       (
         T .id : id =
         T .path : lpath =
-        "${location,hrefBase}/?${lib}@${lpath}/${id}" : href =
+        lpath "" == ("") ("/") elif : sep =
+        "${location,hrefBase}/?${lib}@${lpath}${sep}${id}" : href =
         Rs
           "tr" {} [
             "td" {

@@ -40,7 +40,7 @@
     Rq .id js,rs : id =
     io,readLibs libs,fromJs dup
     ( L =
-      L libs,ID get : id == (L libs,SHOW? (!) up) if
+      L libs,id id == (L : L libs,show? ! : libs,setShow?) if
     ) lst,each
     libs,toJs io,writeLibs
     cgi,none
