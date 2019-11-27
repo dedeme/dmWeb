@@ -7,7 +7,7 @@
 "../common/libs" import
 "chpass" import
 
-( @+m:
+(@+m:
   "update" (this,show) map,put+
   "editId" "" map,put+
 
@@ -15,7 +15,7 @@
   "pathIn" "idIn" wg,field { att: id "pathIn", att: size "60" } ui,$+ map,put+
 @-m) new =>
 
-( @+m:: # Pg# =
+(@+m:: # Pg# =
   Pg# .view { removeAll } [
     "div" { class: "title", html: ("Libraries":_) } []
     "div" { html: "&nbsp;" } []
@@ -37,7 +37,7 @@
   ui,$
 @-) show =>
 
-( @+m:: # Pg# =;
+(@+m:: # Pg# =;
   Pg# .editId : id# =
   id# "" != : mod? =
   Pg# .showAll? ("out") ("in") elif : showAllImg =
@@ -98,7 +98,7 @@
           L libs,show? : L libs,exists? : &&
           ||
       ) lst,filter
-      ( @+l R =
+      (@+l R =
         R libs,id : lid# =
         R libs,lpath : lpath# =
         R libs,show? : show?# =
@@ -209,7 +209,7 @@
 
 // Control ---------------------------------------------------------------------
 
-( @+ss:: id =; chars =
+(@+ss:: id =; chars =
   ""
   chars str,len
   ( i =;
@@ -225,7 +225,7 @@
   for
 @-s) validateChar. =>
 
-( @+ls:: id =; Ids =
+(@+ls:: id =; Ids =
   id "" ==
   ( "Name is missing":_)
   (
@@ -244,7 +244,7 @@
   if
 @-s) validateId. =>
 
-( @+s:: p =
+(@+s:: p =
   p "" ==
   ( "Path is missing":_)
   (
@@ -260,13 +260,13 @@
   elif
 @-s) validatePath. =>
 
-( @+lss lpath =; id =; Ids =
+(@+lss lpath =; id =; Ids =
   Ids id this,validateId. dup "" ==
   ( pop lpath this,validatePath.)
   if
 @-s) validateIdPath. =>
 
-( @+m:: Pg =
+(@+m:: Pg =
   Pg .client
   {
     "page": "paths" js,ws
@@ -277,11 +277,11 @@
   client,send
 @-) chLang. =>
 
-( @+m:: Pg =
+(@+m:: Pg =
   Pg chpass,new chpass,show
 @-) chPass. =>
 
-( @+m:: Pg =
+(@+m:: Pg =
   Pg .client
   {
     "page": "paths" js,ws
@@ -292,7 +292,7 @@
   client,send
 @-) chShowAll. =>
 
-( @+mss:: # lpath =; id =; Pg# =
+(@+mss:: # lpath =; id =; Pg# =
   Pg# .libs libs,readIds : id: lpath : this,validateIdPath.
 
   dup "" ==
@@ -315,7 +315,7 @@
   elif
 @-) newPath. =>
 
-( @+ms:: id =; Pg =
+(@+ms:: id =; Pg =
   Pg .client
   {
     "page": "paths" js,ws
@@ -326,18 +326,18 @@
   client,send
 @-) showPath. =>
 
-( @+ms:: id =; Pg =
+(@+ms:: id =; Pg =
   Pg "editId" id map,put
   Pg Pg .update run
   Pg .idIn { focus } ui,$
 @-) modifyBegin. =>
 
-( @+m:: Pg =
+(@+m:: Pg =
   Pg "editId" "" map,put
   Pg Pg .update run
 @-) modifyCancel. =>
 
-( @+mssi:: show? =; lpath =; id =; Pg =
+(@+mssi:: show? =; lpath =; id =; Pg =
   Pg .idIn (value) ui,prop str,trim : newId =
   Pg .pathIn (value) ui,prop str,trim : newPath =
 
@@ -369,7 +369,7 @@
   elif
 @-) modify. =>
 
-( @+ms:: id =; Pg =
+(@+ms:: id =; Pg =
   "Delete %0?":_ (id) __ sys,confirm?
   (
     Pg .client

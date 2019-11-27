@@ -13,7 +13,7 @@ pop
 
 " clone dup fail empty? pop puts swap throw toStr try " : reserved2. =
 
-( @+rrs:: line =; Interpolation =; St =
+(@+rrs:: line =; Interpolation =; St =
   line str,len : len =
 
   (@+s
@@ -36,11 +36,17 @@ pop
     elif
   @-**) endId =>
 
+  (@+i:: i =
+    len
+    (i len) (dup line swap str,get " " > (swap pop break) (pop) elif) for
+  @-i) trimFrom =>
+  // skip blanks from 'i' and returns the corresponding index.
+
   (@+ri:: start1 =; Rs =
     start1 (endId) recursive : end =
     line start1 1 - : end : str,sub : tx0 =
     tx0 htmlEscape : tx =
-    line end str,right str,ltrim : rest =
+    end trimFrom : restIx =
 
     ( tx "" ==)
     ( tx)
@@ -54,16 +60,18 @@ pop
     ( this,reserved2. (" " tx " ") ++ str,index : -1 : !=)
     ( "<span class='reserved2'>" tx "</span>" + +)
     else
-    ( rest "=>" str,starts?)
-    ( "<span class='tgFunction'>" tx "</span>" + +)
+    ( line restIx str,get : "=" : ==)
+    (
+      line : restIx 1 + : str,get :: ">" :: ==
+      ( "<span class='tgFunction'>" tx "</span>" + +)
+      ( "<span class='definition'>" tx "</span>" + +)
+      elif
+    )
     else
-    ( rest "=" str,starts?)
-    ( "<span class='definition'>" tx "</span>" + +)
-    else
-    ( 0; tx0 "`" str,starts? (rest str,trim "" == (pop; 1) if) if)
+    ( 0; tx0 "`" str,starts? (restIx len == (pop; 1) if) if)
     (
       "<span class='quote2'>" tx "</span>" + +
-      this,Interpolation. : tx0 1 str,right "`" + : <<
+      Interpolation : tx0 1 str,right "`" + : <<
       St this,STRING. <<
     )
     else
@@ -187,11 +195,11 @@ pop
   @-) lcom =>
 
   (@+r:: Rs =
-    line this,Interpolation. >> str,index : ix =
+    line Interpolation >> str,index : ix =
     ix -1 ==
-    ( Rs "<span class='quote2'>" line "</span>" + + << )
+    ( Rs "<span class='quote2'>" line htmlEscape "</span>" + + << )
     (
-      ix : this,Interpolation. >> str,len : + : end =
+      ix : Interpolation >> str,len : + : end =
       Rs
         ( "<span class='quote2'>"
           line end str,left : htmlEscape
@@ -204,7 +212,7 @@ pop
     elif
   @-) lstring =>
 
-  ( @+ri:: start =; Rs =
+  (@+ri:: start =; Rs =
     start wrap,ref : Ix =
 
     (

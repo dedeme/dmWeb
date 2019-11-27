@@ -37,6 +37,7 @@
         "tr" {} [ (Pg .tdLeft) [] {} (Pg .tdRight) ]]]
     ("up" wg,upTop)
   ]
+
   ui,$
   Pg this,update.
 @-) show =>
@@ -77,7 +78,9 @@
     (
       rp : js,rs : code =
       Pg# code this,setPage.
-      "#hp" ui,$+ (e, "e.scrollIntoView()") ffi,v
+      Pg# .link 0 !=
+      ( "#hp" ui,$+ (e, "e.scrollIntoView()") ffi,v)
+      if
     )
     elif
   )

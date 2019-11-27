@@ -140,7 +140,7 @@
   Pg# .source {} [
     "div" { html: "<b>File</b>" } []
     "a" {
-      att: href ((location,hrefBase "/?" Pg .lib "@" Pg .lpath "&1") ++)
+      att: href ((location,hrefBase "/?" Pg .lib "@" Pg .lpath "&0") ++)
       text: (Pg .lpath ".dms" +)
     }
   ] ui,$
