@@ -7,7 +7,7 @@
 
 "data/conf.db" : confPath. =
 
-(
+(@+
   cgi,home this,confPath. path,+ : cpath =
   cpath file,exists?
   ( cpath file,read)
@@ -17,16 +17,16 @@
     cjs
   )
   elif
-@s) readConf =>
+@-s) readConf =>
 
-( @s
+(@+s
   cgi,home this,confPath. path,+
     swap file,write
-) writeConf =>
+@-) writeConf =>
 
 "data/libs.db" : confLibs. =
 
-(
+(@+
   cgi,home this,confLibs. path,+ : lpath =
   lpath file,exists?
   ( lpath file,read libs,fromJs)
@@ -37,17 +37,14 @@
   )
   elif
 
-  (
-    R =;
-    R : libs,EXISTS?
-      R libs,PATH get : file,directory? (1) (0) elif
-      set
+  ( R =;
+    R :: R libs,lpath : file,directory? (1) (0) elif :: libs,setExists?
     R
   )
   lst,map libs,toJs
-@s) readLibs =>
+@-s) readLibs =>
 
-( @s
+(@+s
   cgi,home this,confLibs. path,+
     swap file,write
-) writeLibs =>
+@-) writeLibs =>

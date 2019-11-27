@@ -4,36 +4,39 @@
 "serial" import
 
 [
+  ["tree": (), (this,treeFromJs.), (this,treeToJs.)]
   ["id": "", (js,rs), (js,ws)]
+  ["path": "", (js,rs), (js,ws)]
   ["doc": "", (js,rs), (js,ws)]
-  ["tree": (), (this,fromJs.), (this,toJs.)]
 ] Base. =
 
-( @+lss:: doc =; id =; Tree =
+( @+osss:: doc =; lpath =; id =; Tree =
   this,Base. serial,new
   "id" id map,put+
+  "path" lpath map,put+
   "doc" doc map,put+
   "tree" Tree map,put+
 @-m) new =>
 /// @lss -> @m
 ///   id: Node name
+///   path: File path to place in URL
 ///   doc: Node documentation
 ///   Tree: Option
 ///     - None: Node is file
 ///     - Some @l: Node is directory and @l is a list of indexTree's
 
-( @+l
+( @+o
   ( (this,toJs) lst,toJs)
-  ( pop; js,wn)
+  ( js,wn)
   wrap,option
-@-s) toJs. =>
+@-s) treeToJs. =>
 
-( @+s:: s =;
+( @+s:: s =
   s js,null?
-  ( lst,new)
-  ( lst,new : s (this,fromJs) lst,fromJs: lst,push)
+  ( wrap,none)
+  ( s (this,fromJs) lst,fromJs wrap,some)
   elif
-@-l) fromJs. =>
+@-o) treeFromJs. =>
 
 ( @+m
   this,Base. serial,toJs
@@ -45,7 +48,36 @@
 @-m) fromJs =>
 /// @s -> @m
 
-( @+m::
+( @+m:: T =
+  T .tree
+  (
+    ( @+mm:: T2 =; T1 =
+      T1 .tree wrap,some?
+      ( @+
+        T1 this,sort
+        T2 .tree wrap,some?
+        (
+          T2 this,sort;
+          T1 .id : T2 .id : >
+        )
+        ( 1)
+        elif
+      @-i)
+      ( @+
+        T2 .tree wrap,some?
+        ( T2 this,sort; 0)
+        ( T1 .id : T2 .id : >)
+        elif
+      @-i)
+      elif
+    @-i)
+    lst,sort
+  )
+  ()
+  wrap,option
+@-) sort =>
+
+( @+m
   ( @+ms:: indent =; T =
     T .tree
     (

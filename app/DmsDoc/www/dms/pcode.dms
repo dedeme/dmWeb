@@ -1,0 +1,259 @@
+// Copyright 27-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+0 dup : CODE =
+++ dup : STRING. =
+++ dup : COMMENT. =
+pop
+
+(
+  " assert break continue data elif else eval expect for "
+  "if import loop mrun nop recursive run this while "
+) ++ : reserved. =
+
+" clone dup fail empty? pop puts swap throw toStr try " : reserved2. =
+
+( @+rrs:: line =; Interpolation =; St =
+  line str,len : len =
+
+  (@+s
+    "&" "&amp;" str,replace
+    " " "&nbsp;" str,replace
+    "<" "&lt;" str,replace
+    ">" "&gt;" str,replace
+  @-s) htmlEscape =>
+
+  (@+i:: ix =
+    ix len >=
+    ( len)
+    (
+      line ix str,get : ch =
+      ch " " <= :: ",;:()[]{}" ch str,index : -1 : != :: ||
+      ( ix)
+      ( ix 1 + : continue)
+      elif
+    )
+    elif
+  @-**) endId =>
+
+  (@+ri:: start1 =; Rs =
+    start1 (endId) recursive : end =
+    line start1 1 - : end : str,sub : tx0 =
+    tx0 htmlEscape : tx =
+    line end str,right str,ltrim : rest =
+
+    ( tx "" ==)
+    ( tx)
+    else
+    ( tx 0 str,get "@" ==)
+    ( "<span class='annotation'>" tx "</span>" + +)
+    else
+    ( this,reserved. (" " tx " ") ++ str,index : -1 : !=)
+    ( "<span class='reserved'>" tx "</span>" + +)
+    else
+    ( this,reserved2. (" " tx " ") ++ str,index : -1 : !=)
+    ( "<span class='reserved2'>" tx "</span>" + +)
+    else
+    ( rest "=>" str,starts?)
+    ( "<span class='tgFunction'>" tx "</span>" + +)
+    else
+    ( rest "=" str,starts?)
+    ( "<span class='definition'>" tx "</span>" + +)
+    else
+    ( 0; tx0 "`" str,starts? (rest str,trim "" == (pop; 1) if) if)
+    (
+      "<span class='quote2'>" tx "</span>" + +
+      this,Interpolation. : tx0 1 str,right "`" + : <<
+      St this,STRING. <<
+    )
+    else
+    (
+      0
+      end len <
+      (
+        line end str,get "," ==
+        (
+          end 1 + len <
+          ( line end 1 + str,get " " != (pop 1) if)
+          ( pop 1)
+          elif
+        )
+        if
+      )
+      if
+    )
+    ( "<span class='module'>" tx "</span>" + +)
+    else
+    ( tx)
+    if : tx =
+
+    Rs (tx +) ^^
+    Rs end code
+  @-) sym =>
+
+  (@+ri:: start1 =; Rs =
+    start1 (endId) recursive : end =
+    Rs
+      ( "<span class='number'>"
+        line : start1 1 - : end : str,sub :: htmlEscape
+        "</span>" + + +
+      )
+      ^^
+    Rs end code
+  @-) number =>
+
+  (@+ri:: start1 =; Rs =
+    (@+i:: ix =
+      ix len >=
+      ( len)
+      (
+        line ix str,get : "\"" : ==
+        line ix 1 - str,get : "\\" : !=
+        &&
+        ( ix)
+        ( ix 1 + continue)
+        elif
+      )
+      elif
+    @-**) endQs =>
+
+    start1 (endQs) recursive : 1 + : end =
+    Rs
+      ( "<span class='quote1'>"
+        line : start1 1 - : end : str,sub :: htmlEscape
+        "</span>" + + +
+      )
+      ^^
+    Rs end code
+
+  @-) quotes =>
+
+  (@+ri:: start1 =; Rs =
+    line start1 str,get : ch =
+    ( ch "/" ==)
+    (
+      line start1 1 + str,get : "/" : ==
+      (
+        Rs
+          ( "<span class='docComment'>"
+            line start1 1 - str,right
+            "</span>" + + +
+          )
+          ^^
+      )
+      (
+        Rs
+          ( "<span class='comment'>"
+            line start1 1 - str,right
+            "</span>" + + +
+          )
+          ^^
+      )
+      elif
+    )
+    else
+    ( ch "*" ==)
+    ( Rs start1 1 - lcom)
+    else
+    ( Rs start1 sym)
+    if
+  @-) bar =>
+
+  (@+ri:: start =; Rs =
+    line "*/" start str,indexFrom : ix =
+    ix -1 ==
+    (
+      Rs
+        ( "<span class='comment'>"
+          line start str,right : htmlEscape
+          "</span>" + + +
+        )
+        ^^
+      St this,COMMENT. <<
+    )
+    (
+      ix 2 + : end =
+      Rs
+        ( "<span class='comment'>"
+          line start end str,sub : htmlEscape
+          "</span>" + + +
+        )
+        ^^
+      St this,CODE <<
+      Rs end code
+    )
+    elif
+
+  @-) lcom =>
+
+  (@+r:: Rs =
+    line this,Interpolation. >> str,index : ix =
+    ix -1 ==
+    ( Rs "<span class='quote2'>" line "</span>" + + << )
+    (
+      ix : this,Interpolation. >> str,len : + : end =
+      Rs
+        ( "<span class='quote2'>"
+          line end str,left : htmlEscape
+          "</span>" + + +
+        )
+        ^^
+      St this,CODE <<
+      Rs end code
+    )
+    elif
+  @-) lstring =>
+
+  ( @+ri:: start =; Rs =
+    start wrap,ref : Ix =
+
+    (
+      Ix >> : ix =
+      ix len <
+      (
+        line ix str,get : ch =
+
+        ( ch " " <= )
+        ( Rs ("&nbsp;" +) ^^; Ix ix 1 + <<)
+        else
+        ( ",;:()[]{}" ch str,index : -1 : !=)
+        ( Rs (ch +) ^^; Ix ix 1 + <<)
+        else
+        ( "/" ch ==)
+        ( Rs ix 1 +  bar; break)
+        else
+        ( "\"" ch ==)
+        ( Rs ix 1 + quotes; break)
+        else
+        ( ch "0" >= : ch "9" <= : &&)
+        ( Rs ix 1 + number; break)
+        else
+        ( Rs ix 1 + sym; break)
+        if
+      )
+      ( break)
+      elif
+    )
+    loop
+  @-) code =>
+
+  // Start ---------------------------------------
+
+  "" wrap,ref : Rs =
+  line "" ==
+  ( Rs "&nbsp;" <<)
+  (
+    St >> : st =
+    ( st this,CODE ==)
+    ( Rs : 0 : code)
+    else
+    ( st this,COMMENT. ==)
+    ( Rs : 0 : lcom)
+    else
+    ( st this,STRING. ==)
+    ( Rs : lstring)
+    else
+    if
+  ) elif
+  Rs >>
+@-s) processLine =>

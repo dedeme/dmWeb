@@ -104,7 +104,7 @@
 
 ( @+sl:: 0 lst,right data Rpls =; wrap,ref S =
   9
-  (i =; Rpls size (S ("%" i toStr + : Rpls lst,pop0 : str,replace) ^^) if)
+  (i =; Rpls lst,size (S ("%" i toStr + : Rpls lst,pop0 : str,replace) ^^) if)
   for
   S ("%%" : "%" : str,replace) ^^
   S >>

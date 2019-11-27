@@ -12,6 +12,8 @@
 "pages/bye" import
 "pages/paths" import
 "pages/index" import
+"pages/module" import
+"pages/code" import
 "common/i18n" import
 
 (i18n,_) : _ =>
@@ -40,7 +42,7 @@
 
 // View
 
-( @+
+(@+
   "div" {removeAll} [
     (APP_DATA .menuDiv) {} []
     (APP_DATA .view)
@@ -58,14 +60,15 @@
                   "color:#808080;font-size:x-small;" +)
           html: ("- © ºDeme. ${APP} (${VERSION}) -")
         }]]]
+  50 (pop; "br" lst,push+) for
   ui,$+
 @-<Element>) wg. =>
 
-( @+
+(@+
   "@body" { removeAll } [ wg. ] ui,$
 @-) show. =>
 
-( @+l:: Ls =
+(@+l:: Ls =
   APP_DATA .menu : Mn =
 
   Mn
@@ -91,7 +94,7 @@
 
 // Control ---------------------------------------------------------------------
 
-( @+
+(@+
   APP_DATA
     "menu" : 0 menu,new : map,put+
     "libs": [] data : map,put+
@@ -99,13 +102,13 @@
     "view": "div" ui,$+ : map,put
 @-) init. =>
 
-( @+
+(@+
   APP_DATA .client
   {
     "page": "main" js,ws
     "rq": "getDb" js,ws
   } map,from
-  ( @m:: Rq =
+  (@m:: Rq =
     Rq .conf conf,fromJs : Cf =
     Rq .libs libs,fromJs : Ls =
 
@@ -120,18 +123,36 @@
     wg,url : url =
     url map,size
     ( url .0) ( Cf .menu) elif : apath =
+    apath "" == (Cf .menu) (apath) elif : apath =
+    Cf "menu" apath map,put
 
-    apath "" == : apath "@" == : ||
+    APP_DATA .client
+    {
+      "page": "main" js,ws
+      "rq": "setConf" js,ws
+      "conf": Cf conf,toJs
+    } map,from
+    ( pop)
+    client,send
+
+    apath "@" ==
     (
       APP_DATA dup .menu "@" menu,setSelected
       paths,new paths,show
     )
     (
-      apath "@" str,index : -1 : ==
+      apath "@" str,index : ix =
+      ix : -1 : ==
       (
         APP_DATA apath index,new index,show
       )
       (
+        apath ix str,left : lib =
+        apath : ix 1 + : str,right : lpath =
+        url "1" map,has?
+        ( APP_DATA lib lpath url .1 code,new code,show)
+        ( APP_DATA lib lpath module,new module,show)
+        elif
       )
       elif
     )
@@ -140,7 +161,7 @@
   client,send
 @-) appRun. =>
 
-( @+
+(@+
   APP_DATA .client
   (
     ( appRun.)
@@ -150,7 +171,7 @@
   client,connect
 @-) update. =>
 
-( @+
+(@+
   APP_DATA .client
   {
     "page": "logout" js,ws

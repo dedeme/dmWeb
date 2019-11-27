@@ -130,7 +130,7 @@
 ( @+m:: # Pg# =
 
   ( @+ss:: rq =; f =
-    "All the data will be replaced":_ sys,confirm
+    "All the data will be replaced":_ sys,confirm?
     (
       Pg# .client
       {
@@ -186,7 +186,7 @@
 
     fileSize#
     (
-      "All the data will be replaced":_ sys,confirm
+      "All the data will be replaced":_ sys,confirm?
       (
         F#
         ( @+l<File>:: null =; Ch =
@@ -269,7 +269,7 @@
 @-) backupRestore. =>
 
 ( @+m:: # Pg# =
-  "Clear trash?":_ sys,confirm
+  "Clear trash?":_ sys,confirm?
   (
     Pg# .client
     {

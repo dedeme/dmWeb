@@ -10,7 +10,9 @@
   .view { removeAll } [
     "div" {
       class: "title"
-      html: ("&nbsp;<br>${app}<br>&nbsp;") }
+      html: app
+    }
+    "br"
     "div" {} [
       "table" {
         class: "border"

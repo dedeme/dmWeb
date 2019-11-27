@@ -159,7 +159,9 @@ new =>
   View { removeAll } [
     "div" {
       class: "title"
-      html: ("&nbsp;<br>${app}<br>&nbsp;") }
+      html: app
+    }
+    "br"
     "div" {} [ body ]
   ] ui,$
 

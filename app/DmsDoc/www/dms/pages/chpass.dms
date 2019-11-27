@@ -48,7 +48,7 @@
           padding: 10px;
           color:#505050;
         `
-        html: ("<big><big><b>${\"Login\":_} </big></big></b>") }]
+        html: ("<big><big><b>" "Login":_ "</big></big></b>" + +) }]
     "tr" {} [
       "td" {
         style: "padding: 10px 0px 0px 10px;text-align:right;"
@@ -122,7 +122,8 @@
 
 
   Pg .view { removeAll } [
-    "div" { class: "head", html : ("&nbsp;<br>${Pg .app}<br>&nbsp;") }
+    "div" { class: "title", html : (Pg .app) }
+    "br"
     Table
   ]
   ui,$

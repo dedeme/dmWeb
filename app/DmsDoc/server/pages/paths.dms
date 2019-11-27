@@ -6,8 +6,7 @@
 "../../www/dms/common/conf" import
 "../../www/dms/common/libs" import
 
-( @m Rq =
-  Rq "rq" map,has? ! ("Field 'rq' is missing" fail) if
+(@+m:: Rq =
   Rq .rq js,rs : rq =
 
   ( "setLang" rq ==)
@@ -68,5 +67,6 @@
   else
   ( "Value '" rq "' not allowed for 'rq'" + + fail)
   if
-@s) process =>
-// OBJ<Js>
+@-s) process =>
+/// @m -> @s
+

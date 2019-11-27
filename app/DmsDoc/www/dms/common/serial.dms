@@ -3,31 +3,31 @@
 
 ( @+l Def =
   []
-  Def (R =; R 0 get lst,push+ : R 1 get lst,push+) lst,each
+  Def (R =; R !0 lst,push+ : R !1 lst,push+) lst,each
     map,from
 @-m) new =>
 /// @l -> @m.
 
 ( @+ml:: Def =; Ob =
   []
-  Def (R =; R 0 get lst,push+ : R 3 get lst,push+) lst,each
+  Def (R =; R !0 lst,push+ : R !3 lst,push+) lst,each
     map,from : Base =
   Ob map,pairs
     ( R =
-      R 0 get : key =
-      [ key, R 1 get : Base key map,get : run] data
+      R !0 : key =
+      [ key, R !1 : Base key map,get run] data
     ) lst,map lst,flat map,from js,wo
 @-s) toJs =>
 /// @ml -> @s
 
 ( @+sl:: Def =; jss =
   []
-  Def (R =; R 0 get lst,push+ : R 2 get lst,push+) lst,each
+  Def (R =; R !0 lst,push+ : R !2 lst,push+) lst,each
     map,from : Base =
   jss js,ro map,pairs
     ( R =
-      R 0 get : key =
-      [ key, R 1 get : Base key map,get : run] data
+      R !0 : key =
+      [ key, R !1 : Base key map,get run] data
     ) lst,map lst,flat map,from
 @-m) fromJs =>
 /// @sl -> @m

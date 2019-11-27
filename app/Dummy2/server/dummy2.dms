@@ -71,7 +71,7 @@ appInit
 conf,init
 
 
-sys,args 0 get rq =
+sys,args !0 rq =
 rq ":" str,index ix =
 
 ( ix -1 ==) //...................................................... CONNECTION
@@ -86,7 +86,7 @@ else
   key cgi,setKey
   rq 1 str,right key cryp,decryp : ":" : str,split : Fields =
 
-  Fields 0 get : Fields 1 get : Fields 2 get "1" == : cgi,authentication
+  Fields !0 : Fields !1 : Fields !2 "1" == : cgi,authentication
     sys,print
 )
 else //........................................................... NORMAL DATA

@@ -1,0 +1,202 @@
+// Copyright 24-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"../dm/wg" import
+"../dm/client" import
+"../dm/location" import
+
+( @+mss:: lpath =; lib =; Pg =
+  Pg
+  "lib" lib map,put+
+  "lpath" lpath map,put+
+
+  "title" "div" ui,$+ map,put+
+  "index" "div" ui,$+ map,put+
+  "overview" "div" ui,$+ map,put+
+  "source" "div" ui,$+ map,put+
+  "body" "div" ui,$+ map,put+
+@-m) new =>
+
+( @+m:: Pg =
+  "@title" { text: (Pg .lpath path,name " - " APP + +) } ui,$
+  Pg .view { removeAll } [
+    (Pg .title) { class: "frame2" } []
+    "br" {} []
+    (Pg .index) {} []
+    "hr" {} []
+    (Pg .overview) {} []
+    "br" {} []
+    (Pg .source) {} []
+    "hr" {}[]
+    "div" { class: "frame" } []
+    (Pg .body) {} []
+    ("up" wg,upTop)
+  ]
+  ui,$
+  Pg this,update.
+@-) show =>
+
+( @+s:: s =
+  ( @+s:: s =
+    0
+    s "  " str,starts?
+    (
+      s ":" str,index : ix =
+      ix -1 !=
+      (
+        s 2 ix str,sub str,trim : s =
+        s str,len : s "" str,split (" " >) lst,all? : && (pop 1) if
+      )
+      if
+    )
+    if
+  @-i) isParam? =>
+
+  s "\n" str,split : Lines =
+  Lines lst,size : len =
+
+  0 wrap,ref : C =
+  lst,new : P1 =
+  (
+    C >> len >=
+    ( break)
+    (
+      Lines C >> lst,get : line =
+      C (1 +) ^^
+      line isParam? (C (1 -) ^^; break) (P1 line lst,push) elif
+    )
+    elif
+  ) loop
+
+  lst,new : P2 =
+  (C >>; len) (i =; P2 : Lines i lst,get : lst,push) for
+
+  "table" {} [
+    "tr" {} [
+      "td" { class: "border" } [
+        "pre" { text: (P1 : "\n" : str,join) }]]]
+  ui,$+ : T1 =
+
+  P2 lst,size
+  (
+    "table" {} [
+      "tr" {} [
+        "td" { class: "frame" } [
+          "pre" { text: (P2 : "\n" : str,join) }]]]
+    ui,$+ : T2 =
+
+    "div" {} [
+      T1
+      T2
+    ] ui,$+
+  )
+  ( T1)
+  elif
+@-<Element>) format. =>
+
+( @+m:: Pg =
+  Pg .title { html: (("<b>" Pg .lpath "</b>") ++) } ui,$
+@-) setTitle. =>
+
+( @+ml:: Es =; Pg =
+  Es ("=Overview" !=) lst,filter : Es =
+  Es lst,size : len =
+  len 1 - 5 / 1 + : rows =
+  lst,new rows (pop; lst,new 5 (pop; "td" ui,$+ lst,push+) for lst,push+) for
+    Tds =
+
+  "table" { class: "main" }
+  Tds (R =; "tr" {} R ui,$+) lst,map
+  ui,$+ : Table =
+
+  Es (>) lst,sort
+  Es
+  ( @+si:: i =; e =;
+    i rows int,div : row =; col =
+    Tds row lst,get col lst,get {} [
+      "a" {
+        att: href ("#" e +)
+        text: (e)
+      }
+    ] ui,$
+  @-)
+  lst,eachIx
+
+  Pg .index {} [ Table ] ui,$
+@-) setIndex. =>
+
+( @+ms:: doc =; Pg =
+  Pg .overview {} [
+    "div" {
+      class: "frame"
+      html: "<b>Overview</b>"
+    } []
+    "br" {} []
+    (doc this,format.)
+  ] ui,$
+@-) setOverview. =>
+
+( @+m:: Pg# =
+  Pg# .source {} [
+    "div" { html: "<b>File</b>" } []
+    "a" {
+      att: href ((location,hrefBase "/?" Pg .lib "@" Pg .lpath "&1") ++)
+      text: (Pg .lpath ".dms" +)
+    }
+  ] ui,$
+@-) setSource. =>
+
+( @+mm:: Doc =; Pg =
+  Doc map,pairs (P =; P !0 "=Overview" !=) lst,filter
+  ( Kv =
+    Kv !0 : k =
+    Kv !1 js,ro : V =
+    V .line js,ri toStr : line =
+    V .text js,rs : doc =
+
+    "p" {} [
+      "div" {} [
+        "a" {
+          att: name k
+          att: href (
+            (location,hrefBase "/?" Pg .lib "@" Pg .lpath "&" line)
+            ++)
+          text: k
+        }]
+      "br" {} []
+      (doc this,format.) {} []
+      "hr"
+    ] ui,$+
+  )
+  lst,map : Divs =
+
+  Pg# .body {} Divs ui,$
+@-) setBody. =>
+
+// Control ---------------------------------------------------------------------
+
+( @+m:: Pg# =
+  Pg# .client
+  {
+    "page": "module" js,ws
+    "id": Pg# .lib js,ws
+    "lpath": Pg# .lpath js,ws
+  } map,from
+  ( .doc : rp =
+    rp js,null?
+    ( location,hrefBase "?@" + : location,assign)
+    (
+      rp : js,ro : Doc =
+
+      Pg# this,setTitle.
+      Pg# Doc map,keys this,setIndex.
+      Pg#
+        Doc "=Overview" map,oget (js,ro .text js,rs) ("") wrap,option
+        this,setOverview.
+      Pg# this,setSource.
+      Pg# Doc this,setBody.
+    )
+    elif
+  )
+  client,send
+@-) update. =>

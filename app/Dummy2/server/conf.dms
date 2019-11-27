@@ -3,11 +3,11 @@
 
 "dm/cgi" import
 
-[] Path. =
+"" wrap,ref Path. =
 
 ( @+
-  this,Path. : cgi,home "data/conf.db" path,+ : lst,push
-  this, Path. >> file,exists? !
+  this,Path. : cgi,home "data/conf.db" path,+ : <<
+  this,Path. >> file,exists? !
   (
     this,Path. >>
       {

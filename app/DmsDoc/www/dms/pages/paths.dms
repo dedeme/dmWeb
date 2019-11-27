@@ -87,20 +87,22 @@
         )]
       "td" { style: "width: 18px" }
       "td" { style: "width: 18px" }
-      "td" { html: ("&nbsp;&nbsp;<b>${\"Name\":_}</b>") }
-      "td" { html: ("&nbsp;&nbsp;<b>${\"Path\":_}</b>") }
+      "td" { html: ("&nbsp;&nbsp;<b>" "Name":_ "</b>" + +) }
+      "td" { html: ("&nbsp;&nbsp;<b>" "Path":_ "</b>" + +) }
       "td"
     ]
-    Pg# .libs size
+    Pg# .libs lst,size
     ( Pg# .libs
       ( L =
-        Pg# .showAll? :: L libs,SHOW? get : L libs,EXISTS? get : && :: ||
+        Pg# .showAll?
+          L libs,show? : L libs,exists? : &&
+          ||
       ) lst,filter
       ( @+l R =
-        R libs,ID get : lid# =
-        R libs,PATH get : lpath# =
-        R libs,SHOW? get : show?# =
-        R libs,EXISTS? get : exists?# =
+        R libs,id : lid# =
+        R libs,lpath : lpath# =
+        R libs,show? : show?# =
+        R libs,exists? : exists?# =
 
         "tr" {} [
           "td" {} [
@@ -165,7 +167,8 @@
               ( Pg# .idIn { value: lid# } ui,$+)
               (
                 "span" {
-                  text: (lid# size 20 > (lid# 17 str,left "..." +) (lid#) elif)
+                  text:
+                    (lid# str,len 20 > (lid# 17 str,left "..." +) (lid#) elif)
                 } ui,$+
               )
               elif
@@ -178,7 +181,7 @@
               (
                 "span" {
                   text: (
-                    lpath# size 60 >
+                    lpath# str,len 60 >
                     ("..." lpath# -57 str,right +)
                     (lpath#)
                     elif
@@ -190,7 +193,7 @@
           ]
           "td" {} [ (exists?# ("well") ("error") elif wg,img) ]] ui,$+
       @-<Element>) lst,map
-      dup size (run) (pop) elif
+      dup lst,size (run) (pop) elif
     )
     ( "tr" {} [
         "td" {
@@ -208,7 +211,7 @@
 
 ( @+ss:: id =; chars =
   ""
-  chars size
+  chars str,len
   ( i =;
     id : chars i str,get str,index : -1 !=
     (
@@ -248,7 +251,7 @@
     p "/" str,starts?
     (
       p wrap,ref P =
-      (P >> size 1 > : P >> "/" str,ends? &&) (P (-1 str,left) ^^) while
+      (P >> str,len 1 > : P >> "/" str,ends? &&) (P (-1 str,left) ^^) while
       P >> "/" == ("Path is '/'") ("") elif
     )
     ( "Path '%0' does not start with '/'":_ [p] __)

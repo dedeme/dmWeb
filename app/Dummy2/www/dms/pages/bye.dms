@@ -3,7 +3,7 @@
 
 "../common/i18n" import
 
-( @+m @-)
+( @+m @-m)
 new =>
 
 ( @+m

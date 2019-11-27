@@ -2,16 +2,23 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 "../dm/wg" import
+"../dm/client" import
+"../dm/location" import
+("../common/indexTree", ixT) import
 
 ( @+ms:: lib =; Pg =
   Pg
   "lib" lib map,put+
+
   "pgDiv" "div" { class: "frame" } ui,$+ map,put+
 @-m) new =>
 
 ( @+m:: Pg =
   "@title" { text: (Pg .lib " - " APP + +) } ui,$
-  Pg .view { removeAll } [ (Pg .pgDiv) ] ui,$
+  Pg .view { removeAll } [
+    (Pg .pgDiv) {} []
+    ("up" wg,upTop)
+  ] ui,$
   Pg this,update.
 @-) show =>
 
@@ -21,15 +28,63 @@
       "td" {} [
         "div" {
           class: "frame2"
-          html: (
-            "Library not found.":_ "<br><br>"
-            "Click <a href='?@'>here</a> to continue.":_
-            + +)
+          html: ((
+            "Library not found":_ ".<br><br>"
+            "Click":_ "<a href='?@'>" "here":_ "</a>" "to continue":_ "."
+            ) ++)
         }]]]
   ui,$+
 @-<Element>) emptyTable. =>
 
-// Control
+( @+sl Ts =; lib =
+  ( @+lls indent =; Ts =; Rs =
+    Ts
+    ( T =
+      T .tree
+      ( Ts2 =
+        Rs
+          "tr" {} [
+            "td" {
+              style: "width:5px;"
+              html: ((indent "<b>" T .id "</b>") ++)
+            }
+            "td"
+          ] ui,$+
+          lst,push+
+
+          Ts2 : "&nbsp;&nbsp;&nbsp;&nbsp;" indent + : trs
+      )
+      (
+        T .id : id =
+        T .path : lpath =
+        "${location,hrefBase}/?${lib}@${lpath}/${id}" : href =
+        Rs
+          "tr" {} [
+            "td" {
+              style: "width:5px;"
+              html: ("${indent}<a href='${href}'>${id}</a>")
+            }
+            "td" {
+              style: "padding-left:10px"
+              text: (T .doc)
+            }
+          ] ui,$+
+          lst,push
+      )
+      wrap,option
+    )
+    lst,each
+  @-) trs =>
+
+  lst,new : Trs =
+  Trs Ts "" trs
+
+  "table" { class: "main" }
+  Trs
+  ui,$+
+@-<Element>) table. =>
+
+// Control ---------------------------------------------------------------------
 
 ( @+m:: Pg# =
   Pg# .client
@@ -37,12 +92,17 @@
     "page": "index" js,ws
     "id": Pg# .lib js,ws
   } map,from
-  ( Rq =
-
-    Pg# .pgDiv { removeAll }
-      [ (this,emptyTable.) ]
-    ui,$
-
+  ( .index : rp =
+    rp js,null?
+    ( location,hrefBase "?@" + : location,assign)
+    (
+      rp ixT,fromJs : dup : ixT,sort : Index =
+      Index .tree
+      ( T =; Pg# .pgDiv { removeAll } [ (Pg# .lib T this,table.) ] ui,$)
+      ( Pg# .pgDiv { removeAll } [ (this,emptyTable.) ] ui,$)
+      wrap,option
+    )
+    elif
   )
   client,send
 @-) update. =>

@@ -8,13 +8,13 @@
 
 enum {STEP};
 
-#define STEP_TO_SELL_VALUE 0.08
+#define STEP_TO_SELL_VALUE 0.0134
 
 // Step to operate is q + q * x, where x >= MAX_STEP && x <= MIN_STEP
-#define MAX_STEP 0.07
+#define MAX_STEP 0.05
 
 // Step to operate is q + q * x, where x >= MAX_STEP && x <= MIN_STEP
-#define MIN_STEP 0.005
+#define MIN_STEP 0.001
 
 
 static Darr *fparams(Flea *f) {

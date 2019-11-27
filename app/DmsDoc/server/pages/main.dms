@@ -4,8 +4,7 @@
 "../dm/cgi" import
 "../io" import
 
-( Rq =
-  Rq "rq" map,has? ! ("Field 'rq' is missing" fail) if
+(@+m:: Rq =
   Rq .rq js,rs : rq =
 
   ( "getDb" rq ==)
@@ -16,7 +15,13 @@
     } map,from : cgi,ok
   )
   else
+  ( "setConf" rq ==)
+  (
+    Rq .conf io,writeConf
+    cgi,none
+  )
+  else
   ( "Value '" rq "' not allowed for 'rq'" + + fail)
   if
-) process =>
+@-s) process =>
 // OBJ<Js>

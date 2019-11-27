@@ -5,20 +5,19 @@
 
 "indexTreeTrest:" sys,println
 
-lst,new wrap,some "root" "" t,new : tree =
+lst,new wrap,some "root" "" "" t,new : tree =
 
 tree .id "root" expect
 tree .doc "" expect
-tree .tree (()) expect
-tree .tree >> : Root =
+tree .tree () (0 assert) wrap,option : Root =
 
-lst,new wrap,some "A" "" t,new : dA =
-lst,new wrap,some "B" "" t,new : dB =
+lst,new wrap,some "A" "A" "" t,new : dA =
+lst,new wrap,some "B" "B" "" t,new : dB =
 Root dA lst,push+ dB lst,push
 
-wrap,none "a" "Doc" t,new : fa =
-wrap,none "b" "Doc" t,new : fb =
-dA .tree >> fa lst,push+ fb lst,push
+wrap,none "a" "A/a" "Doc" t,new : fa =
+wrap,none "b" "A/b" "Doc" t,new : fb =
+dA .tree () (0 assert) wrap,option fa lst,push+ fb lst,push
 
 tree t,toStr
 `
