@@ -111,11 +111,3 @@ int conf_fleas_running (void) {
 void conf_set_fleas_running (int value) {
   write("fleasRunning", js_wb(value));
 }
-
-int conf_ranking_selected (void) {
-  return js_ri(opt_oget(map_get(read(), "rankingSelected"), js_wi(0)));
-}
-
-void conf_set_ranking_selected (int value) {
-  write("rankingSelected", js_wi(value));
-}

@@ -1,4 +1,4 @@
-// Copyright 28-Nov-2019 ºDeme
+// Copyright 07-Aug-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 // eslint-disable-next-line
@@ -14,6 +14,7 @@ const $ = e => Ui.$(e);
 
 /** Ranking Main page. */
 export default class RankingMain {
+
   /**
    * @param {!Main} main
    */
@@ -22,7 +23,6 @@ export default class RankingMain {
 
     this._menu = new Menu(false);
 
-    this._menuDiv = $("div");
     this._listTd = $("div").klass("frame");
     this._infoTd = $("div");
   }
@@ -35,49 +35,25 @@ export default class RankingMain {
   // VIEW ----------------------------------------
   // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
 
-  /**
-    @private
-    @param {!Array<string>} dates
-    @return {void}
-  **/
-  mkMenu (dates) {
+  /** @private */
+  mkMenu () {
     const menu = this._menu;
     menu.reset();
-
-    let first = true;
-    for (const d of dates) {
-      if (first) first = false;
-      else menu.addLeft(Menu.separator());
-      menu.addLeft(Menu.mkOption(
-        "_" + d, d.substring(6) + "/" + d.substring(4, 6),
-        () => this.newSel(d, 0)
-      ).klass("link"));
-    }
 
     menu.addRight(Menu.mkOption(
       "_management_", _("Management"),
       () => location.assign(Main.urlBase)
     ).klass("link"));
-    menu.addRight(Menu.separator());
-    menu.addRight(Menu.mkOption(
-      "_update_", _("Update"),
-      () => this.dataUpdate()
-    ).klass("link"));
   }
 
-  /**
-    @private
-    @param {string} date
-    @param {number} sel
-    @param {!Array<?>} ls
-    @return {void}
-  **/
-  mkList (date, sel, ls) {
-    let ix = 0;
+  /** @private */
+  mkList (sel, ls) {
+    ls.sort((e1, e2) => e1[5] - e2[5]);
     const rows = ls.map(e => {
-      const i = ix++;
-      const /** boolean */ isNew = e[0];
-      const /** number */ variation = e[1]; // -2 -1 0 1 2
+      const /** string */ model = e[1];
+      const /** string */ flea = e[2];
+      const /** boolean */ isNew = e[3];
+      const /** number */ variation = e[4]; // -2 -1 0 1 2
       const img = isNew ? "rk-new"
         : variation === -2 ? "rk-down2"
           : variation === -1 ? "rk-down"
@@ -85,24 +61,13 @@ export default class RankingMain {
               : variation === 2 ? "rk-up2"
                 : "rk-eq"
       ;
-      const /** string */ points = "  " + e[2];
-      let /** string */ assets = String(e[3]);
-      if (assets.length > 3)
-        assets = "      " + assets.substring(0, assets.length - 3) +
-          "." + assets.substring(assets.length - 3);
-      const /** string */ model = e[4];
-      const /** string */ flea = e[5];
-      const span = i === sel
+      const span = e[0] === sel
         ? $("span").html(` <i>${model}-${flea}</i>`)
-        : Ui.link(() => this.newSel(date, i)).klass("link")
+        : Ui.link(() => this.newSel(e[0])).klass("link")
           .html(` ${model}-${flea}`)
       ;
       return $("tr").add($("td")
         .add(Ui.img(img).style("vertical-align:top"))
-        .add($("span").style("font-family:monospace")
-          .html(" | " + points.substring(points.length - 3)))
-        .add($("span").style("font-family:monospace")
-          .html(" | " + assets.substring(assets.length - 7) + " | "))
         .add(span));
     });
     this._listTd.removeAll().add($("table")
@@ -327,39 +292,35 @@ export default class RankingMain {
     const assets = selData[1];
     const positions = selData[2];
     const lastAssets = assets[assets.length - 1][1];
-    if (selData !== null) {
-      this._infoTd.removeAll()
-        .add($("div").klass("head").html(name))
-        .add(this.paramsTable(rs, selParamNames, selParamFmts))
-        .add($("div").style("height:5px"))
-        .add(this.resultsTable(rs, lastAssets))
-        .add($("div").klass("head").html(_("Assets")))
-        .add(this.chart1(assets))
-        .add($("div").klass("head").html(_("Positions")))
-        .add(this.chart2(positions))
-      ;
-    } else {
-      this._infoTd.removeAll()
-        .add($("div").klass("head").html("No data available"));
-    }
+    this._infoTd.removeAll()
+      .add($("div").klass("head").html(name))
+      .add(this.paramsTable(rs, selParamNames, selParamFmts))
+      .add($("div").style("height:5px"))
+      .add(this.resultsTable(rs, lastAssets))
+      .add($("div").klass("head").html(_("Assets")))
+      .add(this.chart1(assets))
+      .add($("div").klass("head").html(_("Positions")))
+      .add(this.chart2(positions))
+    ;
   }
 
-  mkWgs (date, sel, list, selData, selParamNames, selParamFmts) {
-    this.mkList(date, sel, list);
+  mkWgs (sel, list, selData, selParamNames, selParamFmts) {
+    list.forEach((e, ix) => e.unshift(ix));
+    this.mkList(sel, list);
     this.mkInfo(selData, selParamNames, selParamFmts);
   }
 
   /** @return {void} */
   show () {
+    this.mkMenu();
     this.main.view.removeAll()
-      .add(this._menuDiv)
+      .add(this._menu.wg)
       .add($("table").klass("main")
         .add($("tr")
           .add($("td").style(
             "width: 5px;white-space: nowrap;vertical-align:top"
           ).add(this._listTd))
           .add($("td").style("vertical-align:top").add(this._infoTd))))
-      .add(Ui.upTop("up"))
     ;
 
     this.update();
@@ -375,50 +336,29 @@ export default class RankingMain {
   async update () {
     const rq = {
       "module": "ranking",
+      "source": "RankingMain",
       "rq": "idata"
     };
-
     const /** !Object<string, ?> */ rp = await Main.client.rq(rq);
-    const dates = rp["dates"];
-    const date = rp["date"];
-    const sel = 0;
+    const sel = rp["sel"];
     const list = rp["list"];
     const selData = rp["selData"];
     const selParamNames = rp["selParamNames"];
     const selParamFmts = rp["selParamFmts"];
 
-    this.mkMenu(dates);
-    this._menuDiv.removeAll().add(this._menu.wg);
-    this._menu.setSelected("_" + date);
-
-    this.mkWgs(date, sel, list, selData, selParamNames, selParamFmts);
-
+    this.mkWgs(sel, list, selData, selParamNames, selParamFmts);
   }
 
   /**
    * @private
+   * @param {number} sel
    * @return {!Promise}
    */
-  async dataUpdate () {
+  async newSel (sel) {
     const rq = {
       "module": "ranking",
-      "rq": "dataUpdate"
-    };
-    await Main.client.rq(rq);
-    this.update();
-  }
-
-  /**
-   @private
-   @param {string} date
-   @param {number} sel
-   @return {!Promise}
-  ***/
-  async newSel (date, sel) {
-    const rq = {
-      "module": "ranking",
+      "source": "RankingMain",
       "rq": "newSel",
-      "date": date,
       "sel": sel
     };
     const /** !Object<string, ?> */ rp = await Main.client.rq(rq);
@@ -427,8 +367,7 @@ export default class RankingMain {
     const selParamNames = rp["selParamNames"];
     const selParamFmts = rp["selParamFmts"];
 
-    this._menu.setSelected("_" + date);
-    this.mkWgs(date, sel, list, selData, selParamNames, selParamFmts);
+    this.mkWgs(sel, list, selData, selParamNames, selParamFmts);
   }
 
 }

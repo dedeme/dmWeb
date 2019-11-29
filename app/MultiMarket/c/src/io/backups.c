@@ -44,10 +44,19 @@ char *backups_make (void) {
 }
 
 void backups_make_automatic (void) {
+  char *bkdir = backups_d();
   char *zip = str_f("%s.zip", date_to_str(date_now()));
   char *source = io_data_dir();
-  char *target = path_cat(backups_d(), zip, NULL);
+  char *target = path_cat(bkdir, zip, NULL);
   ext_zip(source, target);
+
+  // Arr<char>
+  Arr *fs = file_dir(bkdir);
+  arr_sort(fs, (FCMP)str_greater);
+  arr_reverse(fs);
+  RANGE(i, BACKUPS_NUMBER, arr_size(fs)) {
+    file_del(path_cat(bkdir, arr_get(fs, i), NULL));
+  }_RANGE
 }
 
 void backups_restore_start (void) {

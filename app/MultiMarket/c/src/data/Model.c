@@ -164,7 +164,7 @@ Arr *model_assets_historic(
       orderCos_add(os, nco, this->forder(params, cos[nco], cls[nco]));
     _RANGE
 
-    arr_push(r, rankAssets_new(date, facc_assets(acc, ncos, closes, ix++)));
+    arr_push(r, rankAssets_new(date, facc_assets(acc, ncos, opens, ix++)));
   _REPEAT
 
   return r;

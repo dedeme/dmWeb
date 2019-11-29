@@ -58,11 +58,12 @@ double facc_assets(
   int ix
 ) {
   double r = this->cash;
+
   QmatrixValues *cs = qmatrix_values(closes);
   RANGE0(i, ncos)
     int stocks = this->pf[i];
     if (stocks) {
-      int value = cs[ix][i];
+      double value = cs[ix][i];
       while (value < 0) {
         if (ix == 0) {
           value = 0;
@@ -74,5 +75,6 @@ double facc_assets(
       r += broker_sell(stocks, value);
     }
   _RANGE
+
   return r;
 }

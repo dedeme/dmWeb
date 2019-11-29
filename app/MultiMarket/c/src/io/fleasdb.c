@@ -10,6 +10,7 @@
 #include "data/Rs.h"
 #include "data/Model.h"
 #include "data/Nick.h"
+#include "data/RankAssetsEntry.h"
 #include "data/dfleas/dfleas__models.h"
 #include "DEFS.h"
 
@@ -73,7 +74,7 @@ void fleasdb_model_write (char *model, Js *params, char *date, Arr *rs) {
   int fsort (char *f1, char *f2) { return strcmp(f1, f2) < 0; }
   arr_sort(fs, (FCMP)fsort);
   RANGE(i, FLEA_MODEL_DATES, arr_size(fs))
-    file_del(arr_get(fs, i));
+    file_del(path_cat(dir, arr_get(fs, i), NULL));
   _RANGE
 }
 
@@ -284,69 +285,26 @@ void fleasdb_champions_write (int nparams, Arr *rss) {
   file_write(f, (char *)arr_to_js(rss, (FTO)rsChampions_to_js));
 }
 
-// Returns Arr[RsChampions]
-Arr *fleasdb_ranking (void) {
-  int fsort (RsChampions *r1, RsChampions *r2) {
-    return rsAssets_assets(rs_assets(rsWeb_result(rsChampions_result(r1)))) <
-      rsAssets_assets(rs_assets(rsWeb_result(rsChampions_result(r2))));
-  }
-  It *remove_duplicates (It *it) {
-    int feq (RsChampions *r1, RsChampions *r2) {
-      return str_eq(
-        flea_name(rs_flea(rsWeb_result(rsChampions_result(r1)))),
-        flea_name(rs_flea(rsWeb_result(rsChampions_result(r2))))
-      );
-    }
-    return it_from(tp_e2(it_duplicates(it, (FCMP)feq)));
-  }
-
-  Arr *r = arr_from_js((Js *)file_read(ranking_db), (FFROM)rsChampions_from_js);
-  if (arr_size(r)) {
-    r = it_to(
-      it_take(
-        it_sort(
-          remove_duplicates(it_cat(
-            it_from(r),
-            it_cat(
-              it_take(it_from(fleasdb_champions_read(1)), 1),
-              it_cat(
-                it_take(it_from(fleasdb_champions_read(2)), 1),
-                it_cat(
-                  it_take(it_from(fleasdb_champions_read(3)), 1),
-                  it_take(it_from(fleasdb_champions_read(4)), 1)
-                )
-              )
-            )
-          )),
-          (FCMP)fsort
-        ),
-        40
+Opt *fleasdb_rsChampions(char *model, Flea *f) {
+  Qmatrix *opens = opt_nget(quotes_opens());
+  Qmatrix *closes = opt_nget(quotes_closes());
+  Model *md = opt_nget(dfleas__models_get(model));
+  if (md && opens && closes) {
+    RsAssets *assets = model_assets(md, f, opens, closes);
+    RsProfits *profits = model_profits(md, f, opens, closes);
+    return opt_new(rsChampions_new(
+      model,
+      rsWeb_new(
+        rs_new(f, assets, profits),
+        model_params(md, f)
       )
-    );
-  } else {
-    r = it_to(
-      it_sort(
-        it_cat(
-          it_take(it_from(fleasdb_champions_read(1)), 10),
-          it_cat(
-            it_take(it_from(fleasdb_champions_read(2)), 10),
-            it_cat(
-              it_take(it_from(fleasdb_champions_read(3)), 10),
-              it_take(it_from(fleasdb_champions_read(4)), 10)
-            )
-          )
-        ),
-        (FCMP)fsort
-      )
-    );
+    ));
   }
-
-  file_write(ranking_db, (char *)arr_to_js(r, (FTO)rsChampions_to_js));
-  return r;
+  return opt_empty();
 }
 
 // Returns Arr[Arr[Opt[RankAssets]]]
-// ranking is Arr[RsChampions]
+// ranking is Arr[RankAssetsEntry]
 Arr *fleasdb_ranking_assets (Arr *ranking) {
   if (!arr_size(ranking)){
     return arr_new();
@@ -379,14 +337,14 @@ Arr *fleasdb_ranking_assets (Arr *ranking) {
 
   // Arr[Arr[Opt[RankAssets]]]
   Arr *r = arr_new();
-  EACH(ranking, RsChampions, rs) {
-    Model *model = opt_nget(dfleas__models_get(rsChampions_model(rs)));
+  EACH(ranking, RankAssetsEntry, e) {
+    Model *model = opt_nget(rankAssetsEntry_model(e));
     if (!model) {
       arr_push(r, arr_new());
       continue;
     }
 
-    Darr *params = rsWeb_params(rsChampions_result(rs));
+    Darr *params = model_params(model, rankAssetsEntry_flea(e));
     // Arr[RankAssets]
     Arr *asts = model_assets_historic(model, params, dates, opens, closes);
     if (arr_size(asts) > HISTORIC_RANKING_CHAR_MAX) {

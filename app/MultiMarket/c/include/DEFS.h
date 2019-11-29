@@ -35,6 +35,9 @@
 /// Data version
 #define DATA_VERSION "MultiMarket\nData version: 201905\n"
 
+/// Automatic backups number
+#define BACKUPS_NUMBER 10
+
 /// Number of quotes in historic
 #define HISTORIC_QUOTES 610
 

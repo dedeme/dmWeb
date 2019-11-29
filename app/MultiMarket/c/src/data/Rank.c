@@ -2,6 +2,7 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "data/Rank.h"
+#include "dmc/Dec.h"
 
 /* .
 # Pair date-double to use with charts.
@@ -24,12 +25,13 @@ RankFlea: serial
 ===
 # Pair date-int to use with charts.
 Rank: serial
+  is_new: bool
+  # If is_new == 1, variation == 0. Otherwise variation can be in range [-2 - 2]
+  variation: int
+  points: int
+  assets: int
   model: char *
   flea: char *
-  is_new: bool
-  # If is_new == 1, variation == 0
-  variation: int
-  order: int
 */
 
 /*--*/
@@ -157,35 +159,30 @@ RankFlea *rankFlea_from_js (Js *js) {
 }
 
 struct Rank_Rank {
-  char *model;
-  char *flea;
   int is_new;
   int variation;
-  int order;
+  int points;
+  int assets;
+  char *model;
+  char *flea;
 };
 
 Rank *rank_new (
-  char *model,
-  char *flea,
   int is_new,
   int variation,
-  int order
+  int points,
+  int assets,
+  char *model,
+  char *flea
 ) {
   Rank *this = MALLOC(Rank);
-  this->model = model;
-  this->flea = flea;
   this->is_new = is_new;
   this->variation = variation;
-  this->order = order;
+  this->points = points;
+  this->assets = assets;
+  this->model = model;
+  this->flea = flea;
   return this;
-}
-
-char *rank_model (Rank *this) {
-  return this->model;
-}
-
-char *rank_flea (Rank *this) {
-  return this->flea;
 }
 
 int rank_is_new (Rank *this) {
@@ -196,18 +193,31 @@ int rank_variation (Rank *this) {
   return this->variation;
 }
 
-int rank_order (Rank *this) {
-  return this->order;
+int rank_points (Rank *this) {
+  return this->points;
+}
+
+int rank_assets (Rank *this) {
+  return this->assets;
+}
+
+char *rank_model (Rank *this) {
+  return this->model;
+}
+
+char *rank_flea (Rank *this) {
+  return this->flea;
 }
 
 Js *rank_to_js (Rank *this) {
   // Arr[Js]
   Arr *js = arr_new();
-  arr_push(js, js_ws(this->model));
-  arr_push(js, js_ws(this->flea));
   arr_push(js, js_wb(this->is_new));
   arr_push(js, js_wi((int)this->variation));
-  arr_push(js, js_wi((int)this->order));
+  arr_push(js, js_wi((int)this->points));
+  arr_push(js, js_wi((int)this->assets));
+  arr_push(js, js_ws(this->model));
+  arr_push(js, js_ws(this->flea));
   return js_wa(js);
 }
 
@@ -216,11 +226,12 @@ Rank *rank_from_js (Js *js) {
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
   Rank *this = MALLOC(Rank);
-  this->model = js_rs(*p++);
-  this->flea = js_rs(*p++);
   this->is_new = js_rb(*p++);
   this->variation = js_ri(*p++);
-  this->order = js_ri(*p++);
+  this->points = js_ri(*p++);
+  this->assets = js_ri(*p++);
+  this->model = js_rs(*p++);
+  this->flea = js_rs(*p++);
   return this;
 }
 
@@ -261,45 +272,37 @@ Arr *rank_mk_positions (Arr *assets) {
 // Returns Arr[Rank]
 // rss: Arr[RsChampions]
 // positions: Arr[Arr[RankPosition]]
-Arr *rank_mk_ranking (Arr *rss, Arr *positions) {
+Arr *rank_mk_ranking (Arr *rk, Arr *prev_rk) {
+  int calc_df (int current, int previous) {
+    int dif = previous - current;
+    return dif > 3 ? 2
+      : dif > 0 ? 1
+        : dif < -3 ? -2
+          : dif < 0 ? -1
+            : 0
+    ;
+  }
+
   // Arr[Rank]
   Arr *r = arr_new();
 
-  RsChampions **prs = (RsChampions **)arr_start(rss);
-  Arr **poss = (Arr **)arr_start(positions);
-  char *last_date = "00000000";
-  RANGE0(i, arr_size(rss)) {
-    RsChampions *rs = *prs++;
-    // Arr[RankPosition]
-    Arr *apos = *poss++;
-    RankPosition *last_pos = arr_get(apos, arr_size(apos) - 1);
-
-    int dif = rankPosition_position(arr_get(apos, arr_size(apos) - 2)) -
-      rankPosition_position(last_pos);
-
-    char *fname = flea_name(rs_flea(rsWeb_result(rsChampions_result(rs))));
-    char *date = str_left(fname, str_cindex(fname, '-'));
-    if (str_greater(date, last_date)) {
-      last_date = date;
+  EACH_IX(rk, RankAssetsEntry, e, ix) {
+    char *fname = flea_name(rankAssetsEntry_flea(e));
+    char *mname = rankAssetsEntry_model_name(e);
+    int fn (RankAssetsEntry *pre) {
+      return str_eq(fname, flea_name(rankAssetsEntry_flea(pre))) &&
+        str_eq(mname, rankAssetsEntry_model_name(e))
+      ;
     }
+    int prix = arr_index(prev_rk, (FPRED)fn);
     arr_push(r, rank_new(
-      rsChampions_model(rs),
-      date,
-      0,
-      dif > 3 ? 2
-        : dif > 0 ? 1
-          : dif < -3 ? -2
-            : dif < 0 ? -1
-              : 0,
-      rankPosition_position(last_pos)
+      prix == -1 ? 1 : 0,
+      prix == -1 ? 0 : calc_df(ix, prix),
+      rankAssetsEntry_points(e),
+      rankAssetsEntry_assets(e),
+      mname,
+      fname
     ));
-  }_RANGE
-
-  EACH(r, Rank, rk) {
-    if (str_eq(rk->flea, last_date)) {
-      rk->is_new = 1;
-      rk->variation = 0;
-    }
   }_EACH
 
   return r;

@@ -627,11 +627,24 @@ Js *quotes_volume (void);
 #include "data/RankAssetsEntry.h"
 #include "data/RankEvalEntry.h"
 
-///
+/// Initializes data base.
 void rank_init (void);
 
-/// Undate ranking database
+/// Undate ranking database.
 void rank_update (void);
+
+/// Returns dates of historic ranking.
+Arr *rank_dates (void);
+
+/// Returns fleas of 'date' or
+/// fleas of the last date if 'date' is not found or
+/// throws an exception if last date is not found.
+Arr *rank_fleas (char *date);
+
+/// Returns fleas of day previous to 'date' or
+/// fleas of day previous of the last date if 'date' is not found or
+/// [] if no date is found.
+Arr *rank_fleas_previous (char *date);
 
 #endif
 // Copyright 04-May-2019 ºDeme
@@ -718,6 +731,18 @@ int conf_ranking_selected (void);
 
 /// Sets order number of selected in ranking
 void conf_set_ranking_selected (int value);
+
+/// Returns order number of selected group in ranking
+int conf_granking_selected (void);
+
+/// Sets order number of selected group in ranking
+void conf_set_granking_selected (int value);
+
+/// Returns order number of selected flea in selected group in ranking
+int conf_franking_selected (void);
+
+/// Sets order number of selected flea in selected group in ranking
+void conf_set_franking_selected (int value);
 
 #endif
 // Copyright 10-May-2019 ºDeme
@@ -2969,35 +2994,35 @@ Arr *dfleas__Approx_models (void);
 
 ///
 ///   Arguments:
-///     flea: Flea
 ///     model_name: char*
+///     flea: Flea
 ///     assets: double
-///     avg: double
+///     profits: double
 ///     days: double
 ///     points: double
 typedef struct RankEvalEntry_RankEvalEntry RankEvalEntry;
 
 ///
 RankEvalEntry *rankEvalEntry_new (
-  Flea *flea,
   char *model_name,
+  Flea *flea,
   double assets,
-  double avg,
+  double profits,
   double days,
   double points
 );
 
 ///
-Flea *rankEvalEntry_flea (RankEvalEntry *this);
+char *rankEvalEntry_model_name (RankEvalEntry *this);
 
 ///
-char *rankEvalEntry_model_name (RankEvalEntry *this);
+Flea *rankEvalEntry_flea (RankEvalEntry *this);
 
 ///
 double rankEvalEntry_assets (RankEvalEntry *this);
 
 /// avg moduled with variance
-double rankEvalEntry_avg (RankEvalEntry *this);
+double rankEvalEntry_profits (RankEvalEntry *this);
 
 ///
 double rankEvalEntry_days (RankEvalEntry *this);
@@ -3108,18 +3133,18 @@ Timetable *timetable_new(void);
 
 ///
 ///   Arguments:
-///     flea: Flea
 ///     model_name: char*
+///     flea: Flea
 typedef struct RankEntry_RankEntry RankEntry;
 
 ///
-RankEntry *rankEntry_new (Flea *flea, char *model_name);
-
-///
-Flea *rankEntry_flea (RankEntry *this);
+RankEntry *rankEntry_new (char *model_name, Flea *flea);
 
 ///
 char *rankEntry_model_name (RankEntry *this);
+
+///
+Flea *rankEntry_flea (RankEntry *this);
 
 ///
 Js *rankEntry_to_js (RankEntry *this);
@@ -3147,22 +3172,31 @@ Opt *rankEntry_model (RankEntry *this);
 
 ///
 ///   Arguments:
-///     flea: Flea
 ///     model_name: char*
-///     assets: double
+///     flea: Flea
+///     assets: int
+///     points: int
 typedef struct RankAssetsEntry_RankAssetsEntry RankAssetsEntry;
 
 ///
-RankAssetsEntry *rankAssetsEntry_new (Flea *flea, char *model_name, double assets);
-
-///
-Flea *rankAssetsEntry_flea (RankAssetsEntry *this);
+RankAssetsEntry *rankAssetsEntry_new (
+  char *model_name,
+  Flea *flea,
+  int assets,
+  int points
+);
 
 ///
 char *rankAssetsEntry_model_name (RankAssetsEntry *this);
 
 ///
-double rankAssetsEntry_assets (RankAssetsEntry *this);
+Flea *rankAssetsEntry_flea (RankAssetsEntry *this);
+
+///
+int rankAssetsEntry_assets (RankAssetsEntry *this);
+
+///
+int rankAssetsEntry_points (RankAssetsEntry *this);
 
 ///
 Js *rankAssetsEntry_to_js (RankAssetsEntry *this);
@@ -4372,8 +4406,11 @@ char *ranking_process(AsyncActor *ac, Map *mrq);
 /// Number of fleas in ranking
 #define RANKING_NUMBER 40
 
+/// Number of fleas in ranking
+#define HISTORIC_RANKING_ENTRIES 10
+
 /// Maximum number of data in ranking charts
-#define MAXIMUM_HISTORIC_RANKING 450
+#define HISTORIC_RANKING_CHAR_MAX 450
 
 /// Server short name to get url in accounting charts
 #define ACC_URL "INFOB"

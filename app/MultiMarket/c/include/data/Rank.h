@@ -8,6 +8,7 @@
 
 #include "dmc/async.h"
 #include "Rs.h"
+#include "RankAssetsEntry.h"
 
 /*--*/
 
@@ -80,36 +81,41 @@ RankFlea *rankFlea_from_js (Js *js);
 
 /// Pair date-int to use with charts.
 ///   Arguments:
-///     model: char*
-///     flea: char*
 ///     is_new: bool
 ///     variation: int
-///     order: int
+///     points: int
+///     assets: int
+///     model: char*
+///     flea: char*
 typedef struct Rank_Rank Rank;
 
 ///
 Rank *rank_new (
-  char *model,
-  char *flea,
   int is_new,
   int variation,
-  int order
+  int points,
+  int assets,
+  char *model,
+  char *flea
 );
+
+///
+int rank_is_new (Rank *this);
+
+/// If is_new == 1, variation == 0. Otherwise variation can be in range [-2 - 2]
+int rank_variation (Rank *this);
+
+///
+int rank_points (Rank *this);
+
+///
+int rank_assets (Rank *this);
 
 ///
 char *rank_model (Rank *this);
 
 ///
 char *rank_flea (Rank *this);
-
-///
-int rank_is_new (Rank *this);
-
-/// If is_new == 1, variation == 0
-int rank_variation (Rank *this);
-
-///
-int rank_order (Rank *this);
 
 ///
 Js *rank_to_js (Rank *this);
@@ -127,8 +133,8 @@ Rank *rank_from_js (Js *js);
 Arr *rank_mk_positions (Arr *assets);
 
 /// Returns Arr[Rank]
-///   rss: Arr[RsChampions]
-///   positions: Arr[Arr[RankPosition]]
-Arr *rank_mk_ranking (Arr *rss, Arr *positions);
+///   rk     : Arr[RankAssetsEntry] Current ranking
+///   prev_rk: Arr[RankAssetsEntry] Previous ranking
+Arr *rank_mk_ranking (Arr *rk, Arr *prev_rk);
 
 #endif

@@ -271,3 +271,47 @@ void rank_update (void) {
   rank = new_rank(pool_ev, rank);
   save_rank(rank);
 }
+
+Arr *rank_dates (void) {
+  // Arr<char>
+  Arr *dates = map_keys(read_ranking());
+  if (!arr_size(dates))
+    EXC_ILLEGAL_STATE("There is not any historic ranking group")
+
+  arr_sort(dates, (FCMP)str_greater);
+  return dates;
+}
+
+Arr *rank_fleas (char *date) {
+  // Map<Arr<RankAssetsEntry>>
+  Map *m =read_ranking();
+  if (!map_size(m))
+    EXC_ILLEGAL_STATE("There is not any historic ranking group")
+
+  // Arr<RankAssetsEntry> descendingly
+  return opt_oget(map_get(m, date), kv_value((Kv *)*arr_start(map_kvs(m))));
+}
+
+Arr *rank_fleas_previous (char *date) {
+  // Map<Arr<RankAssetsEntry>>
+  Map *m = read_ranking();
+  int sz = map_size(m);
+  if (!sz) return arr_new();
+
+  // Arr<Kv<RankAssetsEntry>>
+  Arr *kvs = map_kvs(m);
+
+  int fsort (Kv *e1, Kv *e2) {
+    return str_greater(kv_key(e2), kv_key(e1));
+  }
+  arr_sort(kvs, (FCMP)fsort);
+  int fn (Kv *kv) {
+    return str_eq(kv_key(kv), date);
+  }
+  int ix = arr_index(kvs, (FPRED)fn);
+  if (ix == -1) ix = 0;
+  ++ix;
+
+  if (ix >= sz) return arr_new();
+  return kv_value((Kv *)arr_get(kvs, ix));
+}

@@ -438,6 +438,9 @@ export default class Editor {
         Math.round(q.vol / m), q.error
       ));
 
+    this._splitAccept.disabled(true);
+    this._splitSee.disabled(true);
+
     this._rightArea.value(quotes.join("\n"));
     return true;
   }
