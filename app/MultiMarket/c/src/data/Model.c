@@ -238,7 +238,7 @@ RsProfits *model_profits(
   _EACH
   double mdv = sum_n / cos_size;
 
-  return rsProfits_new(avg, mdv, avg * (1 - mdv));
+  return rsProfits_new(avg, mdv, avg * (avg >= 0 ? (1 - mdv) : (1 + mdv)));
 }
 
 RsCharts *model_charts(

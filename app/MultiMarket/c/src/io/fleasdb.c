@@ -389,8 +389,8 @@ Arr *fleasdb_ranking_assets (Arr *ranking) {
     Darr *params = rsWeb_params(rsChampions_result(rs));
     // Arr[RankAssets]
     Arr *asts = model_assets_historic(model, params, dates, opens, closes);
-    if (arr_size(asts) > MAXIMUM_HISTORIC_RANKING) {
-      arr_remove_range(asts, 0, arr_size(asts) - MAXIMUM_HISTORIC_RANKING);
+    if (arr_size(asts) > HISTORIC_RANKING_CHAR_MAX) {
+      arr_remove_range(asts, 0, arr_size(asts) - HISTORIC_RANKING_CHAR_MAX);
     }
     arr_push(r, asts);
   }_EACH

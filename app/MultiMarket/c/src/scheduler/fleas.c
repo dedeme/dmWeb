@@ -11,6 +11,7 @@
 #include "io/fleasdb.h"
 #include "io/conf.h"
 #include "io/quotes.h"
+#include "io/rank.h"
 #include "DEFS.h"
 
 static char *replicate (char ch, int n) {
@@ -305,7 +306,7 @@ static void run (AsyncActor *ac) {
     if (missing) iarr_push(nparamss, nparams);
   _EACH
 
-  IEACH(nparamss, nparams)
+  IEACH(nparamss, nparams) {
     void fn () {
       // Arr[RsChampions]
       Arr *rss = arr_new();
@@ -357,7 +358,13 @@ static void run (AsyncActor *ac) {
       fleasdb_champions_write(nparams, rss);
     }
     asyncActor_wait(ac, fn);
-  _EACH
+  }_EACH
+
+  // Calculate ranking ---------------------------------------------------------
+
+  asyncActor_wait(ac, rank_update);
+
+  // Finalization --------------------------------------------------------------
 
   void fn2 () {
     conf_set_fleas_running(0);

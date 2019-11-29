@@ -7,6 +7,7 @@
 #include "io/sbox.h"
 #include "io/dailydb.h"
 #include "io/fleasdb.h"
+#include "io/rank.h"
 #include "data/Server.h"
 #include "data/Model.h"
 #include "data/dfleas/dfleas__models.h"
@@ -61,6 +62,14 @@ char *ranking_process(AsyncActor *ac, Map *mrq) {
       conf_set_ranking_selected(sel);
       rp_data(rp, sel);
    }
+    asyncActor_wait(ac, fn);
+    return cgi_ok(rp);
+  }
+
+  if (str_eq(rq, "dataUpdate")) {
+    void fn () {
+      rank_update();
+    }
     asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }

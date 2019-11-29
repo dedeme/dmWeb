@@ -113,8 +113,26 @@
 /// Quotes number in account charts
 #define ACC_CHART_QUOTES 250
 
+/// Ponderation for raking
+#define RANKING_ASSETS_RATIO 0.5
+
+/// Ponderation for raking
+#define RANKING_PROFITS_RATIO 0.3
+
+/// Ponderation for raking
+#define RANKING_AGE_RATIO 0.2
+
+/// Number of fleas in pool
+#define RANKING_POOL_NUMBER 500
+
+/// Number of fleas in ranking
+#define RANKING_NUMBER 40
+
+/// Number of fleas in ranking
+#define HISTORIC_RANKING_ENTRIES 10
+
 /// Maximum number of data in ranking charts
-#define MAXIMUM_HISTORIC_RANKING 450
+#define HISTORIC_RANKING_CHAR_MAX 450
 
 /// Server short name to get url in accounting charts
 #define ACC_URL "INFOB"
