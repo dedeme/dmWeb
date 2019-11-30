@@ -325,11 +325,15 @@ void fleasdb_champions_add (RsChampions *rs);
 /// 'rss' is Arr[RsChampions]
 void fleasdb_champions_write (int nparams, Arr *rss);
 
-/// Returns Arr[RsChampions]. This function updates ranking.db
-Arr *fleasdb_ranking (void);
+/// Calculate results of 'f'.
+///   model : Model to make calculations.
+///   f     : Flea
+///   result: Opt<RsChampions>. Results of 'f'
+Opt *fleasdb_rsChampions(char *model, Flea *f);
 
 /// Returns Arr[Arr[RankAssets]]. Assets table to make charts of ranking.
-///   ranking: (Arr[RsChampions]) A row will be generated for each RsChampions.
+///   ranking: (Arr[RankAssetsEntry]) A row will be generated for each
+///            RankAssetsEntry.
 Arr *fleasdb_ranking_assets (Arr *ranking);
 
 /// Writes a fleas log entry. 'msg' can not finish in '\n'
@@ -633,17 +637,23 @@ void rank_init (void);
 /// Undate ranking database.
 void rank_update (void);
 
-/// Returns dates of historic ranking.
+/// Returns dates of historic ranking or throw an exception if the historic
+/// ranking is empty.
+///   return: Arr<char>. Dates in format "yyyymmdd" sorted ascendingly.
 Arr *rank_dates (void);
 
 /// Returns fleas of 'date' or
 /// fleas of the last date if 'date' is not found or
 /// throws an exception if last date is not found.
+///   date  : Date to find.
+///   return: Arr<RankAssetsEntry> Descendingly sorted
 Arr *rank_fleas (char *date);
 
 /// Returns fleas of day previous to 'date' or
 /// fleas of day previous of the last date if 'date' is not found or
 /// [] if no date is found.
+///   date  : Date to find.
+///   return: Arr<RankAssetsEntry>
 Arr *rank_fleas_previous (char *date);
 
 #endif
@@ -725,24 +735,6 @@ int conf_fleas_running (void);
 
 /// Sets if fleas are running.
 void conf_set_fleas_running (int value);
-
-/// Returns order number of selected in ranking
-int conf_ranking_selected (void);
-
-/// Sets order number of selected in ranking
-void conf_set_ranking_selected (int value);
-
-/// Returns order number of selected group in ranking
-int conf_granking_selected (void);
-
-/// Sets order number of selected group in ranking
-void conf_set_granking_selected (int value);
-
-/// Returns order number of selected flea in selected group in ranking
-int conf_franking_selected (void);
-
-/// Sets order number of selected flea in selected group in ranking
-void conf_set_franking_selected (int value);
 
 #endif
 // Copyright 10-May-2019 ºDeme
@@ -3515,6 +3507,7 @@ double nickClose_close (NickClose *this);
 
 #include "dmc/async.h"
 #include "Rs.h"
+#include "RankAssetsEntry.h"
 
 /*--*/
 
@@ -3587,36 +3580,41 @@ RankFlea *rankFlea_from_js (Js *js);
 
 /// Pair date-int to use with charts.
 ///   Arguments:
-///     model: char*
-///     flea: char*
 ///     is_new: bool
 ///     variation: int
-///     order: int
+///     points: int
+///     assets: int
+///     model: char*
+///     flea: char*
 typedef struct Rank_Rank Rank;
 
 ///
 Rank *rank_new (
-  char *model,
-  char *flea,
   int is_new,
   int variation,
-  int order
+  int points,
+  int assets,
+  char *model,
+  char *flea
 );
+
+///
+int rank_is_new (Rank *this);
+
+/// If is_new == 1, variation == 0. Otherwise variation can be in range [-2 - 2]
+int rank_variation (Rank *this);
+
+///
+int rank_points (Rank *this);
+
+///
+int rank_assets (Rank *this);
 
 ///
 char *rank_model (Rank *this);
 
 ///
 char *rank_flea (Rank *this);
-
-///
-int rank_is_new (Rank *this);
-
-/// If is_new == 1, variation == 0
-int rank_variation (Rank *this);
-
-///
-int rank_order (Rank *this);
 
 ///
 Js *rank_to_js (Rank *this);
@@ -3634,9 +3632,9 @@ Rank *rank_from_js (Js *js);
 Arr *rank_mk_positions (Arr *assets);
 
 /// Returns Arr[Rank]
-///   rss: Arr[RsChampions]
-///   positions: Arr[Arr[RankPosition]]
-Arr *rank_mk_ranking (Arr *rss, Arr *positions);
+///   rk     : Arr[RankAssetsEntry] Current ranking
+///   prev_rk: Arr[RankAssetsEntry] Previous ranking
+Arr *rank_mk_ranking (Arr *rk, Arr *prev_rk);
 
 #endif
 // Copyright 10-May-2019 ºDeme
@@ -4312,6 +4310,9 @@ char *ranking_process(AsyncActor *ac, Map *mrq);
 
 /// Data version
 #define DATA_VERSION "MultiMarket\nData version: 201905\n"
+
+/// Automatic backups number
+#define BACKUPS_NUMBER 10
 
 /// Number of quotes in historic
 #define HISTORIC_QUOTES 610

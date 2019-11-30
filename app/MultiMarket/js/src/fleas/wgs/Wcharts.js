@@ -195,6 +195,4 @@ export default class Wcharts {
   static get CHAMPIONS () {
     return 1;
   }
-
-
 }

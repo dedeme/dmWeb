@@ -9,6 +9,7 @@
 #include "io/fleasdb.h"
 #include "io/rank.h"
 #include "io/quotes.h"
+#include "io/nicks.h"
 #include "data/Server.h"
 #include "data/Model.h"
 #include "data/dfleas/dfleas__models.h"
@@ -89,6 +90,29 @@ char *ranking_process(AsyncActor *ac, Map *mrq) {
     return cgi_ok(rp);
   }
 
+  if (str_eq(rq, "charts")) {
+    CGI_GET_STR(date, mrq)
+    CGI_GET_INT(sel, mrq)
+
+    void fn () {
+      rp_data(rp, date, sel);
+      // Arr<Nick>
+      Arr *a = nicks_list();
+      int ffilter (Nick *nk) {
+        return nick_is_sel(nk);
+      }
+      char *fmap (Nick *nk) {
+        return nick_name(nk);
+      }
+      map_put(rp, "nicks", arr_to_js(
+        arr_map(arr_filter_to(a, (FPRED)ffilter), (FCOPY)fmap),
+        (FTO)js_ws
+      ));
+   }
+    asyncActor_wait(ac, fn);
+    return cgi_ok(rp);
+  }
+
   if (str_eq(rq, "dataUpdate")) {
     void fn () {
       rank_update();
@@ -97,7 +121,7 @@ char *ranking_process(AsyncActor *ac, Map *mrq) {
     return cgi_ok(rp);
   }
 
-  EXC_ILLEGAL_ARGUMENT("rq", "idata | newSel", rq)
+  EXC_ILLEGAL_ARGUMENT("rq", "idata | newSel | chars | dataUpdate", rq)
   return NULL; // Unreachable
 }
 

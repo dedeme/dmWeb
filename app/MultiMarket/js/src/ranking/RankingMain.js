@@ -8,6 +8,7 @@ import Ui from "../dmjs/Ui.js";
 import Dec from "../dmjs/Dec.js";
 import Main from "../Main.js";  //eslint-disable-line
 import Menu from "../wgs/Menu.js";
+import Wcharts from "../fleas/wgs/Wcharts.js";
 import {_} from "../I18n.js";
 
 const $ = e => Ui.$(e);
@@ -93,16 +94,55 @@ export default class RankingMain {
       const /** string */ model = e[4];
       const /** string */ flea = e[5];
       const span = i === sel
-        ? $("span").html(` <i>${model}-${flea}</i>`)
+        ? Ui.link(() => this.newSel(date, i))
+          .html(` <i>${model}-${flea}</i>`)
         : Ui.link(() => this.newSel(date, i)).klass("link")
           .html(` ${model}-${flea}`)
       ;
       return $("tr").add($("td")
-        .add(Ui.img(img).style("vertical-align:top"))
+        .add(Ui.link(() => this.charts(date, i))
+          .add(Ui.img(img).style("vertical-align:top")))
         .add($("span").style("font-family:monospace")
           .html(" | " + points.substring(points.length - 3)))
         .add($("span").style("font-family:monospace")
           .html(" | " + assets.substring(assets.length - 7) + " | "))
+        .add(span));
+    });
+    this._listTd.removeAll().add($("table")
+      .adds(rows));
+  }
+
+  /**
+    @private
+    @param {string} date
+    @param {number} sel
+    @param {!Array<?>} ls
+    @return {void}
+  **/
+  mkChartList (date, sel, ls) {
+    let ix = 0;
+    const rows = ls.map(e => {
+      const i = ix++;
+      const /** boolean */ isNew = e[0];
+      const /** number */ variation = e[1]; // -2 -1 0 1 2
+      const img = isNew ? "rk-new"
+        : variation === -2 ? "rk-down2"
+          : variation === -1 ? "rk-down"
+            : variation === 1 ? "rk-up"
+              : variation === 2 ? "rk-up2"
+                : "rk-eq"
+      ;
+      const /** string */ model = e[4];
+      const /** string */ flea = e[5];
+      const span = i === sel
+        ? Ui.link(() => this.newSel(date, i))
+          .html(` <i>${model}-${flea}</i>`)
+        : Ui.link(() => this.newSel(date, i)).klass("link")
+          .html(` ${model}-${flea}`)
+      ;
+      return $("tr").add($("td")
+        .add(Ui.link(() => this.charts(date, i))
+          .add(Ui.img(img).style("vertical-align:top")))
         .add(span));
     });
     this._listTd.removeAll().add($("table")
@@ -344,9 +384,46 @@ export default class RankingMain {
     }
   }
 
+  /** private **/
+  mkCharts (nicks, model, flea, selData, selParamNames, selParamFmts) {
+    const rs = selData[0];
+    const name = rs[0] + "-" + rs[1][0][0][0];
+    const assets = selData[1];
+    const lastAssets = assets[assets.length - 1][1];
+    const wcharts = new Wcharts(
+      Wcharts.CHAMPIONS,
+      model,
+      nicks,
+      selParamNames.length,
+      flea
+    );
+    if (selData !== null) {
+      this._infoTd.removeAll()
+        .add($("div").klass("head").html(name))
+        .add(this.paramsTable(rs, selParamNames, selParamFmts))
+        .add($("div").style("height:5px"))
+        .add(this.resultsTable(rs, lastAssets))
+        .add($("div").klass("head").html(_("Charts")))
+        .add(wcharts.wg)
+      ;
+    } else {
+      this._infoTd.removeAll()
+        .add($("div").klass("head").html("No data available"));
+    }
+  }
+
   mkWgs (date, sel, list, selData, selParamNames, selParamFmts) {
     this.mkList(date, sel, list);
     this.mkInfo(selData, selParamNames, selParamFmts);
+  }
+
+  mkChartWgs (nicks, date, sel, list, selData, selParamNames, selParamFmts) {
+    this.mkChartList(date, sel, list);
+
+    const e = list[sel];
+    const /** string */ model = e[4];
+    const /** string */ flea = e[5];
+    this.mkCharts(nicks, model, flea, selData, selParamNames, selParamFmts);
   }
 
   /** @return {void} */
@@ -392,7 +469,6 @@ export default class RankingMain {
     this._menu.setSelected("_" + date);
 
     this.mkWgs(date, sel, list, selData, selParamNames, selParamFmts);
-
   }
 
   /**
@@ -431,4 +507,29 @@ export default class RankingMain {
     this.mkWgs(date, sel, list, selData, selParamNames, selParamFmts);
   }
 
+  /**
+   @private
+   @param {string} date
+   @param {number} sel
+   @return {!Promise}
+  ***/
+  async charts (date, sel) {
+    const rq = {
+      "module": "ranking",
+      "rq": "charts",
+      "date": date,
+      "sel": sel
+    };
+    const /** !Object<string, ?> */ rp = await Main.client.rq(rq);
+    const list = rp["list"];
+    const selData = rp["selData"];
+    const selParamNames = rp["selParamNames"];
+    const selParamFmts = rp["selParamFmts"];
+    const nicks = rp["nicks"];
+
+    this._menu.setSelected("_" + date);
+    this.mkChartWgs(
+      nicks, date, sel, list, selData, selParamNames, selParamFmts
+    );
+  }
 }

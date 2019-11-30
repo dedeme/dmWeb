@@ -628,7 +628,7 @@ lib/liblocalcompilation/obj/io/dailydb.o : include/io/dailydb.h src/io/dailydb.c
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/server/ranking.o : include/server/ranking.h src/server/ranking.c include/io/conf.h src/io/conf.c include/io/sbox.h src/io/sbox.c include/io/dailydb.h src/io/dailydb.c include/io/fleasdb.h src/io/fleasdb.c include/io/rank.h src/io/rank.c include/io/quotes.h src/io/quotes.c include/data/Server.h src/data/Server.c include/data/Model.h src/data/Model.c include/data/dfleas/dfleas__models.h src/data/dfleas/dfleas__models.c
+lib/liblocalcompilation/obj/server/ranking.o : include/server/ranking.h src/server/ranking.c include/io/conf.h src/io/conf.c include/io/sbox.h src/io/sbox.c include/io/dailydb.h src/io/dailydb.c include/io/fleasdb.h src/io/fleasdb.c include/io/rank.h src/io/rank.c include/io/quotes.h src/io/quotes.c include/io/nicks.h src/io/nicks.c include/data/Server.h src/data/Server.c include/data/Model.h src/data/Model.c include/data/dfleas/dfleas__models.h src/data/dfleas/dfleas__models.c
 	gcc $(CFLAGS) -c src/server/ranking.c -o lib/liblocalcompilation/obj/server/ranking.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
