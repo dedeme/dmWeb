@@ -64,6 +64,7 @@ static void update_pool (void) {
 }
 
 // Return Arr<RankEvalEntry> ascendingly sorted , pool is Arr<RankEntry>
+// RankEntries without existent model are removed.
 static Arr *evaluate (Arr *pool) {
   time_t now = date_now();
   char *last_date = opt_nget(quotes_last_date());
@@ -134,7 +135,7 @@ static Arr *evaluate (Arr *pool) {
 }
 
 // Return Arr<RankEntry>, pool_ev is Arr<RankEvalEntry>
-static Arr *clean (Arr *pool_ev) {
+static Arr *to_rank_entries (Arr *pool_ev) {
   // Arr<RankEntry>
   Arr *pool = arr_new();
 
@@ -259,12 +260,12 @@ void rank_init () {
 }
 
 void rank_update (void) {
-  update_pool();
+  update_pool(); // Add new fleas
   // Arr<RankEntry>
   Arr *pool = read_pool();
   // Arr<RankEvalEntry> ascendingly
-  Arr *pool_ev = evaluate(pool);
-  pool = clean(pool_ev);
+  Arr *pool_ev = evaluate(pool); // Evaluate and filter fleas.
+  pool = to_rank_entries(pool_ev);
   save_pool(pool);
   // Arr<RankAssetsEntry> descendingly
   Arr *rank = last_ranking();

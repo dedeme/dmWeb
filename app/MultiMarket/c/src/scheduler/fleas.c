@@ -27,6 +27,7 @@ static char *title (char *name) {
   return str_f("%s\n%s\n%s", replicate('_', len), name, replicate('T', len));
 }
 
+/*
 static double davg (double old, double new) {
   return (old * CHAMPIONS_AVG - old + new) / CHAMPIONS_AVG;
 }
@@ -37,6 +38,7 @@ static int iavg (int old, int new) {
     CHAMPIONS_AVG
   );
 }
+*/
 
 static void run (AsyncActor *ac) {
   void fnLog1 () {
@@ -112,7 +114,7 @@ static void run (AsyncActor *ac) {
       // Calculate Assets ------------------------------------------------------
 
       int max_cycles = INSERTION_CYCLE + CYCLES * nparams;
-      RANGE0(cy, max_cycles)
+      RANGE0(cy, max_cycles)  {
         void fn () {
           fleasdb_flog_write(str_f(
             "Model: %s. Cycle: %d / %d", model_name(md), cy + 1, max_cycles
@@ -194,7 +196,7 @@ static void run (AsyncActor *ac) {
           }
           asyncActor_wait(ac, fn);
         }
-      _RANGE
+      }_RANGE
 
       // Calculate profits -----------------------------------------------------
 
@@ -288,10 +290,11 @@ static void run (AsyncActor *ac) {
       }
       asyncActor_wait(ac, fn);
     }
-
   }_EACH
 
   // Calculate champions -------------------------------------------------------
+
+  /*
 
   Iarr *nparamss = iarr_new();
   EACH(models, Model, md)
@@ -359,6 +362,8 @@ static void run (AsyncActor *ac) {
     }
     asyncActor_wait(ac, fn);
   }_EACH
+
+  */
 
   // Calculate ranking ---------------------------------------------------------
 

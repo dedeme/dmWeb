@@ -362,12 +362,12 @@ export default class RankingMain {
 
   /** @private */
   mkInfo (selData, selParamNames, selParamFmts) {
-    const rs = selData[0];
-    const name = rs[0] + "-" + rs[1][0][0][0];
-    const assets = selData[1];
-    const positions = selData[2];
-    const lastAssets = assets[assets.length - 1][1];
     if (selData !== null) {
+      const rs = selData[0];
+      const name = rs[0] + "-" + rs[1][0][0][0];
+      const assets = selData[1];
+      const positions = selData[2];
+      const lastAssets = assets[assets.length - 1][1];
       this._infoTd.removeAll()
         .add($("div").klass("head").html(name))
         .add(this.paramsTable(rs, selParamNames, selParamFmts))
@@ -386,18 +386,18 @@ export default class RankingMain {
 
   /** private **/
   mkCharts (nicks, model, flea, selData, selParamNames, selParamFmts) {
-    const rs = selData[0];
-    const name = rs[0] + "-" + rs[1][0][0][0];
-    const assets = selData[1];
-    const lastAssets = assets[assets.length - 1][1];
-    const wcharts = new Wcharts(
-      Wcharts.CHAMPIONS,
-      model,
-      nicks,
-      selParamNames.length,
-      flea
-    );
     if (selData !== null) {
+      const rs = selData[0];
+      const name = rs[0] + "-" + rs[1][0][0][0];
+      const assets = selData[1];
+      const lastAssets = assets[assets.length - 1][1];
+      const wcharts = new Wcharts(
+        Wcharts.CHAMPIONS,
+        model,
+        nicks,
+        selParamNames.length,
+        flea
+      );
       this._infoTd.removeAll()
         .add($("div").klass("head").html(name))
         .add(this.paramsTable(rs, selParamNames, selParamFmts))

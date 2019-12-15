@@ -23,7 +23,7 @@ Arr *mMBase_cos (int qnicks, QmatrixValues *closes, double strip_to_sell) {
     }
     arr_push(
       r,
-      mMBase_new(1, q * (0.95) * (1 - strip_to_sell) , q)
+      mMBase_new(1, q * 0.95 * (1 - strip_to_sell) , q)
     );
   _RANGE
   return r;

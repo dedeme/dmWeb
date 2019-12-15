@@ -18,10 +18,10 @@
 #include "data/NickClose.h"
 #include "DEFS.h"
 
-static char *wget (char *url) {
+static char *wwwget (char *url) {
   char *r = "";
   REPEAT(3)
-    r = ext_wget(url);
+    r = ext_puppeteer(url);
     if (*r) break;
   _REPEAT
   return r;
@@ -97,7 +97,8 @@ static Opt *read (Rconf *conf, char *code) {
   if (*code) {
     url = str_replace(url, "${code}", code);
   }
-  char *html = wget(url);
+  char *html = wwwget(url);
+
   if (!*html) {
     log_error(str_f("Inet error reading '%s'", url));
     return opt_empty();
@@ -303,11 +304,12 @@ Opt *net_server_historic_read(Server *this, int nick_id) {
 
   if (arr_size(r) < 10) {
     log_error(str_f(
-      "Historic entries of nick '%s' in server '%s' are less than 10",
+      "Historic entries of nick '%s' in server '%s' are less than 10 (%d)",
       nick_name(opt_eget(
         nicks_get(nick_id), str_f("nick_id %d not found", nick_id)
       )),
-      server_name(this)
+      server_name(this),
+      arr_size(r)
     ));
   }
 

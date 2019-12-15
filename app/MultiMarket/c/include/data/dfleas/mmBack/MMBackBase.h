@@ -26,11 +26,13 @@ struct mMBackBase_MMBackBase {
 MMBackBase *mMBackBase_new(int to_sell, double ref, double q);
 
 /// Returns Arr[MMBase]
-Arr *mMBackBase_cos (int qnicks, QmatrixValues *closes);
+Arr *mMBackBase_cos (int qnicks, QmatrixValues *closes, double strip_to_sell);
 
 ///
 Order *mMBackBase_order (
-  MMBackBase *this, double q, double step_to_buy, double step_to_sell
+  MMBackBase *this, double q,
+  double strip_to_buy, double step_to_buy,
+  double strip_to_sell, double step_to_sell
 );
 
 #endif

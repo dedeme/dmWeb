@@ -5,8 +5,6 @@
 #include "data/Model.h"
 #include "data/dfleas/mm/mm__4.h"
 #include "data/dfleas/mm/mm__2A.h"
-#include "data/dfleas/mm/mm__2Aa.h"
-#include "data/dfleas/mm/mm__2Ab.h"
 #include "data/dfleas/mm/mm__2B.h"
 #include "data/dfleas/mm/mm__1.h"
 
@@ -16,8 +14,6 @@ Arr *dfleas__MM_models (void) {
   Arr *mds = arr_new();
   arr_push(mds, mm__4());
   arr_push(mds, mm__2A());
-  arr_push(mds, mm__2Aa());
-  arr_push(mds, mm__2Ab());
   arr_push(mds, mm__2B());
   arr_push(mds, mm__1());
   return mds;

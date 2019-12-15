@@ -126,7 +126,7 @@
 #define RANKING_AGE_RATIO 0.2
 
 /// Number of fleas in pool
-#define RANKING_POOL_NUMBER 500
+#define RANKING_POOL_NUMBER 1000
 
 /// Number of fleas in ranking
 #define RANKING_NUMBER 40

@@ -6,6 +6,7 @@
 #include "data/dfleas/dfleas__Approx.h"
 #include "data/dfleas/dfleas__GA.h"
 #include "data/dfleas/dfleas__Incr.h"
+#include "data/dfleas/dfleas__IncrMM.h"
 #include "data/dfleas/dfleas__MA.h"
 #include "data/dfleas/dfleas__MM.h"
 #include "data/dfleas/dfleas__MMBack.h"
@@ -25,6 +26,7 @@ void dfleas__models_init (void) {
   }
 
   add(dfleas__Incr_models());
+  add(dfleas__IncrMM_models());
   add(dfleas__Approx_models());
   add(dfleas__GA_models());
   add(dfleas__MA_models());

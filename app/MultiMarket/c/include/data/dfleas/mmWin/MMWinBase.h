@@ -26,11 +26,13 @@ struct mMWinBase_MMWinBase {
 MMWinBase *mMWinBase_new(int to_sell, double ref, double max);
 
 /// Returns Arr[MMBase]
-Arr *mMWinBase_cos (int qnicks, QmatrixValues *closes);
+Arr *mMWinBase_cos (int qnicks, QmatrixValues *closes, double strip_to_sell);
 
 ///
 Order *mMWinBase_order (
-  MMWinBase *this, double q, double step_to_buy, double step_to_sell
+  MMWinBase *this, double q,
+  double strip_to_buy, double step_to_buy,
+  double strip_to_sell, double step_to_sell
 );
 
 ///

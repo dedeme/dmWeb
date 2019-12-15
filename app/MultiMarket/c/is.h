@@ -2144,36 +2144,6 @@ Order *mMBase_order (
 // Copyright 02-Aug-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-/// MM2Ab model.
-
-#ifndef DATA_DFLEAS_MM_MM__2AB_H
-  #define DATA_DFLEAS_MM_MM__2AB_H
-
-#include "dmc/async.h"
-#include "data/Model.h"
-
-///
-Model *mm__2Ab (void);
-
-#endif
-// Copyright 02-Aug-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-/// MM2Aa model.
-
-#ifndef DATA_DFLEAS_MM_MM__2AA_H
-  #define DATA_DFLEAS_MM_MM__2AA_H
-
-#include "dmc/async.h"
-#include "data/Model.h"
-
-///
-Model *mm__2Aa (void);
-
-#endif
-// Copyright 02-Aug-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
 /// MM4 model.
 
 #ifndef DATA_DFLEAS_MM_MM__4_H
@@ -2327,81 +2297,6 @@ Js *dfleas__fmt_perc (void);
 Arr *dfleas__MA_models (void);
 
 #endif
-// Copyright 21-Aug-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-/// Incr3a53 model.
-
-#ifndef DATA_DFLEAS_INCR_INCR__3A53_H
-  #define DATA_DFLEAS_INCR_INCR__3A53_H
-
-#include "dmc/async.h"
-#include "data/Model.h"
-
-///
-Model *incr__3a53 (void);
-
-#endif
-// Copyright 01-Aug-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-/// Incr3a model.
-
-#ifndef DATA_DFLEAS_INCR_INCR__3A_H
-  #define DATA_DFLEAS_INCR_INCR__3A_H
-
-#include "dmc/async.h"
-#include "data/Model.h"
-
-///
-Model *incr__3a (void);
-
-#endif
-// Copyright 01-Oct-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-/// Incr3a58b model
-
-#ifndef DATA_DFLEAS_INCR_INCR__3A58B_H
-  #define DATA_DFLEAS_INCR_INCR__3A58B_H
-
-#include "dmc/async.h"
-#include "data/Model.h"
-
-///
-Model *incr__3a58b (void);
-
-#endif
-// Copyright 01-Aug-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-/// Incr3ab model
-
-#ifndef DATA_DFLEAS_INCR_INCR__3AB_H
-  #define DATA_DFLEAS_INCR_INCR__3AB_H
-
-#include "dmc/async.h"
-#include "data/Model.h"
-
-///
-Model *incr__3ab (void);
-
-#endif
-// Copyright 01-Aug-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-/// Incr3aa model
-
-#ifndef DATA_DFLEAS_INCR_INCR__3AA_H
-  #define DATA_DFLEAS_INCR_INCR__3AA_H
-
-#include "dmc/async.h"
-#include "data/Model.h"
-
-///
-Model *incr__3aa (void);
-
-#endif
 // Copyright 01-Aug-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
@@ -2444,36 +2339,6 @@ Order *incrBase_order (
 double incrBase_ref (
   IncrBase *this, double strip_to_buy, double strip_to_sell
 );
-
-#endif
-// Copyright 01-Oct-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-/// Incr3a58a model
-
-#ifndef DATA_DFLEAS_INCR_INCR__3A58A_H
-  #define DATA_DFLEAS_INCR_INCR__3A58A_H
-
-#include "dmc/async.h"
-#include "data/Model.h"
-
-///
-Model *incr__3a58a (void);
-
-#endif
-// Copyright 21-Aug-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-/// Incr3a58 model.
-
-#ifndef DATA_DFLEAS_INCR_INCR__3A58_H
-  #define DATA_DFLEAS_INCR_INCR__3A58_H
-
-#include "dmc/async.h"
-#include "data/Model.h"
-
-///
-Model *incr__3a58 (void);
 
 #endif
 // Copyright 01-Aug-2019 ºDeme
@@ -2519,21 +2384,6 @@ Model *incr__2 (void);
 
 ///
 Model *mmBack__1 (void);
-
-#endif
-// Copyright 02-Aug-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-/// MMBack2a model.
-
-#ifndef DATA_DFLEAS_MMBACK_MMBACK__2A_H
-  #define DATA_DFLEAS_MMBACK_MMBACK__2A_H
-
-#include "dmc/async.h"
-#include "data/Model.h"
-
-///
-Model *mmBack__2a (void);
 
 #endif
 // Copyright 02-Aug-2019 ºDeme
@@ -2585,21 +2435,6 @@ Arr *mMBackBase_cos (int qnicks, QmatrixValues *closes);
 Order *mMBackBase_order (
   MMBackBase *this, double q, double step_to_buy, double step_to_sell
 );
-
-#endif
-// Copyright 02-Aug-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-/// MMBack2b model.
-
-#ifndef DATA_DFLEAS_MMBACK_MMBACK__2B_H
-  #define DATA_DFLEAS_MMBACK_MMBACK__2B_H
-
-#include "dmc/async.h"
-#include "data/Model.h"
-
-///
-Model *mmBack__2b (void);
 
 #endif
 // Copyright 02-Aug-2019 ºDeme
@@ -2661,21 +2496,6 @@ Model *mmWin__1 (void);
 
 /// MMWin2 model.
 
-#ifndef DATA_DFLEAS_MMWIN_MMWIN__2B_H
-  #define DATA_DFLEAS_MMWIN_MMWIN__2B_H
-
-#include "dmc/async.h"
-#include "data/Model.h"
-
-///
-Model *mmWin__2b (void);
-
-#endif
-// Copyright 02-Aug-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-/// MMWin2 model.
-
 #ifndef DATA_DFLEAS_MMWIN_MMWIN__2_H
   #define DATA_DFLEAS_MMWIN_MMWIN__2_H
 
@@ -2684,22 +2504,6 @@ Model *mmWin__2b (void);
 
 ///
 Model *mmWin__2 (void);
-
-#endif
-// Copyright 02-Aug-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-/// MMWin2a model.
-
-#ifndef DATA_DFLEAS_MMWIN_MMWIN__2A_H
-  #define DATA_DFLEAS_MMWIN_MMWIN__2A_H
-
-#include "dmc/async.h"
-#include "data/Model.h"
-
-///
-Model *mmWin__2a (void);
-
 
 #endif
 // Copyright 02-Aug-2019 ºDeme
@@ -4402,7 +4206,7 @@ char *ranking_process(AsyncActor *ac, Map *mrq);
 #define RANKING_AGE_RATIO 0.2
 
 /// Number of fleas in pool
-#define RANKING_POOL_NUMBER 500
+#define RANKING_POOL_NUMBER 1000
 
 /// Number of fleas in ranking
 #define RANKING_NUMBER 40
@@ -4823,6 +4627,42 @@ Js *bytes_to_js(Bytes *this);
 Bytes *bytes_from_js(Js *js);
 
 #endif
+// Copyright 13-Dec-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+#ifndef DMC_REGEX_H
+  #define DMC_REGEX_H
+
+/// Regular expressions management.
+
+#include "dmc/std.h"
+
+/// Returns the offets where ereg is found in s.
+///   rex   : Regular expression to find. It does not admit grouping (that is,
+///           parenthesis).
+///   s     : String to search in.
+///   return: Opt[Arr[Itp]]. Offsets of 's' with elements which match. Each
+///           'Itp' contains [ofsset start inclusive - ofsect - end exclusive].
+///           If any error happens, it returns opt_empty.
+Opt *regex_matches (char *rex, char *s);
+
+/// Equals to 'regex_matches' but "ignoring case".
+Opt *regex_matches_ic (char *rex, char *s);
+
+/// Replace ocurrences of 'rex' in 's' by 'replacement'. Ocurrences are
+/// find by regex_matches.
+///   rex        : Regular expression to replace. It does not admit grouping (that
+///                is, parenthesis).
+///   s          : String to search in.
+///   replacement: New string.
+///   return     : Opt[char]. A new string with repacements done.
+///                If any error happens, it returns opt_empty.
+Opt *regex_replace (char *rex, char *s, char *replacement);
+
+/// Equals to regex_replace, but "ignoring case".
+Opt *regex_replace_ic (char *rex, char *s, char *replacement);
+
+#endif
 // Copyright 15-Oct-2018 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
@@ -4915,6 +4755,29 @@ Js *darr_to_js(Darr *this);
 
 ///
 Darr *darr_from_js(Js *js);
+
+#endif
+// Copyright 13-Dec-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+#ifndef DMC_ITP_H
+  #define DMC_ITP_H
+
+/// Tuple of two integers.
+
+#include "dmc/std.h"
+
+///
+typedef struct itp_Itp Itp;
+
+///
+Itp *itp_new(int i1, int i2);
+
+///
+int itp_e1(Itp *this);
+
+///
+int itp_e2(Itp *this);
 
 #endif
 // Copyright 23-Apr-2019 ºDeme
@@ -5127,7 +4990,7 @@ char *cryp_decryp (char *b64, char *k);
 
 /// Encodes automatically 's' with a random key of 'nk' digits.
 ///   nK: Number of digits for random key (1 to 64 both inclusive).
-///   s : Text for enconding.
+///   s : Text for encoding.
 char *cryp_auto_cryp (char *s, int nk);
 
 /// Decodes a text codified with autoCryp().
@@ -5416,7 +5279,15 @@ Tp *it_duplicates (It *this, int (feq)(void *e1, void *e2));
 
 /// Calls "wget -q -O - 'url'" and returns the text read.
 /// If the reading fails, it returns an empty string.
-char *ext_wget(char *url);
+char *ext_wget (char *url);
+
+/// Reads an URL.
+/// Calls "node -e [script] 2>/dev/null" and returs the text read.
+/// If the reading fails, it returns an empty string.
+/// [script] is a script which run a node library called "puppeteer". This
+/// library must be downloaded (npm install puppeteer).
+///   url: URL to read. It must include protocol ("https://www.google.com").
+char *ext_puppeteer (char *url);
 
 /// Reads a text using GUI. It calls:
 ///   zenity --entry --title='title' --text='prompt' 2>/dev/null
@@ -5424,13 +5295,13 @@ char *ext_wget(char *url);
 /// If user clicks on cancel, it returns an empty string.
 /// It is posible set a default text adding in promp:
 ///   \" --entry-text \"[text_to_add]
-char *ext_zenity_entry(char *title, char *prompt);
+char *ext_zenity_entry (char *title, char *prompt);
 
 /// ext_zenity_msg shows a message box. It calls:
 ///   zenity --notification --window-icon='icon' --text='text' 2>/dev/null
 /// 'icon' is one of gnome icon stock. For example: info, dialog-warning,
 /// dialog-error, dialog-information, face-wink, etc
-void ext_zenity_msg(char *icon, char *text);
+void ext_zenity_msg (char *icon, char *text);
 
 /// ext_pdf generates a pdf file from a html text. It calls:
 ///   pdfPrinter -s %s -t %s 'options' 2>&1
@@ -5438,7 +5309,7 @@ void ext_zenity_msg(char *icon, char *text);
 ///   tx_source  : Text html
 ///   file_target: Path of the new pdf file
 ///   options    : Options for pdfPrinter
-void ext_pdf(
+void ext_pdf (
   char *tx_source,
   char *file_target,
   char *options
@@ -5450,14 +5321,14 @@ void ext_pdf(
 /// fresh target file, you have to delete it previously.
 ///   source: can be a file or directory,
 ///   target: Zip file. If it is a relative path, it hangs on source parent.
-void ext_zip(char *source, char *target);
+void ext_zip (char *source, char *target);
 
 /// ext_unzip uncompress source in target, It calls:
 ///   unzip -q 'source' -d 'target' 2>&1
 ///
 ///   source: Zip file.
 ///   target: A directory. It it does not exist, it is created.
-void ext_unzip(char *source, char *target);
+void ext_unzip (char *source, char *target);
 
 #endif
 // Copyright 23-Apr-2019 ºDeme

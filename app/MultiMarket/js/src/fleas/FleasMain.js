@@ -9,7 +9,6 @@ import Main from "../Main.js";  //eslint-disable-line
 import Menu from "../wgs/Menu.js";
 import {_} from "../I18n.js";
 import Bests from "./Bests.js";
-import Champions from "./Champions.js";
 import Charts from "./Charts.js";
 import Model from "./Model.js";
 
@@ -56,10 +55,6 @@ export default class FleasMain {
     menu.addRight(Menu.mkLink(FleasMain.chartsPageId, _("Charts"), "fleas"));
     menu.addRight(Menu.separator());
     menu.addRight(Menu.mkLink(FleasMain.bestsPageId, _("Bests"), "fleas"));
-    menu.addRight(Menu.separator());
-    menu.addRight(Menu.mkLink(
-      FleasMain.championsPageId, _("Champions"), "fleas"
-    ));
 
     const len = models.length;
     if (len === 0) {
@@ -99,7 +94,7 @@ export default class FleasMain {
     };
     const /** !Object<string, ?> */ rp = await Main.client.rq(rq);
 
-    const /** string */ page = Ui.url()["1"] || FleasMain.championsPageId;
+    const /** string */ page = Ui.url()["1"] || FleasMain.bestsPageId;
     const /** !Object<string, !Array<?>> */ pnames = rp["pnames"];
     const /** !Array<string> */ models = Object.keys(pnames);
     models.sort();
@@ -107,9 +102,7 @@ export default class FleasMain {
     this.mkMenu(models);
     this._menu.setSelected(page);
 
-    if (page === FleasMain.championsPageId) {
-      new Champions(this, pnames).show();
-    } else if (page === FleasMain.chartsPageId) {
+    if (page === FleasMain.chartsPageId) {
       new Charts(this, models).show();
     } else if (page === FleasMain.bestsPageId) {
       new Bests(this, models).show();
@@ -120,11 +113,6 @@ export default class FleasMain {
 
   // STATIC --------------------------------------
   // TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
-
-  /** @return {string} */
-  static get championsPageId () {
-    return "_champions_";
-  }
 
   /** @return {string} */
   static get bestsPageId () {

@@ -8,7 +8,7 @@ pop
 
 (
   " assert break continue data elif else eval expect for "
-  "if import loop mrun nop recursive run this while "
+  "if import loop mrun nop recursive run sync this while "
 ) ++ : reserved. =
 
 " clone dup fail empty? pop puts swap throw toStr try " : reserved2. =

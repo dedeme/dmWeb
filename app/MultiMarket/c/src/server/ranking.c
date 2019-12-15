@@ -29,38 +29,43 @@ static void rp_data (Map *rp, char *date, int sel) {
   // Arr<RankAssetsEntry>
   Arr *previous_ranking = rank_fleas_previous(date);
 
-  // Arr[Arr[RankAssets]]
-  Arr *assets = fleasdb_ranking_assets(ranking);
-  // Arr[Arr[RankPositions]]
-  Arr *positions = rank_mk_positions(assets);
   RankAssetsEntry *e = arr_get(ranking, sel);
+  Model *md = opt_nget(rankAssetsEntry_model(e));
 
-  RsChampions *rs = opt_nget(
-    fleasdb_rsChampions(rankAssetsEntry_model_name(e), rankAssetsEntry_flea(e))
-  );
-  if (rs) {
-    RankFlea *rank_flea = rankFlea_new(
-      rs,
-      arr_get(assets, sel),
-      arr_get(positions, sel)
+  if (md) {
+    // Arr[Arr[RankAssets]]
+    Arr *assets = fleasdb_ranking_assets(ranking);
+    // Arr[Arr[RankPositions]]
+    Arr *positions = rank_mk_positions(assets);
+    RsChampions *rs = opt_nget(
+      fleasdb_rsChampions(rankAssetsEntry_model_name(e), rankAssetsEntry_flea(e))
     );
-    map_put(rp, "selData", rankFlea_to_js(rank_flea));
+    if (rs) {
+      RankFlea *rank_flea = rankFlea_new(
+        rs,
+        arr_get(assets, sel),
+        arr_get(positions, sel)
+      );
+      map_put(rp, "selData", rankFlea_to_js(rank_flea));
+    } else {
+      map_put(rp, "selData", js_wn());
+    }
+
+    map_put(rp, "selParamNames", arr_to_js(
+      it_to(it_map(it_from(model_param_cf(md)), (FCOPY)modelMxMn_name)),
+      (FTO)js_ws
+    ));
+    map_put(rp, "selParamFmts", model_param_jss(md));
   } else {
     map_put(rp, "selData", js_wn());
+    map_put(rp, "selParamNames", js_wn());
+    map_put(rp, "selParamFmts", js_wn());
   }
 
-  Model *md = opt_eget(
-    rankAssetsEntry_model(e),
-    str_f("Model '%s' is unknown", rankAssetsEntry_model_name(e))
-  );
-  map_put(rp, "selParamNames", arr_to_js(
-    it_to(it_map(it_from(model_param_cf(md)), (FCOPY)modelMxMn_name)),
-    (FTO)js_ws
-  ));
-  map_put(rp, "selParamFmts", model_param_jss(md));
   map_put(rp, "list", arr_to_js(
     rank_mk_ranking(ranking, previous_ranking), (FTO)rank_to_js
   ));
+
 }
 
 // mrq is Map[Js]

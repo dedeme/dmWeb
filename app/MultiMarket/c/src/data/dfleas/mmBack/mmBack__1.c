@@ -26,14 +26,16 @@ static Darr *fparams(Flea *f) {
 
 // Arr[MMBackBase]
 static Arr *fcos(Darr *params, int qnicks, QmatrixValues *closes) {
-  return mMBackBase_cos(qnicks, closes);
+  return mMBackBase_cos(qnicks, closes, 0);
 }
 
 static Order *order(Darr *params, void *company, double q) {
   return mMBackBase_order(
     company,
     q,
+    0,
     darr_get(params, STEP),
+    0,
     darr_get(params, STEP)
   );
 }

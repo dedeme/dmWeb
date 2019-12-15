@@ -240,7 +240,8 @@ Rank *rank_from_js (Js *js) {
 // Returns Arr[Arr[RankPosition]]
 // assets are Arr[Arr[RankAssets]]
 Arr *rank_mk_positions (Arr *assets) {
-  if (!arr_size(assets)){
+  int asz = arr_size(assets);
+  if (!asz){
     return arr_new();
   }
 
@@ -252,17 +253,29 @@ Arr *rank_mk_positions (Arr *assets) {
 
   RANGE0(col, arr_size(arr_get(assets, 0))) {
     RANGE0(row, arr_size(assets)) {
-      RankAssets *rk_a = arr_get(arr_get(assets, row), col);
-      int pos = 0;
-      EACH(assets, Arr, rk_row) {
-        RankAssets *rk_a2 = arr_get(rk_row, col);
-        if (rankAssets_assets(rk_a2) > rankAssets_assets(rk_a)) {
-          ++pos;
-        }
-      }_EACH
-      arr_push(arr_get(r, row), rankPosition_new(
-        rankAssets_date(rk_a), pos
-      ));
+      // Arr[RankAssets]
+      Arr *fl_assets = arr_get(assets, row);
+      if (arr_size(fl_assets)) {
+        int pos = 0;
+        RankAssets *rk_a = arr_get(fl_assets, col);
+        EACH(assets, Arr, rk_row) {
+          if (col < arr_size(rk_row)) {
+            RankAssets *rk_a2 = arr_get(rk_row, col);
+            if (rankAssets_assets(rk_a2) > rankAssets_assets(rk_a)) {
+              ++pos;
+            }
+          }
+        }_EACH
+        arr_push(arr_get(r, row), rankPosition_new(
+          rankAssets_date(rk_a), pos
+        ));
+      } else {
+        EACH(arr_get(assets, 0), RankAssets, rkps) {
+          arr_push(arr_get(r, row), rankPosition_new(
+            rankAssets_date(rkps), asz
+          ));
+        }_EACH
+      }
     }_RANGE
   }_RANGE
 
@@ -270,8 +283,8 @@ Arr *rank_mk_positions (Arr *assets) {
 }
 
 // Returns Arr[Rank]
-// rss: Arr[RsChampions]
-// positions: Arr[Arr[RankPosition]]
+// rk: Arr[RankAssetsEntry]
+// prev_rk: Arr[RankAssetsEntry]
 Arr *rank_mk_ranking (Arr *rk, Arr *prev_rk) {
   int calc_df (int current, int previous) {
     int dif = previous - current;

@@ -15,7 +15,7 @@ MMWinBase *mMWinBase_new(int to_sell, double ref, double max) {
 }
 
 /// Returns Arr[MMWinBase]
-Arr *mMWinBase_cos (int qnicks, QmatrixValues *closes) {
+Arr *mMWinBase_cos (int qnicks, QmatrixValues *closes, double strip_to_sell) {
   Arr *r = arr_new();
   QmatrixValues *p;
   RANGE0(nk, qnicks)
@@ -24,13 +24,15 @@ Arr *mMWinBase_cos (int qnicks, QmatrixValues *closes) {
     while (q < 0) {
       q = (*p++)[nk];
     }
-    arr_push(r, mMWinBase_new(1, q * (0.95), q));
+    arr_push(r, mMWinBase_new(1, q * 0.95 * (1 - strip_to_sell), q));
   _RANGE
   return r;
 }
 
 Order *mMWinBase_order (
-  MMWinBase *this, double q, double step_to_buy, double step_to_sell
+  MMWinBase *this, double q,
+  double strip_to_buy, double step_to_buy,
+  double strip_to_sell, double step_to_sell
 ) {
   this->qlast = q;
   if (q > 0) {
@@ -39,8 +41,8 @@ Order *mMWinBase_order (
         this->ref = this->ref + (q - this->ref) * step_to_sell;
       }
       if (q <= this->ref && (q > this->qop || q < this->ref0)) {
-        this->ref = this->mm;
-        this->ref0 = this->mm;
+        this->ref = this->mm * (1 + strip_to_buy);
+        this->ref0 = this->ref;
         this->mm = q;
         this->qop = q;
         this->to_sell = 0;
@@ -55,8 +57,8 @@ Order *mMWinBase_order (
       }
       if (q >= this->ref && (q < this->qop || q > this->ref0)) {
         double pond = (q - this->ref) / this->ref;
-        this->ref = this->mm;
-        this->ref0 = this->mm;
+        this->ref = this->mm * (1 - strip_to_sell);
+        this->ref0 = this->ref;
         this->mm = q;
         this->qop = q;
         this->to_sell = 1;

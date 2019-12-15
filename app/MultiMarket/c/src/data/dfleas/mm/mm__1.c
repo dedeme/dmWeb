@@ -33,9 +33,9 @@ static Order *order(Darr *params, void *company, double q) {
   return mMBase_order(
     company,
     q,
-    darr_get(params, 0),
+    0,
     darr_get(params, STEP),
-    darr_get(params, 0),
+    0,
     darr_get(params, STEP)
   );
 }
