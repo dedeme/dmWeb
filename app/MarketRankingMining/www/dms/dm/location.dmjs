@@ -1,0 +1,63 @@
+// Copyright 04-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+( @+
+  ("return window.location;", Location) ffi,o
+@-<Location>) get =>
+
+( @+
+  ("return location.href;") ffi,s
+@-s) href =>
+
+( @+
+  this,href
+  dup "?" str,index : ix =
+  ix -1 != (ix str,left) if
+  dup "#" str,index : ix =
+  ix -1 != (ix str,left) if
+  dup "/" != (dup "/" str,ends? (-1 str,left) if) if
+@-s) hrefBase =>
+
+( @+
+  ("return location.protocol;") ffi,s
+@-s) protocol =>
+
+( @+
+  ("return location.host;") ffi,s
+@-s) host =>
+
+( @+
+  ("return location.hostname;") ffi,s
+@-s) hostName =>
+
+( @+
+  ("return location.port;") ffi,s
+@-s) port =>
+
+( @+
+  ("return location.pathname;") ffi,s
+@-s) pathName =>
+
+( @+
+  ("return location.host;") ffi,s
+@-s) host =>
+
+( @+
+  ("return location.search;") ffi,s
+@-s) search =>
+
+( @+
+  ("return location.hash;") ffi,s
+@-s) hash =>
+
+( @+s
+  (url "location.assign(url);") ffi,v
+@-) assign =>
+
+( @+s
+  (url "location.replace(url);") ffi,v
+@-) replace =>
+
+( @+
+  ("location.reload(true);") ffi,v
+@-) reload =>

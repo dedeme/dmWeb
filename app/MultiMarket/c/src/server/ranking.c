@@ -24,13 +24,13 @@ static void rp_data (Map *rp, char *date, int sel) {
   map_put(rp, "dates", arr_to_js(dates, (FTO)js_ws));
   map_put(rp, "date", js_ws(date));
 
-  // Arr[RankAssetsEntry]
+  // Arr[RankEntry]
   Arr *ranking = rank_fleas(date);
-  // Arr<RankAssetsEntry>
+  // Arr<RankEntry>
   Arr *previous_ranking = rank_fleas_previous(date);
 
-  RankAssetsEntry *e = arr_get(ranking, sel);
-  Model *md = opt_nget(rankAssetsEntry_model(e));
+  RankEntry *e = arr_get(ranking, sel);
+  Model *md = opt_nget(rankEntry_model(e));
 
   if (md) {
     // Arr[Arr[RankAssets]]
@@ -38,7 +38,7 @@ static void rp_data (Map *rp, char *date, int sel) {
     // Arr[Arr[RankPositions]]
     Arr *positions = rank_mk_positions(assets);
     RsChampions *rs = opt_nget(
-      fleasdb_rsChampions(rankAssetsEntry_model_name(e), rankAssetsEntry_flea(e))
+      fleasdb_rsChampions(rankEntry_model_name(e), rankEntry_flea(e))
     );
     if (rs) {
       RankFlea *rank_flea = rankFlea_new(

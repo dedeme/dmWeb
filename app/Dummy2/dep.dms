@@ -1,5 +1,7 @@
 #!/home/deme/bin/dmstack -d
 
+"Don Use In Dummy" fail
+
 "libdmstk" : repo =
 "201909" : version =
 

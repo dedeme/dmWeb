@@ -1,0 +1,19 @@
+// Copyright 29-Sep-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"../dm/cgi" import
+"../conf" import
+
+( @m :: Rq =
+  Rq "rq" map,has? ! ("Field 'rq' is missing" fail) if
+  Rq .rq js,rs : rq =
+
+  ( "lang" rq ==)
+  ( conf,lang "es" == ("en") ("es") elif : conf,setLang; cgi,none)
+  else
+  ( "chpass" rq ==)
+  ( Rq .user js,rs : Rq .pass js,rs : Rq .newPass js,rs : cgi,changePass)
+  else
+  ( "Value '" rq "' not allowed for 'rq'" + + fail)
+  if
+@s) process =>

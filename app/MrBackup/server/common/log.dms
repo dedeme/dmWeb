@@ -1,0 +1,87 @@
+// Copyright 22-Dic-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Log memory data.
+
+300 : maxEntries. =
+
+// Entry -----------------------------------------------------------------------
+
+( @+ss:: msg =; type =
+  [ time,now int,toFloat; type "E" == ("E") ("I") elif; msg ] data
+@-l) newEntry =>
+/// @s::type, @s::msg -> @l::entry
+/// Creates a new log entry.
+///
+///   type: It can be 'E' for error or 'I' to information.
+///   msg : Message to register.
+///   ----
+///   entry: A list with the following fields:
+///     - @i::date. Date-Time.
+///     - @s::type. Type ('E' or 'I')
+///     - @s::message. Message
+
+(@+l:: !0 @-f) : dateC =>
+/// @l::log -> @f::dateTime
+(@+l:: !0 1000 * @-f) : dateJs =>
+/// @l::log -> @f::dateTimeJs
+(@+l:: !1 @-s) : type =>
+/// @l::log -> @s::type
+///
+/// 'type' can be 'E' (error) or 'I' (information).
+(@+l:: !2 @-s) : msg =>
+/// @l::log -> @s::msg
+
+(@+l:: E =
+  [
+    E !0 js,wf
+    E !1 js,ws
+    E !2 js,ws
+  ] data js,wa
+@-s) : toJs. =>
+
+(@+s::
+  js,ra : E =
+  [
+    E !0 js,rf
+    E !1 js,rs
+    E !2 js,rs
+  ] data
+@-l) : fromJs. =>
+
+// Log -------------------------------------------------------------------------
+
+( @+ lst,new @-l) : newLog =>
+/// @ -> @l::log
+
+( @+l:: Log =
+  this,maxEntries. : mx =
+  Log lst,size : sz =
+
+  sz mx > (Log mx sz lst,removeRange) if
+@-) : purge. =>
+
+( @+ls:: msg =; Log =
+  Log : "I" msg this,newEntry : lst,push+ this,purge.
+@-) : info =>
+/// @l::log, @s::msg -> @
+///
+/// Adds an information message.
+
+( @+ls:: msg =; Log =
+  Log : "E" msg this,newEntry : lst,push+ this,purge.
+@-) : error =>
+/// @l::log, @s::msg -> @
+///
+/// Adds an error message.
+
+(@+l:: lst,clear @-) : clear =>
+/// @l::log -> @
+///
+/// Clears log.
+
+(@+l:: (this,toJs.) lst,toJs @-s) : toJs =>
+/// @l::log -> @s::js
+
+(@+s:: (this,fromJs.) lst,fromJs @-l) : fromJs =>
+/// @s::js ->@l::log

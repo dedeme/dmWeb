@@ -1,0 +1,32 @@
+// Copyright 23-Dic-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Statistic data.
+
+( @+ii:: wrongPools =; pools =
+  {
+    "pools": pools
+    "wrongPools": wrongPools
+  } map,from
+@-m) new =>
+/// @i::pools -> @m::st
+///
+///   pools: Number of pools.
+///   -----
+///   st   : Statistics.
+
+( @+m:: St =
+  {
+    "pools": St .pools js,wi
+    "wrongPools": St .wrongPools js,wi
+  } map,from js,wo
+@-s) toJs =>
+/// @m::st -> @s::js
+
+( @+s:: js,ro : St =
+  {
+    "pools": St .pools js,ri
+    "wrongPools": St .wrongPools js,ri
+  } map,from
+@-m) fromJs =>
+/// @s::js -> @m::st

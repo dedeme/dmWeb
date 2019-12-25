@@ -50,7 +50,7 @@ static void update_pool (void) {
           ;
         }
         if (!arr_any(pool, (FPRED)fn))
-          arr_push(pool, rankEntry_new(mdname, f));
+          arr_push(pool, rankEntry_new(mdname, f, 0, 0));
       }
     }_EACH
   }
@@ -142,7 +142,9 @@ static Arr *to_rank_entries (Arr *pool_ev) {
   EACH(pool_ev, RankEvalEntry, e) {
     arr_push(pool, rankEntry_new(
       rankEvalEntry_model_name(e),
-      rankEvalEntry_flea(e)
+      rankEvalEntry_flea(e),
+      rankEvalEntry_assets(e),
+      rankEvalEntry_points(e) * 1000
     ));
   }_EACH
 
@@ -151,19 +153,19 @@ static Arr *to_rank_entries (Arr *pool_ev) {
 
 // Rank ------------------------------------------------------------------------
 
-// return Map<Arr<RankAssetsEntry>>
+// return Map<Arr<RankEntry>>
 static Map *read_ranking (void) {
   if (!rankdb) EXC_ILLEGAL_STATE("'pool.db' was not intiliazed")
 
-  // Return Arr<RankAssetsEntry>
+  // Return Arr<RankEntry>
   Arr *fn(Js *js) {
-    return arr_from_js(js, (FFROM)rankAssetsEntry_from_js);
+    return arr_from_js(js, (FFROM)rankEntry_from_js);
   }
   Js *js = (Js *)file_read(rankdb);
   return map_from_js(js, (FFROM)fn);
 }
 
-// rank is Arr<RankAssetsEntry>
+// rank is Arr<RankEntry>
 static void save_rank(Arr *rank) {
   char *now = opt_nget(quotes_last_date());
   if (!now) now = date_to_str(date_now());
@@ -178,18 +180,18 @@ static void save_rank(Arr *rank) {
     map_remove(m, arr_pop(keys));
   }
 
-  // a is Arr<RankAssetsEntry>
+  // a is Arr<RankEntry>
   Js *fn(Arr *a) {
-    return arr_to_js(a, (FTO)rankAssetsEntry_to_js);
+    return arr_to_js(a, (FTO)rankEntry_to_js);
   }
   char *s = (char *)map_to_js(m, (FTO)fn);
 
   file_write(rankdb, s);
 }
 
-// return Arr<RankAssetsEntry>
+// return Arr<RankEntry>
 static Arr *last_ranking (void) {
-  // Map<Arr<RankAssetsEntry>>
+  // Map<Arr<RankEntry>>
   Map *m = read_ranking();
 
   if (map_size(m)) {
@@ -202,15 +204,15 @@ static Arr *last_ranking (void) {
   return arr_new();
 }
 
-// return Arr<RankAssetsEntry> descendingly sorted.
-// pool_ev is Arr<RankEvalEntry>, rank is Arr<RankAssetsEntry>
+// return Arr<RankEntry> descendingly sorted.
+// pool_ev is Arr<RankEvalEntry>, rank is Arr<RankEntry>
 static Arr *new_rank (Arr *pool_ev, Arr *rank) {
   // Arr<RankEvalEntry>
   Arr *r = arr_new();
 
-  EACH(rank, RankAssetsEntry, e) {
-    char *flname = flea_name(rankAssetsEntry_flea(e));
-    char *mdname = rankAssetsEntry_model_name(e);
+  EACH(rank, RankEntry, e) {
+    char *flname = flea_name(rankEntry_flea(e));
+    char *mdname = rankEntry_model_name(e);
     int fn (RankEvalEntry *eve) {
       return
         str_eq(flname, flea_name(rankEvalEntry_flea(eve))) &&
@@ -234,8 +236,8 @@ static Arr *new_rank (Arr *pool_ev, Arr *rank) {
     arr_push(r, arr_pop(pool_ev));
 
   arr_sort(r, (FCMP)fn);
-  RankAssetsEntry *fmap(RankEvalEntry *e) {
-    return rankAssetsEntry_new(
+  RankEntry *fmap(RankEvalEntry *e) {
+    return rankEntry_new(
       rankEvalEntry_model_name(e),
       rankEvalEntry_flea(e),
       rankEvalEntry_assets(e),
@@ -267,7 +269,7 @@ void rank_update (void) {
   Arr *pool_ev = evaluate(pool); // Evaluate and filter fleas.
   pool = to_rank_entries(pool_ev);
   save_pool(pool);
-  // Arr<RankAssetsEntry> descendingly
+  // Arr<RankEntry> descendingly
   Arr *rank = last_ranking();
   rank = new_rank(pool_ev, rank);
   save_rank(rank);
@@ -284,22 +286,22 @@ Arr *rank_dates (void) {
 }
 
 Arr *rank_fleas (char *date) {
-  // Map<Arr<RankAssetsEntry>>
+  // Map<Arr<RankEntry>>
   Map *m =read_ranking();
   if (!map_size(m))
     EXC_ILLEGAL_STATE("There is not any historic ranking group")
 
-  // Arr<RankAssetsEntry> descendingly
+  // Arr<RankEntry> descendingly
   return opt_oget(map_get(m, date), kv_value((Kv *)*arr_start(map_kvs(m))));
 }
 
 Arr *rank_fleas_previous (char *date) {
-  // Map<Arr<RankAssetsEntry>>
+  // Map<Arr<RankEntry>>
   Map *m = read_ranking();
   int sz = map_size(m);
   if (!sz) return arr_new();
 
-  // Arr<Kv<RankAssetsEntry>>
+  // Arr<Kv<RankEntry>>
   Arr *kvs = map_kvs(m);
 
   int fsort (Kv *e1, Kv *e2) {

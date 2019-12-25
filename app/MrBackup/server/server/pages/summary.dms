@@ -1,0 +1,36 @@
+// Copyright 21-Dic-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Sumary page.
+
+"../../dm/cgi" import
+"../../io/bks" import
+"../../io/log" import
+"../../common/sts" import
+
+( @m :: Rq =
+  Rq "rq" map,has? ! ("Field 'rq' is missing":_ lfail) if
+  Rq .rq js,rs : rq =
+
+  ( "idata" rq ==)
+  ( {
+      "state": bks,checkAll js,wb
+      "stats": bks,stats sts,toJs
+    } map,from cgi,ok
+  )
+  else
+  ( "log" rq ==)
+  ( {
+      "log": log,read
+    } map,from cgi,ok
+  )
+  else
+  ( "clear" rq ==)
+  ( {
+      log,clear
+    } map,from cgi,ok
+  )
+  else
+  ( "Value '%0' not allowed for 'rq'":_ [rq] __ lfail)
+  if
+@s) process =>

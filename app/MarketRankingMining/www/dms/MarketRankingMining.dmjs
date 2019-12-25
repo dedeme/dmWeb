@@ -1,0 +1,150 @@
+// Copyright 17-Dic-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"i18n" import
+"dm/client" import
+"dm/menu" import
+"dm/location" import
+"pages/expired" import
+"pages/auth" import
+"pages/bye" import
+"pages/main" import
+"pages/settings" import
+
+(i18n,_) : _ =>
+(i18n,__) : __ =>
+
+// Model
+
+"MarketRankingMining" : app =
+"201912" : version =
+
+{
+  "app": app
+  "version": version
+  "client" : 1 app (this,AppData expired,show) client,new
+  "lang": "en"
+  "menu": 0 menu,new
+
+  "menuDiv": "div" ui,$+
+  "view": "div" ui,$+
+} map,from AppData =
+
+"main" : menuMain =
+"settings" : menuSettings =
+
+// View
+
+( @+
+  "div" {} [
+    (AppData .menuDiv) {} []
+    (AppData .view)
+    "p" { html: "&nbsp;" }
+    "hr"
+    "table" { class: "main" } [
+      "tr" {} [
+        "td" {} [
+          "a" {
+            att: href "doc/about.html"
+            att: target "blank"
+            html: ("<small>" "Help & Credits":_  "</small>" + +)
+          }
+        ]
+        "td" {
+          style: ("text-align: right;font-size: 10px;"
+                  "color:#808080;font-size:x-small;" +)
+          html: ("- © ºDeme. ${app} (${version}) -")
+        }]]]
+  ui,$+
+@-<Element>) wg =>
+
+( @+
+  "@body" { removeAll } [ wg ] ui,$
+@-) show =>
+
+// Control
+
+( @+m App# =
+  App# .client
+  {
+    "page": "Main" js,ws
+    "rq": "getDb" js,ws
+  } map,from
+  ( @m:: .db js,ro : Rp =
+    Rp "lang" map,oget () ("es" js.ws) wrap,option js,rs : lang =
+    Rp "menu" map,oget () (this,menuSettings js.ws) wrap,option js,rs : menu =
+    App# "lang" lang map,put
+    lang i18n,init
+
+    App# .menu : Mn# =
+
+    Mn#
+      this,menuMain "Main":_
+      (App# Mn# this,menuMain go)
+      menu,mkOption menu,addLeft
+
+    Mn# :
+      "a" {
+        att: href ("http://" location,host "/dmcgi/MultiMarket/?ranking" + + )
+        text: ("Ranking":_)
+      } ui,$+ menu,addRight
+    Mn# menu,separator menu,addRight
+    Mn#
+      this,menuSettings "Settings":_
+      (App# Mn# this,menuSettings go)
+      menu,mkOption menu,addRight
+
+    App# .menuDiv {} [ App# .menu : menu,wg ] data ui,$+
+
+   App# Mn# menu this,go
+  )
+  client,send
+@-) appRun =>
+
+( @+
+  this,AppData .client
+  (
+    ( this,AppData appRun)
+    ( this,AppData auth,new auth,show)
+    elif
+  )
+  client,connect
+@-) update =>
+
+( @+
+  this,AppData .client
+  {
+    "page": "logout" js,ws
+  } map,from
+  (
+    this,AppData bye,new bye,show
+  )
+  client,send
+@-) fbye =>
+
+( @+mms pgMn =; Mn =; App =
+  Mn pgMn menu,setSelected
+
+  ( this,menuMain pgMn ==)
+  ( App main,new main,show)
+  else
+  ( this,menuSettings pgMn ==)
+  ( App settings,new settings,show)
+  else
+  ( "Unknown page '${pgMn}'" fail)
+  if
+
+  App .client
+  {
+    "page": "Main" js,ws
+    "rq": "setMenu" js,ws
+    "option": pgMn js,ws
+  } map,from
+  ()
+  client,send
+@-) go =>
+
+show
+update
+
+empty? assert

@@ -64,6 +64,12 @@ export default class RankingMain {
       "_update_", _("Update"),
       () => this.dataUpdate()
     ).klass("link"));
+    menu.addRight(Menu.separator());
+    menu.addRight(
+      $("a")
+        .att("href", "http://" + location.host + "/dmcgi/MarketRankingMining")
+        .text(_("Mining"))
+    );
   }
 
   /**

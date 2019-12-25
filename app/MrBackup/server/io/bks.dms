@@ -1,0 +1,57 @@
+// Copyright 23-Dic-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Backups data base.
+
+"../common/sts" import
+"log" import
+
+( @+
+  MrBackupTargets lst,size : pools =
+  0 wrap,ref : C =
+  MrBackupTargets
+  (
+    this,checkPool
+    ( log,error; C (++) ^^)
+    ()
+    wrap,option
+  )
+  lst,each
+  C >> : wrongPools =
+
+  pools wrongPools sts,new
+@-m) stats =>
+/// @ -> @m::st
+
+( @+
+  MrBackupTargets : Pools =
+  Pools (file,directory? !) lst,filter : PoolsNotFound =
+  PoolsNotFound lst,size
+  ( "Pools not found:\n  %0":_ [PoolsNotFound " - " str,join] __ :: wrap,some)
+  ( wrap,none)
+  elif
+@-o) checkPools =>
+/// @ -> @o<s>::error
+
+( @+s:: pool =
+  pool file,directory?
+  (
+    pool file,dir (f =; pool f path,+ file,directory? !) lst,filter : Fs =
+    Fs lst,size
+    ( "Pool '%0' constains files which are not directories:\n  %1":_
+        [pool; Fs " - " str,join] __
+        wrap,some
+    )
+    ( wrap,none)
+    elif
+  )
+  ( "Pool not found: %0":_ [pool] __ :: wrap,some)
+  elif
+@-o) checkPool =>
+/// @s::path -> @o<s>::error
+
+( @+
+  1
+  dup (this,checkPools (log,error; pop; 0) () wrap,option) if
+@-i) checkAll =>
+/// @ -> @i::ok?

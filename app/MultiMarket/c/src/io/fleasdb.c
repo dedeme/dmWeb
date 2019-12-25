@@ -10,7 +10,7 @@
 #include "data/Rs.h"
 #include "data/Model.h"
 #include "data/Nick.h"
-#include "data/RankAssetsEntry.h"
+#include "data/RankEntry.h"
 #include "data/dfleas/dfleas__models.h"
 #include "DEFS.h"
 
@@ -337,14 +337,14 @@ Arr *fleasdb_ranking_assets (Arr *ranking) {
 
   // Arr[Arr[Opt[RankAssets]]]
   Arr *r = arr_new();
-  EACH(ranking, RankAssetsEntry, e) {
-    Model *model = opt_nget(rankAssetsEntry_model(e));
+  EACH(ranking, RankEntry, e) {
+    Model *model = opt_nget(rankEntry_model(e));
     if (!model) {
       arr_push(r, arr_new());
       continue;
     }
 
-    Darr *params = model_params(model, rankAssetsEntry_flea(e));
+    Darr *params = model_params(model, rankEntry_flea(e));
     // Arr[RankAssets]
     Arr *asts = model_assets_historic(model, params, dates, opens, closes);
     if (arr_size(asts) > HISTORIC_RANKING_CHAR_MAX) {

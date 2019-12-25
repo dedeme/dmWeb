@@ -1,0 +1,52 @@
+// Copyright 25-Sep-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"dm/cgi" import
+
+"" wrap,ref Path. =
+
+( @+
+  this,Path. : cgi,home "data/conf.db" path,+ : <<
+  this,Path. >> file,exists? !
+  (
+    this,Path. >>
+      {
+        "lang": "es" js,ws
+        "menu": "settings" js,ws
+      } map,from js,wo
+      file,write
+  )
+  if
+@-) init =>
+/// () -> Void
+
+( // () -> Map<Js>  .
+  this,Path. >> file,read js,ro
+@m) getJs =>
+
+( @m:: JsValues = // (Map<Js>) -> Void
+  this,Path. >> JsValues js,wo file,write
+) setJs. =>
+
+( this,getJs .lang js,rs @s)
+lang =>
+/// () -> String
+
+( @s:: lang =
+  this,getJs : "lang" : lang js,ws : map,put+
+  this,setJs.
+)
+setLang =>
+/// (String) -> Void
+
+( this,getJs .menu map,get js,rs @s)
+menu =>
+/// () -> String
+
+( @s:: option =
+  this,getJs "menu" option js,ws map,put+
+  this,setJs.
+)
+setMenu =>
+/// (String) -> Void
+

@@ -1,0 +1,217 @@
+// Copyright 01-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"../i18n" import
+"../dm/wg" import
+"../dm/client" import
+"../dm/captcha" import
+"../dm/location" import
+
+// MODEL
+
+( @+m @-m)
+new =>
+
+// VIEW
+
+( @+m:: # Auth# =
+  Auth# .app : app =
+  Auth# .view : View =
+
+  "${app}__captcha" : captchaStore =
+  "${app}__lang" : langStore =
+
+  langStore store,take () ("es") wrap,option : i18n,init
+
+  captchaStore 3 captcha,new : Captcha# =
+
+  "Pass" wg,field { att: id "UserIn" } ui,$+ : UserIn =
+
+  "Accept" wg,pass { att: id "Pass" } ui,$+ : Pass =
+
+  "input" {
+    att: type "checkbox"
+    style: "vertical-align: middle"
+  } ui,$+ : Persistent =
+
+  "input" {
+    att: type "button"
+    style: "width:100px;"
+    att: id "Accept"
+    value: ("Accept":_)
+    on: { click:
+      (
+        Auth#
+        Captcha#
+        UserIn (value) ui,prop
+        Pass (value) ui,prop
+        Persistent (checked) ui,prop
+        this,accept
+      )
+    }
+  } ui,$+ : Accept =
+
+  (
+    [
+      "tr" {} [
+        "td" {
+          style: "padding: 10px 0px 0px 10px;text-align:right;"
+          html: ("User":_) }
+        "td" { style: "padding: 10px 10px 0px 10px;"
+          } [
+          UserIn ]]
+      "tr" {} [
+        "td" {
+          style: "padding: 10px 0px 0px 10px;text-align:right;"
+          html: ("Password":_) }
+        "td" { style: "padding: 10px 10px 5px 10px;"
+          } [
+          Pass ]]
+      "tr" {} [
+        "td" {
+          att: colspan "2"
+          style: `
+            border-top:1px solid #c9c9c9;
+            padding: 5px 10px 10px;text-align:right;`
+          } [
+          "table" {
+            style: `
+              border-collapse : collapse;
+              border : 0px;
+              width : 100%;`
+          } [
+            "tr" {} [
+              "td" { att: align "center", att: colspan "2"
+              } [
+                Persistent
+                "span" { html: ("&nbsp;" "Keep connected":_ +) }]]
+            "tr" {} [
+              "td" {} [
+                ((Auth# this,ChangeLanguage run) wg,link) {
+                  class "link"
+                  html: (
+                    langStore store,take
+                    ( "es" == ("EN") ("ES") elif)
+                    ( "EN")
+                    wrap,option
+                  ) }]
+              "td" { att: align "right"
+                } [
+                Accept ]]]]]
+
+      Captcha# captcha,counter : 0 : >
+      (
+        "tr" {} [
+          "td" {
+            att: colspan "2"
+            style: `
+              border-top:1px solid #c9c9c9;
+              padding: 10px 10px 10px;text-align:right;`
+          } [
+            "table" {
+              att: align "center"
+              style: `
+                background-color: rgb(250, 250, 250);
+                border: 1px solid rgb(110,130,150);
+                font-family: sans;font-size: 14px;
+                padding: 4px;border-radius: 4px;`
+            } [
+              "tr" {} [ "td" { html: ("Wrong password":_) } ]]]]
+      )
+      if
+
+      Captcha# captcha,counter : Captcha# .counterLimit : >
+      (
+        "tr" {} [
+          "td" { att: colspan "2", att: align "center" } [
+            (Captcha# captcha,mkWg) ]]
+        "tr" {} [
+          "td" {
+            att: colspan "2"
+            style: "padding: 5px 0px 5px 10px;text-align:center;"
+            html: ("Check gray squares":_) }]
+      )
+      if
+    ] data
+  ) rows =>
+
+  (
+    "table" {
+      att: align "center"
+      style: `
+        background-color: #f8f8f8;
+        border-collapse: collapse;
+        padding: 10px;
+        border: 1px solid rgb(110,130,150);`
+      } [
+        "tr" {} [
+          "td" {
+            att: colspan "2"
+            style: (
+              "background-color:#e8e8e8;"
+              "border-bottom:1px solid #c9c9c9;" +
+              "padding: 10px;" +
+              "color:#505050;" + )
+            html: ("<big><big><b>" "Login":_ "</big></big></b>" + +) }]]
+      rows + ui,$+
+  ) body =>
+
+  View { removeAll } [
+    "div" {
+      class: "title"
+      html: ("&nbsp;<br>${app}<br>&nbsp;") }
+    "div" {} [ body ]
+  ] ui,$
+
+  UserIn { focus } ui,$
+
+@-) show =>
+
+// CONTROL
+
+( @+m:: Auth =
+  langStore
+    langStore store,take
+    ( "es" == ("en") ("es") elif)
+    ( "es")
+    wrap,option
+    store,put
+
+  Auth this,show
+@-) ChangeLanguage =
+
+( @+mmssi:: # persistent =; pass =; user =; Captcha# =; Auth# =
+
+  Captcha# captcha,counter : Captcha# .counterLimit : >
+  Captcha# captcha,match !
+  &&
+  (
+    "Grey squares checks are wrong":_ sys,alert
+    Auth# this,show
+  )
+  (
+    ( user "" ==)
+    ( "User name is missing":_ sys,alert)
+    else
+    ( pass "" ==)
+    ( "Password is missing":_ sys,alert)
+    else
+    (
+      Auth# .client : user : pass : persistent !
+      ( @+i
+        (
+          Captcha# captcha,reset
+          "" location,assign
+        )
+        (
+          Captcha# captcha,inc
+          Auth# this,show
+        )
+        elif
+      @-)
+      client,authentication
+    )
+    if
+  )
+  elif
+@-) accept =>

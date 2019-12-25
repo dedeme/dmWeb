@@ -1,0 +1,88 @@
+// Copyright 04-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+( @+si:: counterLimit =; storeId =
+  {
+    "storeId": storeId
+    "counterLimit": counterLimit
+    "zeroColor": "#f0f0f0"
+    "oneColor": "#c0c0c0"
+    "checks":
+      [] data 8 (pop "input" {att: type "checkbox"} ui,$+ lst,push+) for
+    "value": "11110000"
+  } map,from
+@-m) new =>
+
+( @+mss:: oneColor =; zeroColor =; Cp =
+  Cp "oneColor" oneColor obj,set
+  Cp "zeroColor" zeroColor obj,set
+@-) setColors =>
+
+( @+m:: Cp =
+  Cp .storeId : storeId =
+  storeId "_counter" + : counterKey =
+  storeId "_time" + : timeKey =
+
+  (
+    counterKey "0" store,put
+    timeKey : time,now toStr : store,put
+    0
+  ) reset =>
+
+  counterKey store,take
+  ( int,fromStr : c =
+    timeKey store,take () ("timeKey is empty" fail) wrap,option
+      float,fromStr : t =
+    time,now t time,df : 900 : > (reset) (c) elif
+  )
+  ( reset)
+  wrap,option
+@-i) counter =>
+
+( @+m:: Cp =
+  Cp .storeId : storeId =
+  storeId  "_counter"  + : counterKey =
+  storeId  "_time"  + : timeKey =
+
+  counterKey : Cp this,counter 1 + toStr : store,put
+  timeKey : time,now toStr : store,put
+@-) inc =>
+
+( @+m:: Cp =
+  Cp .storeId : storeId =
+  storeId  "_counter"  + : counterKey =
+  storeId  "_time"  + : timeKey =
+
+  counterKey : store,del
+  timeKey : store,del
+@-) reset =>
+
+( @+m:: Cp =
+  Cp .checks ((checked) ui,prop toStr) lst,map : "" : str,join
+  Cp .value
+  ==
+@-i) match =>
+
+( @+m:: Cp =
+  [] data
+  8
+  ( i =;
+    Cp .value : i : str,get "1" ==
+    ( Cp .oneColor)
+    ( Cp .zeroColor)
+    elif : back =
+    Cp .checks : i : lst,get : Check =
+    "td" { style: ("border: 1px solid;background-color: " back +) }
+    [ Check { checked: 0 } ]
+      ui,$+ lst,push+
+  )
+  for dup lst,shuffle : Tds =
+
+  "tr" {} [] data 4 (pop; Tds lst,pop : lst,push+) for ui,$+ : Tr1 =
+  "tr" {} [] data 4 (pop; Tds lst,pop : lst,push+) for ui,$+ : Tr2 =
+
+  "table" {
+    att: border "0"
+    style: "border: 1px solid;background-color: #fffff0"
+  } [ Tr1 Tr2 ] ui,$+
+@-<Element>) mkWg =>

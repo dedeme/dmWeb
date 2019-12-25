@@ -1,0 +1,121 @@
+// Copyright 17-Dic-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"../i18n" import
+"../common/row" import
+"../dm/client" import
+"../dm/wg" import
+
+( @+m
+  "dateDiv": "div" ui,$+ : map,put+
+@-m)
+new =>
+
+( @+m:: # Pg# =
+  Pg# .view { removeAll } [
+    "div" { style: "text-align:center" } [
+      "div" { class: "head", html: ("Ranking Mining":_) } []
+      "div" {html: "&nbsp;"} []
+      (Pg# .dateDiv) {} [("wait.gif" wg,img)]]
+  ] ui,$
+  Pg# this,update
+@-) show =>
+
+(@+m;; # Pg# =
+  (@+i int,toIso @-s) : fmt =>
+
+  Pg# .client
+  {
+    "page": "Main" js,ws
+    "rq": "data" js,ws
+  } map,from
+  ( Rp =
+    Rp .table row,listFromJs : Table =
+    Rp .totals row,fromJs : Totals =
+
+    lst,new : Rows =
+
+    Rows
+      "tr" {} [
+        "td" { att: colspan "4" } []
+        "td" { class: "header"; att: colspan "3"; text: ("Assets":_)} []
+        "td" { class: "header"; att: colspan "3"; text: ("Points":_)} []
+      ] ui,$+ lst,push
+
+    Rows
+      "tr" {} [
+        "td" { class: "header"; text: ("Model":_) } []
+        "td" { class: "header"; text: ("N.":_) } []
+        "td" { class: "header"; text: ("N. 40":_) } []
+        "td" { class: "header"; text: ("Date":_) } []
+        "td" { class: "header"; text: ("Max":_) } []
+        "td" { class: "header"; text: ("Min":_) } []
+        "td" { class: "header"; text: ("Avg":_) } []
+        "td" { class: "header"; text: ("Max":_) } []
+        "td" { class: "header"; text: ("Min":_) } []
+        "td" { class: "header"; text: ("Avg":_) } []
+      ] ui,$+ lst,push
+
+    Table
+    ( Row =
+
+      Rows
+        "tr" {} [
+          "td" { class: "border id"; text: (Row row,id) } []
+          "td" { class: "param"; text: (Row row,n fmt) } []
+          "td" { class: "param"; text: (Row row,n40 fmt) } []
+          "td" {
+            class: "param"
+            style: "text-align: center"
+            text: (
+              Row row,date time,fromDate
+                ("%d/%m/%Y" time,format) ("??/??/????") wrap,option
+            )
+          } []
+          "td" { class: "param2"; text: (Row row,assetsMax fmt) } []
+          "td" { class: "param2"; text: (Row row,assetsMin fmt) } []
+          "td" { class: "param2"; text: (Row row,assetsAvg fmt) } []
+          "td" { class: "param3"; text: (Row row,pointsMax fmt) } []
+          "td" { class: "param3"; text: (Row row,pointsMin fmt) } []
+          "td" { class: "param3"; text: (Row row,pointsAvg fmt) } []
+        ] ui,$+ lst,push
+    ) lst,each
+
+    Rows
+      "tr" {} [
+        "td" { class: "border id"; html: ("<b>" "Totals":_ "</b>" + +) } []
+        "td" { class: "param"; html: ("<b>${Totals row,n fmt}</b>")  } []
+        "td" { class: "param"; html: ("<b>${Totals row,n40}</b>")  } []
+        "td" {
+          class: "param"
+          html: (`
+            <b>${
+              Totals row,date time,fromDate
+                ("%d/%m/%Y" time,format) ("??/??/????") wrap,option
+            }</b>
+          ` )  } []
+        "td" {
+          class: "param2"; html: ("<b>${Totals row,assetsMax fmt}</b>") } []
+        "td" {
+          class: "param2"; html: ("<b>${Totals row,assetsMin fmt}</b>")  } []
+        "td" {
+          class: "param2"; html: ("<b>${Totals row,assetsAvg fmt}</b>")  } []
+        "td" {
+          class: "param3"; html: ("<b>${Totals row,pointsMax fmt}</b>")  } []
+        "td" {
+          class: "param3"; html: ("<b>${Totals row,pointsMin fmt}</b>")  } []
+        "td" {
+          class: "param3"; html: ("<b>${Totals row,pointsAvg fmt}</b>")  } []
+      ] ui,$+ lst,push
+
+    "table" {class: "home"; att: align "center"}
+    Rows
+    ui,$+ : DomTable =
+
+    Pg# .dateDiv { removeAll } [
+      (DomTable)
+    ] ui,$
+  )
+  client,send
+@-) update =>
+

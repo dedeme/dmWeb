@@ -1,0 +1,45 @@
+// Copyright 22-Dic-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// MrBackup daemon.
+
+wrap,none wrap,ref : MrBusy = // Opt<Tp<Int>> => (current task, total tasks)
+
+(@+i:: n =
+  this,MrBusy : 0 n wrap,tp wrap,some : <<
+@-) : mrBusyOn. =>
+
+(@+
+  this,MrBusy >>
+  ( Tp =
+    Tp !0 ++ : ix =
+    ix : Tp !1 : <
+    ( Tp 0 ix lst,set)
+    ( this,MrBusy wrap,none <<)
+    elif
+  )
+  ()
+  wrap,option
+@-) : mrBusy--. =>
+
+(@+
+  // 3 this,mrBusyOn.
+@-) start =>
+/// @ -> @
+/// Starts daemon.
+
+(@+
+  (
+    this,MrBusy >>
+    ( @l:: Tp =
+      "Waiting for finishing task %0 of %1":_ [Tp !0 1 + toStr; Tp !1 toStr] __
+        sys,println
+      15000 sys,sleep
+    )
+    ( break)
+    wrap,option
+  )
+  loop
+@-) stop =>
+/// @ -> @
+/// Stops daemon.

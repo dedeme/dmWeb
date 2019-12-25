@@ -1,0 +1,98 @@
+// Copyright 23-Dic-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Summary page.
+
+"../i18n" import
+"../wgs/log" import
+"../dm/client" import
+"../dm/wg" import
+"../common/sts" import
+("../common/log" dlog) import
+
+( @+m # Pg# =
+  Pg#
+  "log" Pg# (this,reload) (this,clear) log,new map,put+
+
+  "stateDiv" "div" ui,$+ map,put+
+  "statsDiv" "div" ui,$+ map,put+
+@-m) new =>
+/// @m::page -> @m::page
+
+( @+m:: Pg =
+  Pg .view { removeAll } [
+    "div" { style: "text-align:center" } [
+      "div" { class: "head", html: ("State":_) } []
+      (Pg .stateDiv) ]
+    "div" { style: "text-align:center" } [
+      "div" { class: "head", html: ("Statistics":_) } []
+      (Pg .statsDiv) ]
+    "div" { style: "text-align:center" } [
+      "div" { class: "head", html: ("Log":_) } []
+      (Pg .log log,wg) ]
+  ] ui,$
+
+  Pg this,update.
+@-) show =>
+/// @m::page -> @
+
+( @+<Element>m:: stats =; div =
+  div { removeAll } [
+    "table" {class: "white", att: align "center"} [
+      "tr" {} [
+        "td" { class: "entry"; text: ("Pools":_) }
+        "td" { class: "number2"}
+        "td" { class: "number2"; text: (stats .pools toStr) }]
+      "tr" {} [
+        "td" { class: "entry2"; text: ("Pools in bad condition":_) }
+        "td" { class: "number2"; text: (stats .wrongPools toStr) }
+        "td" { class: "number2"}]
+    ]
+  ]
+  ui,$
+
+@-) showStats. =>
+
+// Control ---------------------------------------------------------------------
+
+( @+m:: # Pg# =
+  Pg# .client
+  {
+    "page": "Summary" js,ws
+    "rq": "idata" js,ws
+  } map,from
+  ( Rq =
+    Rq .state js,rb : state =
+    Rq .stats sts,fromJs : stats =
+
+    state ("#55a0a5") ("#a50000") elif : ledColor =
+    Pg# .stateDiv { removeAll } [
+      (15 ledColor wg,led) { att: title (state ("Ok":_) ("Wrong":_) elif) }
+    ] ui,$
+
+    Pg# .statsDiv stats this,showStats.
+
+    Pg# .log dup log,reload
+  )
+  client,send
+@-) update. =>
+
+( @+ml:: # Fn# =; Pg =
+  Pg .client
+  {
+    "page": "Summary" js,ws
+    "rq": "log" js,ws
+  } map,from
+  ( .log dlog,fromJs Fn# run)
+  client,send
+@-) reload =>
+
+( @+m:: Pg =
+  Pg .client
+  {
+    "page": "Summary" js,ws
+    "rq": "clear" js,ws
+  } map,from
+  ( )
+  client,send
+@-) clear =>

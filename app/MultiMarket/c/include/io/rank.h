@@ -6,7 +6,6 @@
 
 #include "dmc/async.h"
 #include "data/RankEntry.h"
-#include "data/RankAssetsEntry.h"
 #include "data/RankEvalEntry.h"
 
 /// Initializes data base.
@@ -24,14 +23,14 @@ Arr *rank_dates (void);
 /// fleas of the last date if 'date' is not found or
 /// throws an exception if last date is not found.
 ///   date  : Date to find.
-///   return: Arr<RankAssetsEntry> Descendingly sorted
+///   return: Arr<RankEntry> Descendingly sorted
 Arr *rank_fleas (char *date);
 
 /// Returns fleas of day previous to 'date' or
 /// fleas of day previous of the last date if 'date' is not found or
 /// [] if no date is found.
 ///   date  : Date to find.
-///   return: Arr<RankAssetsEntry>
+///   return: Arr<RankEntry>
 Arr *rank_fleas_previous (char *date);
 
 #endif

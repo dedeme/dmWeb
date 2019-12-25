@@ -8,7 +8,7 @@
 
 #include "dmc/async.h"
 #include "Rs.h"
-#include "RankAssetsEntry.h"
+#include "RankEntry.h"
 
 /*--*/
 
@@ -133,8 +133,8 @@ Rank *rank_from_js (Js *js);
 Arr *rank_mk_positions (Arr *assets);
 
 /// Returns Arr[Rank]
-///   rk     : Arr[RankAssetsEntry] Current ranking
-///   prev_rk: Arr[RankAssetsEntry] Previous ranking
+///   rk     : Arr[RankEntry] Current ranking
+///   prev_rk: Arr[RankEntry] Previous ranking
 Arr *rank_mk_ranking (Arr *rk, Arr *prev_rk);
 
 #endif

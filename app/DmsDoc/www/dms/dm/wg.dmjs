@@ -1,0 +1,108 @@
+// Copyright 02-Nov-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"location" import
+
+( @+ss:: tp =; targetId =
+  "input" {
+    att: type tp
+    onEv: {
+      keydown
+      (
+        targetId
+        (
+          e
+          tId
+          `
+          if (e.keyCode === 13) {
+            e.preventDefault();
+            document.getElementById(tId).focus();
+          }
+          `
+        )
+        ffi,v
+      )
+    }
+  } ui,$+
+@-<Element>) fieldPass. =>
+
+(@+s:: "text" this,fieldPass. @-<Element>) field =>
+
+(@+s:: "password" this,fieldPass. @-<Element>) pass =>
+
+( @+<Element>:: El =
+  El {
+    onEv : {
+      keydown
+      (
+        El
+        (
+          e
+          el
+          `
+          if (e.keyCode === 110) {
+            e.preventDefault();
+            const start = el.selectionStart;
+            const end = el.selectionEnd;
+            const text = el.value;
+            el.value = text.substring(0, start) + "," + text.substring(end);
+            el.selectionStart = start + 1;
+            el.selectionEnd = start + 1;
+          }
+          `
+        )
+        ffi,v
+      )
+    }
+  } ui,$+
+@-<Element>) changePoint =>
+
+( @+s:: id =
+  id "." str,index -1 == (id ".png" +) (id) elif : id =
+  "img" { att: src ("img/" id +) } ui,$+
+@-<Element>) img =>
+
+( @+s
+  this,img { style: "opacity:0.4" } ui,$+
+@-<Element>) lightImg =>
+
+( @+l:: # fn# =>
+  "span" { style "cursor:pointer", on: {click: (fn#)} } ui,$+
+@-<Element>) link =>
+
+( @+
+  ((s "return decodeURI(s);") ffi,s)
+  decodeURI =>
+
+  location,search : search =
+
+  {} map,from
+  search "" !=
+  (
+    search 1 str,right "&" str,split
+    ( ix =; e =
+      e "=" str,index : i =
+      i -1 ==
+      ( ix toStr : e decodeURI : map,put+)
+      ( e : i : str,left :: e : i 1 + : str,right :: map,put+)
+      elif
+    )
+      lst,eachIx
+  )
+  if
+@-m) url =>
+/// @ -> @m
+/// Extracts variables of URL. Returns a map with next rules:
+///   -Expresions 'key = value' are changed in {"key" : "value"}.
+///   -Expresion only with value are changes by {"its-order-number" "value"}.
+///     (order-number is zero based).
+/// Example:
+///   foo.com/bar?v1&k1=v2&v3 -> {"0" : v1, "k1" : v2, "2" : v3}
+/// NOTE: keys and values are not trimized.
+/// NOTE: If there is no variable, return is an empty object.
+
+( @+s img =
+  "div" { style: "position: fixed;bottom: 0px;right: 20px" } [
+      ((("window.scroll(0,0);") ffi,v) this,link) {} [ (img this,img) ]]
+      ui,$+
+@-<Element>) upTop =>

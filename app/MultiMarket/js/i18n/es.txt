@@ -102,8 +102,8 @@ Application exit? = ¿Salir de la aplicación?
 
 # src/acc/Balance.js: 161
 # src/fleas/wgs/Dtable.js: 176
-# src/ranking/RankingMain.js: 116
-# src/ranking/RankingMain.js: 156
+# src/ranking/RankingMain.js: 197
+# src/ranking/RankingMain.js: 382
 Assets = Activo
 
 # src/sys/home/Flog.js: 85
@@ -130,7 +130,7 @@ Backups = Copias de seguridad
 # src/acc/AccMain.js: 78
 Balance = Balance
 
-# src/fleas/FleasMain.js: 58
+# src/fleas/FleasMain.js: 57
 Bests = Mejores
 
 # src/acc/Balance.js: 258
@@ -146,7 +146,7 @@ Buy = Compra
 
 # src/acc/Trading.js: 401
 # src/fleas/wgs/Dtable.js: 180
-# src/ranking/RankingMain.js: 120
+# src/ranking/RankingMain.js: 201
 Buys = Compras
 
 # src/sys/Models.js: 120
@@ -163,16 +163,14 @@ Cash = Caja
 # src/sys/Annotations.js: 466
 Cash: = Caja:
 
-# src/fleas/FleasMain.js: 61
-Champions = Ganadores
-
 # src/sys/Settings.js: 73
 Change Language to %0 = Cambiar el idioma a %0
 
 # src/sys/Settings.js: 48
 Change Password = Cambiar la contraseña
 
-# src/fleas/FleasMain.js: 56
+# src/fleas/FleasMain.js: 55
+# src/ranking/RankingMain.js: 412
 Charts = Gráficos
 
 # src/sys/Chpass.js: 111
@@ -424,7 +422,7 @@ Holidays = Fiestas
 Home = Inicio
 
 # src/fleas/wgs/Dtable.js: 175
-# src/ranking/RankingMain.js: 83
+# src/ranking/RankingMain.js: 165
 Id = Id
 
 # src/sys/Annotations.js: 224
@@ -474,9 +472,9 @@ Logout-message = <p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>
 Make backup = Hacer copia
 
 # src/acc/AccMain.js: 72
-# src/fleas/FleasMain.js: 52
+# src/fleas/FleasMain.js: 51
 # src/sys/Home.js: 50
-# src/ranking/RankingMain.js: 44
+# src/ranking/RankingMain.js: 59
 # src/daily/DailyMain.js: 106
 Management = Control
 
@@ -491,12 +489,15 @@ Max = Max
 # src/sys/nicks/Editor.js: 28
 Min = Min
 
+# src/ranking/RankingMain.js: 71
+Mining = Análisis
+
 # src/fleas/wgs/Dtable.js: 185
 # src/sys/Models.js: 142
 # src/sys/Models.js: 197
 # src/sys/nicks/Wnick.js: 53
 # src/sys/nicks/Wnick.js: 55
-# src/ranking/RankingMain.js: 82
+# src/ranking/RankingMain.js: 164
 Model = Modelo
 
 # src/fleas/Bests.js: 87
@@ -514,7 +515,7 @@ Models have been regularized = Los modelos han sido regularizados
 # src/sys/nicks/Editor.js: 68
 Modify = Modificar
 
-# src/sys/nicks/Editor.js: 457
+# src/sys/nicks/Editor.js: 460
 Modify quotes of '%0'? = ¿Modificar las cotizaciones de '%0'
 
 # src/sys/nicks/Editor.js: 407
@@ -613,22 +614,22 @@ Password successfully changed = La contraseña se cambió correctamente
 Pay Back = Plazo de recuperación
 
 # src/fleas/wgs/Dtable.js: 177
-# src/ranking/RankingMain.js: 117
+# src/ranking/RankingMain.js: 198
 Pf. Avg = Media Bf.
 
 # src/fleas/wgs/Dtable.js: 178
-# src/ranking/RankingMain.js: 118
+# src/ranking/RankingMain.js: 199
 Pf. MDV = Var. Bf.
 
 # src/fleas/wgs/Dtable.js: 179
-# src/ranking/RankingMain.js: 119
+# src/ranking/RankingMain.js: 200
 Pf. Sel = Sel. Bf.
 
 # src/acc/Companies.js: 356
 # src/daily/DailyMain.js: 97
 Portfolio = Cartera
 
-# src/ranking/RankingMain.js: 158
+# src/ranking/RankingMain.js: 384
 Positions = Posiciones
 
 # src/acc/Trading.js: 297
@@ -737,7 +738,7 @@ Sell = Venta
 # src/acc/Trading.js: 407
 # src/acc/Balance.js: 182
 # src/fleas/wgs/Dtable.js: 181
-# src/ranking/RankingMain.js: 121
+# src/ranking/RankingMain.js: 202
 Sells = Ventas
 
 # src/sys/Servers.js: 238
@@ -856,6 +857,7 @@ URL = URL
 # src/sys/servers/Download.js: 257
 URL is missing = Falta la URL
 
+# src/ranking/RankingMain.js: 64
 # src/daily/DailyMain.js: 111
 Update = Actualizar
 
@@ -890,9 +892,6 @@ Without Data = Sin datos
 # src/sys/servers/Codes.js: 105
 # src/sys/nicks/ListMaker.js: 56
 Without Nicks = Sin nicks
-
-# src/fleas/Champions.js: 129
-Without champions = Sin ganadores
 
 # src/acc/Companies.js: 48
 # src/acc/Companies.js: 161

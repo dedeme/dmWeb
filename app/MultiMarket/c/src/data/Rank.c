@@ -299,20 +299,20 @@ Arr *rank_mk_ranking (Arr *rk, Arr *prev_rk) {
   // Arr[Rank]
   Arr *r = arr_new();
 
-  EACH_IX(rk, RankAssetsEntry, e, ix) {
-    char *fname = flea_name(rankAssetsEntry_flea(e));
-    char *mname = rankAssetsEntry_model_name(e);
-    int fn (RankAssetsEntry *pre) {
-      return str_eq(fname, flea_name(rankAssetsEntry_flea(pre))) &&
-        str_eq(mname, rankAssetsEntry_model_name(e))
+  EACH_IX(rk, RankEntry, e, ix) {
+    char *fname = flea_name(rankEntry_flea(e));
+    char *mname = rankEntry_model_name(e);
+    int fn (RankEntry *pre) {
+      return str_eq(fname, flea_name(rankEntry_flea(pre))) &&
+        str_eq(mname, rankEntry_model_name(e))
       ;
     }
     int prix = arr_index(prev_rk, (FPRED)fn);
     arr_push(r, rank_new(
       prix == -1 ? 1 : 0,
       prix == -1 ? 0 : calc_df(ix, prix),
-      rankAssetsEntry_points(e),
-      rankAssetsEntry_assets(e),
+      rankEntry_points(e),
+      rankEntry_assets(e),
       mname,
       fname
     ));

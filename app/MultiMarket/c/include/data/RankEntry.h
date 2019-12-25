@@ -14,16 +14,29 @@
 ///   Arguments:
 ///     model_name: char*
 ///     flea: Flea
+///     assets: int
+///     points: int
 typedef struct RankEntry_RankEntry RankEntry;
 
 ///
-RankEntry *rankEntry_new (char *model_name, Flea *flea);
+RankEntry *rankEntry_new (
+  char *model_name,
+  Flea *flea,
+  int assets,
+  int points
+);
 
 ///
 char *rankEntry_model_name (RankEntry *this);
 
 ///
 Flea *rankEntry_flea (RankEntry *this);
+
+///
+int rankEntry_assets (RankEntry *this);
+
+///
+int rankEntry_points (RankEntry *this);
 
 ///
 Js *rankEntry_to_js (RankEntry *this);

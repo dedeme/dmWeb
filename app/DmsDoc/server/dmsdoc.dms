@@ -1,7 +1,7 @@
 // Copyright 14-Nov-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-"../www/dms/common/i18n" import
+"i18n" import
 "dm/cgi" import
 "pages/main" import
 "pages/paths" import

@@ -2186,6 +2186,18 @@ Model *mm__1 (void);
 Model *mm__2A (void);
 
 #endif
+// Copyright 15-Dec-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+#ifndef DATA_DFLEAS_DFLEAS__INCRMM_H
+  #define DATA_DFLEAS_DFLEAS__INCRMM_H
+
+#include "dmc/async.h"
+
+/// Returns Arr[Model]
+Arr *dfleas__IncrMM_models (void);
+
+#endif
 // Copyright 02-Aug-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
@@ -2371,6 +2383,19 @@ Model *incr__3 (void);
 Model *incr__2 (void);
 
 #endif
+// Copyright 14-Dec-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+#ifndef DATA_DFLEAS_MMBACK_MMBACK__4_H
+  #define DATA_DFLEAS_MMBACK_MMBACK__4_H
+
+#include "dmc/async.h"
+#include "data/Model.h"
+
+///
+Model *mmBack__4 (void);
+
+#endif
 // Copyright 02-Aug-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
@@ -2429,11 +2454,13 @@ struct mMBackBase_MMBackBase {
 MMBackBase *mMBackBase_new(int to_sell, double ref, double q);
 
 /// Returns Arr[MMBase]
-Arr *mMBackBase_cos (int qnicks, QmatrixValues *closes);
+Arr *mMBackBase_cos (int qnicks, QmatrixValues *closes, double strip_to_sell);
 
 ///
 Order *mMBackBase_order (
-  MMBackBase *this, double q, double step_to_buy, double step_to_sell
+  MMBackBase *this, double q,
+  double strip_to_buy, double step_to_buy,
+  double strip_to_sell, double step_to_sell
 );
 
 #endif
@@ -2465,11 +2492,13 @@ struct mMWinBase_MMWinBase {
 MMWinBase *mMWinBase_new(int to_sell, double ref, double max);
 
 /// Returns Arr[MMBase]
-Arr *mMWinBase_cos (int qnicks, QmatrixValues *closes);
+Arr *mMWinBase_cos (int qnicks, QmatrixValues *closes, double strip_to_sell);
 
 ///
 Order *mMWinBase_order (
-  MMWinBase *this, double q, double step_to_buy, double step_to_sell
+  MMWinBase *this, double q,
+  double strip_to_buy, double step_to_buy,
+  double strip_to_sell, double step_to_sell
 );
 
 ///
@@ -2504,6 +2533,19 @@ Model *mmWin__1 (void);
 
 ///
 Model *mmWin__2 (void);
+
+#endif
+// Copyright 14-Dec-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+#ifndef DATA_DFLEAS_MMWIN_MMWIN__4_H
+  #define DATA_DFLEAS_MMWIN_MMWIN__4_H
+
+#include "dmc/async.h"
+#include "data/Model.h"
+
+///
+Model *mmWin__4 (void);
 
 #endif
 // Copyright 02-Aug-2019 ºDeme
@@ -2648,6 +2690,63 @@ Order *approxBase_order (
 
 /// Returns Arr[Model]
 Arr *dfleas__MMWin_models (void);
+
+#endif
+// Copyright 15-Dec-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+#ifndef DATA_DFLEAS_INCRMM_INCRMMBASE_H
+  #define DATA_DFLEAS_INCRMM_INCRMMBASE_H
+
+#include "dmc/async.h"
+#include "data/Model.h"
+#include "dmc/Darr.h"
+
+///
+typedef struct incrMMBase_IncrMMBase IncrMMBase;
+
+///
+struct incrMMBase_IncrMMBase {
+  int to_sell;
+  QmatrixValues *closes;
+  double ref; // ref = closes[days_ix + day_mm_ix][con] +- strip
+  int con; // Company number
+  int closes_ix; // Index (day) of Qmatrix
+  int days_ix;
+  int day_mm_ix;
+};
+
+///
+IncrMMBase *incrMMBase_new(
+  int to_sell, QmatrixValues *closes, int con
+);
+
+/// Returns Arr[IncrBase]
+Arr *incrMMBase_cos (int qnicks, QmatrixValues *closes, double strip_to_sell);
+
+///
+Order *incrMMBase_order (
+  IncrMMBase *this, double q, int days,
+  double strip_to_buy, double strip_to_sell
+);
+
+///
+double incrMMBase_ref (
+  IncrMMBase *this, double strip_to_buy, double strip_to_sell
+);
+
+#endif
+// Copyright 15-Dec-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+#ifndef DATA_DFLEAS_INCRMM_INCRMM__3_H
+  #define DATA_DFLEAS_INCRMM_INCRMM__3_H
+
+#include "dmc/async.h"
+#include "data/Model.h"
+
+///
+Model *incrMM__3 (void);
 
 #endif
 // Copyright 01-Aug-2019 ºDeme

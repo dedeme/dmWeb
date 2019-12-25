@@ -1,0 +1,20 @@
+// Copyright 27-Sep-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"../../dm/cgi" import
+"../../io/conf" import
+
+( Rq =
+  Rq "rq" map,has? ! ("Field 'rq' is missing":_ lfail) if
+  Rq .rq js,rs : rq =
+
+  ( "getDb" rq ==)
+  ( { "db": conf,read : js,wo } map,from : cgi,ok)
+  else
+  ( "setMenu" rq ==)
+  ( Rq .option js,rs conf,setMenu; cgi,none)
+  else
+  ( "Value '%0' not allowed for 'rq'":_ [rq] __ lfail)
+  if
+) process =>
+// OBJ<Js>

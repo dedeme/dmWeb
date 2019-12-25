@@ -172,7 +172,10 @@ Opt *net_server_daily_read(Server *this) {
 
   // Opt[Arr[DailyEntry]]
   Opt *oweb_table = net_read_daily(conf);
-  if (opt_is_empty(oweb_table)) return opt_empty();
+  if (opt_is_empty(oweb_table)) {
+    log_info(str_f("Daily server %s not read", server_name(this)));
+    return opt_empty();
+  }
   // Arr[DailyEntry]
   Arr *web_table = opt_get(oweb_table);
 
@@ -284,7 +287,10 @@ Opt *net_server_historic_read(Server *this, int nick_id) {
 
   // Opt[Arr[HistoricEntry]]
   Opt *oweb_table = net_read_historic(conf, code);
-  if (opt_is_empty(oweb_table)) return opt_empty();
+  if (opt_is_empty(oweb_table)) {
+    log_info(str_f("Historic server %s not read", server_name(this)));
+    return opt_empty();
+  }
   // Arr[HistoricEntry]
   Arr *web_table = opt_get(oweb_table);
 
@@ -668,6 +674,7 @@ void net_update_daily (AsyncActor *ac) {
       // Arr[Arr[NickClose]
       Arr *svncs = arr_new();
       EACH(svs, Server, sv)
+puts(server_name(sv));
         // Arr[NickClose]
         Arr *ncs = opt_get(net_server_daily_read(sv));
         if (!ncs || arr_size(ncs) == 0) {
@@ -693,12 +700,13 @@ void net_update_daily (AsyncActor *ac) {
             ));
             continue;
           }
+printf("%s: %f\n", nick_name(nick), nickClose_close(nc));
 
           int ffind (NickClose *e) { return nickClose_nick(e) == nick_id; }
           map_put(qs, nick_name(nick), js_wd(best_close(
             it_find(arr_to_it(arr_get(svncs, 0)), (FPRED)ffind),
-            it_find(arr_to_it(arr_get(svncs, 0)), (FPRED)ffind),
-            it_find(arr_to_it(arr_get(svncs, 0)), (FPRED)ffind)
+            it_find(arr_to_it(arr_get(svncs, 1)), (FPRED)ffind),
+            it_find(arr_to_it(arr_get(svncs, 2)), (FPRED)ffind)
           )));
         _EACH
       }

@@ -1,0 +1,121 @@
+// Copyright 21-Dic-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+"../i18n" import
+"../dm/cgi" import
+"../io/conf" import
+"pages/main" import
+"pages/settings" import
+"pages/chpass" import
+"pages/backups" import
+"pages/summary" import
+
+/* FOR DELETING
+(i18n._) : _ =>
+(i18n.__) : __ =>
+
+"MrBackup" appName =
+"201912" dataVersion =
+"dmcgi/Dummy2" appDir =
+3600 expiration =
+appName : "\nData version: " : dataVersion : "\n" + + + version =
+
+( @+
+  (fname = cgi,home fname path,+ file,mkdir)
+  mkdir =>
+
+  cgi,home "data" path,+
+  dir =
+  dir file,exists? !
+  (
+    dir file,mkdir
+
+    dir "version.txt" path,+ version file,write
+
+    "tmp" mkdir
+    "trash" mkdir
+    "backups" mkdir
+  )
+  if
+@-) appInit =>
+*/
+( @+sm:: Rq =; sessionId =
+  Rq "page" map,has? ! ("Field 'page' is missing":_ lfail) if
+  Rq .page js,rs : page =
+
+  ( page "Main" ==)
+  ( Rq main,process)
+  else
+  ( page "logout" ==)
+  (
+    sessionId cgi,delSession; pop
+    Rq "rq" "logout" js,ws map,put
+    Rq appName version backups,process  // Add automatic backup
+  )
+  else
+  (page "Settings" ==)
+  (Rq settings,process)
+  else
+  (page "Chpass" ==)
+  (Rq chpass,process)
+  else
+  (page "Backups" ==)
+  (Rq appName version backups,process)
+  else
+  (page "Summary" ==)
+  (Rq summary,process)
+  else
+  ( "Value '%0' not allowed for 'page'":_ [page] __ lfail)
+  if
+@-s) process. =>
+
+// Start ---------------------------------------------------------------------
+
+( @+<IserverRq>s:: rq =; Sv =
+
+  (@+s:: rp =; Sv rp iserver,writeRp @-) : response =>
+
+  rq ":" str,index : ix =
+  ( ix -1 ==) //.................................................... CONNECTION
+  (
+    rq cgi,setKey
+    rq cgi,connect response
+  )
+  else
+  (ix 0 ==) //................................................. AUTHENTICATION
+  (
+    appName cgi,klen cryp,key : key =
+    key cgi,setKey
+    rq 1 str,right key cryp,decryp : ":" : str,split : Fields =
+
+    Fields !0 : Fields !1 : Fields !2 "1" == : cgi,authentication
+      response
+  )
+  else //......................................................... NORMAL DATA
+  (
+    rq ix str,left : sessionId =
+    rq ix 1 + str,right : crypData =
+
+    sessionId cgi,getSession
+    ( Ss =
+      Ss .key js,rs : key =
+      Ss .connectionId js,rs : connectionId =
+
+      key cgi,setKey
+      crypData key cryp,decryp : js,ro : Rq =
+
+      Rq "connectionId" map,has?
+      ( Rq .connectionId js,rs : connectionId : == (0) (1) elif)
+      ( 0)
+      elif
+
+      ( "nosession" cgi,setKey; cgi,expired response)
+      ( sessionId Rq this,process. response)
+      elif
+    )
+    ( "nosession" cgi,setKey; cgi,expired response)
+    wrap,option
+  )
+  if
+@-) process =>
+
