@@ -31,15 +31,8 @@ function fbet (stocks, current, ref) {
   return (current - ref) * stocks;
 }
 
-function fdays (buy, current, ref, inc) {
-  const r = current <= ref
-    ? ref > buy ? Infinity : -Infinity
-    : (ref - buy) / ((current - ref) * inc);
-  return r === Infinity || r > 999
-    ? Infinity
-    : r === -Infinity || r < -999
-      ? -Infinity
-      : r;
+function fref (current, ref) {
+  return (current - ref) * 1000 / ref;
 }
 
 function fcolor (value) {
@@ -58,10 +51,9 @@ export default class Balance {
     /** @type{string} */
     this._lang = accMain.lang;
     this._currentProfits = 0;
-    this._accountableProfits = 0;
+    this._accountProfits = 0;
     this._riskProfits = 0;
     this._bet = 0;
-    this._inc = 0.018;
 
     this._stocks = 0;
     this._cash = 0;
@@ -104,8 +96,7 @@ export default class Balance {
                 (row1[3] - row1[4]) * row1[1] > (row2[3] - row2[4]) * row2[1]
                   ? -1 : 1
               : (row1, row2) =>
-                fdays(row1[2], row1[3], row1[4], this._inc) >
-                  fdays(row2[2], row2[3], row2[4], this._inc)
+                fref(row1[3], row1[4]) < fref(row2[3], row2[4])
                   ? -1 : 1
     ;
   }
@@ -127,7 +118,7 @@ export default class Balance {
           .add($("td").klass("rlabel")
             .add($("span").html(_("Accounting profits") + ":")))
           .add($("td").klass("number")
-            .add($("span").html(this.formatN(this._accountableProfits, 2)))))
+            .add($("span").html(this.formatN(this._accountProfits, 2)))))
         .add($("tr")
           .add($("td").klass("rlabel")
             .add($("span").html(_("Risk profits") + ":")))
@@ -146,13 +137,15 @@ export default class Balance {
               "</font>"))))
         .add($("tr")
           .add($("td").klass("rlabel")
-            .add($("span").html(_("Pay Back") + ":")))
+            .add($("span").html(_("Reference (‰)") + ":")))
           .add($("td").klass("number")
             .add($("span").html(
               `<font color='${fcolor(this._riskProfits)}'>` +
               (this.formatN(
-                fdays(-this._riskProfits, this._bet, 0, this._inc), 0)
-              ) +
+                this._bet * 1000 /
+                  (this._stocks + this._currentProfits - this._accountProfits)
+                , 0
+              )) +
               "</font>")))))
       .add($("div").klass("head").html(_("Balance")))
       .add($("table").att("align", "center").klass("home")
@@ -264,7 +257,7 @@ export default class Balance {
                   this._order = DAYS_ORDER;
                   this.reload();
                 }).klass("linkBold")
-              ).html(_("Days")))))
+              ).html(_("Rf. (‰)")))))
         .adds(this._portfolio.map(e => $("tr")
           .add($("td").klass("nick")
             .add($("span").html(e[0])))
@@ -290,10 +283,10 @@ export default class Balance {
             .add($("span")
               .html(e[3] === null ? "[?]"
                 : this.formatN(fbet(e[1], e[3], e[4]), 2))))
-          .add($("td").klass("number") // Days
+          .add($("td").klass("number") // Rf
             .add($("span")
               .html(e[3] === null ? "[?]"
-                : this.formatN(fdays(e[2], e[3], e[4], this._inc), 0)))))))
+                : this.formatN(fref(e[3], e[4]), 0)))))))
       .add(Ui.upTop("up"))
     ;
 
@@ -324,10 +317,10 @@ export default class Balance {
     this._incomes = -ld[5];
     this._differences = -ld[6];
 
-    this._accountableProfits = this._sells + this._fees +
+    this._accountProfits = this._sells + this._fees +
       this._incomes + this._differences;
-    this._currentProfits = this._accountableProfits;
-    this._riskProfits = this._accountableProfits;
+    this._currentProfits = this._accountProfits;
+    this._riskProfits = this._accountProfits;
     this._bet = 0;
 
     const pf = rp["pf"];
@@ -343,7 +336,7 @@ export default class Balance {
       return e;
     });
 
-    this._inc = rp["inc"];
+//    this._inc = rp["inc"];
 
     this.reload();
   }

@@ -1,0 +1,42 @@
+// Copyright 23-Dic-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Directory data.
+
+( @+soii:: state =; empty =; dpath =; id =
+  {
+    "id": id
+    "dpath": dpath
+    "empty": empty
+    "state": state
+  } map,from
+@-m) new =>
+/// @s::state, @o::dpath, @i::empty, @i::stat -> @m::dirData
+///
+///   id: Directory name.
+///   dpath: Directory path.
+///   empty: Directory with only the 'path.txt' file.
+///   state: Directory state (0 (wrong) - 1 (ok))
+///   -----
+///   dirData: Entry for Directory page commnications.
+
+( @+m:: dirData =
+  {
+    "id": dirData .id js,ws
+    "dpath": dirData .dpath (js,ws) (js,wn) wrap,option
+    "empty": dirData .empty js,wb
+    "state": dirData .state js,wb
+  } map,from js,wo
+@-s) toJs =>
+/// @m::dirData -> @s::js
+
+( @+s:: js,ro : dirData =
+  {
+    "id": dirData .id js,rs
+    "dpath": dirData .dpath dup js,null? (pop; wrap,none) (js,rs wrap,some) elif
+    "empty": dirData .empty js,rb
+    "state": dirData .state js,rb
+  } map,from
+@-m) fromJs =>
+/// @s::js -> @m::dirData
+

@@ -4,24 +4,8 @@
 /// Backups data base.
 
 "../common/sts" import
+"../common/dirData" import
 "log" import
-
-( @+
-  MrBackupTargets lst,size : pools =
-  0 wrap,ref : C =
-  MrBackupTargets
-  (
-    this,checkPool
-    ( log,error; C (++) ^^)
-    ()
-    wrap,option
-  )
-  lst,each
-  C >> : wrongPools =
-
-  pools wrongPools sts,new
-@-m) stats =>
-/// @ -> @m::st
 
 ( @+
   MrBackupTargets : Pools =
@@ -30,8 +14,8 @@
   ( "Pools not found:\n  %0":_ [PoolsNotFound " - " str,join] __ :: wrap,some)
   ( wrap,none)
   elif
-@-o) checkPools =>
-/// @ -> @o<s>::error
+@-o) checkPools. =>
+// @ -> @o<s>::error
 
 ( @+s:: pool =
   pool file,directory?
@@ -51,7 +35,223 @@
 /// @s::path -> @o<s>::error
 
 ( @+
-  1
-  dup (this,checkPools (log,error; pop; 0) () wrap,option) if
-@-i) checkAll =>
+  map,new : R =
+  MrBackupTargets
+  ( toStr : i =; pool =
+    pool file,directory?
+    (
+      pool file,dir
+      ( name =
+        R name map,oget
+        ( poolNs =; R : name : poolNs i + : map,put)
+        ( R : name : i : map,put)
+        wrap,option
+      )
+      lst,each
+    )
+    if
+  )
+  lst,eachIx
+  R
+@-m) directories. =>
+// @ -> @m<s,s>::dirs
+// values ok are '012' otherwise is wrong
+
+( @+m:: Dirs =
+  ( @+ss:: int,fromStr n =; id =;
+    "'%0' missing in '%1'":_ [id MrBackupTargets n lst,get] __
+  @-s) mkMsg =>
+
+  1 wrap,ref : Ok =
+
+  Dirs map,pairs
+  ( Kv =
+    Kv !0 : id =
+    Kv !1 : ps =
+
+    ps "012" !=
+    (
+      ps "0" str,index -1 == (id "0" mkMsg : log,error; Ok 0 <<) if
+      ps "1" str,index -1 == (id "1" mkMsg : log,error; Ok 0 <<) if
+      ps "2" str,index -1 == (id "2" mkMsg : log,error; Ok 0 <<) if
+    )
+    if
+  )
+  lst,each
+
+  Ok >>
+@-i) checkInEveryPool?. =>
+
+( @+ms:: dir =; Dirs =
+  ( @+ss:: int,fromStr n =; id =;
+    "'%0' missing in '%1'":_ [id MrBackupTargets n lst,get] __ log,error
+  @-s) errorMissing =>
+
+  ( @+ss:: d1 =; d2 =
+    "Directories '%0' and '%1' are different":_ [d1; d2] __ log,error
+  @-) errorDifferent =>
+
+  ( @+ss:: d1 =; d2 =
+    d1 file,dir : Fs1 =
+    d2 file,dir : Fs2 =
+    Fs1 lst,size Fs2 lst,size ==
+    (
+      Fs1
+      ( name =
+        d1 name path,+ : f1
+        d2 name path,+ : f2
+        f1 file,regular? : f2 file,regular? : &&
+        (
+          name "path.txt" ==
+          ( f1 file,read : f2 file,read : == (0) (1) elif)
+          ( f1 file,size : f2 file,size : == (0) (1) elif)
+          elif
+        )
+        ( 1)
+        elif
+      )
+      lst,any?
+    )
+    ( 1)
+    elif
+  @-i) differentDir =>
+
+  Dirs dir map,oget
+  ( ps =
+    ( ps "0" str,index -1 ==)
+    ( id "0" errorMissing; 0)
+    else
+    ( ps "1" str,index -1 ==)
+    ( id "1" errorMissing; 0)
+    else
+    ( ps "2" str,index -1 ==)
+    ( id "2" errorMissing; 0)
+    else
+    (
+      MrBackupTargets !0 dir path,+ : d0 =
+      MrBackupTargets !1 dir path,+ : d1 =
+      MrBackupTargets !2 dir path,+ : d2 =
+
+      ( d0 d1 differentDir)
+      ( d0 d1 errorDifferent; 0)
+      else
+      ( d0 d2 differentDir)
+      ( d0 d2 errorDifferent; 0)
+      else
+      ( d0 file,dir lst,size)
+      (
+        d0 file,dir ("path.txt" ==) lst,any?
+        (
+          d0 "path.txt" path,+ : file,read : tx =
+          tx file,directory?
+          ( 1)
+          ( "Path '%0' in '%1' not found":_ [tx, dir] __ log,error; 0)
+          elif
+        )
+        ( "File 'path.txt' is missing in '%0'":_ [dir] __ log,error; 0)
+        elif
+      )
+      else
+      ( 1)
+      if
+    )
+    if
+  )
+  ( "Directory '%1' not found":_ [dir] __ log,error; 0)
+  wrap,option
+@-i) checkDir. =>
+
+( @+
+  this,checkPools.
+  ( log,error; 0)
+  (
+    this,directories. : Dirs =
+    1 wrap,ref : Ok =
+    Dirs map,keys
+    ( dir =
+      Ok >> (Dirs dir this,checkDir. ! (Ok 0 <<) if) if
+    )
+    lst,each
+    Ok >>
+  )
+  wrap,option
+@-i) checkAll? =>
 /// @ -> @i::ok?
+
+( @+
+  this,checkPools.
+  ( log,error; 0)
+  ( 1)
+  wrap,option
+@-i) poolsOk? =>
+/// @ -> @i:ok?
+
+( @+
+  this,directories. : Dirs =
+  Dirs map,keys
+  ( id =
+    Dirs id this,checkDir.
+    (
+      MrBackupTargets !0 id path,+: dir =
+      dir file,dir : DList =
+      DList ("path.txt" ==) lst,any?
+      (
+        id
+          dir "path.txt" path,+ file,read wrap,some
+            DList lst,size 1 == (1) (0) elif
+              1
+              dirData,new
+      )
+      ( id wrap,none 0 1 dirData,new)
+      elif
+    )
+    ( id wrap,none 0 0 dirData,new)
+    elif
+  )
+  lst,map
+@-l) dirList =>
+/// @ -> @l<dirData>::dirList
+
+( @+s:: id =
+  this,directories. : Dirs =
+  Dirs this,checkInEveryPool?.
+  (
+    Dirs map,keys (id ==) lst,any?
+    ( "Duplicate directory '%1' can not be added":_ [id] __ log,error; 0)
+    ( MrBackupTargets (id path,+ file,mkdir) lst,each; 1)
+    elif
+  )
+  ( 0)
+  elif
+@-i) addDir =>
+/// @s::id -> @i::ok?
+
+(@+s:: id =
+  MrBackupTargets
+  ( pool =
+    pool id path,+ : dir =
+    dir file,directory?
+    ( "thunar \"${dir}\"" sys,cmd pop)
+    ( pool file,directory? ("thunar \"${dir}\"" sys,cmd pop) if)
+    elif
+  )
+  lst,each
+@-) showDir =>
+
+( @+
+  MrBackupTargets lst,size : pools =
+  0 wrap,ref : C =
+  MrBackupTargets
+  (
+    this,checkPool
+    ( log,error; C (++) ^^)
+    ()
+    wrap,option
+  )
+  lst,each
+  C >> : wrongPools =
+
+  pools wrongPools sts,new
+@-m) stats =>
+/// @ -> @m::st
+

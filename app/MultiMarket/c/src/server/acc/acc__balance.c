@@ -26,8 +26,6 @@ char *acc__balance_process(AsyncActor *ac, Map *mrq) {
       Arr *pf = accLedPf_pf(rs);
       accdb_pf_update(pf);
       map_put(rp, "pf", arr_to_js(pf, (FTO)accPfEntry_to_js));
-      ModelParams *mps = managerdb_default();
-      map_put(rp, "inc", js_wd(darr_get(modelParams_params(mps), 0)));
     }
     asyncActor_wait(ac, fn);
     return cgi_ok(rp);

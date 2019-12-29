@@ -1,0 +1,218 @@
+// Copyright 25-Dic-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Directory list row widget.
+
+"../common/dirData" import
+"../dm/wg" import
+
+(@+mmll:: # ShowDir =; ExecBk =;
+         Row# =; Pg# =
+
+  map,new Wg# =
+
+  Wg# "pg" Pg# map,put
+  Wg# "row" Row# map,put
+
+  (Wg# this,runEditRow.) wg,link {} [ ("edit" wg,img) ] ui,$+ : RowEdit =
+  (Wg# this,runCancelRow.) wg,link {} [ ("editCancel" wg,img) ] ui,$+
+    RowCancel =
+  (Wg# ExecBk run) wg,link {} [ ("run" wg,img) ] ui,$+ : BkRun =
+
+  (Wg# this,runIdEdit.) wg,link {} [ ("edit" wg,img) ] ui,$+ : IdEdit =
+  (Wg# DelDir) wg,link {} [ ("delete" wg,img) ] ui,$+ : IdDel =
+
+  (Wg# this,runPtEdit.) wg,link {} [ ("edit" wg,img) ] ui,$+ : PtEdit =
+  (Wg# this,runPtCancel.) wg,link {} [ ("editCancel" wg,img) ] ui,$+
+    PtCancel =
+  (Wg# ModifyPath run) wg,link {} [ ("editOk" wg,img) ] ui,$+
+    PtModify =
+  (Wg# ClearPath run) wg,link {} [ ("delete" wg,img) ] ui,$+
+    PtClear =
+  "input" { style : "width:300px" } ui,$+ : PtInput =
+
+  (Wg# ShowDir run) wg,link {} [ ("view" wg,img) ] ui,$+ : ViewPr =
+
+
+  Wg#
+  "edit0" "span" ui,$+ : map,put+
+  "exec" "span" ui,$+ : map,put+
+
+  "id0" "span" ui,$+ : map,put+
+  "id1" "span" ui,$+ : map,put+
+  "id" "span" ui,$+ : map,put+
+
+  "pt0" "span" ui,$+ : map,put+
+  "pt1" "span" ui,$+ : map,put+
+  "pt" "span" ui,$+ : map,put+
+
+  "rowEdit" RowEdit map,put+
+  "rowCancel" RowCancel map,put+
+  "idEdit" IdEdit map,put+
+  "idDel" IdDel map,put+
+  "ptEdit" PtEdit map,put+
+  "ptCancel" PtCancel map,put+
+  "ptModify" PtModify map,put+
+  "ptClear" PtClear map,put+
+  "ptInput" PtInput map,put+
+
+  Row .state
+  (
+    Row .dpath
+    (
+      "edit0" RowEdit : map,put+
+      "exec" BkRun : map,put+
+
+      "id0" "edit" wg,lightImg ui,$+ : map,put+
+      "id1" "editOk" wg,lightImg ui,$+ : map,put+
+    )
+    (
+      dup .edit0 {removeAll} [ RowEdit ] ui,$
+      dup .exec {removeAll} [ ("run" wg,lightImg) ] ui,$
+
+      dup .id0 { removeAll } [ ("edit" wg,lightImg) ] ui,$
+      dup .id1 { removeAll } [ ("delete" wg,lightImg) ] ui,$
+      dup .id { removeAll } [ "span" { text: (Row .id) } ] ui,$
+
+      dup .pt0 { removeAll } [ ("edit" wg,lightImg) ] ui,$
+      dup .pt1 {removeAll} [ ("delete" wg,lightImg) ] ui,$
+      dup .pt {removeAll} [ "hr" { style: "opacity:0.5" } ] ui,$
+
+      "ok" "well" wg,img ui,$+ : map,put+
+      "view" ViewPr : map,put+
+    )
+    wrap,option
+  )
+  (
+    dup .edit0 {removeAll} [ ("edit" wg,lightImg) ] ui,$
+    dup .exec {removeAll} [ ("run" wg,lightImg) ] ui,$
+
+    dup .id0 { removeAll } [ ("edit" wg,lightImg) ] ui,$
+    dup .id1 { removeAll } [ ("delete" wg,lightImg) ] ui,$
+    dup .id { removeAll } [ "span" { text: (Row .id) } ] ui,$
+
+    dup .pt0 {removeAll} [ ("edit" wg,lightImg) ] ui,$
+    dup .pt1 {removeAll} [ ("delete" wg,lightImg) ] ui,$
+    dup .pt {removeAll} [ "hr" { style: "opacity:0.5" } ] ui,$
+
+    "ok" "warning" wg,img ui,$+ : map,put+
+    "view" WiewPr : map,put+
+  )
+  elif
+
+@-m) new =>
+
+(@+m:: Wg =
+  (
+    "td" {
+      style: `
+        border-right: 1px solid rgb(110,130,150);
+        border-left: 1px solid rgb(110,130,150);
+        `
+      } ui,$+
+  ) sep =>
+
+  "tr" {} [
+    "td" {} [ (Wg .edit0) ]
+    "td" {} [ (Wg .exec) ]
+    (sep)
+    "td" {} [ (Wg .id0) ]
+    "td" {} [ (Wg .id1) ]
+    "td" {style: "text-align:left"} [ (Wg .id) ]
+    (sep)
+    "td" {} [ (Wg .pt0) ]
+    "td" {} [ (Wg .pt1) ]
+    "td" {style: "text-align:left;width:310px"} [ (Wg .pt) ]
+    (sep)
+    "td" {} [ (Wg .ok) ]
+    (sep)
+    "td" {} [ (Wg .view) ]
+  ] ui,$+
+@-<Element>) widget =>
+
+// Control ---------------------------------------------------------------------
+
+( @+m:: Wg =
+  Wg .row : Row =
+
+  Wg .edit0 {removeAll} [ (Wg .rowCancel) ] ui,$
+  Wg .exec {removeAll} [
+      (Row .dpath wrap,some? (BkRun) ("run" wg,lightImg) elif)
+    ] ui,$
+
+  Wg .id0 {removeAll} [ (Wg .idEdit) ] ui,$
+  Wg .id1 {removeAll} [
+      (Row .dpath wrap,some? ("delete" wg,lightImg) (Wg .idDel) elif)
+    ] ui,$
+  Wg .id {removeAll} [ "span" { text: (Row .id) } ] ui,$
+
+  Wg .pt0 {removeAll} [ (Wg .ptEdit) ] ui,$
+  Wg .pt1 {removeAll} [
+      (Row .empty (Wg .ptDel) ("delete" wg,lightImg) elif)
+    ] ui,$
+  Wg .pt {removeAll} [
+      (
+        Row .dpath
+        (p =; "span" { text: (p this,strCut) } ui,$+)
+        ("hr" { style: "opacity:0.5" } ui,$+)
+        wrap,option
+      )
+    ] ui,$
+@-) runEditRow. =>
+
+( @+m:: Wg =
+  Wg .row : Row =
+
+  Wg .edit0 {removeAll} [ (Wg .rowEdit) ] ui,$
+  Wg .exec {removeAll} [
+      (Row .dpath wrap,some? (BkRun) ("run" wg,lightImg) elif)
+    ] ui,$
+
+  Wg .id0 {removeAll} [ ("edit" wg,lightImg) ] ui,$
+  Wg .id1 {removeAll} [ ("delete" wg,lightImg) ] ui,$
+  Wg .id {removeAll} [ "span" { text: (Row .id) } ] ui,$
+
+  Wg .pt0 {removeAll} [ ("edit" wg,lightImg) ] ui,$
+  Wg .pt1 {removeAll} [ ("delete" wg,lightImg) ] ui,$
+  Wg .pt {removeAll} [
+      (
+        Row .dpath
+        (p =; "span" { text: (p this,strCut) } ui,$+)
+        ("hr" { style: "opacity:0.5" } ui,$+)
+        wrap,option
+      )
+    ] ui,$
+@-) runCancelRow. =>
+
+
+( @+m:: Wg =
+  Wg .pt0 {removeAll} [ (Wg .ptCancel) ] ui,$
+  Wg .pt1 {removeAll} [ (Wg .ptModify) ] ui,$
+  Wg .pt {removeAll} [ (Wg .ptInput) ] ui,$
+
+  Wg .row .dpath
+  ( p =; Wg .ptInput { value: (p) } ui,$)
+  ( Wg .ptInput { value: ""; focus } ui,$)
+  wrap,option
+@-) runPtEdit. =>
+
+( @+m:: Wg =
+  Wg .pt0 {removeAll} [ (Wg .ptEdit) ] ui,$
+  Wg .row .dpath
+  ( p =
+    Wg .pt0 { removeAll } [ PtEdit ] ui,$
+    Wg .pt1 {removeAll} [ (Wg. ptClear) ] ui,$
+    Wg .pt {removeAll} [ "span" { text: (p this,strCut.) } ] ui,$
+  )
+  (
+    Wg .pt0 { removeAll } [ PtEdit ] ui,$
+    Wg .pt1 {removeAll} [ ("editOk" wg,lightImg) ] ui,$
+    Wg .pt {removeAll} [ "span" { text: "" } ] ui,$
+  )
+  wrap,option
+@-) runPtCancel. =>
+
+// Functions -------------------------------------------------------------------
+
+( @s+
+@s-) strCut. =>

@@ -1,0 +1,168 @@
+// Copyright 25-Dic-2019 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Pools page.
+
+"../i18n" import
+"../dm/client" import
+"../dm/wg" import
+"../dm/location" import
+"../wgs/newDir" import
+"../wgs/dirRow" import
+"../common/dirData" import
+
+( @+m # Pg# =
+  Pg#
+  "newDir" Pg# (this,activateNewDir) (this,addNewDir) newDir,new map,put+
+
+  "dirsDiv" "div" ui,$+ map,put+
+@-m) new =>
+/// @m::page -> @m::page
+
+( @+m:: Pg =
+  Pg .view { removeAll } [
+    "div" { style: "text-align:center" } [
+      "div" { class: "head", html: ("New":_) }
+      "table" { class: "frame"; att: align "center" } [ "tr" {} [ "td" {} [
+        (Pg .newDir newDir,widget) ]]]]
+    "div" { style: "text-align:center" } [
+      "div" { class: "head", html: ("Directories":_) } []
+      (Pg .dirsDiv) ]
+  ] ui,$
+
+  Pg this,update.
+@-) show =>
+/// @m::page -> @
+
+( @+m:: Pg =
+  Pg .view { removeAll } [
+    "table" { class: "frame"; att: align "center" } [ "tr" {} [
+      "td" { html: ("Pools in bad condition":_) }
+  ]]] ui,$
+@-) poolsWrong. =>
+
+( @+ml:: Dirs =; Pg =
+  Dirs lst,size
+  (
+    Dirs
+    ( Row =
+      Pg Row
+        (this,execBk)
+        (this,showDir)
+        dirRow,new dirRow,widget
+    )
+    lst,map : Rows =
+
+    "table" { class "white"; att: align "center"} Rows ui,$+ : Table =
+    Pg .dirsDiv { removeAll } [
+      (Table)
+    ] ui,$
+  )
+  (
+    Pg .dirsDiv { removeAll } [
+    "table" { class: "frame"; att: align "center" } [ "tr" {} [
+      "td" { html: ("Without directories":_) }
+    ]]] ui,$
+  )
+  elif
+@-) poolsOk. =>
+
+// Control ---------------------------------------------------------------------
+
+( @+s:: id =;
+  id "" ==
+  ( "Name is missing.":_)
+  (
+    "" wrap,ref : R =
+    id str,len
+    ( i =
+      id i str,get : ch =
+      ch "_" !=
+      ch "0" < : ch "9" > || &&
+      ch "A" < : ch "Z" > || &&
+      ch "a" < : ch "z" > || &&
+      ( R "Character '%0' is not allowed":_ [ch] __ <<; break)
+      if
+    )
+    for
+    R >>
+  )
+  elif
+@-s) validateId. =>
+
+( @+m:: Pg# =
+  Pg# .client
+  {
+    "page": "Dirs" js,ws
+    "rq": "idata" js,ws
+  } map,from
+  ( Rq =
+    Rq .poolsOk js,rb : poolsOk =
+    Rq .dirs (dirData,fromJs) lst,fromJs : Dirs =
+Dirs puts
+    poolsOk
+    ( Pg# Dirs this,poolsOk.)
+    ( Pg# this,poolsWrong.)
+    elif
+  )
+  client,send
+@-) update. =>
+
+( @+m:: Pg =
+  Pg .newDir newDir,activate
+
+@-) activateNewDir =>
+
+( @+ms:: id =; Pg# =
+  id this,validateId. dup "" ==
+  ( pop
+    Pg# .client
+    {
+      "page": "Dirs" js,ws
+      "rq": "add" js,ws
+      "id": id js,ws
+    } map,from
+    ( Rq =
+      Rq .ok js,rb
+      (
+        "Directory correctly added.":_ sys,alert
+        location,reload
+      )
+      ( "There was a fail.\nSee log." sys,alert)
+      elif
+    )
+    client,send
+  )
+  ( sys,alert)
+  elif
+@-) addNewDir =>
+
+( @+m:: Wg =
+  Wg .pg : Pg =
+  Wg .row : Row =
+
+  "Execute backup" sys,alert
+/*  Pg .client
+  {
+    "page": "Dirs" js,ws
+    "rq": "showDir" js,ws
+    "id": Row .id js,ws
+  } map,from
+  ()
+  client,send
+*/
+@-) execBk =>
+
+( @+m:: Wg =
+  Wg .pg : Pg =
+  Wg .row : Row =
+
+  Pg .client
+  {
+    "page": "Dirs" js,ws
+    "rq": "showDir" js,ws
+    "id": Row .id js,ws
+  } map,from
+  ()
+  client,send
+@-) showDir =>

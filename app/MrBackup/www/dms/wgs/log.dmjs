@@ -1,5 +1,7 @@
-// Copyright 06-Nov-2019 ºDeme
+// Copyright 24-Dic-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Log widget.
 
 "../common/log" import
 "../dm/wg" import

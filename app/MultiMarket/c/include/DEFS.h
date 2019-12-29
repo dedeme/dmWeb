@@ -117,10 +117,10 @@
 #define ACC_CHART_QUOTES 250
 
 /// Ponderation for raking
-#define RANKING_ASSETS_RATIO 0.5
+#define RANKING_ASSETS_RATIO 0.45
 
 /// Ponderation for raking
-#define RANKING_PROFITS_RATIO 0.3
+#define RANKING_PROFITS_RATIO 0.35
 
 /// Ponderation for raking
 #define RANKING_AGE_RATIO 0.2

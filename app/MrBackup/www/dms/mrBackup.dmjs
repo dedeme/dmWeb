@@ -7,7 +7,7 @@
 "pages/auth" import
 "pages/bye" import
 "pages/summary" import
-"pages/update" import
+"pages/dirs" import
 "pages/backups" import
 "pages/settings" import
 "i18n" import
@@ -32,7 +32,7 @@
 } map,from AppData =
 
 "summary" : menuSummary =
-"update" : menuUpdate =
+"dirs" : menuDirs =
 "settings" : menuSettings =
 "backups" : menuBackups =
 
@@ -87,8 +87,8 @@
       menu,mkOption menu,addLeft
     Mn# menu,separator menu,addLeft
     Mn#
-      this,menuUpdate "Update":_
-      (App# Mn# this,menuUpdate go)
+      this,menuDirs "Directories":_
+      (App# Mn# this,menuDirs go)
       menu,mkOption menu,addLeft
 
     Mn# :
@@ -140,8 +140,8 @@
   ( this,menuSummary pgMn ==)
   ( App summary,new summary,show)
   else
-  ( this,menuUpdate pgMn ==)
-  ( App update,new update,show)
+  ( this,menuDirs pgMn ==)
+  ( App dirs,new dirs,show)
   else
   ( this,menuSettings pgMn ==)
   ( App settings,new settings,show)

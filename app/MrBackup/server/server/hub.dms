@@ -9,36 +9,8 @@
 "pages/chpass" import
 "pages/backups" import
 "pages/summary" import
+"pages/dirs" import
 
-/* FOR DELETING
-(i18n._) : _ =>
-(i18n.__) : __ =>
-
-"MrBackup" appName =
-"201912" dataVersion =
-"dmcgi/Dummy2" appDir =
-3600 expiration =
-appName : "\nData version: " : dataVersion : "\n" + + + version =
-
-( @+
-  (fname = cgi,home fname path,+ file,mkdir)
-  mkdir =>
-
-  cgi,home "data" path,+
-  dir =
-  dir file,exists? !
-  (
-    dir file,mkdir
-
-    dir "version.txt" path,+ version file,write
-
-    "tmp" mkdir
-    "trash" mkdir
-    "backups" mkdir
-  )
-  if
-@-) appInit =>
-*/
 ( @+sm:: Rq =; sessionId =
   Rq "page" map,has? ! ("Field 'page' is missing":_ lfail) if
   Rq .page js,rs : page =
@@ -64,6 +36,9 @@ appName : "\nData version: " : dataVersion : "\n" + + + version =
   else
   (page "Summary" ==)
   (Rq summary,process)
+  else
+  (page "Dirs" ==)
+  (Rq dirs,process)
   else
   ( "Value '%0' not allowed for 'page'":_ [page] __ lfail)
   if

@@ -13,7 +13,7 @@
       {
         "lang": "es" js,ws
         "menu": "settings" js,ws
-      } data js,wo
+      } map,from js,wo
       file,write
   )
   if
