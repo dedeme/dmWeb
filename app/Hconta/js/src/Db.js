@@ -390,7 +390,7 @@ export default class Db {
         .filter(d =>
           self.accountsGet(d.e1.substring(0, 3))[1].charAt(0) === "B")
         .each(d => {
-          const v = d.e2.value();
+          const v = d.e2.value;
           sum += v;
           add(d.e1, v);
         });
@@ -398,7 +398,7 @@ export default class Db {
         .filter(c =>
           self.accountsGet(c.e1.substring(0, 3))[1].charAt(0) === "B")
         .each(c => {
-          const v = c.e2.value();
+          const v = c.e2.value;
           sum -= v;
           add(c.e1, -v);
         });

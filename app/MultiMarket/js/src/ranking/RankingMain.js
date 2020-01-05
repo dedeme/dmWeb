@@ -398,10 +398,9 @@ export default class RankingMain {
       const assets = selData[1];
       const lastAssets = assets[assets.length - 1][1];
       const wcharts = new Wcharts(
-        Wcharts.CHAMPIONS,
+        Wcharts.RANKING,
         model,
         nicks,
-        selParamNames.length,
         flea
       );
       this._infoTd.removeAll()

@@ -58,7 +58,7 @@
   this,maxEntries. : mx =
   Log lst,size : sz =
 
-  sz mx > (Log mx sz lst,removeRange) if
+  sz mx > (Log : 0 : sz mx - : lst,removeRange) if
 @-) : purge. =>
 
 ( @+ls:: msg =; Log =

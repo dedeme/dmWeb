@@ -32,6 +32,12 @@ static void save_pool (Arr *pool) {
 }
 
 static void update_pool (void) {
+  int min_sells = HISTORIC_QUOTES / MIN_SELLS;
+  int max_sells = HISTORIC_QUOTES / MAX_SELLS;
+  double max_sells_sum = (double)max_sells / 2;
+  double max_sells_mul =
+      (double)max_sells / (INITIAL_CAPITAL + INITIAL_CAPITAL);
+
   // Arr<RankEntry>
   Arr *pool = read_pool();
 
@@ -49,7 +55,13 @@ static void update_pool (void) {
             str_eq(mdname, rankEntry_model_name(e))
           ;
         }
-        if (!arr_any(pool, (FPRED)fn))
+
+        RsAssets *rsA = rs_assets(rs);
+        int sells = rsAssets_sells(rsA);
+        int okSells = sells >= min_sells &&
+          sells <= max_sells_sum + rsAssets_assets(rsA) * max_sells_mul;
+
+        if (!arr_any(pool, (FPRED)fn) && okSells)
           arr_push(pool, rankEntry_new(mdname, f, 0, 0));
       }
     }_EACH
@@ -57,7 +69,7 @@ static void update_pool (void) {
 
   int c = 0;
   add(c);
-  while (arr_size(pool) < RANKING_POOL_NUMBER)
+  while (arr_size(pool) < RANKING_POOL_NUMBER && c < RANKING_POOL_NUMBER)
     add(++c);
 
   save_pool(pool);

@@ -4,6 +4,7 @@
 /// Backups data base.
 
 "../common/sts" import
+"../common/upSts" import
 "../common/dirData" import
 "log" import
 
@@ -98,8 +99,8 @@
     (
       Fs1
       ( name =
-        d1 name path,+ : f1
-        d2 name path,+ : f2
+        d1 name path,+ : f1 =
+        d2 name path,+ : f2 =
         f1 file,regular? : f2 file,regular? : &&
         (
           name "path.txt" ==
@@ -142,7 +143,7 @@
       (
         d0 file,dir ("path.txt" ==) lst,any?
         (
-          d0 "path.txt" path,+ : file,read : tx =
+          d0 "path.txt" path,+ : file,read : js,rs : tx =
           tx file,directory?
           ( 1)
           ( "Path '%0' in '%1' not found":_ [tx, dir] __ log,error; 0)
@@ -157,9 +158,10 @@
     )
     if
   )
-  ( "Directory '%1' not found":_ [dir] __ log,error; 0)
+  ( "Directory '%0' not found":_ [dir] __ log,error; 0)
   wrap,option
 @-i) checkDir. =>
+// @m::Dirs, @s::dir -> @i::ok?
 
 ( @+
   this,checkPools.
@@ -197,7 +199,7 @@
       DList ("path.txt" ==) lst,any?
       (
         id
-          dir "path.txt" path,+ file,read wrap,some
+          dir "path.txt" path,+ file,read js,rs wrap,some
             DList lst,size 1 == (1) (0) elif
               1
               dirData,new
@@ -213,17 +215,178 @@
 /// @ -> @l<dirData>::dirList
 
 ( @+s:: id =
+  time,now : now =
+  now time,toDate : now0 =
+  now -7 time,addDays time,toDate : now7 =
+  now0 4 str,left : nowY =
+
+  0 wrap,ref : R =
+  this,directories. : Dirs =
+  Dirs this,checkInEveryPool?.
+  (
+    MrBackupTargets !0 id path,+ "path.txt" path,+ : fpath =
+    fpath file,regular?
+    (
+      fpath file,read js,rs : source =
+      sys,home "tmp" path,+ : dtmp =
+
+      source file,directory? : dtmp file,directory? : &&
+      (
+        dtmp file,del
+        dtmp file,mkdir
+        source path,parent file,cd
+
+        "tar -czf \"${dtmp}/tmp.tgz\" \"${source path,name}\"" sys,cmd
+        ( e =
+          e "" !=
+          ( e =; "Fail executing 'tar' command:\n  %0":_ [e] __ log,error)
+          (
+            dtmp file,cd
+            MrBackupTargets
+            (
+              id path,+ : target =
+              "tmp.tgz" : target "${now0}.tgz" path,+ : file,copy
+            ) lst,each
+
+            MrBackupTargets
+            (
+              id path,+ : target =
+              target file,dir
+                (".tgz" str,ends?) lst,filter
+                (path,onlyName) lst,map : Fs =
+              Fs (<) lst,sort
+              now0 6 str,left wrap,ref : LastFm =
+              nowY wrap,ref : LastFy =
+              Fs
+              ( fd =
+                fd now7 <
+                (
+                  fd 4 str,left : fy =
+                  fy nowY ==
+                  (
+                    fd 6 str,left : fm =
+                    fm LastFm >> ==
+                    ( target "${fd}.tgz" path,+ file,del)
+                    ( LastFm fm <<)
+                    elif
+                  )
+                  (
+                    fy LastFy >> ==
+                    ( target "${fd}.tgz" path,+ file,del)
+                    ( LastFy fy <<)
+                    elif
+                  )
+                  elif
+                )
+                if
+              )
+              lst,each
+            ) lst,each
+
+            R 1 <<
+          )
+          elif
+        )
+        ( "Fail executing 'tar' command.": _ log,error)
+        wrap,option
+      )
+      (
+        source file,directory?
+        ( "Temporary directory not found":_ log,error)
+        ( "'%0' is not a directory":_ [source] __ log,error)
+      )
+      elif
+    )
+    ( "'%0' is not a regular file":_ [fpath] __ log,error)
+    elif
+  )
+  if
+  R >>
+@-i) execBackup =>
+/// @s::id -> @i::ok?
+
+( @+s:: id =
   this,directories. : Dirs =
   Dirs this,checkInEveryPool?.
   (
     Dirs map,keys (id ==) lst,any?
-    ( "Duplicate directory '%1' can not be added":_ [id] __ log,error; 0)
+    ( "Duplicate directory '%0' can not be added":_ [id] __ log,error; 0)
     ( MrBackupTargets (id path,+ file,mkdir) lst,each; 1)
     elif
   )
   ( 0)
   elif
 @-i) addDir =>
+/// @s::id -> @i::ok?
+
+(@+ss:: newId =; oldId =
+  0 wrap,ref : R =
+  this,directories. : Dirs =
+  Dirs this,checkInEveryPool?.
+  (
+    Dirs map,keys (newId ==) lst,any?
+    ( "Identifier '%0' is duplicate":_ [newId] __ log,error)
+    (
+      MrBackupTargets
+        (d =; d oldId path,+ : d newId path,+ : file,rename)
+        lst,each
+      R 1 <<
+    )
+    elif
+  )
+  if
+  R >>
+@-i) modifyDir =>
+/// @s::id -> @i::ok?
+
+(@+s:: id =
+  1 wrap,ref : R =
+  MrBackupTargets
+  ( pool =
+    pool id path,+ : dir =
+    dir file,directory?
+    (
+      dir file,dir lst,size
+      ( "'%0' is not empty":_  [id] __ log,error; R 0 <<)
+      ( dir file,del)
+      elif
+    )
+    ( "'%0' is not a directory":_ [ id ] __ log,error; R 0 <<)
+    elif
+  )
+  lst,each
+  R >>
+@-i) delDir =>
+/// @s::id -> @i::ok?
+
+(@+ss:: dpath =; id =
+  0 wrap,ref : R =
+  this,directories. : Dirs =
+  Dirs this,checkInEveryPool?.
+  (
+    MrBackupTargets
+      (id path,+ "path.txt" path,+ : dpath js,ws : file,write)
+      lst,each
+    R 1 <<
+  )
+  if
+  R >>
+@-i) modifyPath =>
+/// @s::id -> @i::ok?
+
+(@+s:: id =
+  0 wrap,ref : R =
+  this,directories. : Dirs =
+  Dirs this,checkInEveryPool?.
+  (
+    MrBackupTargets
+      (id path,+ "path.txt" path,+ : file,del)
+      lst,each
+    R 1 <<
+  )
+  if
+  R >>
+@-i) delPath =>
 /// @s::id -> @i::ok?
 
 (@+s:: id =
@@ -237,6 +400,7 @@
   )
   lst,each
 @-) showDir =>
+/// @s::id -> @
 
 ( @+
   MrBackupTargets lst,size : pools =
@@ -251,7 +415,169 @@
   lst,each
   C >> : wrongPools =
 
-  pools wrongPools sts,new
+  wrongPools
+  ( pools wrongPools -1 -1 sts,new)
+  (
+    0 wrap,ref : Dirs =
+    0 wrap,ref : WrongDirs =
+    MrBackupTargets !0 : pool =
+    this,directories. : Ds =
+    Ds map,keys
+    ( d =
+      Dirs (++) ^^
+      Ds d this,checkDir. ! ( WrongDirs (++) ^^) if
+    )
+    lst,each
+
+    pools : wrongPools : Dirs >> : WrongDirs >> : sts,new
+  )
+  elif
 @-m) stats =>
 /// @ -> @m::st
 
+(@+
+  MrBackupTargets lst,size : pools =
+  0 wrap,ref : C =
+  MrBackupTargets
+  (
+    this,checkPool
+    ( log,error; C (++) ^^)
+    ()
+    wrap,option
+  )
+  lst,each
+  C >> : wrongPools =
+
+  wrongPools
+  ( -1 -1 -1 upSts,new)
+  (
+    0 wrap,ref : Files =
+    0 wrap,ref : ToUpDirs =
+    0 wrap,ref : ToUpFiles =
+
+    MrBackupTargets !0 : pool =
+    this,directories. : Ds =
+    Ds map,keys
+    ( d =
+      Ds d this,checkDir.
+      (
+        time,now : now =
+        0 wrap,ref : LastMod =
+        pool d path,+ : dpool =
+        dpool file,dir
+        ( f =
+          dpool f path,+ file,modified : mod =
+          mod : LastMod >> : > :: (LastMod mod <<) :: if
+        )
+        lst,each
+
+        LastMod >> : lastMod =
+        ( subd =
+          subd file,dir
+          ( f =
+            subd f path,+ : fpath =
+            fpath file,directory?
+            ( fpath fsts)
+            (
+              Files (++) ^^
+              fpath file,regular?
+              (
+                fpath file,modified : mod =
+                mod lastMod > : mod now < : &&
+                (ToUpFiles (++) ^^)
+                if
+              )
+              if
+            )
+            elif
+          )
+          lst,each
+        ) fsts =>
+
+        ToUpFiles >> : toUpFiles =
+        dpool "path.txt" path,+ file,read js,rs fsts
+        ToUpFiles >> : toUpFiles : > :: (ToUpDirs (++) ^^) :: if
+      )
+      ( WrongDirs (++) ^^)
+      elif
+    )
+    lst,each
+
+    Files >> : ToUpDirs >> : ToUpFiles >> : upSts,new
+  )
+  elif
+@-m) updateStats =>
+/// @ -> @m::st
+///
+/// st : map {i::files, i::dirUp, i::filesUp}
+
+( @+
+  MrBackupTargets lst,size : pools =
+  0 wrap,ref : C =
+  MrBackupTargets
+  (
+    this,checkPool
+    ( log,error; C (++) ^^)
+    ()
+    wrap,option
+  )
+  lst,each
+  C >> !
+  (
+    MrBackupTargets !0 : pool =
+    this,directories. : Ds =
+    Ds map,keys
+    ( d =
+      Ds d this,checkDir.
+      (
+        time,now : now =
+        0 wrap,ref : LastMod =
+        pool d path,+ : dpool =
+        dpool file,dir
+        ( f =
+          dpool f path,+ file,modified : mod =
+          mod : LastMod >> : > :: (LastMod mod <<) :: if
+        )
+        lst,each
+
+        0 wrap,ref : ToUpFiles =
+        LastMod >> : lastMod =
+        ( subd =
+          subd file,dir
+          ( f =
+            subd f path,+ : fpath =
+            fpath file,directory?
+            ( fpath fsts)
+            (
+              fpath file,regular?
+              (
+                fpath file,modified : mod =
+                mod lastMod > : mod now < : &&
+                (ToUpFiles (++) ^^)
+                if
+              )
+              if
+            )
+            elif
+          )
+          lst,each
+        ) fsts =>
+
+        dpool "path.txt" path,+ file,read js,rs fsts
+        ToUpFiles >>
+        (
+          "Updating directory '%0' ...":_ [d] __ log,info
+          d this,execBackup
+          ( "Directory '%0' updated":_ [d] __ log,info)
+          if
+        )
+        if
+      )
+      ( "Directory '%0' is in bad condition":_ [d] __ log,error)
+      elif
+    )
+    lst,each
+  )
+  if
+@-) mkBackups =>
+/// @ -> @

@@ -17,7 +17,7 @@
 static char *fleas_dir = NULL;
 static char *bests_dir = NULL;
 static char *charts_dir = NULL;
-static char *champions_dir = NULL;
+// static char *champions_dir = NULL;
 static char *ranking_db = NULL;
 static char *flog_db = NULL;
 
@@ -25,14 +25,14 @@ void fleasdb_init() {
   fleas_dir = path_cat(io_data_dir(), "fleas", NULL);
   bests_dir = path_cat(fleas_dir, "_bests", NULL);
   charts_dir = path_cat(fleas_dir, "_charts", NULL);
-  champions_dir = path_cat(fleas_dir, "_champions", NULL);
+//  champions_dir = path_cat(fleas_dir, "_champions", NULL);
   ranking_db = path_cat(fleas_dir, "ranking.db", NULL);
   flog_db = path_cat(fleas_dir, "flog.db", NULL);
   if (!file_exists(fleas_dir)) {
     file_mkdir(fleas_dir);
     file_mkdir(bests_dir);
     file_mkdir(charts_dir);
-    file_mkdir(champions_dir);
+//    file_mkdir(champions_dir);
     file_write(ranking_db, "[]");
     file_write(flog_db, "[]");
   }
@@ -172,14 +172,7 @@ void fleasdb_charts_write (char *model, RsCharts *rs) {
   file_write(f, (char *)arr_to_js(rsCharts_cos(rs), (FTO)rsChart_to_js));
 }
 
-void fleasdb_flog_write (char *msg) {
-  Js *ajs = fleasdb_flog_to_js();
-  // Arr[char]
-  Arr *a = arr_from_js(ajs, (FFROM)js_rs);
-  arr_insert(a, 0, msg);
-  file_write(flog_db, (char *)arr_to_js(a, (FTO)js_ws));
-}
-
+/*
 // Returns Arr[RsChampions]
 Arr *fleasdb_champions_read (int nparams) {
   if (!champions_dir) EXC_ILLEGAL_STATE("'champions_dir' was not intiliazed")
@@ -210,54 +203,6 @@ Js *fleasdb_champions_read_js (int nparams) {
   );
 }
 
-// Returns Js -> Opt[RsChart]
-Js *fleasdb_champions_chart_read_js (
-  int nparams, char *model, char *nick, char *flea
-) {
-  int ffind (RsChampions *rs) {
-    if (str_eq(rsChampions_model(rs), model)) {
-      return str_eq(
-        flea_name(rs_flea(rsWeb_result(rsChampions_result(rs)))),
-        flea
-      );
-    }
-    return 0;
-  }
-  RsChampions *rsCh = opt_oget(
-    it_find(arr_to_it(fleasdb_champions_read(nparams)), (FPRED)ffind),
-    NULL
-  );
-  if (!rsCh) return js_wn();
-
-  Model *md = opt_oget(dfleas__models_get(model), NULL);
-  if (!md) return js_wn();
-
-  Darr *params = rsWeb_params(rsChampions_result(rsCh));
-
-  // Arr[char]
-  Arr *dates = arr_new();
-  Darr *opens = darr_new();
-  Darr *closes = darr_new();
-  // Arr[Quote]
-  Arr *quotes = quotes_read(nick);
-  arr_reverse(quotes);
-
-  EACH(quotes, Quote, q)
-    arr_push(dates, quote_date(q));
-    darr_push(opens, quote_open(q));
-    darr_push(closes, quote_close(q));
-  _EACH
-
-  RsHistoric *rsH = model_historic(md, params, dates, opens, closes);
-
-  return rsChart_to_js(rsChart_new(
-    nick,
-    rsHistoric_profits(rsH),
-    rsHistoric_quotes(rsH),
-    rsHistoric_historic(rsH)
-  ));
-}
-
 void fleasdb_champions_add (RsChampions *rs) {
   char *model = rsChampions_model(rs);
   RsWeb *rsW = rsChampions_result(rs);
@@ -285,6 +230,7 @@ void fleasdb_champions_write (int nparams, Arr *rss) {
   file_write(f, (char *)arr_to_js(rss, (FTO)rsChampions_to_js));
 }
 
+*/
 Opt *fleasdb_rsChampions(char *model, Flea *f) {
   Qmatrix *opens = opt_nget(quotes_opens());
   Qmatrix *closes = opt_nget(quotes_closes());
@@ -354,6 +300,56 @@ Arr *fleasdb_ranking_assets (Arr *ranking) {
   }_EACH
 
   return r;
+}
+
+// Returns Js -> Opt[RsChart]
+Js *fleasdb_ranking_chart_read_js (
+  char *model, char *nick, char *flea
+) {
+  int ffind (RsBests *rs) {
+    return str_eq(flea, flea_name(rs_flea(rsWeb_result(rsBests_result(rs)))));
+  }
+  // Arr[RsBests]
+  RsBests *rsBest = opt_nget(
+    it_find(it_from(fleasdb_bests_read(model)), (FPRED)ffind)
+  );
+  if (!rsBest) return js_wn();
+
+  Model *md = opt_oget(dfleas__models_get(model), NULL);
+  if (!md) return js_wn();
+
+  Darr *params = rsWeb_params(rsBests_result(rsBest));
+
+  // Arr[char]
+  Arr *dates = arr_new();
+  Darr *opens = darr_new();
+  Darr *closes = darr_new();
+  // Arr[Quote]
+  Arr *quotes = quotes_read(nick);
+  arr_reverse(quotes);
+
+  EACH(quotes, Quote, q)
+    arr_push(dates, quote_date(q));
+    darr_push(opens, quote_open(q));
+    darr_push(closes, quote_close(q));
+  _EACH
+
+  RsHistoric *rsH = model_historic(md, params, dates, opens, closes);
+
+  return rsChart_to_js(rsChart_new(
+    nick,
+    rsHistoric_profits(rsH),
+    rsHistoric_quotes(rsH),
+    rsHistoric_historic(rsH)
+  ));
+}
+
+void fleasdb_flog_write (char *msg) {
+  Js *ajs = fleasdb_flog_to_js();
+  // Arr[char]
+  Arr *a = arr_from_js(ajs, (FFROM)js_rs);
+  arr_insert(a, 0, msg);
+  file_write(flog_db, (char *)arr_to_js(a, (FTO)js_ws));
 }
 
 Js *fleasdb_flog_to_js (void) {

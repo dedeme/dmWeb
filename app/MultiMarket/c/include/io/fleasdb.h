@@ -51,23 +51,6 @@ Js *fleasdb_charts_read_js (char *model, char *nick);
 ///
 void fleasdb_charts_write (char *model, RsCharts *rs);
 
-/// Returns Arr[RsChampions]
-Arr *fleasdb_champions_read (int nparams);
-
-/// Returns Js -> Arr[RsChampions]
-Js *fleasdb_champions_read_js (int nparams);
-
-/// Returns Js -> Opt[RsChart]
-Js *fleasdb_champions_chart_read_js (
-  int nparams, char *model, char *nick, char *flea
-);
-
-/// If 'rs' is duplicate, sets value. If not adds it.
-void fleasdb_champions_add (RsChampions *rs);
-
-/// 'rss' is Arr[RsChampions]
-void fleasdb_champions_write (int nparams, Arr *rss);
-
 /// Calculate results of 'f'.
 ///   model : Model to make calculations.
 ///   f     : Flea
@@ -78,6 +61,11 @@ Opt *fleasdb_rsChampions(char *model, Flea *f);
 ///   ranking: (Arr[RankAssetsEntry]) A row will be generated for each
 ///            RankAssetsEntry.
 Arr *fleasdb_ranking_assets (Arr *ranking);
+
+/// Returns Js -> Opt[RsChart]
+Js *fleasdb_ranking_chart_read_js (
+  char *model, char *nick, char *flea
+);
 
 /// Writes a fleas log entry. 'msg' can not finish in '\n'
 void fleasdb_flog_write (char *msg);

@@ -3,27 +3,45 @@
 
 /// MrBackup daemon.
 
-wrap,none wrap,ref : MrBusy = // Opt<Tp<Int>> => (current task, total tasks)
+"io/bks" import
+"io/log" import
 
-(@+i:: n =
-  this,MrBusy : 0 n wrap,tp wrap,some : <<
+
+0 wrap,ref : MrBusy =
+
+(@+
+  this,MrBusy 1 <<
 @-) : mrBusyOn. =>
 
 (@+
-  this,MrBusy >>
-  ( Tp =
-    Tp !0 ++ : ix =
-    ix : Tp !1 : <
-    ( Tp 0 ix lst,set)
-    ( this,MrBusy wrap,none <<)
-    elif
-  )
-  ()
-  wrap,option
-@-) : mrBusy--. =>
+  this,MrBusy 0 <<
+@-) : mrBusyOff. =>
 
 (@+
-  // 3 this,mrBusyOn.
+  this,mrBusyOn.
+  bks,mkBackups
+  this,mrBusyOff.
+
+  1 wrap,ref : Ready =
+  time,now time,broke .hour : h =
+  h 3 == ( Ready 0 <<) if
+  (
+    time,now time,broke .hour : h =
+    h 3 ==
+    (
+      Ready >>
+      (
+        this,mrBusyOn.
+        bks,mkBackups
+        this,mrBusyOff.
+        Ready 0 <<
+      )
+      if
+    )
+    ( Ready 1 <<)
+    elif
+    3600000 sys,sleep
+  ) loop
 @-) start =>
 /// @ -> @
 /// Starts daemon.
@@ -31,13 +49,12 @@ wrap,none wrap,ref : MrBusy = // Opt<Tp<Int>> => (current task, total tasks)
 (@+
   (
     this,MrBusy >>
-    ( @l:: Tp =
-      "Waiting for finishing task %0 of %1":_ [Tp !0 1 + toStr; Tp !1 toStr] __
-        sys,println
-      15000 sys,sleep
-    )
+    (
+      "Waiting for finishing MrBackup":_ log,info
+      "sleep 15" sys,cmd pop
+     )
     ( break)
-    wrap,option
+    elif
   )
   loop
 @-) stop =>

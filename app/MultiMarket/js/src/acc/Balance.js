@@ -336,8 +336,6 @@ export default class Balance {
       return e;
     });
 
-//    this._inc = rp["inc"];
-
     this.reload();
   }
 }

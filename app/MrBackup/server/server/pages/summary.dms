@@ -7,16 +7,76 @@
 "../../io/bks" import
 "../../io/log" import
 "../../common/sts" import
+"../../common/upSts" import
 
 ( @m :: Rq =
   Rq "rq" map,has? ! ("Field 'rq' is missing":_ lfail) if
   Rq .rq js,rs : rq =
 
   ( "idata" rq ==)
-  ( {
+  (
+    {
       "state": bks,checkAll? js,wb
       "stats": bks,stats sts,toJs
     } map,from cgi,ok
+  )
+  else
+  ( "update" rq ==)
+  (
+    "MrBackup" file,tmp : tmp =
+    tmp "" file,write
+
+    (
+      tmp
+      {
+        "stats": bks,updateStats upSts,toJs
+      } map,from js,wo file,write
+    ) sys,freeThread
+
+    {
+      "ftmp": tmp js,ws
+    } map,from cgi,ok
+  )
+  else
+  ( "update2" rq ==)
+  (
+    Rq .tmp js,rs : tmp =
+    tmp file,read : djs =
+    djs "" ==
+    ( cgi,none)
+    (
+      tmp file,del
+      djs js,ro cgi,ok
+    )
+    elif
+  )
+  else
+  ( "mkBackups" rq ==)
+  (
+    "MrBackup" file,tmp : tmp =
+    tmp "" file,write
+
+    (
+      bks,mkBackups
+      tmp "ok" file,write
+    ) sys,freeThread
+
+    {
+      "ftmp": tmp js,ws
+    } map,from cgi,ok
+  )
+  else
+  ( "mkBackups2" rq ==)
+  (
+    Rq .tmp js,rs : tmp =
+    tmp file,read : djs =
+    djs "" ==
+    ( cgi,none)
+    (
+      tmp file,del
+      { "ok": 1 js,wb } map,from cgi,ok
+    )
+    elif
   )
   else
   ( "log" rq ==)

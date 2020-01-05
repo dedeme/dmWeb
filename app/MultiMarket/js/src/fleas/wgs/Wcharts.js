@@ -76,19 +76,16 @@ function mkGrTd (box, div, nick, profits, qs, hs) {
 export default class Wcharts {
 
   /**
-   * @param {number} type BESTS, CHAMPIONS
+   * @param {number} type BESTS, RANKING
    * @param {string} model Model to calculate charts
    * @param {!Array<string>} nicks Nicks list
-   * @param {number=} group If 'type' is CHAMPIONS is the parameter number.
-   * @param {string=} flea If 'type' is CHAMPIONS is the flea name
+   * @param {string=} flea If 'type' is RANKING is the flea name
    *                       (date-cycle-id)
    */
-  constructor (type, model, nicks, group, flea) {
+  constructor (type, model, nicks, flea) {
     this._type = type;
     this._model = model;
     this._nicks = nicks;
-    /** @type {number} */
-    this._group = group || 0;
     /** @type {string} */
     this._flea = flea || "";
 
@@ -108,7 +105,6 @@ export default class Wcharts {
   update () {
     const type = this._type;
     const model = this._model;
-    const group = this._group;
     const flea = this._flea;
     const nicks = this._nicks;
     nicks.sort();
@@ -139,7 +135,6 @@ export default class Wcharts {
           "rq": type, // BESTS (0), CHAMPIONS (1)
           "model": model,
           "nick": nick,
-          "group": group,
           "flea": flea
         };
         const rp = await Main.client.rq(rq);
@@ -192,7 +187,7 @@ export default class Wcharts {
   }
 
   /** @return {number} */
-  static get CHAMPIONS () {
+  static get RANKING () {
     return 1;
   }
 }

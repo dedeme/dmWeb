@@ -3,10 +3,12 @@
 
 /// Statistic data.
 
-( @+ii:: wrongPools =; pools =
+( @+iiii:: wrongDirs =; dirs =; wrongPools =; pools =
   {
     "pools": pools
     "wrongPools": wrongPools
+    "dirs": dirs
+    "wrongDirs": wrongDirs
   } map,from
 @-m) new =>
 /// @i::pools -> @m::st
@@ -19,6 +21,8 @@
   {
     "pools": St .pools js,wi
     "wrongPools": St .wrongPools js,wi
+    "dirs": St .dirs js,wi
+    "wrongDirs": St .wrongDirs js,wi
   } map,from js,wo
 @-s) toJs =>
 /// @m::st -> @s::js
@@ -27,6 +31,8 @@
   {
     "pools": St .pools js,ri
     "wrongPools": St .wrongPools js,ri
+    "dirs": St .dirs js,ri
+    "wrongDirs": St .wrongDirs js,ri
   } map,from
 @-m) fromJs =>
 /// @s::js -> @m::st

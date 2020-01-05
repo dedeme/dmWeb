@@ -25,11 +25,10 @@ char *fleas__wgs__wcharts_process(AsyncActor *ac, Map *mrq) {
   if (rq == 1) {
     CGI_GET_STR(model, mrq)
     CGI_GET_STR(nick, mrq)
-    CGI_GET_INT(group, mrq)
     CGI_GET_STR(flea, mrq)
     void fn () {
-      map_put(rp, "data", fleasdb_champions_chart_read_js(
-        group, model, nick, flea
+      map_put(rp, "data", fleasdb_ranking_chart_read_js(
+        model, nick, flea
       ));
     }
     asyncActor_wait(ac, fn);

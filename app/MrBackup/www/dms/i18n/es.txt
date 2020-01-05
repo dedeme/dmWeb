@@ -6,6 +6,9 @@
 # www/dms/pages/backups.dmjs: 264
 '%0' is an empty file = '%0' es un archivo vacío
 
+# www/dms/pages/dirs.dmjs: 203
+A fail happened deleting '%0'.\n = Se ha producido un fallo borrando '%0'.\n
+
 # www/dms/pages/auth.dmjs: 41
 # www/dms/pages/chpass.dmjs: 18
 Accept = Aceptar
@@ -24,6 +27,9 @@ Automatic Backups = Backups automáticos
 # www/dms/pages/backups.dmjs: 267
 Backup file is missing = No se ha indicado el archivo de backup
 
+# www/dms/pages/dirs.dmjs: 175
+Backup finished. = Copia de seguridad terminada.
+
 # www/dms/mrBackup.dmjs: 104
 # www/dms/pages/backups.dmjs: 35
 Backups = Copias de seguridad
@@ -36,6 +42,9 @@ Change Language to %0 = Cambiar el idioma a %0
 
 # www/dms/pages/settings.dmjs: 30
 Change Password = Cambiar la contraseña
+
+# www/dms/pages/dirs.dmjs: 87
+Character '%0' is not allowed = El carácter '%0' no está permitido
 
 # www/dms/pages/auth.dmjs: 132
 # www/dms/pages/chpass.dmjs: 116
@@ -66,9 +75,28 @@ Current password = Contraseña actual
 # www/dms/pages/chpass.dmjs: 146
 Current password is missing = Falta indicar la contraseña actual
 
+# www/dms/pages/dirs.dmjs: 253
+Delete '%0' path? = ¿Eliminar el path de '%0'?
+
+# www/dms/pages/dirs.dmjs: 192
+Delete '%0'? = ¿Eliminar '%0'?
+
 # www/dms/mrBackup.dmjs: 90
-# www/dms/pages/dirs.dmjs: 25
+# www/dms/pages/summary.dmjs: 65
+# www/dms/pages/dirs.dmjs: 29
 Directories = Directorios
+
+# www/dms/pages/summary.dmjs: 69
+Directories in bad condition = Directorios en mal estado
+
+# www/dms/pages/summary.dmjs: 85
+Directories out of data = Directorios sin actualizar
+
+# www/dms/pages/dirs.dmjs: 131
+Directory correctly added. = Directorio correctamente añadido.
+
+# www/dms/pages/dirs.dmjs: 235
+Directory correctly modified. = Directorio correctamente modificado.
 
 # www/dms/pages/backups.dmjs: 39
 Download = Descarga
@@ -78,6 +106,12 @@ Errors = Errores
 
 # www/dms/pages/chpass.dmjs: 103
 Fail trying to change password = Fallo intentando cambiar la contraseña
+
+# www/dms/pages/summary.dmjs: 81
+Files = Archivos
+
+# www/dms/pages/summary.dmjs: 89
+Files out of data = Archivos sin actualizar
 
 # www/dms/pages/auth.dmjs: 189
 # www/dms/pages/chpass.dmjs: 142
@@ -95,7 +129,7 @@ Last Day = Último día
 # www/dms/wgs/log.dmjs: 132
 Last Week = Última semana
 
-# www/dms/pages/summary.dmjs: 31
+# www/dms/pages/summary.dmjs: 38
 Log = Registro
 
 # www/dms/pages/auth.dmjs: 155
@@ -105,10 +139,16 @@ Login = Identificación
 # www/dms/pages/bye.dmjs: 25
 Logout-message = <p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>
 
+# www/dms/pages/dirs.dmjs: 147
+Make '%0' backup? = ¿Hacer un backup de '%0'?
+
 # www/dms/pages/backups.dmjs: 51
 Make backup = Hacer copia
 
-# www/dms/pages/dirs.dmjs: 21
+# www/dms/pages/dirs.dmjs: 77
+Name is missing. = Falta el nombre
+
+# www/dms/pages/dirs.dmjs: 25
 New = Nuevo
 
 # www/dms/pages/chpass.dmjs: 61
@@ -120,7 +160,7 @@ New password and confirm password do not match = La nueva contraseña y su confi
 # www/dms/pages/chpass.dmjs: 152
 New password is missing = Falta indicar la nueva contraseña
 
-# www/dms/pages/summary.dmjs: 70
+# www/dms/pages/summary.dmjs: 118
 Ok = Ok
 
 # www/dms/pages/auth.dmjs: 66
@@ -132,10 +172,17 @@ Password is missing = Falta indicar la contraseña
 # www/dms/pages/chpass.dmjs: 181
 Password successfully changed = La contraseña se cambió correctamente
 
-# www/dms/pages/summary.dmjs: 43
+# www/dms/pages/dirs.dmjs: 263
+Path correctly deleted. = Ruta correctamente borrada.
+
+# www/dms/pages/dirs.dmjs: 291
+Path correctly modified. = Ruta correctamente modificada.
+
+# www/dms/pages/summary.dmjs: 57
 Pools = Depósitos
 
-# www/dms/pages/summary.dmjs: 47
+# www/dms/pages/summary.dmjs: 61
+# www/dms/pages/dirs.dmjs: 40
 Pools in bad condition = Depósitos en mal estado
 
 # www/dms/wgs/log.dmjs: 138
@@ -147,6 +194,11 @@ Restore = Restauración
 # www/dms/pages/backups.dmjs: 68
 Restore backup = Restaurar copia
 
+# www/dms/pages/dirs.dmjs: 134
+# www/dms/pages/dirs.dmjs: 176
+# www/dms/pages/dirs.dmjs: 204
+See log. = Ver registro.
+
 # www/dms/pages/expired.dmjs: 23
 Session is expired. = La sesión ha expirado.
 
@@ -154,17 +206,28 @@ Session is expired. = La sesión ha expirado.
 # www/dms/pages/settings.dmjs: 21
 Settings = Configuración
 
-# www/dms/pages/summary.dmjs: 25
+# www/dms/pages/summary.dmjs: 45
+Show = Mostrar
+
+# www/dms/pages/summary.dmjs: 29
 State = Estado
 
-# www/dms/pages/summary.dmjs: 28
+# www/dms/pages/summary.dmjs: 32
 Statistics = Estadísticas
 
 # www/dms/mrBackup.dmjs: 85
 Summary = Resumen
 
+# www/dms/pages/dirs.dmjs: 134
+# www/dms/pages/dirs.dmjs: 176
+There was a fail.\n = Ha habido un fallo.\n
+
 # www/dms/pages/backups.dmjs: 79
 Trash = Papelera
+
+# www/dms/pages/summary.dmjs: 35
+# www/dms/pages/summary.dmjs: 96
+Update = Actualizar
 
 # www/dms/pages/auth.dmjs: 59
 User = Usuario
@@ -172,7 +235,10 @@ User = Usuario
 # www/dms/pages/auth.dmjs: 194
 User name is missing = Falta indicar el nombre del usuario
 
-# www/dms/pages/summary.dmjs: 70
+# www/dms/pages/dirs.dmjs: 67
+Without directories = Sin directorios
+
+# www/dms/pages/summary.dmjs: 118
 Wrong = Mal estado
 
 # www/dms/pages/auth.dmjs: 119

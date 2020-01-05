@@ -6,8 +6,11 @@
 "../common/dirData" import
 "../dm/wg" import
 
-(@+mmll:: # ShowDir =; ExecBk =;
-         Row# =; Pg# =
+(@+mmllllll:: # ShowDir =
+            ModifyPath =; DelPath =
+            ModifyDir =; DelDir =
+            ExecBk =
+            Row# =; Pg# =
 
   map,new Wg# =
 
@@ -20,15 +23,19 @@
   (Wg# ExecBk run) wg,link {} [ ("run" wg,img) ] ui,$+ : BkRun =
 
   (Wg# this,runIdEdit.) wg,link {} [ ("edit" wg,img) ] ui,$+ : IdEdit =
-  (Wg# DelDir) wg,link {} [ ("delete" wg,img) ] ui,$+ : IdDel =
+  (Wg# this,runEditRow.) wg,link {} [ ("editCancel" wg,img) ] ui,$+
+    IdCancel =
+  (Wg# DelDir run) wg,link {} [ ("delete" wg,img) ] ui,$+ : IdDel =
+  (Wg# ModifyDir run) wg,link {} [ ("editOk" wg,img) ] ui,$+
+    IdModify =
+  "input" { style : "width:200px" } ui,$+ : IdInput =
 
   (Wg# this,runPtEdit.) wg,link {} [ ("edit" wg,img) ] ui,$+ : PtEdit =
-  (Wg# this,runPtCancel.) wg,link {} [ ("editCancel" wg,img) ] ui,$+
+  (Wg# this,runEditRow.) wg,link {} [ ("editCancel" wg,img) ] ui,$+
     PtCancel =
   (Wg# ModifyPath run) wg,link {} [ ("editOk" wg,img) ] ui,$+
     PtModify =
-  (Wg# ClearPath run) wg,link {} [ ("delete" wg,img) ] ui,$+
-    PtClear =
+  (Wg# DelPath run) wg,link {} [ ("delete" wg,img) ] ui,$+ : PtDel =
   "input" { style : "width:300px" } ui,$+ : PtInput =
 
   (Wg# ShowDir run) wg,link {} [ ("view" wg,img) ] ui,$+ : ViewPr =
@@ -48,40 +55,44 @@
 
   "rowEdit" RowEdit map,put+
   "rowCancel" RowCancel map,put+
+  "bkRun" BkRun map,put+
+
   "idEdit" IdEdit map,put+
+  "idCancel" IdCancel map,put+
   "idDel" IdDel map,put+
+  "idModify" IdModify map,put+
+  "idInput" IdInput map,put+
+
   "ptEdit" PtEdit map,put+
   "ptCancel" PtCancel map,put+
   "ptModify" PtModify map,put+
-  "ptClear" PtClear map,put+
+  "ptDel" PtDel map,put+
   "ptInput" PtInput map,put+
 
   Row .state
   (
-    Row .dpath
-    (
-      "edit0" RowEdit : map,put+
-      "exec" BkRun : map,put+
+    dup .edit0 {removeAll} [ RowEdit ] ui,$
+    dup .exec {removeAll} [
+        (Row .dpath wrap,some? (BkRun) ("run" wg,lightImg) elif)
+      ] ui,$
 
-      "id0" "edit" wg,lightImg ui,$+ : map,put+
-      "id1" "editOk" wg,lightImg ui,$+ : map,put+
-    )
-    (
-      dup .edit0 {removeAll} [ RowEdit ] ui,$
-      dup .exec {removeAll} [ ("run" wg,lightImg) ] ui,$
+    dup .id0 { removeAll } [ ("edit" wg,lightImg) ] ui,$
+    dup .id1 { removeAll } [ ("delete" wg,lightImg) ] ui,$
+    dup .id { removeAll } [ "span" { text: (Row .id) } ] ui,$
 
-      dup .id0 { removeAll } [ ("edit" wg,lightImg) ] ui,$
-      dup .id1 { removeAll } [ ("delete" wg,lightImg) ] ui,$
-      dup .id { removeAll } [ "span" { text: (Row .id) } ] ui,$
+    dup .pt0 { removeAll } [ ("edit" wg,lightImg) ] ui,$
+    dup .pt1 {removeAll} [ ("delete" wg,lightImg) ] ui,$
+    dup .pt {removeAll} [
+        (
+          Row .dpath
+          ( p =; "span" { text: (p this,strCut.) } ui,$+)
+          ( "hr" { style: "opacity:0.5" } ui,$+)
+          wrap,option
+        )
+      ] ui,$
 
-      dup .pt0 { removeAll } [ ("edit" wg,lightImg) ] ui,$
-      dup .pt1 {removeAll} [ ("delete" wg,lightImg) ] ui,$
-      dup .pt {removeAll} [ "hr" { style: "opacity:0.5" } ] ui,$
-
-      "ok" "well" wg,img ui,$+ : map,put+
-      "view" ViewPr : map,put+
-    )
-    wrap,option
+    "ok" "well" wg,img ui,$+ : map,put+
+    "view" ViewPr : map,put+
   )
   (
     dup .edit0 {removeAll} [ ("edit" wg,lightImg) ] ui,$
@@ -96,7 +107,7 @@
     dup .pt {removeAll} [ "hr" { style: "opacity:0.5" } ] ui,$
 
     "ok" "warning" wg,img ui,$+ : map,put+
-    "view" WiewPr : map,put+
+    "view" ViewPr : map,put+
   )
   elif
 
@@ -118,11 +129,12 @@
     (sep)
     "td" {} [ (Wg .id0) ]
     "td" {} [ (Wg .id1) ]
-    "td" {style: "text-align:left"} [ (Wg .id) ]
+    "td" {style: "text-align:left;width:210px"} [ (Wg .id) ]
     (sep)
     "td" {} [ (Wg .pt0) ]
     "td" {} [ (Wg .pt1) ]
-    "td" {style: "text-align:left;width:310px"} [ (Wg .pt) ]
+    "td" {style: "text-align:left;width:310px;white-space:nowrap;"} [
+      (Wg .pt) ]
     (sep)
     "td" {} [ (Wg .ok) ]
     (sep)
@@ -146,14 +158,20 @@
     ] ui,$
   Wg .id {removeAll} [ "span" { text: (Row .id) } ] ui,$
 
-  Wg .pt0 {removeAll} [ (Wg .ptEdit) ] ui,$
+  Wg .pt0 {removeAll} [
+      ( Row .empty : Row .dpath wrap,none? : ||
+        (Wg .ptEdit)
+        ("edit" wg,lightImg)
+        elif
+      )
+    ] ui,$
   Wg .pt1 {removeAll} [
       (Row .empty (Wg .ptDel) ("delete" wg,lightImg) elif)
     ] ui,$
   Wg .pt {removeAll} [
       (
         Row .dpath
-        (p =; "span" { text: (p this,strCut) } ui,$+)
+        (p =; "span" { text: (p this,strCut.) } ui,$+)
         ("hr" { style: "opacity:0.5" } ui,$+)
         wrap,option
       )
@@ -177,13 +195,22 @@
   Wg .pt {removeAll} [
       (
         Row .dpath
-        (p =; "span" { text: (p this,strCut) } ui,$+)
+        (p =; "span" { text: (p this,strCut.) } ui,$+)
         ("hr" { style: "opacity:0.5" } ui,$+)
         wrap,option
       )
     ] ui,$
 @-) runCancelRow. =>
 
+( @+m:: Wg =
+  Wg .row : Row =
+
+  Wg .id0 {removeAll} [ ( Wg .idCancel) ] ui,$
+  Wg .id1 {removeAll} [ ( Wg .idModify) ] ui,$
+  Wg .id {removeAll} [ (Wg .idInput) ] ui,$
+
+  Wg .idInput { value: (Row .id); focus } ui,$
+@-) runIdEdit. =>
 
 ( @+m:: Wg =
   Wg .pt0 {removeAll} [ (Wg .ptCancel) ] ui,$
@@ -196,23 +223,9 @@
   wrap,option
 @-) runPtEdit. =>
 
-( @+m:: Wg =
-  Wg .pt0 {removeAll} [ (Wg .ptEdit) ] ui,$
-  Wg .row .dpath
-  ( p =
-    Wg .pt0 { removeAll } [ PtEdit ] ui,$
-    Wg .pt1 {removeAll} [ (Wg. ptClear) ] ui,$
-    Wg .pt {removeAll} [ "span" { text: (p this,strCut.) } ] ui,$
-  )
-  (
-    Wg .pt0 { removeAll } [ PtEdit ] ui,$
-    Wg .pt1 {removeAll} [ ("editOk" wg,lightImg) ] ui,$
-    Wg .pt {removeAll} [ "span" { text: "" } ] ui,$
-  )
-  wrap,option
-@-) runPtCancel. =>
 
 // Functions -------------------------------------------------------------------
 
-( @s+
-@s-) strCut. =>
+( @+s:: s =
+  s str,len 40 > ("..." s -37 str,right +) (s) elif
+@-s) strCut. =>

@@ -21,6 +21,7 @@ static void rp_data (Map *rp, char *date, int sel) {
     return str_eq(date, d);
   }
   if (!arr_any(dates, (FPRED)fany)) date = arr_peek(dates);
+
   map_put(rp, "dates", arr_to_js(dates, (FTO)js_ws));
   map_put(rp, "date", js_ws(date));
 
@@ -113,7 +114,7 @@ char *ranking_process(AsyncActor *ac, Map *mrq) {
         arr_map(arr_filter_to(a, (FPRED)ffilter), (FCOPY)fmap),
         (FTO)js_ws
       ));
-   }
+    }
     asyncActor_wait(ac, fn);
     return cgi_ok(rp);
   }

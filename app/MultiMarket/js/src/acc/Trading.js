@@ -373,8 +373,11 @@ export default class Trading {
       );
     };
 
-    const paramTd = (step) => $("tr")
-      .add($("td").klass("number").html(this.formatN(step * 100, 4) + "%"))
+    const paramTd = (startB, stepB, startS, stepS) => $("tr")
+      .add($("td").klass("number").html(this.formatN(startB * 100, 4) + "%"))
+      .add($("td").klass("number").html(this.formatN(stepB * 100, 4) + "%"))
+      .add($("td").klass("number").html(this.formatN(startS * 100, 4) + "%"))
+      .add($("td").klass("number").html(this.formatN(stepS * 100, 4) + "%"))
     ;
 
     const table = $("table").klass("main")
@@ -413,8 +416,12 @@ export default class Trading {
       .add($("div").klass("head").html(_("Parameters")))
       .add($("table").att("align", "center").klass("home")
         .add($("tr")
-          .add($("td").klass("head").html(_("Step"))))
-        .add(paramTd(params[0])))
+          .add($("td").klass("head").html(_("Start B")))
+          .add($("td").klass("head").html(_("Step B")))
+          .add($("td").klass("head").html(_("Start S")))
+          .add($("td").klass("head").html(_("Step S")))
+        )
+        .add(paramTd(params[0], params[1], params[2], params[3])))
     ;
   }
 }

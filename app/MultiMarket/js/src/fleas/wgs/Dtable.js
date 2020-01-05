@@ -219,7 +219,7 @@ export default class Dtable {
           formats = ps[1];
           cs.splice(1, 0,
             $("td").klass("menu").add(
-              Ui.link(() => self.showCharts(model, pops.length, fleaName))
+              Ui.link(() => self.showCharts(model, fleaName))
                 .klass("link").html(e[DATE_MODEL])
             )
           );
@@ -260,7 +260,7 @@ export default class Dtable {
     );
   }
 
-  async showCharts (model, group, flea) {
+  async showCharts (model, flea) {
     const rq = {
       "module": "fleas",
       "source": "Dtable",
@@ -269,7 +269,7 @@ export default class Dtable {
     const rp = await Main.client.rq(rq);
     const nicks = rp["nicks"];
     this._div.removeAll().add(
-      new Wcharts(Wcharts.CHAMPIONS, model, nicks, group, flea).wg
+      new Wcharts(Wcharts.RANKING, model, nicks, flea).wg
     );
   }
 

@@ -44,10 +44,13 @@
 ( @+ml:: Dirs =; Pg =
   Dirs lst,size
   (
+    Dirs (R2 =; R1 =; R1 .id str,toUpper : R2 .id str,toUpper : >) lst,sort
     Dirs
     ( Row =
       Pg Row
         (this,execBk)
+        (this,delDir) : (this,modifyDir)
+        (this,delPath) : (this,modifyPath)
         (this,showDir)
         dirRow,new dirRow,widget
     )
@@ -99,7 +102,7 @@
   ( Rq =
     Rq .poolsOk js,rb : poolsOk =
     Rq .dirs (dirData,fromJs) lst,fromJs : Dirs =
-Dirs puts
+
     poolsOk
     ( Pg# Dirs this,poolsOk.)
     ( Pg# this,poolsWrong.)
@@ -122,13 +125,13 @@ Dirs puts
       "rq": "add" js,ws
       "id": id js,ws
     } map,from
-    ( Rq =
-      Rq .ok js,rb
+    (
+      .ok js,rb
       (
         "Directory correctly added.":_ sys,alert
         location,reload
       )
-      ( "There was a fail.\nSee log." sys,alert)
+      ( "There was a fail.\n":_ "See log.":_ + sys,alert)
       elif
     )
     client,send
@@ -137,21 +140,163 @@ Dirs puts
   elif
 @-) addNewDir =>
 
+( @+m:: # Wg# =
+  Wg# .pg : Pg# =
+  Wg# .row : Row# =
+
+  "Make '%0' backup?":_ [ Row# .id ] __ sys,confirm?
+  (
+    Wg# .exec {removeAll} [ ("wait.gif" wg,img) ] ui,$
+    Pg# .client
+    {
+      "page": "Dirs" js,ws
+      "rq": "execBackup" js,ws
+      "id": Row# .id js,ws
+    } map,from
+    ( Rq# =
+      chan,new : Ch =
+      (
+        Pg# .client
+        {
+          "page": "Dirs" js,ws
+          "rq": "execBackup2" js,ws
+          "tmp": Rq# .ftmp
+        } map,from
+        ( Ch chan,send)
+        client,send
+      ) Cb* =
+      Cb* sys,go
+
+      ( Rq = ;
+        Rq map,size 0 ==
+        ( 200 (Cb* sys,go) sys,delay)
+        (
+          Rq .ok js,rb
+          ( "Backup finished.":_ sys,alert)
+          ( "There was a fail.\n":_ "See log.":_ + sys,alert)
+          elif
+          Wg# .exec {removeAll} [ (Wg# .bkRun) ] ui,$
+        )
+        elif
+      ) Ch chan,recv
+    )
+    client,send
+  )
+  if
+@-) execBk =>
+
 ( @+m:: Wg =
   Wg .pg : Pg =
   Wg .row : Row =
 
-  "Execute backup" sys,alert
-/*  Pg .client
-  {
-    "page": "Dirs" js,ws
-    "rq": "showDir" js,ws
-    "id": Row .id js,ws
-  } map,from
-  ()
-  client,send
-*/
-@-) execBk =>
+  "Delete '%0'?":_ [ Row .id ] __ sys,confirm?
+  (
+    Pg .client
+    {
+      "page": "Dirs" js,ws
+      "rq": "delDir" js,ws
+      "id": Row .id js,ws
+    } map,from
+    (
+      .ok js,rb !
+      (
+        "A fail happened deleting '%0'.\n":_ [ Row .id ] __
+          "See log.":_ +
+          sys,alert
+      )
+      if
+
+      location,reload
+    )
+    client,send
+  )
+  if
+@-) delDir =>
+
+( @+m:: Wg =
+  Wg .pg : Pg =
+  Wg .row : Row =
+  Row .id : oldId =
+  Wg .idInput (value) ui,prop : newId =
+
+  oldId newId !=
+  (
+    newId this,validateId. dup "" ==
+    ( pop
+      Pg .client
+      {
+        "page": "Dirs" js,ws
+        "rq": "modifyDir" js,ws
+        "oldId": oldId js,ws
+        "newId": newId js,ws
+      } map,from
+      (
+        .ok js,rb
+        ( "Directory correctly modified.":_ sys,alert)
+        ( "There was a fail.\nSee log." sys,alert)
+        elif
+        location,reload
+      )
+      client,send
+    )
+    ( sys,alert)
+    elif
+  )
+  ( location,reload)
+  elif
+@-) modifyDir =>
+
+( @+m:: Wg =
+  Wg .pg : Pg =
+  Wg .row : Row =
+
+  "Delete '%0' path?":_ [ Row .id ] __ sys,confirm?
+  (
+    Pg .client
+    {
+      "page": "Dirs" js,ws
+      "rq": "delPath" js,ws
+      "id": Row .id js,ws
+    } map,from
+    (
+      .ok js,rb
+      ( "Path correctly deleted.":_ sys,alert)
+      ( "There was a fail.\nSee log." sys,alert)
+      elif
+      location,reload
+    )
+    client,send
+  )
+  if
+@-) delPath =>
+
+( @+m:: Wg =
+  Wg .pg : Pg =
+  Wg .row : Row =
+  Row .id : id =
+  Wg .ptInput (value) ui,prop : dpath =
+
+  dpath "" ==
+  ( "Path is empty" sys,alert)
+  (
+    Pg .client
+    {
+      "page": "Dirs" js,ws
+      "rq": "modifyPath" js,ws
+      "id": id js,ws
+      "dpath": dpath js,ws
+    } map,from
+    (
+      .ok js,rb
+      ( "Path correctly modified.":_ sys,alert)
+      ( "There was a fail.\nSee log." sys,alert)
+      elif
+      location,reload
+    )
+    client,send
+  )
+  elif
+@-) modifyPath =>
 
 ( @+m:: Wg =
   Wg .pg : Pg =

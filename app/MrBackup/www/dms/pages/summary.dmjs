@@ -7,7 +7,9 @@
 "../wgs/log" import
 "../dm/client" import
 "../dm/wg" import
+"../dm/location" import
 "../common/sts" import
+"../common/upSts" import
 ("../common/log" dlog) import
 
 ( @+m # Pg# =
@@ -16,23 +18,35 @@
 
   "stateDiv" "div" ui,$+ map,put+
   "statsDiv" "div" ui,$+ map,put+
+  "updateDiv" "div" ui,$+ map,put+
+  "updateBtDiv" "div" ui,$+ map,put+
 @-m) new =>
 /// @m::page -> @m::page
 
-( @+m:: Pg =
-  Pg .view { removeAll } [
+( @+m:: # Pg# =
+  Pg# .view { removeAll } [
     "div" { style: "text-align:center" } [
       "div" { class: "head", html: ("State":_) } []
-      (Pg .stateDiv) ]
+      (Pg# .stateDiv) ]
     "div" { style: "text-align:center" } [
       "div" { class: "head", html: ("Statistics":_) } []
-      (Pg .statsDiv) ]
+      (Pg# .statsDiv) ]
+    "div" { style: "text-align:center" } [
+      "div" { class: "head", html: ("Update":_) } []
+      (Pg# .updateDiv) ]
     "div" { style: "text-align:center" } [
       "div" { class: "head", html: ("Log":_) } []
-      (Pg .log log,wg) ]
+      (Pg# .log log,wg) ]
   ] ui,$
 
-  Pg this,update.
+  Pg# .stateDiv {removeAll} [ ("wait.gif" wg,img) ] ui,$
+  Pg# .updateDiv {removeAll} [
+      "button" {
+        text: ("Show":_)
+        on: (click (Pg# this,updateStats.))
+      }
+    ] ui,$
+  Pg# this,update.
 @-) show =>
 /// @m::page -> @
 
@@ -47,11 +61,45 @@
         "td" { class: "entry2"; text: ("Pools in bad condition":_) }
         "td" { class: "number2"; text: (stats .wrongPools toStr) }
         "td" { class: "number2"}]
+      "tr" {} [
+        "td" { class: "entry"; text: ("Directories":_) }
+        "td" { class: "number2"}
+        "td" { class: "number2"; text: (stats .dirs toStr) }]
+      "tr" {} [
+        "td" { class: "entry2"; text: ("Directories in bad condition":_) }
+        "td" { class: "number2"; text: (stats .wrongDirs toStr) }
+        "td" { class: "number2"}]
     ]
   ]
   ui,$
-
 @-) showStats. =>
+
+( @+mm:: # stats =; Pg# =
+  Pg# .updateDiv { removeAll } [
+    "table" {class: "white", att: align "center"} [
+      "tr" {} [
+        "td" { class: "entry"; text: ("Files":_) }
+        "td" { class: "number2"}
+        "td" { class: "number2"; text: (stats .files toStr) }]
+      "tr" {} [
+        "td" { class: "entry2"; text: ("Directories out of data":_) }
+        "td" { class: "number2"; text: (stats .toUpdateDirs toStr) }
+        "td" { class: "number2"}]
+      "tr" {} [
+        "td" { class: "entry2"; text: ("Files out of data":_) }
+        "td" { class: "number2"; text: (stats .toUpdateFiles toStr) }
+        "td" { class: "number2"}]
+    ]
+    "br" {} []
+    (Pg# .updateBtDiv) {} [
+      "button" {
+        text: ("Update":_)
+        on: (click (Pg# this,mkBackups.))
+      }
+    ]
+  ]
+  ui,$
+@-) showUpdateStats. =>
 
 // Control ---------------------------------------------------------------------
 
@@ -77,6 +125,40 @@
   client,send
 @-) update. =>
 
+( @+m:: # Pg# =
+  Pg# .updateDiv {removeAll} [ ("wait.gif" wg,img) ] ui,$
+  Pg# .client
+  {
+    "page": "Summary" js,ws
+    "rq": "update" js,ws
+  } map,from
+  ( Rq# =
+    chan,new : Ch =
+    (
+      Pg# .client
+      {
+        "page": "Summary" js,ws
+        "rq": "update2" js,ws
+        "tmp": Rq# .ftmp
+      } map,from
+      ( Ch chan,send)
+      client,send
+    ) Cb* =
+    Cb* sys,go
+
+    ( Rq = ;
+      Rq map,size 0 ==
+      ( 200 (Cb* sys,go) sys,delay)
+      (
+        Rq .stats upSts,fromJs : stats =
+        Pg# stats this,showUpdateStats.
+      )
+      elif
+    ) Ch chan,recv
+  )
+  client,send
+@-) updateStats. =>
+
 ( @+ml:: # Fn# =; Pg =
   Pg .client
   {
@@ -96,3 +178,33 @@
   ( )
   client,send
 @-) clear =>
+
+( @+m:: # Pg# =
+  Pg# .updateBtDiv { removeAll } [ ("wait.gif" wg,img) ] ui,$
+  Pg# .client
+  {
+    "page": "Summary" js,ws
+    "rq": "mkBackups" js,ws
+  } map,from
+  ( Rq# =
+    chan,new : Ch =
+    (
+      Pg# .client
+      {
+        "page": "Summary" js,ws
+        "rq": "mkBackups2" js,ws
+        "tmp": Rq# .ftmp
+      } map,from
+      ( Ch chan,send)
+      client,send
+    ) Cb* =
+    Cb* sys,go
+
+    ( Rq = ;
+      Rq map,size 0 ==
+      ( 200 (Cb* sys,go) sys,delay)
+      ( location,reload)
+      elif
+    ) Ch chan,recv
+  )  client,send
+@-) mkBackups. =>

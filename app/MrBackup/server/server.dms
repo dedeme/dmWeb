@@ -3,11 +3,13 @@
 
 /// Http server.
 
+"scheduler" import
 "server/hub" import
 "io/log" import
 
 ( @+<Iserver>:: Sv =
   "Server started":_ log,info
+  0 wrap,ref : Finished =
   0 wrap,ref : ErrorCounter =
   (
     Sv iserver,getRq
@@ -20,9 +22,8 @@
           ( host =
             host "127.0.0.1" ==
             (
-              "Server stopped":_ log,info
+              Finished 1 <<
               Rq "" iserver,writeRp
-              break
             )
             ( "Try to stop server from %0":_ [host] __ log,error)
             elif
@@ -47,7 +48,23 @@
         ( Rq msg hub,process)
         if
       )
-      ( 150 sys,sleep)
+      (
+        Finished >>
+        (
+          scheduler,MrBusy >>
+          (
+            "Waiting for finishing MrBackup":_ log,info
+            "sleep 15" sys,cmd pop
+           )
+          (
+            "Server stopped":_ log,info
+            break
+          )
+          elif
+        )
+        ( 150 sys,sleep)
+        elif
+      )
       wrap,option
     )
     ( @+s:: error =
