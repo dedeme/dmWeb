@@ -12,33 +12,40 @@
   "lib" lib map,put+
   "lpath" lpath map,put+
 
-  "title" "div" ui,$+ map,put+
-  "body" "div" ui,$+ map,put+
-  "tdLeft" "td" { class: "prel", style: "width:10px" } ui,$+ map,put+
-  "tdRight" "td" { class: "prer" } ui,$+ map,put+
+  "title" "div" ui,mk map,put+
+  "body" "div" ui,mk map,put+
+  "tdLeft" "td" { class: "prel", style: "width:10px" } [] ui,$+ map,put+
+  "tdRight" "td" { class: "prer" } [] ui,$+ map,put+
 @-m) new =>
 
 ( @+m:: Pg =
-  "@title" { text: (Pg .lpath path,name ".dms - " APP + +) } ui,$
+  "@title" { text: (Pg .lpath path,name ".dms - " APP + +) } [] ui,$
   Pg .view { removeAll } [
-    (Pg .title) {} [
-      "table" {} [ "tr" {} [
-        "td" { class: "frame" } [
-          "a" {
-            att: href ((location,hrefBase "/?" Pg .lib "@" Pg .lpath) ++)
-            text: (Pg .lpath)
-          }]]]]
-    "br" {} []
-    (Pg .body) {} [
-      "table" {
-        style: "width:100%"
-        att: cellspacing "0"
-      } [
-        "tr" {} [ (Pg .tdLeft) [] {} (Pg .tdRight) ]]]
-    ("up" wg,upTop)
-  ]
-
-  ui,$
+      Pg .title {} [
+          "table" {} [ "tr" {} [
+              "td" { class: "frame" } [
+                  "a" {
+                      att:
+                        href ((location,hrefBase "/?" Pg .lib "@" Pg .lpath) ++)
+                      text: (Pg .lpath)
+                    } [] ui,$+
+                ] ui,$+
+            ] ui,$+ ] ui,$+
+        ] ui,$+
+      "br" ui,mk
+      Pg .body {} [
+          "table" {
+              style: "width:100%"
+              att: cellspacing "0"
+            } [
+              "tr" {} [
+                  Pg .tdLeft
+                  Pg .tdRight
+                ] ui,$+
+            ] ui,$+
+        ] ui,$+
+      "up" wg,upTop
+    ] ui,$
   Pg this,update.
 @-) show =>
 
@@ -59,8 +66,8 @@
   )
   lst,eachIx
 
-  Pg .tdLeft { html: (SLefts "<br>" str,join) } ui,$
-  Pg .tdRight { html: (SRights "<br>" str,join) } ui,$
+  Pg .tdLeft { html: (SLefts "<br>" str,join) } [] ui,$
+  Pg .tdRight { html: (SRights "<br>" str,join) } [] ui,$
 @-) setPage. =>
 
 // Control ---------------------------------------------------------------------
@@ -79,7 +86,7 @@
       rp : js,rs : code =
       Pg# code this,setPage.
       Pg# .link 0 !=
-      ( "#hp" ui,$+ (e, "e.scrollIntoView()") ffi,v)
+      ( "#hp" ui,mk (e, "e.scrollIntoView()") ffi,v)
       if
     )
     elif

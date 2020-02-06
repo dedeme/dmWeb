@@ -25,145 +25,166 @@ new =>
 
   captchaStore 3 captcha,new : Captcha# =
 
-  "Pass" wg,field { att: id "UserIn" } ui,$+ : UserIn =
+  "Pass" wg,field { att: id "UserIn" } [] ui,$+ : UserIn =
 
-  "Accept" wg,pass { att: id "Pass" } ui,$+ : Pass =
-
-  "input" {
-    att: type "checkbox"
-    style: "vertical-align: middle"
-  } ui,$+ : Persistent =
+  "Accept" wg,pass { att: id "Pass" } [] ui,$+ : Pass =
 
   "input" {
-    att: type "button"
-    style: "width:100px;"
-    att: id "Accept"
-    value: ("Accept":_)
-    on: { click:
-      (
-        Auth#
-        Captcha#
-        UserIn (value) ui,prop
-        Pass (value) ui,prop
-        Persistent (checked) ui,prop
-        this,accept
-      )
-    }
-  } ui,$+ : Accept =
+      att: type "checkbox"
+      style: "vertical-align: middle"
+    } [] ui,$+ : Persistent =
+
+  "input" {
+      att: type "button"
+      style: "width:100px;"
+      att: id "Accept"
+      value: ("Accept":_)
+      on: { click:
+        (
+          Auth#
+          Captcha#
+          UserIn (value) ui,prop
+          Pass (value) ui,prop
+          Persistent (checked) ui,prop
+          this,accept
+        )
+      }
+    } [] ui,$+ : Accept =
 
   (
     [
       "tr" {} [
-        "td" {
-          style: "padding: 10px 0px 0px 10px;text-align:right;"
-          html: ("User":_) }
-        "td" { style: "padding: 10px 10px 0px 10px;"
-          } [
-          UserIn ]]
+          "td" {
+              style: "padding: 10px 0px 0px 10px;text-align:right;"
+              html: ("User":_)
+            } [] ui,$+
+          "td" { style: "padding: 10px 10px 0px 10px;" } [ UserIn ] ui,$+
+        ] ui,$+
       "tr" {} [
-        "td" {
-          style: "padding: 10px 0px 0px 10px;text-align:right;"
-          html: ("Password":_) }
-        "td" { style: "padding: 10px 10px 5px 10px;"
-          } [
-          Pass ]]
+          "td" {
+              style: "padding: 10px 0px 0px 10px;text-align:right;"
+              html: ("Password":_)
+            } [] ui,$+
+          "td" { style: "padding: 10px 10px 5px 10px;" } [ Pass ] ui,$+
+        ] ui,$+
       "tr" {} [
-        "td" {
-          att: colspan "2"
-          style: `
-            border-top:1px solid #c9c9c9;
-            padding: 5px 10px 10px;text-align:right;`
-          } [
-          "table" {
-            style: `
-              border-collapse : collapse;
-              border : 0px;
-              width : 100%;`
-          } [
-            "tr" {} [
-              "td" { att: align "center", att: colspan "2"
-              } [
-                Persistent
-                "span" { html: ("&nbsp;" "Keep connected":_ +) }]]
-            "tr" {} [
-              "td" {} [
-                ((Auth# this,ChangeLanguage run) wg,link) {
-                  class "link"
-                  html: (
-                    langStore store,take
-                    ( "es" == ("EN") ("ES") elif)
-                    ( "EN")
-                    wrap,option
-                  ) }]
-              "td" { att: align "right"
+          "td" {
+              att: colspan "2"
+              style: `
+                border-top:1px solid #c9c9c9;
+                padding: 5px 10px 10px;text-align:right;`
+            } [
+              "table" {
+                  style: `
+                    border-collapse : collapse;
+                    border : 0px;
+                    width : 100%;`
                 } [
-                Accept ]]]]]
+                  "tr" {} [
+                      "td" {
+                          att: align "center", att: colspan "2"
+                        } [
+                          Persistent
+                          "span" {
+                              html: ("&nbsp;" "Keep connected":_ +)
+                            } [] ui,$+
+                        ] ui,$+
+                    ] ui,$+
+                  "tr" {} [
+                      "td" {} [
+                          (Auth# this,ChangeLanguage run) wg,link {
+                              class "link"
+                              html: (
+                                langStore store,take
+                                ( "es" == ("EN") ("ES") elif)
+                                ( "EN")
+                                wrap,option
+                              )
+                            } [] ui,$+
+                        ] ui,$+
+                      "td" { att: align "right" } [ Accept ] ui,$+
+                    ] ui,$+
+                ] ui,$+
+            ] ui,$+
+        ] ui,$+
 
       Captcha# captcha,counter : 0 : >
       (
         "tr" {} [
-          "td" {
-            att: colspan "2"
-            style: `
-              border-top:1px solid #c9c9c9;
-              padding: 10px 10px 10px;text-align:right;`
-          } [
-            "table" {
-              att: align "center"
+            "td" {
+              att: colspan "2"
               style: `
-                background-color: rgb(250, 250, 250);
-                border: 1px solid rgb(110,130,150);
-                font-family: sans;font-size: 14px;
-                padding: 4px;border-radius: 4px;`
-            } [
-              "tr" {} [ "td" { html: ("Wrong password":_) } ]]]]
+                border-top:1px solid #c9c9c9;
+                padding: 10px 10px 10px;text-align:right;`
+              } [
+                "table" {
+                    att: align "center"
+                    style: `
+                      background-color: rgb(250, 250, 250);
+                      border: 1px solid rgb(110,130,150);
+                      font-family: sans;font-size: 14px;
+                      padding: 4px;border-radius: 4px;`
+                  } [
+                    "tr" {} [
+                        "td" { html: ("Wrong password":_) } [] ui,$+
+                      ] ui,$+
+                  ] ui,$+
+              ] ui,$+
+          ] ui,$+
       )
       if
 
       Captcha# captcha,counter : Captcha# .counterLimit : >
       (
         "tr" {} [
-          "td" { att: colspan "2", att: align "center" } [
-            (Captcha# captcha,mkWg) ]]
+            "td" {
+                att: colspan "2", att: align "center"
+              } [ Captcha# captcha,mkWg ] ui,$+
+          ] ui,$+
         "tr" {} [
-          "td" {
-            att: colspan "2"
-            style: "padding: 5px 0px 5px 10px;text-align:center;"
-            html: ("Check gray squares":_) }]
+            "td" {
+                att: colspan "2"
+                style: "padding: 5px 0px 5px 10px;text-align:center;"
+                html: ("Check gray squares":_)
+              } [] ui,$+
+          ] ui,$+
       )
       if
-    ] data
+    ]
   ) rows =>
 
   (
     "table" {
-      att: align "center"
-      style: `
-        background-color: #f8f8f8;
-        border-collapse: collapse;
-        padding: 10px;
-        border: 1px solid rgb(110,130,150);`
+        att: align "center"
+        style: `
+          background-color: #f8f8f8;
+          border-collapse: collapse;
+          padding: 10px;
+          border: 1px solid rgb(110,130,150);`
       } [
         "tr" {} [
-          "td" {
-            att: colspan "2"
-            style: (
-              "background-color:#e8e8e8;"
-              "border-bottom:1px solid #c9c9c9;" +
-              "padding: 10px;" +
-              "color:#505050;" + )
-            html: ("<big><big><b>" "Login":_ "</big></big></b>" + +) }]]
-      rows + ui,$+
+            "td" {
+                att: colspan "2"
+                style: (
+                  "background-color:#e8e8e8;"
+                  "border-bottom:1px solid #c9c9c9;" +
+                  "padding: 10px;" +
+                  "color:#505050;" + )
+                html: ("<big><big><b>" "Login":_ "</big></big></b>" + +)
+              } [] ui,$+
+          ] ui,$+
+      ] rows + ui,$+
   ) body =>
 
   View { removeAll } [
-    "div" {
-      class: "title"
-      html: ("&nbsp;<br>${app}<br>&nbsp;") }
-    "div" {} [ body ]
-  ] ui,$
+      "div" {
+          class: "title"
+          html: ("&nbsp;<br>${app}<br>&nbsp;")
+        } [] ui,$+
+      "div" {} [ body ] ui,$+
+    ] ui,$
 
-  UserIn { focus } ui,$
+  UserIn { focus } [] ui,$
 
 @-) show =>
 

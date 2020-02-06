@@ -8,7 +8,7 @@
 "chpass" import
 
 ( @+m
-  "langDiv" : "div" { html: "&nbsp;" } ui,$+ : map,put+
+  "langDiv" : "div" { html: "&nbsp;" } [] ui,$+ : map,put+
   "update" : (this,show) : map,put+
 @-m)
 new =>
@@ -17,19 +17,24 @@ new =>
 
 ( @+m:: # Pg# =
   Pg# .view { removeAll } [
-    "div" { style: "text-align:center" } [
-      "div" { class: "head", html: ("Settings":_) }
-      "table" { att: align "center" } [
-        "tr" {} [
-          "td" { class: "frame" } [
-            (Pg# .langDiv)
-            "p" { html: "<p></p>" }
-            "div" {} [
-              ((Pg# this,goChangePass.) wg,link) {
-                class: "link",
-                text: ("Change Password":_)
-              } ]]]]]
-  ] ui,$
+      "div" { style: "text-align:center" } [
+          "div" { class: "head", html: ("Settings":_) } [] ui,$+
+          "table" { att: align "center" } [
+              "tr" {} [
+                  "td" { class: "frame" } [
+                      Pg# .langDiv
+                      "p" { html: "<p></p>" } [] ui,$+
+                      "div" {} [
+                          (Pg# this,goChangePass.) wg,link {
+                              class: "link",
+                              text: ("Change Password":_)
+                            } [] ui,$+
+                        ] ui,$+
+                    ] ui,$+
+                ] ui,$+
+            ] ui,$+
+        ] ui,$+
+    ] ui,$
   Pg# this,update.
 @-) show =>
 
@@ -37,14 +42,14 @@ new =>
 
 ( @+m:: Pg# =
   Pg# .langDiv { removeAll } [
-    ((Pg# this,goChangeLang.) wg,link) {
-      class: "link",
-      text:
-        ( "Change Language to %0":_
-          Pg# .lang "es" == (["EN"]) (["ES"]) elif
-          __)
-    }
-  ] ui,$
+      (Pg# this,goChangeLang.) wg,link {
+          class: "link",
+          text:
+            ( "Change Language to %0":_
+              Pg# .lang "es" == (["EN"]) (["ES"]) elif
+              __)
+        } [] ui,$+
+    ] ui,$
 @-) update. =>
 
 ( @+m:: Pg =

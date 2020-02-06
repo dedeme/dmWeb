@@ -10,29 +10,28 @@
   "lib" lib map,put+
   "lpath" lpath map,put+
 
-  "title" "div" ui,$+ map,put+
-  "index" "div" ui,$+ map,put+
-  "overview" "div" ui,$+ map,put+
-  "source" "div" ui,$+ map,put+
-  "body" "div" ui,$+ map,put+
+  "title" "div" ui,mk map,put+
+  "index" "div" ui,mk map,put+
+  "overview" "div" ui,mk map,put+
+  "source" "div" ui,mk map,put+
+  "body" "div" ui,mk map,put+
 @-m) new =>
 
 ( @+m:: Pg =
-  "@title" { text: (Pg .lpath path,name " - " APP + +) } ui,$
+  "@title" { text: (Pg .lpath path,name " - " APP + +) } [] ui,$
   Pg .view { removeAll } [
-    (Pg .title) { class: "frame2" } []
-    "br" {} []
-    (Pg .index) {} []
-    "hr" {} []
-    (Pg .overview) {} []
-    "br" {} []
-    (Pg .source) {} []
-    "hr" {}[]
-    "div" { class: "frame" } []
-    (Pg .body) {} []
-    ("up" wg,upTop)
-  ]
-  ui,$
+      Pg .title { class: "frame2" } [] ui,$+
+      "br" ui,mk
+      Pg .index
+      "hr" ui,mk
+      Pg .overview
+      "br" ui,mk
+      Pg .source
+      "hr" ui,mk
+      "div" { class: "frame" } [] ui,$+
+      Pg .body
+      "up" wg,upTop
+    ] ui,$
   Pg this,update.
 @-) show =>
 
@@ -72,37 +71,41 @@
   (C >>; len) (i =; P2 : Lines i lst,get : lst,push) for
 
   "table" {} [
-    "tr" {} [
-      "td" { class: "border" } [
-        "pre" { text: (P1 : "\n" : str,join) }]]]
-  ui,$+ : T1 =
+      "tr" {} [
+          "td" { class: "border" } [
+              "pre" { text: (P1 : "\n" : str,join) } [] ui,$+
+            ] ui,$+
+        ] ui,$+
+    ] ui,$+ : T1 =
 
   P2 lst,size
   (
     "table" {} [
-      "tr" {} [
-        "td" { class: "frame" } [
-          "pre" { text: (P2 : "\n" : str,join) }]]]
-    ui,$+ : T2 =
+        "tr" {} [
+            "td" { class: "frame" } [
+                "pre" { text: (P2 : "\n" : str,join) } [] ui,$+
+              ] ui,$+
+          ] ui,$+
+      ] ui,$+ : T2 =
 
     "div" {} [
-      T1
-      T2
-    ] ui,$+
+        T1
+        T2
+      ] ui,$+
   )
   ( T1)
   elif
 @-<Element>) format. =>
 
 ( @+m:: Pg =
-  Pg .title { html: (("<b>" Pg .lpath "</b>") ++) } ui,$
+  Pg .title { html: (("<b>" Pg .lpath "</b>") ++) } [] ui,$
 @-) setTitle. =>
 
 ( @+ml:: Es =; Pg =
   Es ("=Overview" !=) lst,filter : Es =
   Es lst,size : len =
   len 1 - 5 / 1 + : rows =
-  lst,new rows (pop; lst,new 5 (pop; "td" ui,$+ lst,push+) for lst,push+) for
+  lst,new rows (pop; lst,new 5 (pop; "td" ui,mk lst,push+) for lst,push+) for
     Tds =
 
   "table" { class: "main" }
@@ -115,9 +118,9 @@
     i rows int,div : row =; col =
     Tds row lst,get col lst,get {} [
       "a" {
-        att: href ("#" e +)
-        text: (e)
-      }
+          att: href ("#" e +)
+          text: (e)
+        } [] ui,$+
     ] ui,$
   @-)
   lst,eachIx
@@ -127,23 +130,23 @@
 
 ( @+ms:: doc =; Pg =
   Pg .overview {} [
-    "div" {
-      class: "frame"
-      html: "<b>Overview</b>"
-    } []
-    "br" {} []
-    (doc this,format.)
-  ] ui,$
+      "div" {
+          class: "frame"
+          html: "<b>Overview</b>"
+        } [] ui,$+
+      "br" ui,mk
+      doc this,format.
+    ] ui,$
 @-) setOverview. =>
 
 ( @+m:: Pg# =
   Pg# .source {} [
-    "div" { html: "<b>File</b>" } []
-    "a" {
-      att: href ((location,hrefBase "/?" Pg .lib "@" Pg .lpath "&0") ++)
-      text: (Pg .lpath ".dms" +)
-    }
-  ] ui,$
+      "div" { html: "<b>File</b>" } [] ui,$+
+      "a" {
+          att: href ((location,hrefBase "/?" Pg .lib "@" Pg .lpath "&0") ++)
+          text: (Pg .lpath ".dms" +)
+        } [] ui,$+
+    ] ui,$
 @-) setSource. =>
 
 ( @+mm:: Doc =; Pg =
@@ -155,18 +158,19 @@
     V .text js,rs : doc =
 
     "p" {att: id k} [
-      "div" {} [
-        "a" {
-          att: name k
-          att: href (
-            (location,hrefBase "/?" Pg .lib "@" Pg .lpath "&" line)
-            ++)
-          text: k
-        }]
-      "br" {} []
-      (doc this,format.) {} []
-      "hr"
-    ] ui,$+
+        "div" {} [
+            "a" {
+                att: name k
+                att: href (
+                  (location,hrefBase "/?" Pg .lib "@" Pg .lpath "&" line)
+                  ++)
+                text: k
+              } [] ui,$+
+          ] ui,$+
+        "br" ui,mk
+        doc this,format.
+        "hr" ui,mk
+      ] ui,$+
   )
   lst,map : Divs =
 
@@ -198,7 +202,7 @@
       location,href "#" str,index : ix =
 
       ix -1 !=
-      ( location,href ix str,right ui,$+ (e, "e.scrollIntoView()") ffi,v)
+      ( location,href ix str,right ui,mk (e, "e.scrollIntoView()") ffi,v)
       if
     )
     elif

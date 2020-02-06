@@ -10,19 +10,24 @@ new =>
   dup .app : app =
 
   .view { removeAll } [
-    "div" {
-      class: "title"
-      html: ("&nbsp;<br>${app}<br>&nbsp;") }
-    "div" {} [
-      "table" {
-        class: "border"
-        att: width "100%"
-        style: "background-color: #f8f8f8;border-collapse: collapse;"
-      } [
-        "tr" {} [
-          "td" {
-            style: "padding:0px 10px 0px 10px;"
-            html: ("Logout-message":_ (app) __) }]]]
-  ] ui,$
+      "div" {
+          class: "title"
+          html: ("&nbsp;<br>${app}<br>&nbsp;")
+        } [] ui,$+
+      "div" {} [
+          "table" {
+            class: "border"
+            att: width "100%"
+            style: "background-color: #f8f8f8;border-collapse: collapse;"
+          } [
+            "tr" {} [
+                "td" {
+                    style: "padding:0px 10px 0px 10px;"
+                    html: ("Logout-message":_ (app) __)
+                  } [] ui,$+
+              ] ui,$+
+          ] ui,$+
+        ] ui,$+
+    ] ui,$
 @-) show =>
 

@@ -603,16 +603,19 @@ AccLedPf *accLedPf_new(Arr *annotations) {
         ));
         continue;
       }
-      if (vs->price <= 0) {
+      if (vs->price < 0) {
         arr_push(errors, str_f(
-          "%s: Buying price %.4f (<= 0)", (char *)accEntry_to_js(e), vs->price
+          "%s: Buying price %.4f (< 0)", (char *)accEntry_to_js(e), vs->price
         ));
         continue;
       }
 
       pf_add(pf, vs->nick, vs->stocks, vs->price);
       Dec *ammount = dec_new(vs->stocks * vs->price, 2);
-      Dec *fs = dec_new(broker_fees(dec_n(ammount)), 2);
+      Dec *fs = dec_n(ammount) > 0
+        ? dec_new(broker_fees(dec_n(ammount)), 2)
+        : dec_new(0, 2)
+      ;
       stocks = dec_new(dec_n(stocks) + dec_n(ammount), 2);
       fees = dec_new(dec_n(fees) + dec_n(fs), 2);
       cash = dec_new(dec_n(cash) - dec_n(ammount) - dec_n(fs), 2);

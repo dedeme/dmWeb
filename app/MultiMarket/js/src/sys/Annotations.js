@@ -49,6 +49,26 @@ const controlDouble = (lang, id, value) => {
   return "";
 };
 
+const controlBuyPrice = (lang, id, value) => {
+  if (
+    (lang === "es" &&
+      (
+        !Dec.isNumberIso(value) || Dec.newIso(value, 4).value < 0 ||
+        value.indexOf(".") !== -1
+      )
+    ) ||
+    (lang === "en" &&
+      (
+        !Dec.isNumberEn(value) || Dec.newEn(value, 4).value < 0 ||
+        value.indexOf(",") !== -1
+      )
+    )
+  ) {
+    return _args(_("'%0' is not a cero or positive number"), id);
+  }
+  return "";
+};
+
 /** Annotations page. */
 export default class Annotations {
 
@@ -133,7 +153,7 @@ export default class Annotations {
       if (r === "") r = controlBase(_("Stocks"), v(stf));
       if (r === "") r = controlInt(_("Stocks"), v(stf));
       if (r === "") r = controlBase(_("Price"), v(prf));
-      if (r === "") r = controlDouble(this._lang, _("Price"), v(prf));
+      if (r === "") r = controlBuyPrice(this._lang, _("Price"), v(prf));
       if (r === "") {
         this.sendAnn(
           "se", v(dtf), v(nkf), Number(v(stf)),
@@ -172,7 +192,7 @@ export default class Annotations {
       if (r === "") r = controlBase(_("Stocks"), v(stf));
       if (r === "") r = controlInt(_("Stocks"), v(stf));
       if (r === "") r = controlBase(_("Price"), v(prf));
-      if (r === "") r = controlDouble(this._lang, _("Price"), v(prf));
+      if (r === "") r = controlBuyPrice(this._lang, _("Price"), v(prf));
       if (r === "") {
         this.sendAnn(
           "bu", v(dtf), v(nkf), Number(v(stf)),

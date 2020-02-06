@@ -393,7 +393,7 @@ lib/liblocalcompilation/obj/data/Server.o : include/data/Server.h src/data/Serve
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)
 
-lib/liblocalcompilation/obj/data/Rconf.o : include/data/Rconf.h src/data/Rconf.c
+lib/liblocalcompilation/obj/data/Rconf.o : include/data/Rconf.h src/data/Rconf.c include/DEFS.h src/DEFS.c
 	gcc $(CFLAGS) -c src/data/Rconf.c -o lib/liblocalcompilation/obj/data/Rconf.o \
 		-Iinclude \
 		-I$(LIB_INCLUDE_dmc)

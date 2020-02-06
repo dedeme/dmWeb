@@ -17,9 +17,9 @@
     "ever": 0
     "error": 1
 
-    "lmenu": "div" ui,$+
-    "rmenu": "div" ui,$+
-    "area": "div" ui,$+
+    "lmenu": "div" ui,mk
+    "rmenu": "div" ui,mk
+    "area": "div" ui,mk
   } map,from
   dup this,update
 @-m) new =>
@@ -27,20 +27,25 @@
 
 ( @+m:: Log =
   "div" {} [
-    "table" { class: "frame3"; att: align "center" } [
-      "tr" {} [
-        "td" { style: "text-align:left" } [ (Log .lmenu) ]
-        "td" { style: "text-align:right" } [ (Log .rmenu) ]]
-      "tr" {} [ "td" { att: colspan "2" } ]
-      "tr" {} [ "td" { att: colspan "2" } [ (Log .area) ]]
-    ]
-  ] ui,$+
+      "table" { class: "frame3"; att: align "center" } [
+          "tr" {} [
+              "td" { style: "text-align:left" } [ Log .lmenu ] ui,$+
+              "td" { style: "text-align:right" } [ Log .rmenu ] ui,$+
+            ] ui,$+
+          "tr" {} [
+              "td" { att: colspan "2" } [] ui,$+
+            ] ui,$+
+          "tr" {} [
+              "td" { att: colspan "2" } [ Log .area ] ui,$+
+            ] ui,$+
+        ] ui,$+
+    ] ui,$+
 @-<Element>) wg =>
 /// @m::log -> @<Element>::e
 
 ( @+isl:: Cb =; text =;
-  ( "span" { class: "frame"; text: (text) })
-  ( Cb wg,link { class: "link"; text: (text) })
+  ( "span" { class: "frame"; text: (text) } [])
+  ( Cb wg,link { class: "link"; text: (text) } [])
   elif
   ui,$+
 @-<Element>) mkMenuEntry. =>
@@ -114,42 +119,45 @@
     E log,dateJs "%d/%m/%Y (%H:%M:%S) - " time,format : date =
     E log,msg : msg =
     "tr" {} [
-      "td" {
-        class: (tdClass)
-        style: "width:50px; white-space:nowrap;"
-        text: (date)
-      }
-      "td" { class: (tdClass); text: (msg) }
-    ] ui,$+
+        "td" {
+            class: (tdClass)
+            style: "width:50px; white-space:nowrap;"
+            text: (date)
+          } [] ui,$+
+        "td" { class: (tdClass); text: (msg) } [] ui,$+
+      ] ui,$+
   )
   lst,map : Trs =
 
   "table" { class: "main" } Trs ui,$+ : DataTable =
 
   Log# .lmenu { removeAll } [
-    (Log# .day : "Last Day":_ : (Log# this,onLastDay.) : this,mkMenuEntry.)
-    "span" { text: " · " } []
-    (Log# .week : "Last Week":_ : (Log# this,onLastWeek.) : this,mkMenuEntry.)
-    "span" { text: " · " } []
-    (Log# .ever : "All":_ : (Log# this,onEver.) : this,mkMenuEntry.)
-  ] ui,$
+      Log# .day : "Last Day":_ : (Log# this,onLastDay.) : this,mkMenuEntry.
+      "span" { text: " · " } [] ui,$+
+      Log# .week : "Last Week":_ : (Log# this,onLastWeek.) : this,mkMenuEntry.
+      "span" { text: " · " } [] ui,$+
+      Log# .ever : "All":_ : (Log# this,onEver.) : this,mkMenuEntry.
+    ] ui,$
 
   Log# .rmenu { removeAll } [
-    (0 : "Reload":_ : (Log# this,onReload.) : this,mkMenuEntry.)
-    "span" { text: " | " } []
-    (Log# .error : "Errors":_ : (Log# this,onError.) : this,mkMenuEntry.)
-    "span" { text: " · " } []
-    (Log# .error ! : "All":_ : (Log# this,onAll.) : this,mkMenuEntry.)
-    "span" { text: " | " } []
-    (0 : "Clear":_ : (Log# this,onClear.) : this,mkMenuEntry.)
-  ] ui,$
+      0 : "Reload":_ : (Log# this,onReload.) : this,mkMenuEntry.
+      "span" { text: " | " } [] ui,$+
+      Log# .error : "Errors":_ : (Log# this,onError.) : this,mkMenuEntry.
+      "span" { text: " · " } [] ui,$+
+      Log# .error ! : "All":_ : (Log# this,onAll.) : this,mkMenuEntry.
+      "span" { text: " | " } [] ui,$+
+      0 : "Clear":_ : (Log# this,onClear.) : this,mkMenuEntry.
+    ] ui,$
 
   Log# .area { removeAll } [
-    "table" { att: align "center" } [
-      "tr" {} [
-        "td" {} [
-          "div" { class: "log" } [ DataTable ]]]]
-  ] ui,$
+      "table" { att: align "center" } [
+          "tr" {} [
+              "td" {} [
+                  "div" { class: "log" } [ DataTable ] ui,$+
+                ] ui,$+
+            ] ui,$+
+        ] ui,$+
+    ] ui,$
 
 @-) update =>
 

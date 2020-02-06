@@ -27,8 +27,8 @@
   "lang": "en"
   "menu": 0 menu,new
 
-  "menuDiv": "div" ui,$+
-  "view": "div" ui,$+
+  "menuDiv": "div" ui,mk
+  "view": "div" ui,mk
 } map,from AppData =
 
 "summary" : menuSummary =
@@ -40,25 +40,27 @@
 
 ( @+
   "div" {} [
-    (AppData .menuDiv) {} []
-    (AppData .view)
-    "p" { html: "&nbsp;" }
-    "hr"
-    "table" { class: "main" } [
-      "tr" {} [
-        "td" {} [
-          "a" {
-            att: href "doc/about.html"
-            att: target "blank"
-            html: ("<small>" "Help & Credits":_  "</small>" + +)
-          }
-        ]
-        "td" {
-          style: ("text-align: right;font-size: 10px;"
-                  "color:#808080;font-size:x-small;" +)
-          html: ("- © ºDeme. ${app} (${version}) -")
-        }]]]
-  ui,$+
+      AppData .menuDiv
+      AppData .view
+      "p" { html: "&nbsp;" } [] ui,$+
+      "hr" ui,mk
+      "table" { class: "main" } [
+          "tr" {} [
+              "td" {} [
+                  "a" {
+                      att: href "doc/about.html"
+                      att: target "blank"
+                      html: ("<small>" "Help & Credits":_  "</small>" + +)
+                    } [] ui,$+
+                ] ui,$+
+              "td" {
+                  style: ("text-align: right;font-size: 10px;"
+                          "color:#808080;font-size:x-small;" +)
+                  html: ("- © ºDeme. ${app} (${version}) -")
+                } [] ui,$+
+            ] ui,$+
+        ] ui,$+
+    ] ui,$+
 @-<Element>) wg =>
 
 ( @+
@@ -106,7 +108,7 @@
       menu,mkOption menu,addRight
 
 
-    App# .menuDiv {} [ App# .menu : menu,wg ] data ui,$+
+    App# .menuDiv {} [ App# .menu : menu,wg ] ui,$+
 
    App# Mn# menu this,go
   )

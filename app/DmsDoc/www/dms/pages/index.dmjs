@@ -10,30 +10,33 @@
   Pg
   "lib" lib map,put+
 
-  "pgDiv" "div" { class: "frame" } ui,$+ map,put+
+  "pgDiv" "div" { class: "frame" } [] ui,$+ map,put+
 @-m) new =>
 
 ( @+m:: Pg =
-  "@title" { text: (Pg .lib " - " APP + +) } ui,$
+  "@title" { text: (Pg .lib " - " APP + +) } [] ui,$
   Pg .view { removeAll } [
-    (Pg .pgDiv) {} []
-    ("up" wg,upTop)
-  ] ui,$
+      Pg .pgDiv
+      "up" wg,upTop
+    ] ui,$
   Pg this,update.
 @-) show =>
 
 ( @+
   "table" { att: align "center" } [
-    "tr" {} [
-      "td" {} [
-        "div" {
-          class: "frame2"
-          html: ((
-            "Library not found":_ ".<br><br>"
-            "Click":_ "<a href='?@'>" "here":_ "</a>" "to continue":_ "."
-            ) ++)
-        }]]]
-  ui,$+
+      "tr" {} [
+          "td" {} [
+              "div" {
+                  class: "frame2"
+                  html: ((
+                    "Library not found":_ ".<br><br>"
+                    "Click":_
+                    "<a href='?@'>" "here":_ "</a>" "to continue":_ "."
+                    ) ++)
+                } [] ui,$+
+            ] ui,$+
+        ] ui,$+
+    ] ui,$+
 @-<Element>) emptyTable. =>
 
 ( @+sl Ts =; lib =
@@ -44,12 +47,12 @@
       ( Ts2 =
         Rs
           "tr" {} [
-            "td" {
-              style: "width:5px;"
-              html: ((indent "<b>" T .id "</b>") ++)
-            }
-            "td"
-          ] ui,$+
+              "td" {
+                  style: "width:5px;"
+                  html: ((indent "<b>" T .id "</b>") ++)
+                } [] ui,$+
+              "td" ui,mk
+            ] ui,$+
           lst,push+
 
           Ts2 : "&nbsp;&nbsp;&nbsp;&nbsp;" indent + : trs
@@ -61,15 +64,15 @@
         "${location,hrefBase}/?${lib}@${lpath}${sep}${id}" : href =
         Rs
           "tr" {} [
-            "td" {
-              style: "width:5px;"
-              html: ("${indent}<a href='${href}'>${id}</a>")
-            }
-            "td" {
-              style: "padding-left:10px"
-              text: (T .doc)
-            }
-          ] ui,$+
+              "td" {
+                  style: "width:5px;"
+                  html: ("${indent}<a href='${href}'>${id}</a>")
+                } [] ui,$+
+              "td" {
+                  style: "padding-left:10px"
+                  text: (T .doc)
+                } [] ui,$+
+            ] ui,$+
           lst,push
       )
       wrap,option
@@ -99,8 +102,8 @@
     (
       rp ixT,fromJs : dup : ixT,sort : Index =
       Index .tree
-      ( T =; Pg# .pgDiv { removeAll } [ (Pg# .lib T this,table.) ] ui,$)
-      ( Pg# .pgDiv { removeAll } [ (this,emptyTable.) ] ui,$)
+      ( T =; Pg# .pgDiv { removeAll } [ Pg# .lib T this,table. ] ui,$)
+      ( Pg# .pgDiv { removeAll } [ this,emptyTable. ] ui,$)
       wrap,option
     )
     elif

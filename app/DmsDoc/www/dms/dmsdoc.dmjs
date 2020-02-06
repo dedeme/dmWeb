@@ -35,33 +35,37 @@
   "menu": 0 menu,new
   "libs": []
 
-  "helpAndCredits": "span" { style: "font-size: small;" } ui,$+
-  "menuDiv": "div" ui,$+
-  "view": "div" ui,$+
+  "helpAndCredits": "span" { style: "font-size: small;" } [] ui,$+
+  "menuDiv": "div" ui,mk
+  "view": "div" ui,mk
 } map,from APP_DATA =
 
 // View
 
 (@+
   "div" {removeAll} [
-    (APP_DATA .menuDiv) {} []
-    (APP_DATA .view)
-    "p" { html: "&nbsp;" }
-    "hr"
-    "table" { class: "main" } [
-      "tr" {} [
-        "td" {} [
-          "a" {
-            att: href "doc/about.html"
-            att: target "blank"
-          } [ (APP_DATA .helpAndCredits) ]]
-        "td" {
-          style: ("text-align: right;font-size: 10px;"
-                  "color:#808080;font-size:x-small;" +)
-          html: ("- © ºDeme. ${APP} (${VERSION}) -")
-        }]]]
-  50 (pop; "br" lst,push+) for
-  ui,$+
+      APP_DATA .menuDiv
+      APP_DATA .view
+      "p" { html: "&nbsp;" } [] ui,$+
+      "hr" ui,mk
+      "table" { class: "main" } [
+          "tr" {} [
+              "td" {} [
+                  "a" {
+                    att: href "doc/about.html"
+                    att: target "blank"
+                  } [ APP_DATA .helpAndCredits ] ui,$+
+                ] ui,$+
+              "td" {
+                  style: ("text-align: right;font-size: 10px;"
+                          "color:#808080;font-size:x-small;" +)
+                  html: ("- © ºDeme. ${APP} (${VERSION}) -")
+                } [] ui,$+
+            ] ui,$+
+        ] ui,$+
+    ]
+    50 (pop; "br" ui,mk lst,push+) for
+    ui,$+
 @-<Element>) wg. =>
 
 (@+
@@ -73,10 +77,11 @@
 
   Mn
     "a" {
-      att: href (location,hrefBase "?@" +)
-      att: id "menu_@"
-    } [ ("asterisk" wg,img) { style: "vertical-align:middle" } ]
-    ui,$+ menu,addLeft
+        att: href (location,hrefBase "?@" +)
+        att: id "menu_@"
+      } [
+        "asterisk" wg,img { style: "vertical-align:middle" } [] ui,$+
+      ] ui,$+ menu,addLeft
 
   Ls libs,readIds
   ( id =;
@@ -89,7 +94,7 @@
     (fbye.)
     menu,mkClose menu,addRight
 
-  APP_DATA .menuDiv {} [ APP_DATA .menu : menu,wg ] data ui,$
+  APP_DATA .menuDiv {} [ APP_DATA .menu : menu,wg ] ui,$
 @-) menu. =>
 
 // Control ---------------------------------------------------------------------
@@ -98,8 +103,8 @@
   APP_DATA
     "menu" : 0 menu,new : map,put+
     "libs": [] data : map,put+
-    "menuDiv": "div" ui,$+ : map,put+
-    "view": "div" ui,$+ : map,put
+    "menuDiv": "div" ui,mk: map,put+
+    "view": "div" ui,mk : map,put
 @-) init. =>
 
 (@+
@@ -115,7 +120,7 @@
     Cf .lang i18n,init
     APP_DATA : "lang" : Cf .lang : map,put+
       "showAll?" : Cf .showAll? : map,put+
-      .helpAndCredits { text: ("Help & Credits":_) } ui,$
+      .helpAndCredits { text: ("Help & Credits":_) } [] ui,$
 
     Ls menu.
     APP_DATA "libs" Ls map,put

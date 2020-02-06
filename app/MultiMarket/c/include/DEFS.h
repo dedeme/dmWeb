@@ -33,7 +33,7 @@
 #define EXPIRATION 900
 
 /// Data version
-#define DATA_VERSION "MultiMarket\nData version: 201905\n"
+#define DATA_VERSION "MultiMarket\nData version: 202001\n"
 
 /// Automatic backups number
 #define BACKUPS_NUMBER 10
@@ -139,6 +139,12 @@
 
 /// Server short name to get url in accounting charts
 #define ACC_URL "INFOB"
+
+/// External command to download
+#define WGET "Wget"
+
+/// External command to download
+#define PUPPETEER "Puppeteer"
 
 /// Error messages
 enum ErrorMsg { MSG_OK, MSG_WARNING, MSG_ERROR };

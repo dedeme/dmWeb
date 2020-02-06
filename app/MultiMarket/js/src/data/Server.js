@@ -7,7 +7,9 @@
 export class Rconf {
   /* .
   _rc_ Rconf : serial
+  cmd : string
   url : string
+  regex: string
   sel : number
   isDateEu : boolean
   dateSeparator : string
@@ -23,21 +25,25 @@ export class Rconf {
 
   /*--*/
   /**
-   * @param {string} url
-   * @param {number} sel
-   * @param {boolean} isDateEu
-   * @param {string} dateSeparator
-   * @param {boolean} isIsoNumber
-   * @param {string} fieldsType
-   * @param {string} tableStart
-   * @param {string} tableEnd
-   * @param {string} rowStart
-   * @param {string} rowEnd
-   * @param {!Array<string>} cellsStart
-   * @param {!Array<string>} cellsEnd
-   */
+      @param {string} cmd
+      @param {string} url
+      @param {string} regex
+      @param {number} sel
+      @param {boolean} isDateEu
+      @param {string} dateSeparator
+      @param {boolean} isIsoNumber
+      @param {string} fieldsType
+      @param {string} tableStart
+      @param {string} tableEnd
+      @param {string} rowStart
+      @param {string} rowEnd
+      @param {!Array<string>} cellsStart
+      @param {!Array<string>} cellsEnd
+  **/
   constructor (
+    cmd,
     url,
+    regex,
     sel,
     isDateEu,
     dateSeparator,
@@ -52,143 +58,197 @@ export class Rconf {
   ) {
 
     /**
-     * @private
-     * @type {string}
-     */
+        @private
+        @type {string}
+    **/
+    this._cmd = cmd;
+
+    /**
+        @private
+        @type {string}
+    **/
     this._url = url;
 
     /**
-     * @private
-     * @type {number}
-     */
+        @private
+        @type {string}
+    **/
+    this._regex = regex;
+
+    /**
+        @private
+        @type {number}
+    **/
     this._sel = sel;
 
     /**
-     * @private
-     * @type {boolean}
-     */
+        @private
+        @type {boolean}
+    **/
     this._isDateEu = isDateEu;
 
     /**
-     * @private
-     * @type {string}
-     */
+        @private
+        @type {string}
+    **/
     this._dateSeparator = dateSeparator;
 
     /**
-     * @private
-     * @type {boolean}
-     */
+        @private
+        @type {boolean}
+    **/
     this._isIsoNumber = isIsoNumber;
 
     /**
-     * @private
-     * @type {string}
-     */
+        @private
+        @type {string}
+    **/
     this._fieldsType = fieldsType;
 
     /**
-     * @private
-     * @type {string}
-     */
+        @private
+        @type {string}
+    **/
     this._tableStart = tableStart;
 
     /**
-     * @private
-     * @type {string}
-     */
+        @private
+        @type {string}
+    **/
     this._tableEnd = tableEnd;
 
     /**
-     * @private
-     * @type {string}
-     */
+        @private
+        @type {string}
+    **/
     this._rowStart = rowStart;
 
     /**
-     * @private
-     * @type {string}
-     */
+        @private
+        @type {string}
+    **/
     this._rowEnd = rowEnd;
 
     /**
-     * @private
-     * @type {!Array<string>}
-     */
+        @private
+        @type {!Array<string>}
+    **/
     this._cellsStart = cellsStart;
 
     /**
-     * @private
-     * @type {!Array<string>}
-     */
+        @private
+        @type {!Array<string>}
+    **/
     this._cellsEnd = cellsEnd;
 
   }
 
-  /**  @return {string} */
+  /**
+      @return {string}
+  **/
+  get cmd () {
+    return this._cmd;
+  }
+
+  /**
+      @return {string}
+  **/
   get url () {
     return this._url;
   }
 
-  /**  @return {number} */
+  /**
+      @return {string}
+  **/
+  get regex () {
+    return this._regex;
+  }
+
+  /**
+      @return {number}
+  **/
   get sel () {
     return this._sel;
   }
 
-  /**  @return {boolean} */
+  /**
+      @return {boolean}
+  **/
   get isDateEu () {
     return this._isDateEu;
   }
 
-  /**  @return {string} */
+  /**
+      @return {string}
+  **/
   get dateSeparator () {
     return this._dateSeparator;
   }
 
-  /**  @return {boolean} */
+  /**
+      @return {boolean}
+  **/
   get isIsoNumber () {
     return this._isIsoNumber;
   }
 
-  /**  @return {string} */
+  /**
+      @return {string}
+  **/
   get fieldsType () {
     return this._fieldsType;
   }
 
-  /**  @return {string} */
+  /**
+      @return {string}
+  **/
   get tableStart () {
     return this._tableStart;
   }
 
-  /**  @return {string} */
+  /**
+      @return {string}
+  **/
   get tableEnd () {
     return this._tableEnd;
   }
 
-  /**  @return {string} */
+  /**
+      @return {string}
+  **/
   get rowStart () {
     return this._rowStart;
   }
 
-  /**  @return {string} */
+  /**
+      @return {string}
+  **/
   get rowEnd () {
     return this._rowEnd;
   }
 
-  /**  @return {!Array<string>} */
+  /**
+      @return {!Array<string>}
+  **/
   get cellsStart () {
     return this._cellsStart;
   }
 
-  /**  @return {!Array<string>} */
+  /**
+      @return {!Array<string>}
+  **/
   get cellsEnd () {
     return this._cellsEnd;
   }
 
-  /** @return {!Array<?>} */
+  /**
+      @return {!Array<?>}
+  **/
   toJs () {
     return [
+      this._cmd,
       this._url,
+      this._regex,
       this._sel,
       this._isDateEu,
       this._dateSeparator,
@@ -204,9 +264,9 @@ export class Rconf {
   }
 
   /**
-   * @param {!Array<?>} serial
-   * @return {!Rconf}
-   */
+      @param {!Array<?>} serial
+      @return {!Rconf}
+  **/
   static fromJs (serial) {
     return new Rconf(
       serial[0],
@@ -220,7 +280,9 @@ export class Rconf {
       serial[8],
       serial[9],
       serial[10],
-      serial[11]
+      serial[11],
+      serial[12],
+      serial[13]
     );
   }
   /*--*/

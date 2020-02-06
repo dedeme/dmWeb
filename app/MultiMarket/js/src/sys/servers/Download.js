@@ -4,7 +4,7 @@
 /** Daily and historic download options. */
 
 import Main from "../../Main.js";
-import {SERVER} from "../../consts.js";
+import {SERVER, WGET, PUPPETEER} from "../../consts.js";
 import Servers from "../Servers.js"; //eslint-disable-line
 import {_, _args} from "../../I18n.js";
 import Ui from "../../dmjs/Ui.js";
@@ -102,7 +102,10 @@ export default class Downloads {
 
     this._testDiv = $("div");
 
+    this._cmdWget = $("input").att("type", "radio").att("name", "cmd");
+    this._cmdPuppeteer = $("input").att("type", "radio").att("name", "cmd");
     this._url = Ui.field("dateSep").att("id", "url").style("width:600px");
+    this._regex = $("textarea").att("rows", "3").att("cols", 80);
 
     this._dateEu = $("input").att("type", "checkbox");
     this._dateSep = Ui.field("tableStart").att("id", "dateSep")
@@ -222,7 +225,10 @@ export default class Downloads {
     }
     this._testDiv.removeAll().add(Ui.img("unknown"));
 
+    if (conf.cmd === WGET) this._cmdWget.checked(true);
+    else this._cmdPuppeteer.checked(true);
     this._url.value(conf.url);
+    this._regex.value(conf.regex);
 
     this._dateEu.checked(conf.isDateEu);
     this._dateSep.value(conf.dateSeparator);
@@ -252,11 +258,13 @@ export default class Downloads {
    * @return {!Promise}
    */
   async modify () {
+    const cmd = this._cmdWget.checked() ? WGET : PUPPETEER;
     const url = this._url.value().trim();
     if (url === "") {
       alert(_("URL is missing"));
       return;
     }
+    const regex = this._regex.value().trim();
     const sel = this._stopped.checked() ? SERVER.STOPPED
       : this._active.checked() ? SERVER.ACTIVE : SERVER.SELECTED;
     const isDateEu = this._dateEu.checked();
@@ -301,7 +309,9 @@ export default class Downloads {
       "id": this._server.id,
       "historic": this._isHistoric,
       "conf": new Rconf(
+        cmd,
         url,
+        regex,
         sel,
         isDateEu,
         dateSeparator,
@@ -326,7 +336,7 @@ export default class Downloads {
   async activate () {
     const conf = this._isHistoric
       ? new Rconf(
-        "", SERVER.ACTIVE,
+        WGET, "", "", SERVER.ACTIVE,
         true, "/", true,
         "DOCXNV", // Date, Open, Close, maX, miN, Volume
         "", "",
@@ -335,7 +345,7 @@ export default class Downloads {
         ["", "", "", "", "", ""]
       )
       : new Rconf(
-        "", SERVER.ACTIVE,
+        WGET, "", "", SERVER.ACTIVE,
         true, "/", true,
         "CQ", // Code, Quote
         "", "",
@@ -420,9 +430,20 @@ export default class Downloads {
               .text(_("Test") + ": ")))
           .add($("td").style("text-align:left").add(this._testDiv)))
         .add($("tr")
+          .add($("td").att("colspan", 4).style("text-align:left")
+            .add(this._cmdWget).add($("span").html("&nbsp;"))
+            .add($("span").html(WGET))
+            .add($("span").html("&nbsp;&nbsp;&nbsp;"))
+            .add(this._cmdPuppeteer).add($("span").html("&nbsp;"))
+            .add($("span").html(PUPPETEER))))
+        .add($("tr")
           .add($("td").style("text-align:right").text(_("URL") + ": "))
           .add($("td").att("colspan", 3).style("text-align:left")
             .add(this._url)))
+        .add($("tr")
+          .add($("td").style("text-align:right").text(_("RegEx") + ": "))
+          .add($("td").att("colspan", 3).style("text-align:left")
+            .add(this._regex)))
       ;
       if (this._isHistoric) {
         this._table

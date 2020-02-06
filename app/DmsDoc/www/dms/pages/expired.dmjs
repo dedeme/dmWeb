@@ -8,22 +8,26 @@
   "<a href=''>" "here":_ "</a>" + + : link =
 
   .view { removeAll } [
-    "div" {
-      class: "title"
-      html: app
-    }
-    "br"
-    "div" {} [
-      "table" {
-        class: "border"
-        att: width "100%"
-        style: "background-color: #f8f8f8;border-collapse: collapse;"
-      } [
-        "tr" {} [
-          "td" {
-            style: "padding:0px 10px 0px 10px;"
-            html: (( "<p>" "Session is expired.":_ "</p><p><b>"
-                     "Click %0 to continue.":_ (link) __ "</b></p>") ++) }]]]
-  ] ui,$
+      "div" {
+        class: "title"
+        html: app
+      } [] ui,$+
+      "br" ui,mk
+      "div" {} [
+          "table" {
+              class: "border"
+              att: width "100%"
+              style: "background-color: #f8f8f8;border-collapse: collapse;"
+            } [
+              "tr" {} [
+                  "td" {
+                    style: "padding:0px 10px 0px 10px;"
+                    html: (( "<p>" "Session is expired.":_ "</p><p><b>"
+                             "Click %0 to continue.":_ (link) __ "</b></p>") ++)
+                  } [] ui,$+
+                ] ui,$+
+            ] ui,$+
+        ] ui,$+
+    ] ui,$
 @-) show =>
 

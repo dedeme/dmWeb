@@ -26,8 +26,8 @@
   "lang": "en"
   "menu": 0 menu,new
 
-  "menuDiv": "div" ui,$+
-  "view": "div" ui,$+
+  "menuDiv": "div" {} [] ui,$+
+  "view": "div" {} [] ui,$+
 } map,from AppData =
 
 "main" : menuMain =
@@ -37,25 +37,27 @@
 
 ( @+
   "div" {} [
-    (AppData .menuDiv) {} []
-    (AppData .view)
-    "p" { html: "&nbsp;" }
-    "hr"
+    "div" ui,mk
+    AppData .menuDiv
+    AppData .view
+    "hr" ui,mk
     "table" { class: "main" } [
       "tr" {} [
         "td" {} [
-          "a" {
-            att: href "doc/about.html"
-            att: target "blank"
-            html: ("<small>" "Help & Credits":_  "</small>" + +)
-          }
-        ]
+            "a" {
+                att: href "doc/about.html"
+                att: target "blank"
+                html: ("<small>" "Help & Credits":_  "</small>" + +)
+              } [] ui,$+
+          ] ui,$+
         "td" {
-          style: ("text-align: right;font-size: 10px;"
-                  "color:#808080;font-size:x-small;" +)
-          html: ("- © ºDeme. ${app} (${version}) -")
-        }]]]
-  ui,$+
+            style: ("text-align: right;font-size: 10px;"
+                    "color:#808080;font-size:x-small;" +)
+            html: ("- © ºDeme. ${app} (${version}) -")
+          } [] ui,$+
+        ] ui,$+
+      ] ui,$+
+    ] ui,$+
 @-<Element>) wg =>
 
 ( @+
@@ -85,16 +87,16 @@
 
     Mn# :
       "a" {
-        att: href ("http://" location,host "/dmcgi/MultiMarket/?ranking" + + )
-        text: ("Ranking":_)
-      } ui,$+ menu,addRight
+          att: href ("http://" location,host "/dmcgi/MultiMarket/?ranking" + + )
+          text: ("Ranking":_)
+        } [] ui,$+ menu,addRight
     Mn# menu,separator menu,addRight
     Mn#
       this,menuSettings "Settings":_
       (App# Mn# this,menuSettings go)
       menu,mkOption menu,addRight
 
-    App# .menuDiv {} [ App# .menu : menu,wg ] data ui,$+
+    App# .menuDiv {} [ App# .menu : menu,wg ] ui,$+
 
    App# Mn# menu this,go
   )

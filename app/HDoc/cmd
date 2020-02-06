@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# --------------------------------
+# DON'T MODIFY
+# --------------------------------
+
+ROOT=`pwd | sed 's#^.*/##1'`
+FAY=`echo $1 | grep -e /$ROOT/fay/`
+CMD=$2
+
+case "$CMD" in
+  init)
+    echo "Unimplemented"
+    ;;
+  c)
+    if [ FAY == "" ]
+    then
+      echo "Unimplemented"
+    else
+      cd fay
+      ./cmd $CMD
+    fi
+    ;;
+  x)
+    fay -p --Wall --include $LIBS -o www/index.js src/Main.hs
+    fay -p --Wall --include $LIBS \
+      -o javascript/index.js src/JMain.hs
+    ;;
+  lang)
+    echo "Unimplemented"
+    ;;
+  *)
+    echo "Unkown command '$CMD'"
+    ;;
+esac
+

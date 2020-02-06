@@ -10,3 +10,8 @@ bin
 #js
 **/www/index.js
 **/www/js
+
+#haskell
+.stack-work
+*.cabal
+*~

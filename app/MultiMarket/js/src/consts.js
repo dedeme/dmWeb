@@ -22,3 +22,6 @@ export class SERVER {
 }
 
 export const HISTORIC_QUOTES = 610;
+
+export const WGET = "Wget";
+export const PUPPETEER = "Puppeteer";

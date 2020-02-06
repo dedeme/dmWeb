@@ -10,8 +10,8 @@
     "selected": ""
     "lopts": [] data
     "ropts": [] data
-    "lview": "div" {style: "line-height:22px;"} ui,$+
-    "rview": "div" ui,$+
+    "lview": "div" {style: "line-height:22px;"} [] ui,$+
+    "rview": "div" ui,mk
   } map,from
 @-m) new =>
 
@@ -26,31 +26,32 @@
     "table" {class: "main" } [
       "tr" {} [
         "td" {
-          style: (`
-            padding-right:4px;${
-              Mn .withSeparator?
-              ("border-right: 1px solid #000000;")
-              ("")
-              elif
-            } ` )
-        } [
-          (Mn .lview) ]
+            style: (`
+              padding-right:4px;${
+                Mn .withSeparator?
+                ("border-right: 1px solid #000000;")
+                ("")
+                elif
+              } ` )
+          } [ Mn .lview ] ui,$+
         "td" {
-          style: `
-            padding-left:4px;vertical-align:top;
-            text-align:right;white-space:nowrap`
-        } [
-          (Mn .rview) ]]]
-    "hr" ] ui,$+
+            style: `
+              padding-left:4px;vertical-align:top;
+              text-align:right;white-space:nowrap`
+          } [ Mn .rview ] ui,$+
+        ] ui,$+
+      ] ui,$+
+    "hr" ui,mk
+  ] ui,$+
 @-<Element>) wg =>
 
 // Control
 
 ( @+m:: Mn =
   Mn : "lopts" : [] data : obj,put
-  Mn : "lview" : "div" {style: "line-height:22px;"} ui,$+ : obj,put
+  Mn : "lview" : "div" {style: "line-height:22px;"} [] ui,$+ : obj,put
   Mn : "ropts" : [] data : obj,put
-  Mn : "rview" : "div" ui,$+ : obj,put
+  Mn : "rview" : "div" ui.mk : obj,put
 @-) reset =>
 
 ( @+m<Element>:: El =; Mn =
@@ -69,7 +70,7 @@
     El (att id) ui,prop : att =
 
     att "" !=
-    (El { class: (att mId# == ("frame") ("link") elif) } ui,$)
+    (El { class: (att mId# == ("frame") ("link") elif) } [] ui,$)
     if
   @-) : fn =>
 
@@ -79,12 +80,12 @@
 
 // static
 
-(@+:: "span" {text: " · "} ui,$+ @-<Element>) separator =>
+(@+:: "span" {text: " · "} [] ui,$+ @-<Element>) separator =>
 
-(@+:: "span" {text: " | "} ui,$+ @-<Element>) separator2 =>
+(@+:: "span" {text: " | "} [] ui,$+ @-<Element>) separator2 =>
 
 ( @+ssl:: # Fn# =; tx =; id =
-  Fn# wg,link { att: id ("menu_" id +), class: "link", text: tx } ui,$+
+  Fn# wg,link { att: id ("menu_" id +), class: "link", text: tx } [] ui,$+
 @-<Element>) mkOption =>
 
 ( @+sss tx =; id =; module =
@@ -95,10 +96,12 @@
     att: href ("${hpath}?${module}${id}")
     att: id ("menu_" id +)
     text: tx
-  } ui,$+
+  } [] ui,$+
 @-<Element>) mkLink =>
 
 ( @+l:: # FnBye# =
-  FnBye# wg,link {} [ ("cross" wg,img) { style: "vertical-align:bottom" } ]
+  FnBye# wg,link {} [
+      ("cross" wg,img) { style: "vertical-align:bottom" } [] ui,$+
+    ]
     ui,$+
 @-<Element>) mkClose =>

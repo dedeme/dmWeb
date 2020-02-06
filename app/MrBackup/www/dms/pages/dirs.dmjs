@@ -15,20 +15,23 @@
   Pg#
   "newDir" Pg# (this,activateNewDir) (this,addNewDir) newDir,new map,put+
 
-  "dirsDiv" "div" ui,$+ map,put+
+  "dirsDiv" "div" ui,mk map,put+
 @-m) new =>
 /// @m::page -> @m::page
 
 ( @+m:: Pg =
   Pg .view { removeAll } [
-    "div" { style: "text-align:center" } [
-      "div" { class: "head", html: ("New":_) }
-      "table" { class: "frame"; att: align "center" } [ "tr" {} [ "td" {} [
-        (Pg .newDir newDir,widget) ]]]]
-    "div" { style: "text-align:center" } [
-      "div" { class: "head", html: ("Directories":_) } []
-      (Pg .dirsDiv) ]
-  ] ui,$
+      "div" { style: "text-align:center" } [
+          "div" { class: "head", html: ("New":_) } [] ui,$+
+          "table" { class: "frame"; att: align "center" } [ "tr" {} [
+              "td" {} [ Pg .newDir newDir,widget ] ui,$+
+            ] ui,$+ ] ui,$+
+        ] ui,$+
+      "div" { style: "text-align:center" } [
+          "div" { class: "head", html: ("Directories":_) } [] ui,$+
+          Pg .dirsDiv
+        ] ui,$+
+    ] ui,$
 
   Pg this,update.
 @-) show =>
@@ -36,9 +39,10 @@
 
 ( @+m:: Pg =
   Pg .view { removeAll } [
-    "table" { class: "frame"; att: align "center" } [ "tr" {} [
-      "td" { html: ("Pools in bad condition":_) }
-  ]]] ui,$
+      "table" { class: "frame"; att: align "center" } [ "tr" {} [
+          "td" { html: ("Pools in bad condition":_) } [] ui,$+
+        ] ui,$+ ] ui,$+
+    ] ui,$
 @-) poolsWrong. =>
 
 ( @+ml:: Dirs =; Pg =
@@ -58,14 +62,15 @@
 
     "table" { class "white"; att: align "center"} Rows ui,$+ : Table =
     Pg .dirsDiv { removeAll } [
-      (Table)
-    ] ui,$
+        Table
+      ] ui,$
   )
   (
     Pg .dirsDiv { removeAll } [
-    "table" { class: "frame"; att: align "center" } [ "tr" {} [
-      "td" { html: ("Without directories":_) }
-    ]]] ui,$
+        "table" { class: "frame"; att: align "center" } [ "tr" {} [
+          "td" { html: ("Without directories":_) } [] ui,$+
+        ] ui,$+ ] ui,$+
+      ] ui,$
   )
   elif
 @-) poolsOk. =>
@@ -146,7 +151,7 @@
 
   "Make '%0' backup?":_ [ Row# .id ] __ sys,confirm?
   (
-    Wg# .exec {removeAll} [ ("wait.gif" wg,img) ] ui,$
+    Wg# .exec {removeAll} [ "wait.gif" wg,img ] ui,$
     Pg# .client
     {
       "page": "Dirs" js,ws
@@ -175,7 +180,7 @@
           ( "Backup finished.":_ sys,alert)
           ( "There was a fail.\n":_ "See log.":_ + sys,alert)
           elif
-          Wg# .exec {removeAll} [ (Wg# .bkRun) ] ui,$
+          Wg# .exec {removeAll} [ Wg# .bkRun ] ui,$
         )
         elif
       ) Ch chan,recv

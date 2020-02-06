@@ -10,85 +10,121 @@
   "backups" : lst,new : map,put+
   "trash" : lst,new : map,put+
 
-  "downloadFileName": "div" ui,$+ : map,put+
-  "restoreInput": "input" { att: type "file", class: "frame" } ui,$+
+  "downloadFileName": "div" ui,mk : map,put+
+  "restoreInput": "input" { att: type "file", class: "frame" } [] ui,$+
     map,put+
-  "restoreButtonDiv": "div" ui,$+ : map,put+
+  "restoreButtonDiv": "div" ui,mk : map,put+
   "restoreBar": "div" {
       style: "text-align:left;width:200px;background-color:#cccccc"
       class: "frame"
     } [
-      "div" { style: "background-color:#000080;width:0px;height:6px" }
+      "div" { style: "background-color:#000080;width:0px;height:6px" } [] ui,$+
     ] ui,$+
     map,put+
-  "backList": "div" ui,$+ : map,put+
-  "trashList": "div" ui,$+ : map,put+
+  "backList": "div" ui,mk : map,put+
+  "trashList": "div" ui,mk : map,put+
 @-m) new =>
 
 // View
 
 ( @+m:: # Pg# =
   Pg# .view { removeAll } [
-    "table" { style: "width:100%;text-align:center" } [
-      "tr" {} [
-        "td" { att: colspan "2" } [
-          "div" { class: "head", html: ("Backups":_) } ]]
-      "tr" {} [
-        "td" {
-          style: "width:5px;white-space: nowrap;text-align:right"
-          html: ("Download":_) }
-        "td" {} [ "hr" ]]
-      "tr" {} [
-        "td" { att: colspan "2" } [
-          "table" { att: align "center" } [
-            "tr" {} [
-              "td" { style : "width:250px" } [
-                (Pg# .downloadFileName) ]]
-            "tr" {} [
-              "td" {} [
-                "button" {
-                style: "width: 150px"
-                html: ("Make backup":_)
-                on: { click: (Pg# this,backupDownload.) } }]]]]]
-      "tr" {} [
-        "td" {
-          style: "width:5px;white-space: nowrap;text-align:right"
-          html: ("Restore":_) }
-        "td" {} [ "hr" ]]
-      "tr" {} [
-        "td" { att: colspan "2" } [
-          "table" { att: align "center" } [
-            "tr" {} [
-              "td" { class: "frame" } [ (Pg# .restoreInput) ]]
-            "tr" {} [
-              "td" { att: align "center" } [
-                (Pg# .restoreButtonDiv) {} [
-                  "button" {
-                    style: "width: 150px"
-                    html: ("Restore backup":_)
-                    on: {click: (Pg# this,backupRestore.) } }]]]]]]
-      "tr" {} [ "td" { att: colspan "2" } [ "hr" ] ]
-      "tr" {} [
-        "td" { att: colspan "2" } [
-          "table" { att: align "center" } [
-            "tr" {} [
-              "td" {} [
-                "div" { class: "head", html: ("Automatic Backups":_) }]
-              "td" { style: "width:25px" } []
-              "td" {} [
-                "div" { class: "head", html: ("Trash":_) } []
-                ((Pg# this,clearTrash.) wg,link) {
-                  class: "link"
-                  html: (" [ " "Clear":_ " ]" + +)
-                } ]]
-            "tr" {} [
-              "td" { class: "frame", style: "vertical-align:top" } [
-                (Pg# .backList) ]
-              "td" {} []
-              "td" { class: "frame", style: "vertical-align:top" } [
-                (Pg# .trashList) ]]]]]
-  ]]
-  ui,$
+      "table" { style: "width:100%;text-align:center" } [
+          "tr" {} [
+              "td" { att: colspan "2" } [
+                  "div" { class: "head", html: ("Backups":_) } [] ui,$+
+                ] ui,$+
+            ] ui,$+
+          "tr" {} [
+              "td" {
+                  style: "width:5px;white-space: nowrap;text-align:right"
+                  html: ("Download":_)
+                } [] ui,$+
+              "td" {} [ "hr" ui,mk ] ui,$+
+            ] ui,$+
+          "tr" {} [
+              "td" { att: colspan "2" } [
+                  "table" { att: align "center" } [
+                      "tr" {} [
+                          "td" { style : "width:250px" } [
+                              Pg# .downloadFileName
+                            ] ui,$+
+                        ] ui,$+
+                      "tr" {} [
+                          "td" {} [
+                              "button" {
+                                  style: "width: 150px"
+                                  html: ("Make backup":_)
+                                  on: { click: (Pg# this,backupDownload.) }
+                                } [] ui,$+
+                            ] ui,$+
+                        ] ui,$+
+                    ] ui,$+
+                ] ui,$+
+            ] ui,$+
+          "tr" {} [
+              "td" {
+                  style: "width:5px;white-space: nowrap;text-align:right"
+                  html: ("Restore":_)
+                } [] ui,$+
+              "td" {} [ "hr" ui,mk ] ui,$+
+            ] ui,$+
+          "tr" {} [
+              "td" { att: colspan "2" } [
+                  "table" { att: align "center" } [
+                      "tr" {} [
+                          "td" { class: "frame" } [ Pg# .restoreInput ] ui,$+
+                        ] ui,$+
+                      "tr" {} [
+                          "td" { att: align "center" } [
+                              Pg# .restoreButtonDiv {} [
+                                  "button" {
+                                      style: "width: 150px"
+                                      html: ("Restore backup":_)
+                                      on: {click: (Pg# this,backupRestore.) }
+                                    } [] ui,$+
+                                ] ui,$+
+                            ] ui,$+
+                        ] ui,$+
+                    ] ui,$+
+                ] ui,$+
+            ] ui,$+
+          "tr" {} [ "td" { att: colspan "2" } [ "hr" ui,mk ] ui,$+ ] ui,$+
+          "tr" {} [
+              "td" { att: colspan "2" } [
+                  "table" { att: align "center" } [
+                      "tr" {} [
+                          "td" {} [
+                              "div" {
+                                  class: "head",
+                                  html: ("Automatic Backups":_)
+                                } [] ui,$+
+                            ] ui,$+
+                          "td" { style: "width:25px" } [] ui,$+
+                          "td" {} [
+                              "div" {
+                                  class: "head", html: ("Trash":_)
+                                } [] ui,$+
+                              (Pg# this,clearTrash.) wg,link {
+                                  class: "link"
+                                  html: (" [ " "Clear":_ " ]" + +)
+                                } [] ui,$+
+                            ] ui,$+
+                        ] ui,$+
+                      "tr" {} [
+                          "td" {
+                              class: "frame", style: "vertical-align:top"
+                            } [ Pg# .backList ] ui,$+
+                          "td" {} [] ui,$+
+                          "td" {
+                              class: "frame", style: "vertical-align:top"
+                            } [ Pg# .trashList ] ui,$+
+                        ] ui,$+
+                    ] ui,$+
+                ] ui,$+
+            ] ui,$+
+        ]  ui,$+
+    ] ui,$
   Pg# this,update.
 @-) show =>
 
@@ -98,9 +134,10 @@
   Ls (<) lst,sort; Ls
   (@s:: e =
     "tr" {} [
-      "td" {style: "align:center"} [
-        ((e fn#) wg,link) { class: "link", html (e -4 str,left) } ]]
-    ui,$+
+        "td" {style: "align:center"} [
+            (e fn#) wg,link { class: "link", html (e -4 str,left) } [] ui,$+
+          ] ui,$+
+      ] ui,$+
   ) lst,map
   ui,$+ : Table =
   Wg { removeAll } [ Table ] ui,$
@@ -109,20 +146,20 @@
 ( @+ii:: ix =; total =
   ix 100. * total / float,round float,toInt toStr : width =
   "div" {
-    style: ("background-color:#000080;width:${width}%;height:6px")
-  } ui,$+
+      style: ("background-color:#000080;width:${width}%;height:6px")
+    } [] ui,$+
 @-<Element>) progress. =>
 
 ( @+m:: Pg =
-  Pg .restoreButtonDiv { removeAll } [ (Pg .restoreBar) ] ui,$
+  Pg .restoreButtonDiv { removeAll } [ Pg .restoreBar ] ui,$
 @-) startProgress. =>
 
 ( @+mii:: ix =; total =; Pg =
-  Pg .restoreBar { removeAll } [ (total ix this,progress.) ] ui,$
+  Pg .restoreBar { removeAll } [ total ix this,progress. ] ui,$
 @-) appendProgress. =>
 
 ( @+m:: Pg =
-  Pg .restoreBar { removeAll } [ (1 1 this,progress.) ] ui,$
+  Pg .restoreBar { removeAll } [ 1 1 this,progress. ] ui,$
 @-) endProgress. =>
 
 // Control ---------------------------------------------------------------------
@@ -161,7 +198,7 @@
 @-) update. =>
 
 ( @+m:: # Pg# =
-  Pg# .downloadFileName { removeAll } [ ("wait.gif" wg,img) ] ui,$
+  Pg# .downloadFileName { removeAll } [ "wait.gif" wg,img ] ui,$
 
   Pg# .client
   {
@@ -170,8 +207,8 @@
   } map,from
   ( @+m:: .name js,rs : fileName =
     Pg# .downloadFileName {
-      html: ("<a href='tmp/" fileName "'>backup.zip</a>" + +)
-    } ui,$
+        html: ("<a href='tmp/" fileName "'>backup.zip</a>" + +)
+      } [] ui,$
   @-)
   client,send
 @-) backupDownload. =>

@@ -18,10 +18,10 @@
 #include "data/NickClose.h"
 #include "DEFS.h"
 
-static char *wwwget (char *url) {
+static char *wwwget (char *cmd, char *url) {
   char *r = "";
   REPEAT(3)
-    r = ext_puppeteer(url);
+    r = str_eq(cmd, WGET) ? ext_wget(url) : ext_puppeteer(url);
     if (*r) break;
   _REPEAT
   return r;
@@ -97,7 +97,7 @@ static Opt *read (Rconf *conf, char *code) {
   if (*code) {
     url = str_replace(url, "${code}", code);
   }
-  char *html = wwwget(url);
+  char *html = wwwget(rconf_cmd(conf), url);
 
   if (!*html) {
     log_error(str_f("Inet error reading '%s'", url));
@@ -154,6 +154,7 @@ static Opt *read (Rconf *conf, char *code) {
 
     start = end;
   }
+
   return opt_new(rows);
 }
 
@@ -181,7 +182,7 @@ Opt *net_server_daily_read(Server *this) {
 
   // Arr[NickClose]
   Arr *r = arr_new();
-  EACH(server_codes(this), ServerCode, sc)
+  EACH(server_codes(this), ServerCode, sc) {
     // Opt[char]
     Opt *ocode = serverCode_code(sc);
     if (opt_is_empty(ocode)) {
@@ -214,7 +215,7 @@ Opt *net_server_daily_read(Server *this) {
     }
     DailyEntry *de = opt_get(ode);
     arr_push(r, nickClose_new(serverCode_nick_id(sc), dailyEntry_close(de)));
-  _EACH
+  } _EACH
 
   return opt_new(r);
 }
@@ -655,6 +656,7 @@ void net_update_daily (AsyncActor *ac) {
   } else if (str_eq(activity, ACT_DEACTIVATING)) {
     // Arr[Server]
     Arr *svs = arr_new();
+
     void fn () {
       EACH(servers_daily_list(), Server, sv)
         if (rconf_sel(opt_get(server_daily_conf(sv))) ==  SERVER_SELECTED) {
@@ -673,8 +675,8 @@ void net_update_daily (AsyncActor *ac) {
     } else {
       // Arr[Arr[NickClose]
       Arr *svncs = arr_new();
+
       EACH(svs, Server, sv)
-puts(server_name(sv));
         // Arr[NickClose]
         Arr *ncs = opt_get(net_server_daily_read(sv));
         if (!ncs || arr_size(ncs) == 0) {
@@ -700,7 +702,6 @@ puts(server_name(sv));
             ));
             continue;
           }
-printf("%s: %f\n", nick_name(nick), nickClose_close(nc));
 
           int ffind (NickClose *e) { return nickClose_nick(e) == nick_id; }
           map_put(qs, nick_name(nick), js_wd(best_close(

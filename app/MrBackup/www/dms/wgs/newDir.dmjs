@@ -8,27 +8,28 @@
 ( @+mll:: # AddFn =; ActivateFn =; Pg# =
   map,new : Wg# =
   Wg#
-  "activateSpan" "div" ui,$+ map,put+
-  "newSpan" "div" ui,$+ map,put+
-  "entry" "input" { style: "width:200px" } ui,$+ map,put+
+  "activateSpan" "div" ui,mk map,put+
+  "newSpan" "div" ui,mk map,put+
+  "entry" "input" { style: "width:200px" } [] ui,$+ map,put+
 
-  "activateLink" (Pg# ActivateFn run) wg,link {} [ ("edit" wg,img) ]
-    ui,$+ map,put+
-  "deactivateLink" (Wg# this,deactivate) wg,link {} [ ("editCancel" wg,img) ]
-    ui,$+ map,put+
-  "okLink" (Pg# Wg# .entry {value} ui,prop AddFn run) wg,link {} [
-      ("editOk" wg,img)
+  "activateLink" (Pg# ActivateFn run) wg,link {} [
+      "edit" wg,img
     ] ui,$+ map,put+
-  "okImg" "span" {} [ ("editOk" wg,lightImg) ]
-    ui,$+ map,put+
+  "deactivateLink" (Wg# this,deactivate) wg,link {} [
+      "editCancel" wg,img
+    ] ui,$+ map,put+
+  "okLink" (Pg# Wg# .entry (value) ui,prop AddFn run) wg,link {} [
+      "editOk" wg,img
+    ] ui,$+ map,put+
+  "okImg" "span" {} [ "editOk" wg,lightImg ] ui,$+ map,put+
 @-m) new =>
 
 ( @+m:: Wg =
   "table" {} ["tr" {} [
-    "td" {} [ (Wg .activateSpan) ]
-    "td" {} [ (Wg .newSpan) ]
-    "td" {} [ (Wg .entry) ]
-  ]] ui,$+
+      "td" {} [ Wg .activateSpan ] ui,$+
+      "td" {} [ Wg .newSpan ] ui,$+
+      "td" {} [ Wg .entry ] ui,$+
+    ] ui,$+ ] ui,$+
 
   Wg this,deactivate
 @-<Element>) widget =>
@@ -36,14 +37,14 @@
 // Control ---------------------------------------------------------------------
 
 ( @+m:: Wg =
-  Wg .activateSpan { removeAll } [ (Wg .activateLink) ] ui,$
-  Wg .newSpan { removeAll } [ (Wg .okImg) ] ui,$
-  Wg .entry { value: ""; disabled: 1 } ui,$
+  Wg .activateSpan { removeAll } [ Wg .activateLink ] ui,$
+  Wg .newSpan { removeAll } [ Wg .okImg ] ui,$
+  Wg .entry { value: ""; disabled: 1 } [] ui,$
 @-) deactivate =>
 
 ( @+m:: Wg =
-  Wg .activateSpan { removeAll } [ (Wg .deactivateLink) ] ui,$
-  Wg .newSpan { removeAll } [ (Wg .okLink) ] ui,$
-  Wg .entry { disabled: 0; focus} ui,$
+  Wg .activateSpan { removeAll } [ Wg .deactivateLink ] ui,$
+  Wg .newSpan { removeAll } [ Wg .okLink ] ui,$
+  Wg .entry { disabled: 0; focus} [] ui,$
 @-) activate =>
 

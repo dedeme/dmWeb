@@ -2,10 +2,13 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "data/Rconf.h"
+#include "DEFS.h"
 
 /* .
 -Rconf: SERIAL
+  cmd: char *
   url: char *
+  regex: char *
   # enum Server
   @sel: int
   is_date_eu: bool
@@ -22,7 +25,9 @@
 /*--*/
 
 struct Rconf_Rconf {
+  char *cmd;
   char *url;
+  char *regex;
   int sel;
   int is_date_eu;
   char *date_separator;
@@ -36,8 +41,16 @@ struct Rconf_Rconf {
   Arr *cols_end;
 };
 
+char *rconf_cmd (Rconf *this) {
+  return this->cmd;
+}
+
 char *rconf_url (Rconf *this) {
   return this->url;
+}
+
+char *rconf_regex (Rconf *this) {
+  return this->regex;
 }
 
 int rconf_sel (Rconf *this) {
@@ -91,7 +104,9 @@ Arr *rconf_cols_end (Rconf *this) {
 Js *rconf_to_js (Rconf *this) {
   // Arr[Js]
   Arr *js = arr_new();
+  arr_push(js, js_ws(this->cmd));
   arr_push(js, js_ws(this->url));
+  arr_push(js, js_ws(this->regex));
   arr_push(js, js_wi((int)this->sel));
   arr_push(js, js_wb(this->is_date_eu));
   arr_push(js, js_ws(this->date_separator));
@@ -111,7 +126,10 @@ Rconf *rconf_from_js (Js *js) {
   Arr *a = js_ra(js);
   Js **p = (Js **)arr_start(a);
   Rconf *this = MALLOC(Rconf);
+  this->cmd = js_rs(*p++);
   this->url = js_rs(*p++);
+  if (arr_size(a) == 14) this->regex = js_rs(*p++);
+  else this->regex = "";
   this->sel = js_ri(*p++);
   this->is_date_eu = js_rb(*p++);
   this->date_separator = js_rs(*p++);

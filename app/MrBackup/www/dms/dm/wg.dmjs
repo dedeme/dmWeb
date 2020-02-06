@@ -1,29 +1,29 @@
-// Copyright 02-Nov-2019 ºDeme
+// Copyright 02-Feb-2020 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 "location" import
 
 ( @+ss:: tp =; targetId =
   "input" {
-    att: type tp
-    onEv: {
-      keydown
-      (
-        targetId
+      att: type tp
+      onEv: {
+        keydown
         (
-          e
-          tId
-          `
-          if (e.keyCode === 13) {
-            e.preventDefault();
-            document.getElementById(tId).focus();
-          }
-          `
+          targetId
+          (
+            e
+            tId
+            `
+            if (e.keyCode === 13) {
+              e.preventDefault();
+              document.getElementById(tId).focus();
+            }
+            `
+          )
+          ffi,v
         )
-        ffi,v
-      )
-    }
-  } ui,$+
+      }
+    } [] ui,$+
 @-<Element>) fieldPass. =>
 
 (@+s:: "text" this,fieldPass. @-<Element>) field =>
@@ -38,29 +38,29 @@
 
 ( @+<Element>:: El =
   El {
-    onEv : {
-      keydown
-      (
-        El
+      onEv : {
+        keydown
         (
-          e
-          el
-          `
-          if (e.keyCode === 110) {
-            e.preventDefault();
-            const start = el.selectionStart;
-            const end = el.selectionEnd;
-            const text = el.value;
-            el.value = text.substring(0, start) + "," + text.substring(end);
-            el.selectionStart = start + 1;
-            el.selectionEnd = start + 1;
-          }
-          `
+          El
+          (
+            e
+            el
+            `
+            if (e.keyCode === 110) {
+              e.preventDefault();
+              const start = el.selectionStart;
+              const end = el.selectionEnd;
+              const text = el.value;
+              el.value = text.substring(0, start) + "," + text.substring(end);
+              el.selectionStart = start + 1;
+              el.selectionEnd = start + 1;
+            }
+            `
+          )
+          ffi,v
         )
-        ffi,v
-      )
-    }
-  } ui,$+
+      }
+    } [] ui,$+
 @-<Element>) changePoint =>
 /// @<Element>::input -> @<Element>:out
 ///
@@ -72,7 +72,7 @@
 
 ( @+s:: id =
   id "." str,index -1 == (id ".png" +) (id) elif : id =
-  "img" { att: src ("img/" id +) } ui,$+
+  "img" { att: src ("img/" id +) } [] ui,$+
 @-<Element>) img =>
 /// @s::id -> @<Element> img
 ///
@@ -84,7 +84,7 @@
 ///   img: A DOM element.
 
 ( @+s
-  this,img { style: "opacity:0.4" } ui,$+
+  this,img { style: "opacity:0.4" } [] ui,$+
 @-<Element>) lightImg =>
 /// @s::id -> @<Element>::img
 ///
@@ -96,7 +96,7 @@
 ///   img: A DOM element.
 
 ( @+l:: # cb# =>
-  "span" { style "cursor:pointer", on: {click: (cb#)} } ui,$+
+  "span" { style "cursor:pointer", on: {click: (cb#)} } [] ui,$+
 @-<Element>) link =>
 /// @l::cb -> @<Element>::lk
 ///
@@ -139,8 +139,8 @@
 
 ( @+s img =
   "div" { style: "position: fixed;bottom: 0px;right: 20px" } [
-      ((("window.scroll(0,0);") ffi,v) this,link) {} [ (img this,img) ]]
-      ui,$+
+      (("window.scroll(0,0);") ffi,v) this,link {} [ img this,img ] ui,$+
+    ] ui,$+
 @-<Element>) upTop =>
 /// @s::img -> @<Element>::div
 ///
@@ -152,15 +152,15 @@
 ///   div: DOM element.
 
 ( @+is:: color =; size =;
-  "table" {att: align "center"} [ "tr" {} [ "td" {} [ "div" {
-    style : (`
-      width: ${size}px;
-      height: ${size}px;
-      border: 1px solid #002040;
-      border-radius: ${size}px;
-      background: ${color};
-    ` )
-  }]]] ui,$+
+  "table" { att: align "center" } [ "tr" {} [ "td" {} [ "div" {
+      style : (`
+        width: ${size}px;
+        height: ${size}px;
+        border: 1px solid #002040;
+        border-radius: ${size}px;
+        background: ${color};
+      ` )
+    } [] ui,$ ] ui,$+ ] ui,$+ ] ui,$+
 @-<Element>) led =>
 /// @i::size, @s::color -> @<Element>::table
 ///

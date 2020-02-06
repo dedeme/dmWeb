@@ -12,7 +12,9 @@
 
 ///
 ///   Arguments:
+///     cmd: char*
 ///     url: char*
+///     regex: char*
 ///     sel: int
 ///     is_date_eu: bool
 ///     date_separator: char*
@@ -27,7 +29,13 @@
 typedef struct Rconf_Rconf Rconf;
 
 ///
+char *rconf_cmd (Rconf *this);
+
+///
 char *rconf_url (Rconf *this);
+
+///
+char *rconf_regex (Rconf *this);
 
 /// enum Server
 int rconf_sel (Rconf *this);

@@ -9,125 +9,140 @@
   "${Pg# .app}__captchaCh" : captchaStore =
   Pg# : "captcha" : captchaStore 3 captcha,new : map,put
   Pg# : "pass" : "newPass" wg,pass : map,put
-  Pg# : "newPass" : "newPass2" wg,pass { att: id "newPass" } ui,$+ : map,put
-  Pg# : "newPass2" : "accept" wg,pass { att: id "newPass2" } ui,$+ : map,put
+  Pg# : "newPass" : "newPass2" wg,pass { att: id "newPass" } [] ui,$+ : map,put
+  Pg# : "newPass2" : "accept" wg,pass { att: id "newPass2" } [] ui,$+ : map,put
   Pg# : "accept" : "input" {
-    att: type "button"
-    style: "width:110px;"
-    att: id "accept"
-    value: ("Accept":_)
-    on: { click: (Pg# this,changePass.) }
-  } ui,$+ : map,put
+      att: type "button"
+      style: "width:110px;"
+      att: id "accept"
+      value: ("Accept":_)
+      on: { click: (Pg# this,changePass.) }
+    } [] ui,$+ : map,put
   Pg# : "cancel" : "input" {
-    att: type "button"
-    style: "width:110px;"
-    value: ("Cancel":_)
-    on: { click: (Pg# Pg# .update run) }
-  } ui,$+ : map,put
+      att: type "button"
+      style: "width:110px;"
+      value: ("Cancel":_)
+      on: { click: (Pg# Pg# .update run) }
+    } [] ui,$+ : map,put
   Pg#
 @-m) new =>
 
 ( @+m:: Pg =
 
   "table" {
-    att: align "center"
-    style: `
-      background-color: #f8f8f8;
-      border-collapse: collapse;
-      padding: 10px;
-      border: 1px solid rgb(110,130,150)
-    `
-  }
-  (
-    "tr" {} [
-      "td" {
-        att: colspan "2"
-        style: `
-          background-color:#e8e8e8;
-          border-bottom:1px solid #c9c9c9;
-          padding: 10px;
-          color:#505050;
-        `
-        html: ("<big><big><b>" "Login":_ "</big></big></b>" + +) }]
-    "tr" {} [
-      "td" {
-        style: "padding: 10px 0px 0px 10px;text-align:right;"
-        html: ("Current password":_)
-      }
-      "td" { style: "padding: 10px 10px 0px 10px;" } [ (Pg .pass) ]]
-    "tr" {} [
-      "td" {
-        style: "padding: 5px 0px 0px 10px;text-align:right;"
-        html: ("New password":_)
-      }
-      "td" { style: "padding: 5px 10px 0px 10px;" } [ (Pg .newPass) ]]
-    "tr" {} [
-      "td" {
-        style: "padding: 5px 0px 10px 10px;text-align:right;"
-        html: ("Confirm password":_)
-      }
-      "td" { style: "padding: 5px 10px 10px 10px;" } [ ( Pg .newPass2) ]]
-    "tr" {} [
-      "td" {
-        att: colspan "2"
-        style: `
-          border-top:1px solid #c9c9c9;
-          padding: 10px 10px 10px;text-align:right;
-        `
-      } [
-        "span" {} [
-          ( Pg .cancel )
-          "span" { text: "  " } []
-          ( Pg .accept ) ]]]
-
-    Pg .captcha captcha,counter : 0 : >
-    (
+      att: align "center"
+      style: `
+        background-color: #f8f8f8;
+        border-collapse: collapse;
+        padding: 10px;
+        border: 1px solid rgb(110,130,150)
+      `
+    }
+    [
       "tr" {} [
-        "td" {
-          att: colspan "2"
-          style: `
-            border-top:1px solid #c9c9c9;
-            padding: 10px 10px 10px;text-align:right;
-          `
-        } [
-          "table" {
-            att: align "center"
-            style: `
-              background-color: rgb(250, 250, 250);
-              border: 1px solid rgb(110,130,150);
-              font-family: sans;font-size: 14px;
-              padding: 4px;border-radius: 4px;
-            `
-          } [
-            "tr" {} [
-              "td" { html: ("Fail trying to change password":_) }]]]]
-    )
-    if
-
-    Pg .captcha captcha,counter : Pg .captcha .counterLimit : >
-    (
+          "td" {
+              att: colspan "2"
+              style: `
+                background-color:#e8e8e8;
+                border-bottom:1px solid #c9c9c9;
+                padding: 10px;
+                color:#505050;
+              `
+              html: ("<big><big><b>" "Login":_ "</big></big></b>" + +)
+            } [] ui,$+
+        ] ui,$+
       "tr" {} [
-        "td" { att: colspan "2", att: align "center" } [
-          (Pg .captcha captcha,mkWg) ]]
+          "td" {
+              style: "padding: 10px 0px 0px 10px;text-align:right;"
+              html: ("Current password":_)
+            } [] ui,$+
+          "td" { style: "padding: 10px 10px 0px 10px;" } [ Pg .pass ] ui,$+
+        ] ui,$+
       "tr" {} [
-        "td" {
-          att: colspan "2"
-          style: "padding: 5px 0px 5px 10px;text-align:center;"
-          html: ("Check gray squares":_) }]
-    )
-    if
-  ) data
+          "td" {
+              style: "padding: 5px 0px 0px 10px;text-align:right;"
+              html: ("New password":_)
+            } [] ui,$+
+          "td" { style: "padding: 5px 10px 0px 10px;" } [ Pg .newPass ] ui,$+
+        ] ui,$+
+      "tr" {} [
+          "td" {
+              style: "padding: 5px 0px 10px 10px;text-align:right;"
+              html: ("Confirm password":_)
+            } [] ui,$+
+          "td" { style: "padding: 5px 10px 10px 10px;" } [ Pg .newPass2 ] ui,$+
+        ] ui,$+
+      "tr" {} [
+          "td" {
+              att: colspan "2"
+              style: `
+                border-top:1px solid #c9c9c9;
+                padding: 10px 10px 10px;text-align:right;
+              `
+            } [
+              "span" {} [
+                  Pg .cancel
+                  "span" { text: "  " } [] ui,$+
+                  Pg .accept
+                ] ui,$+
+            ] ui,$+
+        ] ui,$+
 
-  ui,$+ : Table =
+      Pg .captcha captcha,counter : 0 : >
+      (
+        "tr" {} [
+            "td" {
+                att: colspan "2"
+                style: `
+                  border-top:1px solid #c9c9c9;
+                  padding: 10px 10px 10px;text-align:right;
+                `
+              } [
+                "table" {
+                    att: align "center"
+                    style: `
+                      background-color: rgb(250, 250, 250);
+                      border: 1px solid rgb(110,130,150);
+                      font-family: sans;font-size: 14px;
+                      padding: 4px;border-radius: 4px;
+                    `
+                  } [
+                    "tr" {} [
+                        "td" {
+                            html: ("Fail trying to change password":_)
+                          } [] ui,$+
+                      ] ui,$+
+                  ] ui,$+
+              ] ui,$+
+          ] ui,$+
+      )
+      if
 
+      Pg .captcha captcha,counter : Pg .captcha .counterLimit : >
+      (
+        "tr" {} [
+            "td" {
+                att: colspan "2", att: align "center"
+              } [ Pg .captcha captcha,mkWg ] ui,$+
+          ] ui,$+
+        "tr" {} [
+            "td" {
+                att: colspan "2"
+                style: "padding: 5px 0px 5px 10px;text-align:center;"
+                html: ("Check gray squares":_)
+              } [] ui,$+
+          ] ui,$+
+      )
+      if
+    ] ui,$+ : Table =
 
   Pg .view { removeAll } [
-    "div" { class: "head", html : ("&nbsp;<br>${Pg .app}<br>&nbsp;") }
+    "div" { class: "head", html : ("&nbsp;<br>${Pg .app}<br>&nbsp;") } [] ui,$+
     Table
   ]
   ui,$
 
-  Pg .pass { focus } ui,$
+  Pg .pass { focus } [] ui,$
 @-) show =>
 
 ( @+m:: # Pg# =
@@ -144,26 +159,26 @@
   ( passv "" ==)
   (
     "Current password is missing":_ sys,alert
-    Pg# .pass { value: "", focus } ui,$
+    Pg# .pass { value: "", focus } [] ui,$
   )
   else
   ( newPassv "" ==)
   (
     "New password is missing":_ sys,alert
-    Pg# .newPass { value: "", focus } ui,$
+    Pg# .newPass { value: "", focus } [] ui,$
   )
   else
   ( newPassv2 "" ==)
   (
     "Confirm password is missing":_ sys,alert
-    Pg# .newPass2 { value: "", focus } ui,$
+    Pg# .newPass2 { value: "", focus } [] ui,$
   )
   else
   ( newPassv newPassv2 !=)
   (
     "New password and confirm password do not match":_ sys,alert
-    Pg# .newPass2 { value: ""} ui,$
-    Pg# .newPass { value: "", focus } ui,$
+    Pg# .newPass2 { value: "" } [] ui,$
+    Pg# .newPass { value: "", focus } [] ui,$
   )
   else
   (
@@ -183,9 +198,9 @@
       )
       (
         Pg# .captcha captcha,inc
-        Pg# .pass { value: ""} ui,$
-        Pg# .newPass { value: "" } ui,$
-        Pg# .newPass2 { value: ""} ui,$
+        Pg# .pass { value: ""} [] ui,$
+        Pg# .newPass { value: "" } [] ui,$
+        Pg# .newPass2 { value: ""} [] ui,$
         Pg# this,new this,show
       )
       elif

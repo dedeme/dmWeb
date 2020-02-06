@@ -4,7 +4,7 @@
 "201909" : version =
 
 "libdmstkjs" : jsRepo =
-"201911" : jsVersion =
+"202002" : jsVersion =
 
 ( target =; ver =; rp =
   "tmp/${rp}/src/dm" : source =

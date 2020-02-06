@@ -308,23 +308,6 @@ Js *fleasdb_charts_read_js (char *model, char *nick);
 ///
 void fleasdb_charts_write (char *model, RsCharts *rs);
 
-/// Returns Arr[RsChampions]
-Arr *fleasdb_champions_read (int nparams);
-
-/// Returns Js -> Arr[RsChampions]
-Js *fleasdb_champions_read_js (int nparams);
-
-/// Returns Js -> Opt[RsChart]
-Js *fleasdb_champions_chart_read_js (
-  int nparams, char *model, char *nick, char *flea
-);
-
-/// If 'rs' is duplicate, sets value. If not adds it.
-void fleasdb_champions_add (RsChampions *rs);
-
-/// 'rss' is Arr[RsChampions]
-void fleasdb_champions_write (int nparams, Arr *rss);
-
 /// Calculate results of 'f'.
 ///   model : Model to make calculations.
 ///   f     : Flea
@@ -335,6 +318,11 @@ Opt *fleasdb_rsChampions(char *model, Flea *f);
 ///   ranking: (Arr[RankAssetsEntry]) A row will be generated for each
 ///            RankAssetsEntry.
 Arr *fleasdb_ranking_assets (Arr *ranking);
+
+/// Returns Js -> Opt[RsChart]
+Js *fleasdb_ranking_chart_read_js (
+  char *model, char *nick, char *flea
+);
 
 /// Writes a fleas log entry. 'msg' can not finish in '\n'
 void fleasdb_flog_write (char *msg);
@@ -628,7 +616,6 @@ Js *quotes_volume (void);
 
 #include "dmc/async.h"
 #include "data/RankEntry.h"
-#include "data/RankAssetsEntry.h"
 #include "data/RankEvalEntry.h"
 
 /// Initializes data base.
@@ -646,14 +633,14 @@ Arr *rank_dates (void);
 /// fleas of the last date if 'date' is not found or
 /// throws an exception if last date is not found.
 ///   date  : Date to find.
-///   return: Arr<RankAssetsEntry> Descendingly sorted
+///   return: Arr<RankEntry> Descendingly sorted
 Arr *rank_fleas (char *date);
 
 /// Returns fleas of day previous to 'date' or
 /// fleas of day previous of the last date if 'date' is not found or
 /// [] if no date is found.
 ///   date  : Date to find.
-///   return: Arr<RankAssetsEntry>
+///   return: Arr<RankEntry>
 Arr *rank_fleas_previous (char *date);
 
 #endif
@@ -1209,6 +1196,7 @@ Arr *rsBests_distinct (Arr *bests);
 
 ///
 ///   Arguments:
+///     cmd: char*
 ///     url: char*
 ///     sel: int
 ///     is_date_eu: bool
@@ -1222,6 +1210,9 @@ Arr *rsBests_distinct (Arr *bests);
 ///     cols_start: Arr-char*
 ///     cols_end: Arr-char*
 typedef struct Rconf_Rconf Rconf;
+
+///
+char *rconf_cmd (Rconf *this);
 
 ///
 char *rconf_url (Rconf *this);
@@ -2940,6 +2931,42 @@ RankEvalEntry *rankEvalEntry_from_js (Js *js);
 Opt *rankEvalEntry_model (RankEvalEntry *this);
 
 #endif
+// Copyright 12-Jan-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+#ifndef DATA_RGEX_H
+  #define DATA_RGEX_H
+
+/// Regular expresion used in Server.
+
+#include "dmc/async.h"
+
+/*--*/
+
+///
+///   Arguments:
+///     rgex: char*
+///     subs: char*
+typedef struct Rgex_Rgex Rgex;
+
+///
+Rgex *rgex_new (char *rgex, char *subs);
+
+///
+char *rgex_rgex (Rgex *this);
+
+///
+char *rgex_subs (Rgex *this);
+
+///
+Js *rgex_to_js (Rgex *this);
+
+///
+Rgex *rgex_from_js (Js *js);
+
+/*--*/
+
+#endif
 // Copyright 24-May-2019 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
@@ -3030,16 +3057,29 @@ Timetable *timetable_new(void);
 ///   Arguments:
 ///     model_name: char*
 ///     flea: Flea
+///     assets: int
+///     points: int
 typedef struct RankEntry_RankEntry RankEntry;
 
 ///
-RankEntry *rankEntry_new (char *model_name, Flea *flea);
+RankEntry *rankEntry_new (
+  char *model_name,
+  Flea *flea,
+  int assets,
+  int points
+);
 
 ///
 char *rankEntry_model_name (RankEntry *this);
 
 ///
 Flea *rankEntry_flea (RankEntry *this);
+
+///
+int rankEntry_assets (RankEntry *this);
+
+///
+int rankEntry_points (RankEntry *this);
 
 ///
 Js *rankEntry_to_js (RankEntry *this);
@@ -3051,58 +3091,6 @@ RankEntry *rankEntry_from_js (Js *js);
 
 /// Returns Opt<Model>
 Opt *rankEntry_model (RankEntry *this);
-
-#endif
-// Copyright 28-Nov-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-#ifndef DATA_RANKASSETSENTRY_H
-  #define DATA_RANKASSETSENTRY_H
-
-#include "dmc/async.h"
-#include "Flea.h"
-#include "Model.h"
-
-/*--*/
-
-///
-///   Arguments:
-///     model_name: char*
-///     flea: Flea
-///     assets: int
-///     points: int
-typedef struct RankAssetsEntry_RankAssetsEntry RankAssetsEntry;
-
-///
-RankAssetsEntry *rankAssetsEntry_new (
-  char *model_name,
-  Flea *flea,
-  int assets,
-  int points
-);
-
-///
-char *rankAssetsEntry_model_name (RankAssetsEntry *this);
-
-///
-Flea *rankAssetsEntry_flea (RankAssetsEntry *this);
-
-///
-int rankAssetsEntry_assets (RankAssetsEntry *this);
-
-///
-int rankAssetsEntry_points (RankAssetsEntry *this);
-
-///
-Js *rankAssetsEntry_to_js (RankAssetsEntry *this);
-
-///
-RankAssetsEntry *rankAssetsEntry_from_js (Js *js);
-
-/*--*/
-
-/// Returns Opt<Model>
-Opt *rankAssetsEntry_model (RankAssetsEntry *this);
 
 #endif
 // Copyright 11-Jun-2019 ºDeme
@@ -3410,7 +3398,7 @@ double nickClose_close (NickClose *this);
 
 #include "dmc/async.h"
 #include "Rs.h"
-#include "RankAssetsEntry.h"
+#include "RankEntry.h"
 
 /*--*/
 
@@ -3535,8 +3523,8 @@ Rank *rank_from_js (Js *js);
 Arr *rank_mk_positions (Arr *assets);
 
 /// Returns Arr[Rank]
-///   rk     : Arr[RankAssetsEntry] Current ranking
-///   prev_rk: Arr[RankAssetsEntry] Previous ranking
+///   rk     : Arr[RankEntry] Current ranking
+///   prev_rk: Arr[RankEntry] Previous ranking
 Arr *rank_mk_ranking (Arr *rk, Arr *prev_rk);
 
 #endif
@@ -3852,20 +3840,6 @@ char *fleas__model_process(AsyncActor *ac, Map *mrq);
 
 /// mrq is Map[Js]
 char *fleas__charts_process(AsyncActor *ac, Map *mrq);
-
-#endif
-// Copyright 21-Jun-2019 ºDeme
-// GNU General Public License - V3 <http://www.gnu.org/licenses/>
-
-/// Requests from fleas->champions
-
-#ifndef SERVER_FLEAS_FLEAS__CHAMPIONS_H
-  #define SERVER_FLEAS_FLEAS__CHAMPIONS_H
-
-#include "dmc/async.h"
-
-/// mrq is Map[Js]
-char *fleas__champions_process(AsyncActor *ac, Map *mrq);
 
 #endif
 // Copyright 30-Jun-2019 ºDeme
@@ -4296,10 +4270,10 @@ char *ranking_process(AsyncActor *ac, Map *mrq);
 #define ACC_CHART_QUOTES 250
 
 /// Ponderation for raking
-#define RANKING_ASSETS_RATIO 0.5
+#define RANKING_ASSETS_RATIO 0.45
 
 /// Ponderation for raking
-#define RANKING_PROFITS_RATIO 0.3
+#define RANKING_PROFITS_RATIO 0.35
 
 /// Ponderation for raking
 #define RANKING_AGE_RATIO 0.2
@@ -4318,6 +4292,12 @@ char *ranking_process(AsyncActor *ac, Map *mrq);
 
 /// Server short name to get url in accounting charts
 #define ACC_URL "INFOB"
+
+/// External command to download
+#define WGET "Wget"
+
+/// External command to download
+#define PUPPETEER "Puppeteer"
 
 /// Error messages
 enum ErrorMsg { MSG_OK, MSG_WARNING, MSG_ERROR };
@@ -5738,6 +5718,9 @@ char *str_left(char *str, int end);
 /// str_right is equals to 'str_sub(str, begin, strlen(s))'.
 char *str_right(char *str, int begin);
 
+/// Returns a new string in reverse order
+char *str_reverse(char *str);
+
 /// Returns a new string removing spaces (ch <= ' ') at left.
 char *str_ltrim(char *str);
 
@@ -6308,22 +6291,22 @@ FileLck *file_wopen (char *path);
 /// It returns a FileLck object which will be freed when close is called..
 FileLck *file_aopen (char *path);
 
-/// Reads a text file opened with file_ropen.
+/// Reads a text file open with file_ropen.
 /// It does not delete ends of line.
 /// When reading is finished, returns a blank string.
 char *file_read_line (FileLck *lck);
 
-/// Writes a text file opened with file_wopen or file_aopen.
+/// Writes a text file open with file_wopen or file_aopen.
 void file_write_text (FileLck *lck, char *text);
 
-/// Reads a binary file opened with file_ropen.
+/// Reads a binary file open with file_ropen.
 /// When reading is finished, returns an empty Bytes.
 Bytes *file_read_bin_buf (FileLck *lck, int buffer);
 
 /// file_read_bin is the same as 'file_read_bin_bf' using a buffer of 8192.
 Bytes *file_read_bin (FileLck *lck);
 
-/// Writes a binary file opened with file_wopen.
+/// Writes a binary file open with file_wopen.
 /// Returns 0 if there is no error.
 void file_write_bin (FileLck *lck, Bytes *bs);
 
@@ -6764,8 +6747,20 @@ typedef struct dec_Dec Dec;
 ///   scale: Decimal positions. Maximum scale is 10.
 Dec *dec_new(double n, int scale);
 
-///
+/// Returns use '.' as decimal point.
 char *dec_to_str(Dec *this);
+
+/// Returns use '.' as thousands separator.
+char *dec_int_to_iso(int n);
+
+/// Returns use ',' as thousands separator.
+char *dec_int_to_us(int n);
+
+/// Returns use ',' as decimal point and '.' as thousands separator.
+char *dec_double_to_iso(double n, int scale);
+
+/// Returns use '.' as decimal point and ',' as thousands separator.
+char *dec_double_to_us(double n, int scale);
 
 /// Returns the rounded double value of 'this'.
 double dec_n(Dec *this);
