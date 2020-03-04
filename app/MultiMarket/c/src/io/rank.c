@@ -76,8 +76,11 @@ static void update_pool (void) {
 }
 
 // Return Arr<RankEvalEntry> ascendingly sorted , pool is Arr<RankEntry>
-// RankEntries without existent model are removed.
+// RankEntries without existent model and out of allowed operations number
+// are removed.
 static Arr *evaluate (Arr *pool) {
+  int min_sells = HISTORIC_QUOTES / MIN_SELLS;
+  int max_sells = HISTORIC_QUOTES / MAX_SELLS;
   time_t now = date_now();
   char *last_date = opt_nget(quotes_last_date());
   if (last_date) now = date_from_str(last_date);
@@ -104,7 +107,14 @@ static Arr *evaluate (Arr *pool) {
       double points = 0;
 
       if (opens && closes) {
-        assets = rsAssets_assets(model_assets(model, f, opens, closes));
+        RsAssets *rsa = model_assets(model, f, opens, closes);
+        assets = rsAssets_assets(rsa);
+
+        // Sells control
+        int sells = rsAssets_sells(rsa);
+        if (sells > max_sells || sells < min_sells)
+          continue;
+
         profits = rsProfits_sel(model_profits(model, f, opens, closes));
       }
 

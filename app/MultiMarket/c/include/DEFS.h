@@ -96,10 +96,10 @@
 #define MIN_TO_BET 16000
 
 /// Minimum operations to survive (divisor: days / minSells)
-#define MIN_SELLS 30
+#define MIN_SELLS 20
 
 /// Maximun operations to survive (divisor: days / maxSells)
-#define MAX_SELLS 15
+#define MAX_SELLS 10
 
 /// Maximun number of fleas in "_best"
 #define MAXIMUM_HISTORIC_BESTS 252

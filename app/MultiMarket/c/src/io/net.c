@@ -45,6 +45,39 @@ static int to_double(double *ret, char *n) {
 
 // Returns Opt[char]
 static Opt *mkdate(char *d, char *sep, int is_eu) {
+  // Opt[char]
+  Opt *readYahoo () {
+    Arr *months = arr_new_c (12, (void *[]){
+      "ene.", "feb.", "mar.", "abr.", "may.", "jun.",
+      "jul.", "ago.", "sept.", "oct.", "nov.", "dic"
+    });
+    // Arr[char]
+    Arr *parts = str_csplit(d, ' ');
+    if (arr_size(parts) != 3) return opt_empty();
+    char *day = arr_get(parts, 0);
+    char *month = arr_get(parts, 1);
+    char *year = arr_get(parts, 2);
+
+    int fix (char *mth) { return str_eq(mth, month); }
+    int mix = arr_index(months, (FPRED)fix);
+    if (mix == -1) return opt_empty();
+    month = str_f("%d", mix + 1);
+
+    if (!dec_digits(day)) return opt_empty();
+    if (!dec_digits(year)) return opt_empty();
+    int lday = strlen(day);
+    int lmonth = strlen(month);
+    int lyear = strlen(year);
+    if (lday < 1 || lday > 2) return opt_empty();
+    if (lmonth < 1 || lmonth > 2) return opt_empty();
+    if (lyear != 4 && lyear != 2) return opt_empty();
+    if (lday == 1) day = str_cat("0", day, NULL);
+    if (lmonth == 1) month = str_cat("0", month, NULL);
+    if (lyear == 2) year = str_cat("20", year, NULL);
+    return opt_new(str_cat(year, month, day, NULL));
+  }
+  if (str_eq(sep, "*")) return readYahoo();
+
   // Arr[char]
   Arr *parts = str_csplit(d, *sep);
   if (arr_size(parts) != 3) return opt_empty();

@@ -1,0 +1,58 @@
+name:                HDoc
+version:             2020.02
+github:              "githubuser/HDoc"
+license:             GPL3
+author:              "ºDeme"
+maintainer:          "ºDeme"
+copyright:           "2020 ºDeme"
+
+extra-source-files:
+- README.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README
+
+dependencies:
+- base >= 4.7 && < 5
+- bytestring
+- base64-bytestring
+- utf8-string
+- random
+- array
+- text
+- time
+- json
+- directory
+- filepath
+- process
+
+library:
+  source-dirs: /dm/dmH/lib/libdmh/src
+
+executables:
+  HDoc-exe:
+    main:                Main.hs
+    source-dirs:         src
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - HDoc
+
+tests:
+  HDoc-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - HDoc
