@@ -56,20 +56,23 @@ const mkTable = (cells) => {
 };
 
 const mkDoc = (tx) => {
-  tx = "\n" + tx;
-
-  tx = tx.replace(/\n\*[ ]?/g, "\n");
-
-  let p1 = tx;
+  const lines = tx.split("\n");
+  while (lines.length > 0 && lines[0].trim() === "") lines.shift();
+  let p1 = "";
   let p2 = "";
-  const ix = tx.indexOf("\n@");
-  if (ix !== -1) {
-    p1 = tx.substring(0, ix);
-    p2 = tx.substring(ix + 1);
-  }
+  if (lines.length > 0) {
+    let nblanks = 0;
+    const l0 = lines[0];
+    while (l0.charAt(nblanks) <= " ") ++nblanks;
+    const ls = lines.map(l => l.substring(nblanks));
+    const l1 = [];
+    while (ls.length > 0) {
+      if (ls[0].charAt(0) === "@") break;
+      l1.push(ls.shift());
+    }
 
-  while(p1.startsWith("\n")) {
-    p1 = p1.substring(1);
+    if (l1.length > 0) p1 = l1.join("\n");
+    if (ls.length > 0) p2 = ls.join("\n");
   }
 
   const td = $("td");

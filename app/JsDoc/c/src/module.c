@@ -36,13 +36,9 @@ static void comment(char *line, LckFile *lck) {
 
   line = file_read_line(lck);
   while (*line) {
-    line = str_trim(line);
     int ix = str_index(line, "*/");
     if (ix != -1) {
-      if (*line && is_doc) {
-        last_doc = str_cat(
-          last_doc, "\n", str_trim(str_sub(line, 0, ix)), NULL
-        );
+      if (is_doc) {
         if (!*overview) {
           overview = last_doc;
         }
@@ -51,7 +47,7 @@ static void comment(char *line, LckFile *lck) {
     }
 
     if (is_doc) {
-      last_doc = str_cat(last_doc, "\n", str_trim(line), NULL);
+      last_doc = str_cat(last_doc, line, NULL);
     }
     line = file_read_line(lck);
   }
