@@ -7,7 +7,7 @@ module Main where
 
 import System.Environment (getArgs)
 import qualified Dm.Cryp as Cryp
-import Dm.Either (Result, withFail)
+import Dm.Result
 import qualified Dm.Cgi as Cgi
 import qualified Dm.Map as Map
 import qualified Dm.Js as Js
@@ -42,9 +42,9 @@ main = do
                            else connect rq
 
 authentication :: Result String -> IO ()
-authentication rq = do
+authentication (Right rq) = do
   cgi <- Cgi.new home (Just $ Cryp.key appName Cgi.klen) expiration
-  case break (':'==) (withFail rq) of
+  case break (':'==) rq of
     (user, ':':rest) ->
       case break (':'==) rest of
         (pass, ":0") -> Cgi.authentication cgi user pass Cgi.NotExpire
@@ -53,6 +53,7 @@ authentication rq = do
     _ -> ffail
   where
     ffail = putStrLn "Syntax Error in authentication request"
+authentication (Left e) = fail e
 
 connect :: String -> IO ()
 connect ssId = do

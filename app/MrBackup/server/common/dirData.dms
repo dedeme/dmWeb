@@ -11,7 +11,7 @@
     "state": state
   } map,from
 @-m) new =>
-/// @s::state, @o::dpath, @i::empty, @i::stat -> @m::dirData
+/// @s::id, @o::dpath, @i::empty, @i::state -> @m::dirData
 ///
 ///   id: Directory name.
 ///   dpath: Directory path.

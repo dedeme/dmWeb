@@ -24,6 +24,7 @@ export default class Flog {
     this._Lmenu = $("div");
     this._Rmenu = $("div");
     this._area = $("textarea").att("spellcheck", false)
+      .att("readOnly", true)
       .att("rows", 25).att("cols", 85);
 
     // CONTROL -----

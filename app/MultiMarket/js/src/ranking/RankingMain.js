@@ -215,10 +215,14 @@ export default class RankingMain {
     ;
   }
 
-  /** @private */
+  /**
+      @private
+      @param {boolean} isPos
+      @param {Array<Array<?>>} data days x [date, value]
+  **/
   mkChart (isPos, data) {
     if (isPos) {
-      data = data.map(d => [d[0], 39 - d[1]]);
+      data = data.map(d => [d[0], 39 - d[1]]);  // Invert position for chart
     }
     const dataSize = data.length;
 

@@ -96,7 +96,7 @@
               "td" { class: "entry"; text: ("Files":_) }  [] ui,$+
               "td" { class: "number2"} [] ui,$+
               "td" { class: "number2"; text: (stats .files toStr) } [] ui,$+
-            ] [] ui,$+
+            ] ui,$+
           "tr" {} [
               "td" {
                   class: "entry2"; text: ("Directories out of data":_)
@@ -104,15 +104,15 @@
               "td" {
                   class: "number2"; text: (stats .toUpdateDirs toStr)
                 } [] ui,$+
-              "td" { class: "number2"} [] ui,$+
-            ] [] ui,$+
+              "td" { class: "number2" } [] ui,$+
+            ] ui,$+
           "tr" {} [
               "td" { class: "entry2"; text: ("Files out of data":_) } [] ui,$+
               "td" {
                   class: "number2"; text: (stats .toUpdateFiles toStr)
                 } [] ui,$+
               "td" { class: "number2"} [] ui,$+
-            ] [] ui,$+
+            ] ui,$+
         ] ui,$+
       "br" ui,mk
       Pg# .updateBtDiv {} [
@@ -151,7 +151,7 @@
 @-) update. =>
 
 ( @+m:: # Pg# =
-  Pg# .updateDiv {removeAll} [ ("wait.gif" wg,img) ] ui,$
+  Pg# .updateDiv {removeAll} [ "wait.gif" wg,img ] ui,$
   Pg# .client
   {
     "page": "Summary" js,ws
@@ -205,7 +205,7 @@
 @-) clear =>
 
 ( @+m:: # Pg# =
-  Pg# .updateBtDiv { removeAll } [ ("wait.gif" wg,img) ] ui,$
+  Pg# .updateBtDiv { removeAll } [ "wait.gif" wg,img ] ui,$
   Pg# .client
   {
     "page": "Summary" js,ws

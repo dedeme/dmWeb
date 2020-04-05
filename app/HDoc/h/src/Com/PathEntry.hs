@@ -11,7 +11,7 @@ module Com.PathEntry
   ) where
 
 import qualified Dm.Js as Js
-import Dm.Either (Result, (>>=))
+import Dm.Result
 
 --- T
 data T = T
@@ -32,9 +32,9 @@ toJs (T n p s e) = Js.wa $ [ Js.ws n, Js.ws p, Js.wb s, Js.wb e ]
 --- fromJs js
 fromJs :: Js.T -> Result T
 fromJs js =
-  Js.ra js Dm.Either.>>=
-  \a ->       Js.rs (a!!0) Dm.Either.>>=
-        \n -> Js.rs (a!!1) Dm.Either.>>=
-        \p -> Js.rb (a!!2) Dm.Either.>>=
-        \s -> Js.rb (a!!3) Dm.Either.>>=
+  Js.ra js >>=
+  \a ->       Js.rs (a!!0) >>=
+        \n -> Js.rs (a!!1) >>=
+        \p -> Js.rb (a!!2) >>=
+        \s -> Js.rb (a!!3) >>=
         \e -> Right $ T n p s e

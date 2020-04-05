@@ -22,8 +22,7 @@ module Db
 import qualified Dm.File as File
 import qualified Dm.Js as Js
 import qualified Dm.Map as Map
-import Dm.Either (Result, withFail)
-import qualified Dm.Maybe as Maybe
+import Dm.Result
 import qualified Com.PathEntry as PathEntry
 
 confPath :: String -> String
@@ -47,17 +46,24 @@ ini home = do
 -- CONF
 
 confRead :: String -> IO (Map.T Js.T)
-confRead home = (\s -> withFail (Js.fromStr s >>= Js.ro)) <$>
-                  File.read (confPath home)
+confRead home = do
+  tx <- File.read (confPath home)
+  case Js.fromStr tx >>= Js.ro of
+    Right cf -> return cf
+    Left e -> fail e
 
 confWrite :: String -> Map.T Js.T -> IO ()
 confWrite home cf = File.write (confPath home) $
                                Js.toStr $ Js.wo cf
 
-confGet :: String -> String -> a -> (Js.T -> Result a) -> (a -> Js.T) -> IO a
-confGet home key def rfn wfn = do
+confGet :: String -> String -> a -> (Js.T -> Result a) -> IO a
+confGet home key def rfn = do
   cf <- confRead home
-  return $ withFail $ rfn $ Maybe.fromMaybe (wfn def) $ Map.get key cf
+  case Map.get key cf of
+    Just v -> case rfn v of
+                Right v' -> return v'
+                Left e -> fail e
+    _ -> return def
 
 confSet :: String -> String -> a -> (a -> Js.T) -> IO ()
 confSet home key value fn = do
@@ -68,7 +74,7 @@ confSet home key value fn = do
 --- getLpath home
 --- Returns default lpath.
 getLpath :: String -> IO [String]
-getLpath home = confGet home "lpath" ["@"] (Js.rList Js.rs) (Js.wList Js.ws)
+getLpath home = confGet home "lpath" ["@"] (Js.rList Js.rs)
 
 --- setLpath home lpath
 --- Sets default lpath.
@@ -78,7 +84,7 @@ setLpath home lpath = confSet home "lpath" lpath (Js.wList Js.ws)
 --- getLang home
 --- Returns application language ['en' or 'es'] (default 'en').
 getLang :: String -> IO String
-getLang home = confGet home "lang" "en" Js.rs Js.ws
+getLang home = confGet home "lang" "en" Js.rs
 
 --- setLang home lang
 --- Sets default lpat. 'lpath' must include the symbol '?'.
@@ -88,7 +94,7 @@ setLang home lang = confSet home "lang" lang Js.ws
 --- getShowAll home
 --- Returns 'True' if every path is shown.
 getShowAll :: String -> IO Bool
-getShowAll home = confGet home "showAll" True Js.rb Js.wb
+getShowAll home = confGet home "showAll" True Js.rb
 
 --- setShowAll home v
 --- Sets if every path must be shown.
@@ -101,8 +107,9 @@ setShowAll home v = confSet home "showAll" v Js.wb
 getPaths :: String -> IO [PathEntry.T]
 getPaths home = do
   tx <- File.read $ lpathsPath home
-  let ls = withFail $ Js.rList (PathEntry.fromJs) $ withFail $ Js.fromStr tx
-  mapM setExists ls
+  case Js.fromStr tx >>= Js.rList (PathEntry.fromJs) of
+    Right ls -> mapM setExists ls
+    Left e -> fail e
   where
     setExists e = do
       ex <- File.isDirectory (PathEntry.path e)

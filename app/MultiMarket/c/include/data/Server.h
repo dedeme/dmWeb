@@ -86,7 +86,7 @@ Server *server_new(int id, char *short_name, Arr *nicks);
 /// If nick_id has not code, returns "".
 char *server_nick_code (Server *this, int nick_id);
 
-/// Code is "" if nick_id has not code.<p>
+/// Code is "" if nick_id has not code.
 /// If this has not nick_id registred, this functions does nothing.
 void server_set_nick_code (Server *this, int nick_id, char *code);
 

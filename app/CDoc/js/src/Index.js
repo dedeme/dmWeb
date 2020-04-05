@@ -74,7 +74,8 @@ export default class Index {
       for (const e of trees) {
         if (e.isPath) {
           trs.push($("tr")
-            .add($("td").html(`<b>${e.id}</b>`))
+            .add($("td").style(`padding-left:${space}px`)
+              .html(`<b>${e.id}</b>`))
             .add($("td"))
           );
           const newPath = path === "" ? e.id : path + "/" + e.id;

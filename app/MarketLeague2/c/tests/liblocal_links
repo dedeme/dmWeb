@@ -1,7 +1,0 @@
-#!/bin/bash
-mkdir -p lib/liblocal
-ln -f -s ../../../include lib/liblocal/include
-ln -f -s ../../../lib/liblocalcompilation/liblocalcompilation.a \
-         lib/liblocal/liblocal.a
-
-ln -f -s ../../lib/libdmc lib/libdmc

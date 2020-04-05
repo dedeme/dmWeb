@@ -39,8 +39,6 @@ Flea *flea_from_js (Js *js);
 
 /*--*/
 
-#endif
-
 /// Creates a new flea.
 ///   date: Date of creation.
 ///   cycle: Cycle of creation.
@@ -64,4 +62,6 @@ char *flea_name (Flea *this);
 ///   value: Gen parameter - between (0 and 1]
 /// If mx <= mn returns 0.
 double flea_param (double mx, double mn, double value);
+
+#endif
 
