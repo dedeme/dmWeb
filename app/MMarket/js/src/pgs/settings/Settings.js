@@ -80,6 +80,7 @@ export default class Settings {
   changePass () {
     const pg = new ChangePass(this._client);
     this._wg.removeAll().add(pg.wg);
+    pg.focus();
   }
 
 }

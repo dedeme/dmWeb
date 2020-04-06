@@ -58,6 +58,7 @@ export default class MainHome {
         "rq": "log",
       });
       const /** !Array<!Array<?>> */ log = rp["log"];
+      log.reverse();
       return log.map(e => LogEntry.fromJs(e));
     }
 

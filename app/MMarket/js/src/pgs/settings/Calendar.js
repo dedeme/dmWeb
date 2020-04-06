@@ -12,7 +12,6 @@ import Timetable from "../../data/Timetable.js";
 import MarketDay from "../../data/MarketDay.js";
 import Wrule from "../../wgs/Wrule.js";
 import Whour from "../../wgs/Whour.js";
-import DbFail from "../../DbFail.js";
 
 const $ = e => Ui.$(e);
 
@@ -227,18 +226,12 @@ export default class Calendar {
       this._gopen.hour, this._gopen.minute,
       this._gclose.hour, this._gclose.minute
     );
-    const rp = await this._client.send({
+    await this._client.ssend({
       "module": "Settings",
       "source": "Calendar",
       "rq": "setGeneral",
-      "timeStamp": this._timeStamp,
-      "timetable": tt.toJs()
+      "timeTable": tt.toJs()
     });
-    if (!rp["ok"]) {
-      DbFail.show();
-    } else {
-      this._timeStamp = rp["timeStamp"];
-    }
   }
 
   /**
@@ -246,20 +239,14 @@ export default class Calendar {
       @return {!Promise<void>}
   **/
   async holidaysChange (ls) {
-    const rp = await this._client.send({
+    await this._client.ssend({
       "module": "Settings",
       "source": "Calendar",
       "rq": "setHolidays",
-      "timeStamp": this._timeStamp,
       "holidays": ls
     });
-    if (!rp["ok"]) {
-      DbFail.show();
-    } else {
-      this._timeStamp = rp["timeStamp"];
-      this._holidays = ls;
-      this.holidays();
-    }
+    this._holidays = ls;
+    this.holidays();
   }
 
   /**
@@ -299,20 +286,14 @@ export default class Calendar {
       @return {!Promise<void>}
   **/
   async specialDaysChange (ls) {
-    const rp = await this._client.send({
+    await this._client.ssend({
       "module": "Settings",
       "source": "Calendar",
       "rq": "setSpecialDays",
-      "timeStamp": this._timeStamp,
       "specialDays": ls.map(e => e.toJs())
     });
-    if (!rp["ok"]) {
-      DbFail.show();
-    } else {
-      this._timeStamp = rp["timeStamp"];
-      this._specialDays = ls;
-      this.specialDays();
-    }
+    this._specialDays = ls;
+    this.specialDays();
   }
 
   /**
@@ -358,7 +339,7 @@ export default class Calendar {
       @return {!Promise<!Calendar>}
   **/
   static async mk (client) {
-    const rp = await client.send({
+    const rp = await client.ssend({
       "module": "Settings",
       "source": "Calendar",
       "rq": "idata"
