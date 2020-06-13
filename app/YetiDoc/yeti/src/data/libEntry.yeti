@@ -1,0 +1,38 @@
+// Copyright 18-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+module data.libEntry;
+
+json = load es.dm.json;
+
+typedef t =
+  { name is string,
+    path is string,
+    selected? is boolean,
+    var exists? is boolean
+  };
+
+{
+  mk name path
+  is string -> string -> t =
+    { name, path, selected? = true, var exists? = false },
+
+  toJs e
+  is t -> json.t =
+    json.wa
+      [ json.ws e.name,
+        json.ws e.path,
+        json.wb e.selected?,
+        json.wb e.exists?
+      ],
+
+  fromJs js
+  is json.t -> t =
+    a = array (json.ra js);
+    {
+      name = json.rs a[0],
+      path = json.rs a[1],
+      selected? = json.rb a[2],
+      var exists? = false
+    },
+}

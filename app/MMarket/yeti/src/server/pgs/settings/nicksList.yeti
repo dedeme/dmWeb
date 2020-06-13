@@ -1,0 +1,51 @@
+// Copyright 08-May-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Nicks/List page.
+module server.pgs.settings.nicksList;
+
+cgi = load es.dm.cgi;
+json = load es.dm.json;
+load es.dm.jsonM;
+sync = load es.dm.sync;
+load std;
+quotesDb = load db.quotesDb;
+net = load net.net;
+
+{
+  /// Request process.
+  ///
+  /// Arguments:
+  ///   ck - Comunication key.
+  ///   rq - Request.
+  process ck rq
+  is string -> hash<string, json.t> -> string =
+    case cgi.rqString rq "rq" of
+    "download" :
+      nickId = cgi.rqNumber rq "nickId";
+      rp = [:];
+      sync.run do lk:
+        { errors?, warnings? } = net.updateHistoric lk nickId;
+        rs = if errors? then "error"
+             elif warnings? then "warning"
+             else ""
+             fi;
+        rp["result"] := json.ws rs
+        done;
+      cgi.rp ck rp;
+    "test" :
+      nickName = cgi.rqString rq "nickName";
+      rp = [:];
+      sync.run do lk:
+        { error?, warning? } = quotesDb.checkQs lk nickName;
+        rs = if error? then "error"
+             elif warning? then "warning"
+             else ""
+             fi;
+        rp["result"] := json.ws rs
+        done;
+      cgi.rp ck rp;
+    k :
+      failedKey k
+    esac,
+}

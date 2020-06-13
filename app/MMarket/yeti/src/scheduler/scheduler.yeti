@@ -1,0 +1,455 @@
+// Copyright 25-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Tasks scheduler.
+module scheduler.scheduler;
+
+load es.dm.std;
+date = load es.dm.date;
+sync = load es.dm.sync;
+thread = load es.dm.thread;
+{mostDup, seqEqElements} = load es.dm.coll;
+cts = load data.cts;
+load std;
+activity = load data.activity;
+calendarTb = load db.calendarTb;
+conf = load db.conf;
+log = load db.log;
+nick = load data.nick;
+qtable = load data.qtable;
+fmodel = load data.flea.fmodel;
+manager = load data.manager;
+dailyChart = load data.dailyChart;
+accd = load data.acc;
+nicksTb = load db.nicksTb;
+managersTb = load db.managersTb;
+stopper = load data.stopper;
+fleas = load scheduler.fleas;
+net = load net.net;
+sboxTb = load db.sboxTb;
+dailyTb = load db.dailyTb;
+diariesDb = load db.acc.diariesDb;
+quotesDb = load db.quotesDb;
+serversTb = load db.serversTb;
+acc = load data.acc;
+dailyChartsTb = load db.dailyChartsTb;
+profitsDb = load db.acc.profitsDb;
+
+(
+  updateProfitsHistoric () =
+    sync.run do lk:
+      closes = quotesDb.closes lk;
+      qs = dailyTb.read lk;
+      mqs = [:];
+      for qs do q:
+        case nicksTb.getNick lk q.nick of
+        Some nk : mqs[nk.name] := q.value;
+        None () : ()
+        esac
+        done;
+      mans = managersTb.read lk;
+      for [0..cts.managers - 1] do i:
+        anns = diariesDb.readAnnotations lk i;
+        {ledger, portfolio} = accd.settlement anns;
+        base = ledger.cash + ledger.capital;
+        acc = base + ledger.stocks;
+        var total = base;
+        var risk = base;
+        for portfolio do e:
+          if e.nick in mqs then
+            lastQ = mqs[e.nick];
+            total := total + e.stocks * lastQ;
+
+            {model, params} = manager.getModel mans[i] e.nick;
+            case qtable.nickValuesAdd closes e.nick lastQ of
+            Some cs :
+              refs = fmodel.refs model cs params;
+              ref = head (reverse refs);
+              risk := risk + e.stocks * ref;
+            None () :
+              risk := risk + e.stocks * e.price;
+            esac
+          else
+            log.error lk "Daily quote of \(e.nick) is missing";
+            total := total + e.stocks * e.price;
+            risk := risk + e.stocks * e.price;
+          fi
+          done;
+        profitsDb.add lk i total acc risk
+        done
+      done;
+
+  readSelectedDailyServers lk
+  is sync.t -> option<list<nick.qvalueT>> =
+    ( fn qss =
+        ( var qs = [];
+          for [0..length qss - 1] do i:
+            for qss[i] do nv:
+              nick = nv.nick;
+              if not any do nv': nv'.nick == nick done qs then
+                var nvs = [nv.value];
+                for [i..length qss - 1] do j:
+                  for qss[j] do nv':
+                    if nv'.nick == nick then nvs := nv'.value::nvs fi
+                    done
+                  done;
+                qs := { nick, value = mostDup nvs }::qs
+              fi
+            done
+          done;
+          qs
+        );
+
+      {servers} = serversTb.dailyList lk;
+      svs = filter do sv:
+                      (optGet sv.dailyConf).sel == cts.serverSelected
+                      done servers;
+      var qss = [];
+      for svs do sv:
+        case net.serverReadDaily lk sv of
+        Some qs : qss := qs::qss;
+        None () : ()
+        esac
+        done;
+     if length qss == 0 then None ()
+     else Some (fn (array qss)) fi
+    );
+
+  mkDailyCharInit closes hour nkCl qs pfMgs
+  is qtable.t -> number -> {nk is nick.t, q is number} ->
+     list<{nick is number, value is number}> ->
+     list<{pf is list<acc.pfEntryT>, manager is manager.t}> ->
+     dailyChart.t =
+    ( nick = nkCl.nk;
+      var hours = [hour];
+      var quotes = [nkCl.q];
+      case find do q: q.nick == nick.id done qs of
+      q::_ :
+        hours := hour::hours;
+        quotes := q.value::quotes;
+      _:
+        hours := head hours::hours;
+        quotes := head quotes::quotes
+      esac;
+      accData = map do e:
+        {stocks, price} = case find do pfe: pfe.nick == nick.name done e.pf of
+                          pfe::_ : { stocks = pfe.stocks, price = pfe.price };
+                          _ : { stocks = 0, price = 0 }
+                          esac;
+        man = e.manager;
+        mdPars = if nick.name in man.nicks then man.nicks[nick.name]
+                 else man.base fi;
+        ref = case qtable.nickValues closes nick.name of
+              Some cls :
+                refs = fmodel.refs mdPars.model cls mdPars.params;
+                refs[length refs - 1];
+              None () :
+                nkCl.q
+              esac;
+
+        { stocks, price, ref }
+        done pfMgs;
+
+      dailyChart.mk nick.name nkCl.q hours quotes accData;
+    );
+
+  mkDailyChart closes hour nick qs oldEntry
+  is qtable.t -> number -> nick.t -> list<{nick is number, value is number}> ->
+     dailyChart.t -> dailyChart.t =
+    ( var hours = oldEntry.hours;
+      var quotes = oldEntry.quotes;
+      case find do q: q.nick == nick.id done qs of
+      q::_ :
+        hours := hour::hours;
+        quotes := q.value::quotes;
+      _:
+        hours := head hours::hours;
+        quotes := head quotes::quotes
+      esac;
+      dailyChart.mk nick.name oldEntry.close hours quotes oldEntry.accData
+    );
+
+  activating () =
+    ( var cont = true;
+      cont loop
+        ( cont := false;
+          sync.run do lk:
+            sboxTb.nextServer lk;
+            sv = sboxTb.getServer lk;
+            case net.serverReadDaily lk sv of
+            Some qs :
+              hour = date.now () |> date.hour;
+              dailyTb.write lk qs;
+              nicks = nicksTb.selectedNicks lk;
+              closes = quotesDb.closes lk;
+              var nkCls = [];
+              for nicks do nk:
+                case quotesDb.read lk nk.name of
+                q::qs :
+                  valid q qs =
+                    if q.close >= 0 then q.close
+                    else case qs of
+                         q'::qs' : valid q' qs';
+                         _ : -1
+                         esac
+                    fi;
+                  cl = valid q qs;
+                  if cl >= 0 then
+                    nkCls := {nk, q = cl}::nkCls
+                  else
+                    log.error lk "All the quotes of \(nk.name) are not valid"
+                  fi;
+                _ :
+                  log.error lk "Quotes of \(nk.name) not found";
+                esac
+                done;
+              managers = managersTb.read lk;
+              pfMgs = map do i:
+                anns = diariesDb.readAnnotations lk i;
+                {portfolio} = acc.settlement anns;
+                { pf = portfolio, manager = managers[i] }
+                done [0..cts.managers - 1];
+              entries = map
+                do nkCl: mkDailyCharInit closes hour nkCl qs pfMgs done
+                nkCls;
+              dailyChartsTb.write lk entries;
+            None () :
+              log.error lk "Fail reading daily server \(sv.shortName)";
+              cont := true;
+            esac
+            done
+        )
+    );
+
+  updateDaily isFinal
+  is boolean -> () =
+    ( sync.run do lk:
+        sv = sboxTb.getServer lk;
+        oqs = if isFinal then readSelectedDailyServers lk
+              else net.serverReadDaily lk sv fi;
+        case oqs of
+        Some dqs :
+          oldDqs = dailyTb.read lk;
+          if not seqEqElements do q1 q2:
+            q1.nick == q2.nick and q1.value == q2.value
+            done dqs oldDqs
+          then
+            hour = date.now () |> date.hour;
+            dailyTb.write lk dqs;
+            nicks = nicksTb.selectedNicks lk;
+            closes = quotesDb.closes lk;
+            oldEntries = dailyChartsTb.read lk;
+            var entries = [];
+            for nicks do nk:
+              case find do e: e.nick == nk.name done oldEntries of
+              e::_ :
+                entries := mkDailyChart closes hour nk dqs e::entries;
+              _ :
+                case quotesDb.read lk nk.name of
+                q::qs :
+                  valid q qs =
+                    if q.close >= 0 then q.close
+                    else case qs of
+                         q'::qs' : valid q' qs';
+                         _ : -1
+                         esac
+                    fi;
+                  cl = valid q qs;
+                  if cl >= 0 then
+                    var nkCl = {nk, q = cl};
+                    managers = managersTb.read lk;
+                    pfMgs = map do i:
+                      anns = diariesDb.readAnnotations lk i;
+                      {portfolio} = acc.settlement anns;
+                      { pf = portfolio, manager = managers[i] }
+                      done [0..cts.managers - 1];
+                      entries :=
+                        mkDailyCharInit closes hour nkCl dqs pfMgs::entries
+                  else
+                    log.error lk "All the quotes of \(nk.name) are not valid"
+                  fi;
+                _ :
+                  log.error lk "Quotes of \(nk.name) not found";
+                esac
+              esac
+              done;
+            dailyChartsTb.write lk entries
+          fi;
+        None () :
+          log.error lk "Fail reading daily server \(sv.shortName)"
+        esac
+        done
+    );
+
+  updateHistoric () =
+    ( update nickId =
+        sync.run do lk:
+          _ = net.updateHistoric lk nickId
+          done;
+
+      fn ls =
+        if stopper.stop? () then
+          ()
+        else
+          case ls of
+          nk::ls' :
+            update nk.id;
+            fn ls';
+          _ :
+            ()
+          esac
+        fi;
+
+      var ls = [];
+      sync.run do lk:
+        case nicksTb.getModel lk of
+        Some nkModel :
+          nks = nicksTb.nicks lk |> filter do nk: nk.id != nkModel.id done;
+          ls := nkModel::nks;
+        None () :
+          ()
+        esac
+        done;
+
+      fn ls
+    );
+
+{
+  /// Returns the initial state of activity depending on where was the last one.
+  ///
+  /// Arguments:
+  ///   lastActivity - Activity when server was stopped by last time.
+  initialActivity lastActivity
+  is activity.t -> activity.t =
+    initialActivity' lastActivity (date.now ()),
+
+  /// Equals than 'initialActivity' for debug.
+  ///
+  /// Arguments:
+  ///   lastActivity - Activity when server was stopped by last time.
+  ///   today - current day.
+  initialActivity' lastActivity today
+  is activity.t -> date.t -> activity.t =
+    day = lastActivity.date;
+    ac = lastActivity.activity;
+
+    activity.mk
+      if ac == cts.actSleeping2 then
+        if date.eqDay day today then
+          if calendarTb.isOpen today then
+            cts.actActivating
+          elif date.hour today > 12 then
+            cts.actDeactivating
+          else
+            cts.actSleeping2
+          fi
+        elif date.dfDays (calendarTb.previousMarketDay today) day >= 0
+          then cts.actHistoric
+        else cts.actSleeping2
+        fi
+      elif ac == cts.actSleeping1 then
+        if date.eqDay day today or
+            (date.eqDay today (date.addDays 1 day) and
+             date.hour today < cts.actHistoricStart)
+          then cts.actSleeping1
+        else cts.actHistoric
+        fi
+      elif ac == cts.actActive then
+        if date.eqDay day today then cts.actActive
+        elif date.eqDay today (date.addDays 1 day) and
+             date.hour today < cts.actHistoricStart
+          then cts.actSleeping1
+        else cts.actHistoric
+        fi
+      elif ac == cts.actHistoric then
+        cts.actHistoric
+      elif ac == cts.actActivating then
+        if date.eqDay day today then cts.actActivating
+        elif date.eqDay today (date.addDays 1 day) and
+             date.hour today < cts.actHistoricStart
+          then cts.actSleeping1
+        else cts.actHistoric
+        fi
+      elif ac == cts.actDeactivating then
+        if date.eqDay day today then cts.actDeactivating
+        elif date.eqDay today (date.addDays 1 day) and
+             date.hour today < cts.actHistoricStart
+          then cts.actSleeping1
+        else cts.actHistoric
+        fi;
+      else
+        mmFail "Activity '\(ac)' is unknown"
+      fi,
+
+  /// Launch scheduler.
+  ///
+  /// Arguments:
+  ///   act - Current activity.
+  run act
+  is activity.t -> () =
+    var a = act;
+    changeActivity newAct =
+      sync.run do lk:
+        a := activity.mk newAct;
+        conf.setActivity lk a;
+        log.info lk newAct
+        done;
+    (not stopper.stop? ()) loop (
+      aact = a.activity;
+      if aact == cts.actActivating then
+        activating ();
+        updateProfitsHistoric ();
+        changeActivity cts.actActive;
+      elif aact == cts.actActive then
+        var count = 0;
+        (not stopper.stop? () and calendarTb.isOpen (date.now ())) loop (
+          if count >= cts.schedulerTimes then
+            updateDaily false;
+            updateProfitsHistoric ();
+            count := 0;
+          fi;
+          count := count + 1;
+          thread.sleep cts.schedulerSleep;
+        );
+        if not stopper.stop? () then
+          changeActivity cts.actDeactivating;
+        fi;
+      elif aact == cts.actDeactivating then
+        updateDaily true;
+        updateProfitsHistoric ();
+        changeActivity cts.actSleeping1;
+      elif aact == cts.actSleeping1 then
+        ( not stopper.stop? () and
+          ( date.hour (date.now ()) < cts.actHistoricStart or
+            date.hour (date.now ()) > cts.actHistoricEnd
+          )
+        ) loop (
+          thread.sleep cts.schedulerSleep;
+        );
+        if not stopper.stop? () then
+          changeActivity cts.actHistoric;
+        fi;
+      elif aact == cts.actHistoric then
+        updateHistoric ();
+        if not stopper.stop? () then
+          _ = thread.run do:
+              fleas.evolution ();
+              done;
+          sync.run do lk:
+            for [0..cts.managers - 1] do i:
+              managersTb.regularize lk i
+              done
+            done;
+          changeActivity cts.actSleeping2;
+        fi;
+      else // actSleeping2
+        (not stopper.stop? () and not calendarTb.isOpen (date.now ())) loop (
+          thread.sleep cts.schedulerSleep;
+        );
+        if not stopper.stop? () then
+          changeActivity cts.actActivating;
+        fi;
+      fi
+    ),
+})
+

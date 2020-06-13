@@ -1,0 +1,41 @@
+// Copyright 07-Jun-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Daily charts main page.
+module server.pgs.daily.daily;
+
+load es.dm.std;
+cgi = load es.dm.cgi;
+json = load es.dm.json;
+sync = load es.dm.sync;
+dailyChartsTb = load db.dailyChartsTb;
+conf = load db.conf;
+sboxTb = load db.sboxTb;
+load std;
+
+{
+  /// Request process.
+  ///
+  /// Arguments:
+  ///   ck - Comunication key.
+  ///   rq - Request.
+  process ck rq
+  is string -> hash<string, json.t> -> string =
+    case cgi.rqString rq "rq" of
+    "idata" :
+      var rp = [:];
+      sync.run do lk:
+        rp["chartsData"] := dailyChartsTb.readJs lk;
+        rp["server"] := json.ws (sboxTb.getServer lk).name;
+        rp["activity"] := json.ws (conf.activity ()).activity;
+        done;
+      cgi.rp ck rp;
+    "newServer":
+      sync.run do lk:
+        sboxTb.nextServer lk
+        done;
+      cgi.rpEmpty ck;
+    k:
+      failedKey k
+    esac,
+}

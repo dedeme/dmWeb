@@ -1,0 +1,492 @@
+// Copyright 09-May-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Internet servers management.
+module net.net;
+
+load es.dm.std;
+ext = load es.dm.ext;
+dec = load es.dm.dec;
+sync = load es.dm.sync;
+cts = load data.cts;
+log = load db.log;
+nicksTb = load db.nicksTb;
+quotesDb = load db.quotesDb;
+serversTb = load db.serversTb;
+server = load data.server;
+nick = load data.nick;
+quote = load data.quote;
+
+typedef dailyEntryT =
+  { code is string,
+    close is number
+  };
+
+typedef historicEntryT =
+  { date is string,
+    open is number,
+    close is number,
+    max is number,
+    min is number,
+    vol is number
+  };
+
+(
+  download cmd url =
+    if cmd == "Wget" then ext.wget url cts.webWait
+    else ext.puppeteer url cts.webWait
+    fi;
+
+  toNumber lk isIso? n =
+    ( n = if isIso? then strReplace "." "" n |> strReplace "," "."
+          else strReplace "," "" n
+          fi;
+      case dec.fromStr n of
+      Some n' :
+        if n' < 0 then
+          log.error lk "Negative quote (\(n'))";
+          None ()
+        else
+          Some n'
+        fi;
+      None () :
+        if n == "" or strChar n 0 == "-" then
+          Some 0
+        else
+          log.error lk "Wrong number (\(n))";
+          None ()
+        fi
+      esac
+    );
+
+  mkDate lk d sep isIso? =
+    ( readYahoo () =
+        ( months =
+            [ "ene.", "feb.", "mar.", "abr.", "may.", "jun.",
+              "jul.", "ago.", "sept.", "oct.", "nov.", "dic."
+            ];
+          parts = csplit " " d |> array;
+          if length parts != 3 then
+            log.error lk "Wrong date (\(d))";
+            None ()
+          else
+            day = parts[0];
+            lday = strLength day;
+            month = (index parts[1] months) + 1;
+            year = parts[2];
+            lyear = strLength year;
+            if month > 0 and
+               dec.digits? day and lday > 0 and lday < 3 and
+               dec.digits? year and (lyear == 2 or lyear == 4)
+            then
+              month = string month;
+              lmonth = strLength month;
+              Some (if lyear == 2 then "20" ^ year else year fi ^
+                    if lmonth == 1 then "0" ^ month else month fi ^
+                    if lday == 1 then "0" ^ day else day fi
+                    )
+            else
+              log.error lk "Wrong date (\(d))";
+              None ()
+            fi
+          fi
+        );
+      if sep == "*" then
+        readYahoo ()
+      else
+        parts = csplit sep d |> array;
+        if length parts != 3 then
+          log.error lk "Wrong date (\(d))";
+          None ()
+        else
+          day = if isIso? then parts[0] else parts[1] fi;
+          lday = strLength day;
+          month = if isIso? then parts[1] else parts[0] fi;
+          lmonth = strLength month;
+          year = parts[2];
+          lyear = strLength year;
+          if dec.digits? day and lday > 0 and lday < 3 and
+             dec.digits? month and lmonth > 0 and lmonth < 3 and
+             dec.digits? year and (lyear == 2 or lyear == 4)
+          then
+            Some (if lyear == 2 then "20" ^ year else year fi ^
+                  if lmonth == 1 then "0" ^ month else month fi ^
+                  if lday == 1 then "0" ^ day else day fi
+                  )
+          else
+            log.error lk "Wrong date (\(d))";
+            None ()
+          fi
+        fi
+      fi
+    );
+
+  goStart html start marks
+  is string -> number -> list<string> -> number =
+    ( fn i ms = case ms of
+                m::ms' : case sindex' m i html of
+                         Some ix : fn (ix + strLength m) ms';
+                         None () : -1
+                         esac;
+                _ : i
+                esac;
+      fn start marks
+    );
+
+  goEnd html start marks
+  is string -> number -> list<string> -> number =
+    ( fn len i ms = case ms of
+                    m::ms' : case sindex' m (i + len) html of
+                             Some ix : fn (strLength m) ix ms';
+                             None () : -1
+                             esac;
+                    _ : i
+                esac;
+      fn 0 start marks
+    );
+
+  // Read a company historic page or a daily page.
+  // If conf is a daily one, code is an empty string.
+  read lk conf code
+  is sync.t -> server.confT -> string -> option<list<array<string>>> =
+    ( getHtml =
+        ( var url = conf.url;
+          if code != "" then url := strReplace "${code}" code url fi;
+          html = download conf.cmd url;
+          if html == "" then
+            log.error lk "Inet error reading '\(url)'";
+            None ()
+          else
+            start = goStart html 0 (csplit "|" conf.tableStart);
+            if start == -1 then
+              log.error lk "Start table not found reading '\(url)'";
+              None ()
+            else
+              end = goEnd html start (csplit "|" conf.tableEnd);
+              if end == -1 then
+                log.error lk "End table not found reading '\(url)'";
+                None ()
+              else
+                Some (strSlice html start end)
+              fi
+            fi
+          fi
+        );
+      case getHtml of
+      Some html :
+        rowStart = csplit "|" conf.rowStart;
+        rowEnd = csplit "|" conf.rowEnd;
+        cellsStart = map do st: csplit "|" st done conf.cellsStart;
+        cellsEnd = map do st: csplit "|" st done conf.cellsEnd;
+        mkRows r start =
+          ( start = goStart html start rowStart;
+            if start == -1 then
+              reverse r
+            else
+              end = goEnd html start rowEnd;
+              htmlSub = strSlice html start end;
+              if end == -1 then
+                reverse r
+              else
+                mkCells cr cstart cellsStart cellsEnd =
+                  ( if empty? cellsStart then
+                      Some (reverse cr |> array)
+                    else
+                      cstart = goStart htmlSub cstart (head cellsStart);
+                      if cstart == -1 then
+                        None ()
+                      else
+                        end = goEnd htmlSub cstart (head cellsEnd);
+                        if end == -1 then
+                          None ()
+                        else
+                          mkCells (strTrim (strSlice htmlSub cstart end)::cr)
+                                  end (tail cellsStart) (tail cellsEnd)
+                        fi
+                      fi
+                    fi
+                  );
+                case mkCells [] 0 cellsStart cellsEnd of
+                Some cr :
+                  if empty? cr then mkRows r end
+                  else mkRows (cr::r) end
+                  fi;
+                None () :
+                  mkRows r end
+                esac
+              fi
+            fi
+          );
+        Some (mkRows [] 0);
+      None () :
+        None ()
+      esac
+    );
+
+  readDaily lk conf
+  is sync.t -> server.confT -> option<list<dailyEntryT>> =
+    case read lk conf "" of
+    Some table :
+      ixC = cindex "C" conf.fieldsType |> optGet;
+      ixQ = cindex "Q" conf.fieldsType |> optGet;
+      mkEntries r table =
+        case table of
+        row::table' :
+          code = row[ixC];
+          case toNumber lk conf.isIsoNumber row[ixQ] of
+          Some close : mkEntries ({code, close}::r) table';
+          None () : mkEntries r table'
+          esac;
+        _ :
+          reverse r
+        esac;
+      r = mkEntries [] table;
+      if empty? r then None () else Some r fi;
+    None () :
+      None ()
+    esac;
+
+  readHistoric lk conf code
+  is sync.t -> server.confT -> string -> option<list<historicEntryT>> =
+    case read lk conf code of
+    Some table:
+      ixD = cindex "D" conf.fieldsType |> optGet;
+      ixO = cindex "O" conf.fieldsType |> optGet;
+      ixC = cindex "C" conf.fieldsType |> optGet;
+      ixX = cindex "X" conf.fieldsType |> optGet;
+      ixN = cindex "N" conf.fieldsType |> optGet;
+      ixV = cindex "V" conf.fieldsType |> optGet;
+      mkEntries r table =
+        case table of
+        row::table' :
+          case
+            mkDate lk row[ixD] conf.dateSeparator conf.isIsoDate >>= do date:
+            toNumber lk conf.isIsoNumber row[ixO] >>= do open:
+            toNumber lk conf.isIsoNumber row[ixC] >>= do close:
+            toNumber lk conf.isIsoNumber row[ixX] >>= do max:
+            toNumber lk conf.isIsoNumber row[ixN] >>= do min:
+            toNumber lk conf.isIsoNumber row[ixV] >>= do vol:
+              Some { date, open, close, max, min, vol }
+              done done done done done done
+            of
+          Some e : mkEntries (e::r) table';
+          None () :
+            mkEntries r table'
+          esac;
+        _ :
+          reverse r
+        esac;
+      r = mkEntries [] table;
+      if empty? r then None () else Some r fi;
+    None () :
+      None ()
+    esac;
+
+{
+  /// Reads daily quotes.
+  ///
+  /// Companies without server code or whose code is not found generate a
+  /// quote value of '0' and produce a log error.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   sv - Web server.
+  serverReadDaily lk sv
+  is sync.t -> server.t -> option<list<nick.qvalueT>> =
+    case sv.dailyConf of
+    Some conf :
+      case readDaily lk conf of
+      Some table :
+        Some (map do nkCode:
+          case nkCode.code of
+          Some c:
+            case find do coCl: coCl.code == c done table of
+            coCl::_ :
+              {nick = nkCode.nickId, value = coCl.close};
+            _ :
+              nk = (optGet (nicksTb.getNick lk nkCode.nickId)).name;
+              log.error lk
+                "Daily close for '\(nk)' not found in '\(sv.name)'";
+              {nick = nkCode.nickId, value = 0}
+            esac;
+          None ():
+            nk = (optGet (nicksTb.getNick lk nkCode.nickId)).name;
+            log.error lk "Server '\(sv.name)' has not defined code for '\(nk)'";
+            {nick = nkCode.nickId, value = 0}
+          esac
+          done sv.codes);
+      None () :
+        log.error lk "Fail reading daily data of '\(sv.name)'";
+        None ()
+      esac;
+    None () :
+      log.error lk "Server \(sv.name): Daily configuration not defined";
+      None ()
+    esac,
+
+  /// Reads historic quotes.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   sv - Web server.
+  ///   nickId - Company nick identifier.
+  serverReadHistoric lk sv nickId
+  is sync.t -> server.t -> number -> option<list<quote.t>> =
+    tryRead n lk conf code =
+      case readHistoric lk conf code of
+      Some es :
+        if length es < 10 then
+          if n > 0 then
+            tryRead (n - 1) lk conf code
+          else
+            nk = (optGet (nicksTb.getNick lk nickId)).name;
+            log.error lk ("Historic entries of nick '\(nk)' in server " ^
+                          "'\(sv.name)' are less than 10 (\(length es))");
+            None ()
+          fi
+        else
+          Some (map do e:
+                      quote.mk e.date e.open e.close e.max e.min e.vol false
+                      done es)
+        fi;
+      None () :
+        if n > 0 then
+          tryRead (n - 1) lk conf code
+        else
+          log.error lk "Historic server '\(sv.name)' not read";
+          None ()
+        fi
+      esac;
+
+    case sv.historicConf of
+    Some conf :
+      case find do nkCode: nkCode.nickId == nickId done sv.codes of
+      nkCode::_ :
+        case nkCode.code of
+        Some code :
+          tryRead 2 lk conf code;
+        None () :
+          nk = (optGet (nicksTb.getNick lk nickId)).name;
+          log.error lk "Server '\(sv.name)' has not defined code for '\(nk)'";
+          None ()
+        esac;
+      _ :
+        nk = (optGet (nicksTb.getNick lk nickId)).name;
+        log.error lk "Code of '\(nk)' is missing in '\(sv.name)'";
+        None ()
+      esac;
+    None () :
+      log.error lk "Server \(sv.name): Historic configuration not defined";
+      None ()
+    esac,
+
+  /// Test daily configuration of a server and returns 'true' if the result
+  /// was ok.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   id - Server identifier.
+  testDailyConf lk id
+  is sync.t -> number -> boolean =
+    case find do sv: sv.id == id done (serversTb.read lk) of
+    sv::_ :
+      case serverReadDaily lk sv of
+      Some nickCloses : length nickCloses == length sv.codes;
+      None () : false
+      esac;
+    _ :
+      false
+    esac,
+
+  /// Test daily configuration of server-company and returns 'true' if the
+  /// result was ok.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   id - Server identifier.
+  ///   nickId - Nick indentifier.
+  testHistoricConf lk id nickId
+  is sync.t -> number -> number -> boolean =
+    case find do sv: sv.id == id done (serversTb.read lk) of
+    sv::_ :
+      case serverReadHistoric lk sv nickId of
+      Some _ : true;
+      None () : false
+      esac;
+    _ :
+      false
+    esac,
+
+  /// Updates historic quotes of "nickId".
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   nickId - Company nick identifier.
+  updateHistoric lk nickId
+  is sync.t -> number -> { errors? is boolean, warnings? is boolean } =
+    getNick () =
+      ( r = nicksTb.getNick lk nickId;
+        if none? r then log.error lk "Nick id '\(nickId)' not found" fi;
+        r
+      );
+
+    getOldQs nk =
+      ( oldQs = quotesDb.read lk nk;
+        if oldQs == [] then
+          log.error lk ("Fail reading quotes from \(nk).tb");
+          None ()
+        else
+          Some oldQs
+        fi
+      );
+
+    getModel () =
+      ( r = nicksTb.getModel lk;
+        if none? r then log.error lk "Nick model not defined" fi;
+        r
+      );
+
+    case
+      getNick () >>= do nk:
+      getOldQs nk.name >>= do oldQs:
+      getModel () >>= do nkModel:
+      if nkModel.id == nk.id
+      then Some []
+      else getOldQs nkModel.name
+      fi >>= do modelQs:
+        ( log.info lk "Updating \(nk.name)";
+          { servers, selected } = serversTb.historicList lk;
+          { qsIx, ix } = fold do {qsIx, ix} sv:
+              { qsIx = { qs = serverReadHistoric lk sv nk.id, ix }::qsIx,
+                ix = ix + 1
+              }
+              done { qsIx = [], ix = 0 } servers;
+          { svQs, svSel, i } = fold do { svQs, svSel, i } { qs, ix } :
+            case qs of
+            Some qs' :
+              { svQs = qs' :: svQs,
+                svSel = if i == ix then i else svSel fi,
+                i = i + 1
+              };
+            None () :
+              { svQs, svSel, i = i + 1 }
+            esac
+            done { svQs = [], svSel = 0, i = 0 } qsIx;
+          svQs = reverse svQs |> array;
+          newQs = if empty? svQs then oldQs
+                  else quote.unify svQs svSel
+                  fi;
+          { errors, qs } = quote.merge modelQs newQs oldQs;
+          warnings? = not (empty? errors);
+          if warnings? then
+            log.error lk (strJoin "\n" errors)
+          fi;
+          ok = quotesDb.setQuotes lk nk.id qs;
+          Some (warnings? and not ok)
+        )  done done done done
+      of
+    Some warnings? : { errors? = false, warnings? };
+    None () : { errors? = true, warnings? = false }
+    esac,
+
+})

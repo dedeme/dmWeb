@@ -1,0 +1,80 @@
+// Copyright 18-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+module index;
+
+load es.dm.all;
+json = load es.dm.json;
+load es.dm.jsonM;
+indexTree = load data.indexTree;
+
+(
+  readLine l =
+    case sindex ". " l of
+      Some i :
+        strLeft l (i + 1);
+      None () :
+        l
+    esac;
+
+  readDoc fpath =
+    ( read doc ls =
+        case ls of
+        l::ls :
+          ( l = strTrim l;
+            if strStarts? l "module " then
+              doc
+            elif strStarts? l "///" then
+              doc = if doc == "" then readLine (strTrim (strRight l 3))
+                    else doc
+                    fi;
+              read doc ls
+            elif l == "" then
+              read doc ls
+            else
+              read "" ls
+            fi
+          );
+        _ :
+          doc
+        esac;
+
+      f = io.inFile fpath;
+      doc = read "" (io.toLines f);
+      io.iclose f;
+      doc
+   );
+
+
+  mkTree tpath
+  is string -> option<indexTree.t> =
+    ( mk first p =
+        ( name = if first then "" else path.onlyName p fi;
+          if file.directory? p then
+            IndexTreeDir
+              { name,
+                contents = map do f: mk false (p ^/ f) done (file.dir p)
+              }
+          else
+            IndexTreeFile { name, documentation = readDoc p }
+          fi
+        );
+
+      if file.directory? tpath then
+        Some (mk true tpath)
+      else
+        None ()
+      fi
+    );
+
+{
+  process ck rq is
+  string -> map<string, json.t> -> string =
+    case cgi.rqString rq "rq" of
+    "tree" :
+      tree = mkTree (cgi.rqString rq "path");
+      cgi.rp ck ["tree": jswMaybe indexTree.toJs tree];
+    s:
+    throw (exc.illegalArgument "Request '\(s)' is unknown")
+    esac,
+})

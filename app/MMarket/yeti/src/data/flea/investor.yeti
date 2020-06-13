@@ -1,0 +1,189 @@
+// Copyright 26-May-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Investor data (model + eval)
+module data.flea.investor;
+
+load es.dm.std;
+json = load es.dm.json;
+flea = load data.flea.flea;
+eval = load data.flea.eval;
+fmodel = load data.flea.fmodel;
+fmodels = load data.flea.fmodels;
+qtable = load data.qtable;
+
+typedef t =
+  { model is fmodel.t,
+    eflea is eval.t
+  };
+
+{
+  /// Cretes a new investor.
+  ///
+  /// Arguments:
+  ///   model - Flea model
+  ///   eflea - Evaluated flea.
+  mk model eflea
+  is fmodel.t -> eval.t -> t =
+    { model, eflea },
+
+  /// Returns an investor JSONized to save in file system.
+  ///
+  /// Arguments:
+  ///   inv - Investor.
+  toJs inv
+  is t -> json.t =
+    json.wa
+      [ json.ws inv.model.id,
+        eval.toJs inv.eflea
+      ],
+
+  /// Returns an investor JSONized for sending to client (javascript).
+  ///
+  /// Arguments:
+  ///   inv - Investor.
+  toJsClient inv
+  is t -> json.t =
+    json.wa
+      [ fmodel.toJs inv.model,
+        eval.toJs inv.eflea
+      ],
+
+  /// Returns an investor from a JSON value generated with 'tojs'. Return can
+  /// fail if the model is not found.
+  ///
+  ///  Arguments:
+  ///    js -  JSON value.
+  fromJs js
+  is json.t -> option<t> =
+    a = json.ra js |> array;
+    case fmodels.getModel (json.rs a[0]) of
+    Some model :
+      Some { model, eflea = eval.fromJs a[1] };
+    None () :
+      None ()
+    esac,
+
+  /// Returns a list of investors from a serialized list of them, removing
+  /// those that can not be deserialized.
+  ///
+  /// Arguments:
+  ///   jss - List of 'JSONized' investors.
+  fromJsList jss
+  is list<json.t> -> list<t> =
+    from r ls
+    is list<t> -> list<json.t> -> list<t> =
+      case ls of
+      js::ls' : case fromJs js of
+                Some i : from (i::r) ls';
+                None () : from r ls'
+                esac;
+      _ : reverse r
+      esac;
+    from [] jss,
+
+  /// Reevaluates a list of investers.
+  ///
+  /// Arguments:
+  ///   md - Flea model.
+  ///   opens - Open quotes table.
+  ///   closes - Close quotes table.
+  ///   invs - invs list.
+  evaluate opens closes invs
+  is qtable.t -> qtable.t -> list<t> -> () =
+    var minAssets = 2000000;
+    var maxAssets = (-2000000);
+    var minProfitsAvg = 2000;
+    var maxProfitsAvg = (-2000);
+    var minProfitsVa = 2000;
+    var maxProfitsVa = (-2000);
+    for invs do inv:
+      rs = fmodel.assets inv.model opens closes inv.eflea.flea.params;
+      inv.eflea.buys := rs.buys;
+      inv.eflea.sells := rs.sells;
+      inv.eflea.assets := rs.assets;
+      {avg, va} = fmodel.profitsAvgVa inv.model opens closes
+                                   inv.eflea.flea.params;
+      inv.eflea.profitsAvg := avg;
+      inv.eflea.profitsVa := va;
+      assets = inv.eflea.assets;
+      profitsAvg = inv.eflea.profitsAvg;
+      profitsVa = inv.eflea.profitsVa;
+      if assets < minAssets then minAssets := assets fi;
+      if assets > maxAssets then maxAssets := assets fi;
+      if profitsAvg < minProfitsAvg then minProfitsAvg := profitsAvg fi;
+      if profitsAvg > maxProfitsAvg then maxProfitsAvg := profitsAvg fi;
+      if profitsVa < minProfitsVa then minProfitsVa := profitsVa fi;
+      if profitsVa > maxProfitsVa then maxProfitsVa := profitsVa fi;
+      done;
+
+    assetsDif = maxAssets - minAssets;
+    profitsAvgDif = maxProfitsAvg - minProfitsAvg;
+    profitsVaDif = maxProfitsVa - minProfitsVa;
+    for invs do inv:
+      inv.eflea.eval :=
+        flea.evaluate inv.eflea.flea
+                      ((inv.eflea.assets - minAssets) / assetsDif)
+                      ((inv.eflea.profitsAvg - minProfitsAvg) / profitsAvgDif)
+                      ((inv.eflea.profitsVa - minProfitsVa) / profitsVaDif)
+      done,
+
+  /// Sorts an investor list for better to worse.
+  ///
+  /// Arguments:
+  ///   invs - Investors list.
+  sort invs
+  is list<t> -> list<t> =
+    sortBy do i1 i2: i1.eflea.eval > i2.eflea.eval done invs,
+
+  /// Returns true if "invs" contains "inv". Compare only 'inv.eflea.flea'
+  /// and 'inv.model.id'.
+  ///
+  /// Arguments:
+  ///   inv - Investor.
+  ///   invs - Investors list.
+  containsInvestor? inv invs
+  is t -> list<t> -> boolean =
+    any do i:
+      flea.eq i.eflea.flea inv.eflea.flea and i.model.id == inv.model.id
+      done invs,
+
+
+  /// Remove duplicates (Compare only 'inv.eflea.flea' and 'inv.model.id').
+  /// Order of "invs" is altered.
+  ///
+  /// Arguments:
+  ///   invs - investors list.
+  removeDuplicates invs
+  is list<t> -> list<t> =
+    fn r invs = case invs of
+              i::invs' : if containsInvestor? i r then fn r invs'
+                         else fn (i::r) invs' fi;
+              _ : r
+              esac;
+    fn [] invs,
+
+  /// Adds elements from source to target, starting by the begining of source.
+  /// The result is not ordered.
+  /// Elements duplicated in "target" are no added.
+  ///
+  /// If target reaches the length of "n", the process is stopped.
+  ///
+  /// Arguments:
+  ///   source - Investors to add.
+  ///   target - Investors target.
+  ///   n - Maximum length allowed of target.
+  complete source target n
+  is list<t> -> list<t> -> number -> list<t> =
+    fn s t l =
+      case s of
+      e::s' :
+        if l >= n then t
+        elif containsInvestor? e t then fn s' t l
+        else fn s' (e::t) (l + 1)
+        fi;
+      _ : t
+      esac;
+    fn source target (length target);
+
+}

@@ -114,6 +114,23 @@ export default class Quote {
     return this._error;
   }
 
+  /**
+   * @param {!Array<?>} serial
+   * @return {!Quote}
+   */
+  static fromJs (serial) {
+    return new Quote(
+      serial[0],
+      serial[1],
+      serial[2],
+      serial[3],
+      serial[4],
+      serial[5],
+      serial[6]
+    );
+  }
+  /*--*/
+
   /** @return {string}  */
   toString () {
     return `${this.date}:${this._open}:${this._close}:` +
@@ -131,21 +148,4 @@ export default class Quote {
       Number(fs[4]), Number(fs[5]), fs[6] === "true"
     );
   }
-
-  /**
-   * @param {!Array<?>} serial
-   * @return {!Quote}
-   */
-  static fromJs (serial) {
-    return new Quote(
-      serial[0],
-      serial[1],
-      serial[2],
-      serial[3],
-      serial[4],
-      serial[5],
-      serial[6]
-    );
-  }
-  /*--*/
 }

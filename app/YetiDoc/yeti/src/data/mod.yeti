@@ -1,0 +1,105 @@
+// Copyright 18-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Module data
+module data.mod;
+
+load es.dm.all;
+json = load es.dm.json;
+load es.dm.jsonM;
+
+typedef linkT =
+  { /// Module name.
+    name is string,
+    /// Link to code file.
+    link is string
+  };
+
+typedef treeEntryT =
+  { /// Entry type
+    tp is string,
+    /// Enums list.
+    enums is list<string>,
+    /// Functions list.
+    ms is list<string>,
+    /// Paramenter list.
+    ps is list<string>
+  };
+
+typedef t =
+  { /// Package reference.
+    title is string,
+    /// Intial html.
+    html1 is string,
+    /// Final html.
+    html2 is string,
+    /// Link to file code.
+    link is linkT,
+    /// Index of entries.
+    tree is list<treeEntryT>,
+  };
+
+(
+  linkToJs l
+  is linkT -> json.t =
+    json.wa
+      [ json.ws l.name,
+        json.ws l.link
+      ];
+
+  treeEntryToJs e
+  is treeEntryT -> json.t =
+    json.wa
+      [ json.ws e.tp,
+        jswList json.ws e.enums,
+        jswList json.ws e.ms,
+        jswList json.ws e.ps
+      ];
+
+{
+  /// Make a link.
+  ///
+  /// Arguments:
+  ///   name - Module name.
+  ///   link - Link to code file.
+  mkLink name link
+  is string -> string -> linkT =
+    { name, link },
+
+  /// Make an index entry.
+  ///
+  /// Arguments.
+  ///   tp - type.
+  ///   enums - Enums list.
+  ///   ms - functions list.
+  ///   ps - parameters list.
+  mkTreeEntry tp enums ms ps
+  is string -> list<string> -> list<string> -> list<string> -> treeEntryT =
+    { tp, enums, ms, ps },
+
+  /// Page data.
+  ///
+  /// Arguments.
+  ///   title - Title.
+  ///   html1 - Initial html.
+  ///   html2 - Final html.
+  ///   link - Code file link.
+  ///   tree - Index of module.
+  mk title html1 html2 link  tree
+  is string -> string -> string -> linkT -> list<treeEntryT> -> t =
+    { title, html1, html2, link, tree },
+
+  /// Serialization to JSON.
+  ///
+  /// Arguments:
+  ///   m - module.
+  toJs t is
+  t -> json.t =
+    json.wa
+      [ json.ws t.title,
+        json.ws t.html1,
+        json.ws t.html2,
+        linkToJs t.link,
+        jswList treeEntryToJs t.tree
+      ],
+})

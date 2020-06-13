@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html><meta http-equiv="Content-Type" content="text/html;charset=utf-8" ><style type="text/css">
+.main { background: white; line-height: 130%; font-family: sans-serif }
+.type { background: white; font-size: 12pt; }
+.sn { font: 13pt monospace }
+.vn { font-size: 13pt }
+.other { background: #cccccc; display: inline; }
+.field { padding: 1.5pt }
+.wdoc { padding-top: 0.5em; padding-bottom: 0.4em; }
+var { font: 11pt monospace }
+.args { padding-left: 1.4em }
+.args tr td { vertical-align: text-top }
+td.arg { width: 100% }
+/*.wdoc { margin-top: 0.6em; margin-bottom: 0.6em; } */
+.box { border: 1px solid black;
+    /* top/bottom right/left | top right/left bottom | top right bottom left */
+    padding: 1px 0.1em 1pt;
+    margin: 1px 1pt 0pt;
+    display: inline-block; }
+.module { color: #000080 }
+.group { font: 16pt sans-serif; border-bottom: solid black 1px;
+         padding: 0px; margin: 0.5em 0px; text-align: center }
+em { color: #000080; font: bold 13pt sans-serif }
+.function { background: #ffffff }
+.struct { background: #ffffff }
+.variant { background: #c7c7ff }
+/* background: #bbffbb; */
+.ft { padding-left: 0em }
+.doc { background: #ffffa8;
+    padding: 0.5em 0.5em 0.5em 2em;
+    font-size: 12pt; }
+.contents { background: #dddddd; padding: 0.5em; font-size: 10pt }
+.contents a { text-decoration: none }
+.contents a:hover { text-decoration: underline }
+.doc p { margin: 0.6em 0px 1px; font-weight: bold }
+.doc pre { background: #ffffc8;
+    border: 1px dashed black;
+    margin: 0.3em 1.5em 0.3em 0px;
+    padding: 0.3em; overflow: auto }
+</style><title>cts</title>
+<body>
+<div class="main">
+<h2><span class=module>module</span> cts</h2>
+<div class="doc">Copyright 21-Apr-2020 ºDeme
+GNU General Public License - V3 &lt;http://www.gnu.org/licenses/&gt;
+/Global constants.</div><p>
+<h3>Module signature</h3>
+<div class="type"><em>{</em><div class="box struct" style="display: block; margin: 2pt"><div class=contents><a href="#accPath">accPath</a> <a href="#actActivating">actActivating</a> <a href="#actActive">actActive</a> <a href="#actDeactivating">actDeactivating</a> <a href="#actHistoric">actHistoric</a> <a href="#actHistoricEnd">actHistoricEnd</a> <a href="#actHistoricStart">actHistoricStart</a> <a href="#actSleeping1">actSleeping1</a> <a href="#actSleeping2">actSleeping2</a> <a href="#ageRatio">ageRatio</a> <a href="#appName">appName</a> <a href="#assetsRatio">assetsRatio</a> <a href="#bet">bet</a> <a href="#cycles">cycles</a> <a href="#dataPath">dataPath</a> <a href="#dataVersion">dataVersion</a> <a href="#expiration">expiration</a> <a href="#fleasPath">fleasPath</a> <a href="#fleasPerModel">fleasPerModel</a> <a href="#historicQuotes">historicQuotes</a> <a href="#historicRankingEntries">historicRankingEntries</a> <a href="#initialCapital">initialCapital</a> <a href="#insertionCycle">insertionCycle</a> <a href="#logMaxEntries">logMaxEntries</a> <a href="#maxSells">maxSells</a> <a href="#minSells">minSells</a> <a href="#minToBet">minToBet</a> <a href="#mutationMultiplier">mutationMultiplier</a> <a href="#poolNumber">poolNumber</a> <a href="#port">port</a> <a href="#profitsRatio">profitsRatio</a> <a href="#rankingChanges">rankingChanges</a> <a href="#rankingNumber">rankingNumber</a> <a href="#rankingPath">rankingPath</a> <a href="#schedulerSleep">schedulerSleep</a> <a href="#schedulerTimes">schedulerTimes</a> <a href="#serversDelay">serversDelay</a></div><div id="accPath" class="field wdoc"><span class=sn>accPath</span><em> is </em>string, <div class="doc">Accounting directory relative to sys_home()</div></div>
+<div id="actActivating" class="field wdoc"><span class=sn>actActivating</span><em> is </em>string, <div class="doc">Activity state</div></div>
+<div id="actActive" class="field wdoc"><span class=sn>actActive</span><em> is </em>string, <div class="doc">Activity state</div></div>
+<div id="actDeactivating" class="field wdoc"><span class=sn>actDeactivating</span><em> is </em>string, <div class="doc">Activity state</div></div>
+<div id="actHistoric" class="field wdoc"><span class=sn>actHistoric</span><em> is </em>string, <div class="doc">Activity state</div></div>
+<div id="actHistoricEnd" class="field wdoc"><span class=sn>actHistoricEnd</span><em> is </em>number, <div class="doc">Hour to finish ACT_HISTORIC fase</div></div>
+<div id="actHistoricStart" class="field wdoc"><span class=sn>actHistoricStart</span><em> is </em>number, <div class="doc">Hour to start ACT_HISTORIC fase</div></div>
+<div id="actSleeping1" class="field wdoc"><span class=sn>actSleeping1</span><em> is </em>string, <div class="doc">Activity state</div></div>
+<div id="actSleeping2" class="field wdoc"><span class=sn>actSleeping2</span><em> is </em>string, <div class="doc">Activity state</div></div>
+<div id="ageRatio" class="field wdoc"><span class=sn>ageRatio</span><em> is </em>number, <div class="doc">Flea age ratio</div></div>
+<div id="appName" class="field wdoc"><span class=sn>appName</span><em> is </em>string, <div class="doc">Application name</div></div>
+<div id="assetsRatio" class="field wdoc"><span class=sn>assetsRatio</span><em> is </em>number, <div class="doc">Fleas evaluation ---------------------------------------------------------
+Historic simulation ratio</div></div>
+<div id="bet" class="field wdoc"><span class=sn>bet</span><em> is </em>number, <div class="doc">Bet</div></div>
+<div id="cycles" class="field wdoc"><span class=sn>cycles</span><em> is </em>number, <div class="doc">Number of cycle per parameter after insertion to finish a process</div></div>
+<div id="dataPath" class="field wdoc"><span class=sn>dataPath</span><em> is </em>string, <div class="doc">Data directory relative to sys_home()</div></div>
+<div id="dataVersion" class="field wdoc"><span class=sn>dataVersion</span><em> is </em>string, <div class="doc">Data version</div></div>
+<div id="expiration" class="field wdoc"><span class=sn>expiration</span><em> is </em>number, <div class="doc">Time (seconds) of connection expiration</div></div>
+<div id="fleasPath" class="field wdoc"><span class=sn>fleasPath</span><em> is </em>string, <div class="doc">Fleas directory relative to sys_home()</div></div>
+<div id="fleasPerModel" class="field wdoc"><span class=sn>fleasPerModel</span><em> is </em>number, <div class="doc">Number of fleas per model</div></div>
+<div id="historicQuotes" class="field wdoc"><span class=sn>historicQuotes</span><em> is </em>number, <div class="doc">Fleas --------------------------------------------------------------------
+Number of quotes in historic</div></div>
+<div id="historicRankingEntries" class="field wdoc"><span class=sn>historicRankingEntries</span><em> is </em>number, <div class="doc">Number of fleas in ranking</div></div>
+<div id="initialCapital" class="field wdoc"><span class=sn>initialCapital</span><em> is </em>number, <div class="doc">Fleas initial capital for each cycle</div></div>
+<div id="insertionCycle" class="field wdoc"><span class=sn>insertionCycle</span><em> is </em>number, <div class="doc">Number of cycle to insert historic results</div></div>
+<div id="logMaxEntries" class="field wdoc"><span class=sn>logMaxEntries</span><em> is </em>number, <div class="doc">Log maximum entries</div></div>
+<div id="maxSells" class="field wdoc"><span class=sn>maxSells</span><em> is </em>number, <div class="doc">Maximun operations to survive (multiplicator: days * maxSells)</div></div>
+<div id="minSells" class="field wdoc"><span class=sn>minSells</span><em> is </em>number, <div class="doc">Minimum operations to survive (multiplicator: days * minSells)</div></div>
+<div id="minToBet" class="field wdoc"><span class=sn>minToBet</span><em> is </em>number, <div class="doc">Minimun cash to bet</div></div>
+<div id="mutationMultiplier" class="field wdoc"><span class=sn>mutationMultiplier</span><em> is </em>number, <div class="doc">Maximum of mutation</div></div>
+<div id="poolNumber" class="field wdoc"><span class=sn>poolNumber</span><em> is </em>number, <div class="doc">Number of fleas in pool</div></div>
+<div id="port" class="field wdoc"><span class=sn>port</span><em> is </em>string, <div class="doc">Server -------------------------------------------------------------------
+Communications port.</div></div>
+<div id="profitsRatio" class="field wdoc"><span class=sn>profitsRatio</span><em> is </em>number, <div class="doc">Average of profits ratio</div></div>
+<div id="rankingChanges" class="field wdoc"><span class=sn>rankingChanges</span><em> is </em>number, <div class="doc">Number of fleas that changes per session</div></div>
+<div id="rankingNumber" class="field wdoc"><span class=sn>rankingNumber</span><em> is </em>number, <div class="doc">Number of fleas in ranking</div></div>
+<div id="rankingPath" class="field wdoc"><span class=sn>rankingPath</span><em> is </em>string, <div class="doc">Ranking directory relative to sys_home()</div></div>
+<div id="schedulerSleep" class="field wdoc"><span class=sn>schedulerSleep</span><em> is </em>number, <div class="doc">Scheduler ----------------------------------------------------------------
+Time to scheduler sleep (milliseconds)</div></div>
+<div id="schedulerTimes" class="field wdoc"><span class=sn>schedulerTimes</span><em> is </em>number, <div class="doc">Tics of SCHEDULER SLEEP</div></div>
+<div id="serversDelay" class="field wdoc"><span class=sn>serversDelay</span><em> is </em>number<div class="doc">External servers (Infobolsa, Invertia, etc.) delay in SECONDS</div></div>
+</div><em>}</em></div>
+</div>
+</body></html>

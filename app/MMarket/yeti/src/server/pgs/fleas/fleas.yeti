@@ -1,0 +1,68 @@
+// Copyright 21-May-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+// Fleas main page.
+module server.pgs.fleas.fleas;
+
+load es.dm.std;
+cgi = load es.dm.cgi;
+json = load es.dm.json;
+load es.dm.jsonM;
+sync = load es.dm.sync;
+load std;
+fmodel = load data.flea.fmodel;
+fmodels = load data.flea.fmodels;
+eval = load data.flea.eval;
+evalDate = load data.flea.evalDate;
+frank = load data.flea.frank;
+fmodelsDb = load db.fleas.fmodels;
+
+{
+  /// Request process.
+  ///
+  /// Arguments:
+  ///   ck - Comunication key.
+  ///   rq - Request.
+  process ck rq
+  is string -> hash<string, json.t> -> string =
+    case cgi.rqString rq "rq" of
+    "models" :
+      var rp = [:];
+      sync.run do lk:
+        rp["models"] := jswList fmodel.toJs (fmodels.list ());
+        done;
+      cgi.rp ck rp;
+    "ranking" :
+      modelId = cgi.rqString rq "modelId";
+      fmodel = fmodels.getModel modelId |> optGet;
+      var rp = [:];
+      sync.run do lk:
+        rp["ranking"] := jswList frank.toJs (fmodelsDb.readRanking lk modelId);
+        rp["parNames"] := jswList json.ws fmodel.parNames;
+        rp["parDecs"] := jswList json.wn (list fmodel.parDecs);
+        done;
+      cgi.rp ck rp;
+    "bests" :
+      modelId = cgi.rqString rq "modelId";
+      fmodel = fmodels.getModel modelId |> optGet;
+      var rp = [:];
+      sync.run do lk:
+        rp["bests"] := jswList evalDate.toJs (fmodelsDb.readBests lk modelId);
+        rp["parNames"] := jswList json.ws fmodel.parNames;
+        rp["parDecs"] := jswList json.wn (list fmodel.parDecs);
+        done;
+      cgi.rp ck rp;
+    "pool" :
+      modelId = cgi.rqString rq "modelId";
+      fmodel = fmodels.getModel modelId |> optGet;
+      var rp = [:];
+      sync.run do lk:
+        rp["pool"] := jswList eval.toJs (fmodelsDb.readPool lk modelId);
+        rp["parNames"] := jswList json.ws fmodel.parNames;
+        rp["parDecs"] := jswList json.wn (list fmodel.parDecs);
+        done;
+      cgi.rp ck rp;
+    k:
+      failedKey k
+    esac,
+}

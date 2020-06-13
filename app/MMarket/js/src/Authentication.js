@@ -1,4 +1,4 @@
-// Copyright 28-Feb-2020 ºDeme
+// Copyright 22-Apr-2020 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 import Captcha from "./dmjs/Captcha.js";
@@ -6,6 +6,7 @@ import Client from "./dmjs/Client.js"; //eslint-disable-line
 import Store from "./dmjs/Store.js";
 import Domo from "./dmjs/Domo.js"; //eslint-disable-line
 import Ui from "./dmjs/Ui.js";
+import Cts from "./data/Cts.js";
 import {I18n, _} from "./I18n.js";
 
 const $ = e => Ui.$(e);
@@ -23,41 +24,20 @@ function setLang (app, lang) {
 **/
 export default class Authentication {
   /**
-      @param {string} app
-      @param {Client} client
+      @param {!Domo} wg Target widget.
+      @param {string} app Application name.
+      @param {function ():void} fnOk Function to call when authentication is ok.
   **/
-  constructor (app, client) {
+  constructor (wg, app, fnOk) {
+    this._wg = wg;
     this._app = app;
-    this._client = client;
+    this._fnOk = fnOk;
     this._lang = getLang(app);
     this._failed = false;
 
     this._captcha = new Captcha(`${app}__captcha`);
     this._pass = Ui.pass("accept").att("id", "pass");
-    this._wg = $("div");
-
     this.view();
-  }
-
-  /**
-      @return {!Domo}
-  **/
-  get wg () {
-    return this._wg;
-  }
-
-  /**
-      @return {!Domo}
-  **/
-  get pass () {
-    return this._pass;
-  }
-
-  /**
-      @return {string}
-  **/
-  get lang () {
-    return this._lang;
   }
 
   // View ----------------------------------------------------------------------
@@ -92,26 +72,33 @@ export default class Authentication {
         .add($("td")
           .style("padding: 10px 0px 0px 10px;text-align:right;")
           .html(_("User")))
-        .add($("td").style("padding: 10px 10px 0px 10px;").add(userIn)),
+        .add($("td")
+          .style("padding: 10px 10px 0px 10px;")
+          .add(userIn)),
       $("tr")
         .add($("td")
           .style("padding: 10px 0px 0px 10px;text-align:right;")
           .html(_("Password")))
-        .add($("td").style("padding: 10px 10px 5px 10px;").add(pass)),
+        .add($("td")
+          .style("padding: 10px 10px 5px 10px;")
+          .add(pass)),
       $("tr")
         .add($("td")
           .att("colspan", 2)
-          .style("border-top:1px solid #c9c9c9;" +
-            "padding: 5px 10px 10px;text-align:right;")
+          .style(`border-top:1px solid #c9c9c9;
+                  padding: 5px 10px 10px;text-align:right;`)
           .add($("table")
             .style(
-              "border-collapse : collapse;" +
-              "border : 0px;" +
-              "width : 100%;")
+              `border-collapse : collapse;
+               border : 0px;
+               width : 100%;`)
             .add($("tr")
-              .add($("td").att("align", "center").att("colspan", 2)
+              .add($("td")
+                .att("align", "center")
+                .att("colspan", 2)
                 .add(persistent)
-                .add($("span").html("&nbsp;" + _("Keep connected")))))
+                .add($("span")
+                  .html("&nbsp;" + _("Keep connected")))))
             .add($("tr")
               .add($("td")
                 .add(Ui.link(() => { this.changeLanguage() })
@@ -125,23 +112,26 @@ export default class Authentication {
         $("tr")
           .add($("td")
             .att("colspan", 2)
-            .style("border-top:1px solid #c9c9c9;" +
-              "padding: 10px 10px 10px;text-align:right;")
+            .style(`border-top:1px solid #c9c9c9;" +
+                    padding: 10px 10px 10px;text-align:right;`)
             .add($("table")
               .att("align", "center")
-              .style("background-color: rgb(250, 250, 250);" +
-                "border: 1px solid rgb(110,130,150);" +
-                "font-family: sans;font-size: 14px;" +
-                "padding: 4px;border-radius: 4px;")
+              .style(`background-color: rgb(250, 250, 250);
+                      border: 1px solid rgb(110,130,150);
+                      font-family: sans;font-size: 14px;
+                      padding: 4px;border-radius: 4px;`)
               .add($("tr")
-                .add($("td").html(_("Wrong password"))))))
+                .add($("td")
+                  .html(_("Wrong password"))))))
       );
     }
 
     if (this._captcha.isUpLimit()) {
       rows.push(
         $("tr")
-          .add($("td").att("colspan", 2).att("align", "center")
+          .add($("td")
+            .att("colspan", 2)
+            .att("align", "center")
             .add(this._captcha.wg))
       );
       rows.push(
@@ -155,30 +145,38 @@ export default class Authentication {
 
     this._wg
       .removeAll()
-      .add($("div").klass("head").html(`&nbsp;<br>${this._app}<br>&nbsp;`))
+      .add($("div")
+        .klass("head")
+        .html(`&nbsp;<br>${this._app}<br>&nbsp;`))
       .add($("table")
         .att("align", "center")
-        .style(
-          "background-color: #f8f8f8;" +
-          "border-collapse: collapse;" +
-          "padding: 10px;" +
-          "border: 1px solid rgb(110,130,150);")
+        .style(`background-color: #f8f8f8;
+                border-collapse: collapse;
+                padding: 10px;
+                border: 1px solid rgb(110,130,150);`)
         .add($("tr")
           .add($("td")
             .att("colspan", 2)
-            .style(
-              "background-color:#e8e8e8;" +
-              "border-bottom:1px solid #c9c9c9;" +
-              "padding: 10px;" +
-              "color:#505050;"
+            .style(`background-color:#e8e8e8;
+                    border-bottom:1px solid #c9c9c9;
+                    padding: 10px;
+                    color:#505050;`
             )
             .html("<big><big><b>" + _("Login") + "</big></big></b>")))
         .adds(rows));
 
-    userIn.e.focus();
+    pass.e.focus();
   }
 
   // Control -------------------------------------------------------------------
+
+  /**
+      Action to do after loading page.
+      @return void
+  **/
+  afterShow () {
+    this._pass.e.focus();
+  }
 
   /**
       @private
@@ -216,11 +214,11 @@ export default class Authentication {
       return;
     }
 
-    const ok = await this._client.authentication(user, pass, expire);
+    const ok = await Cts.client.authentication(user, pass, expire);
 
     if (ok) {
       captcha.reset();
-      location.reload();
+      this._fnOk();
     } else {
       this._failed = true;
       captcha.increment();

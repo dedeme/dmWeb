@@ -1,0 +1,203 @@
+// Copyright 25-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+module initActTest;
+
+load es.dm.assert;
+dt = load es.dm.date;
+cts = load data.cts;
+a = load data.activity;
+{initialActivity' = ia} = load scheduler.scheduler;
+
+{
+  run () =
+    println "InitAct test:";
+
+    today = dt.mkTime 6 3 2020 7 0 0;
+    day = dt.mkTime 6 3 2020 6 0 0;
+    ac = a.mk cts.actSleeping2 with { date = day };
+    eq (ia ac today).activity cts.actSleeping2;
+    day = dt.mkTime 5 3 2020 20 0 0;
+    ac = a.mk cts.actSleeping1 with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    day = dt.mkTime 5 3 2020 10 0 0;
+    ac = a.mk cts.actActive with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actActivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actDeactivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+
+    today = dt.mkTime 6 3 2020 12 0 0;
+    day = dt.mkTime 6 3 2020 6 0 0;
+    ac = a.mk cts.actSleeping2 with { date = day };
+    eq (ia ac today).activity cts.actActivating;
+    day = dt.mkTime 5 3 2020 20 0 0;
+    ac = a.mk cts.actSleeping1 with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    day = dt.mkTime 6 3 2020 10 0 0;
+    ac = a.mk cts.actActive with { date = day };
+    eq (ia ac today).activity cts.actActive;
+    day = dt.mkTime 6 3 2020 10 0 0;
+    ac = a.mk cts.actActivating with { date = day };
+    eq (ia ac today).activity cts.actActivating;
+    day = dt.mkTime 5 3 2020 20 0 0;
+    ac = a.mk cts.actDeactivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+
+    today = dt.mkTime 6 3 2020 20 0 0;
+    day = dt.mkTime 6 3 2020 6 0 0;
+    ac = a.mk cts.actSleeping2 with { date = day };
+    eq (ia ac today).activity cts.actDeactivating;
+    day = dt.mkTime 6 3 2020 19 0 0;
+    ac = a.mk cts.actSleeping1 with { date = day };
+    eq (ia ac today).activity cts.actSleeping1;
+    day = dt.mkTime 6 3 2020 10 0 0;
+    ac = a.mk cts.actActive with { date = day };
+    eq (ia ac today).activity cts.actActive;
+    day = dt.mkTime 6 3 2020 10 0 0;
+    ac = a.mk cts.actActivating with { date = day };
+    eq (ia ac today).activity cts.actActivating;
+    day = dt.mkTime 6 3 2020 10 0 0;
+    ac = a.mk cts.actDeactivating with { date = day };
+    eq (ia ac today).activity cts.actDeactivating;
+
+    today = dt.mkTime 7 3 2020 7 0 0;
+    day = dt.mkTime 7 3 2020 6 0 0;
+    ac = a.mk cts.actSleeping2 with { date = day };
+    eq (ia ac today).activity cts.actSleeping2;
+    day = dt.mkTime 6 3 2020 20 0 0;
+    ac = a.mk cts.actSleeping1 with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    day = dt.mkTime 6 3 2020 10 0 0;
+    ac = a.mk cts.actActive with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actActivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actDeactivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+
+    today = dt.mkTime 7 3 2020 12 0 0;
+    day = dt.mkTime 7 3 2020 6 0 0;
+    ac = a.mk cts.actSleeping2 with { date = day };
+    eq (ia ac today).activity cts.actSleeping2;
+    day = dt.mkTime 6 3 2020 20 0 0;
+    ac = a.mk cts.actSleeping1 with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    day = dt.mkTime 6 3 2020 10 0 0;
+    ac = a.mk cts.actActive with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actActivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actDeactivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+
+    today = dt.mkTime 7 3 2020 20 0 0;
+    day = dt.mkTime 7 3 2020 6 0 0;
+    ac = a.mk cts.actSleeping2 with { date = day };
+    eq (ia ac today).activity cts.actDeactivating;
+    day = dt.mkTime 6 3 2020 20 0 0;
+    ac = a.mk cts.actSleeping1 with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    day = dt.mkTime 6 3 2020 10 0 0;
+    ac = a.mk cts.actActive with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actActivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actDeactivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+
+    today = dt.mkTime 8 3 2020 7 0 0;
+    day = dt.mkTime 7 3 2020 6 0 0;
+    ac = a.mk cts.actSleeping2 with { date = day };
+    eq (ia ac today).activity cts.actSleeping2;
+    day = dt.mkTime 6 3 2020 20 0 0;
+    ac = a.mk cts.actSleeping1 with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    day = dt.mkTime 6 3 2020 10 0 0;
+    ac = a.mk cts.actActive with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actActivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actDeactivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+
+    today = dt.mkTime 8 3 2020 12 0 0;
+    day = dt.mkTime 7 3 2020 6 0 0;
+    ac = a.mk cts.actSleeping2 with { date = day };
+    eq (ia ac today).activity cts.actSleeping2;
+    day = dt.mkTime 6 3 2020 20 0 0;
+    ac = a.mk cts.actSleeping1 with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    day = dt.mkTime 6 3 2020 10 0 0;
+    ac = a.mk cts.actActive with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actActivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actDeactivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+
+    today = dt.mkTime 8 3 2020 20 0 0;
+    day = dt.mkTime 7 3 2020 6 0 0;
+    ac = a.mk cts.actSleeping2 with { date = day };
+    eq (ia ac today).activity cts.actSleeping2;
+    day = dt.mkTime 6 3 2020 20 0 0;
+    ac = a.mk cts.actSleeping1 with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    day = dt.mkTime 6 3 2020 10 0 0;
+    ac = a.mk cts.actActive with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actActivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actDeactivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+
+    today = dt.mkTime 9 3 2020 7 0 0;
+    day = dt.mkTime 7 3 2020 6 0 0;
+    ac = a.mk cts.actSleeping2 with { date = day };
+    eq (ia ac today).activity cts.actSleeping2;
+    day = dt.mkTime 6 3 2020 20 0 0;
+    ac = a.mk cts.actSleeping1 with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    day = dt.mkTime 6 3 2020 10 0 0;
+    ac = a.mk cts.actActive with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    ac = a.mk cts.actActivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    day = dt.mkTime 6 3 2020 20 0 0;
+    ac = a.mk cts.actDeactivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+
+    today = dt.mkTime 9 3 2020 12 0 0;
+    day = dt.mkTime 7 3 2020 6 0 0;
+    ac = a.mk cts.actSleeping2 with { date = day };
+    eq (ia ac today).activity cts.actSleeping2;
+    day = dt.mkTime 6 3 2020 20 0 0;
+    ac = a.mk cts.actSleeping1 with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+    day = dt.mkTime 9 3 2020 10 0 0;
+    ac = a.mk cts.actActive with { date = day };
+    eq (ia ac today).activity cts.actActive;
+    ac = a.mk cts.actActivating with { date = day };
+    eq (ia ac today).activity cts.actActivating;
+    day = dt.mkTime 6 3 2020 20 0 0;
+    ac = a.mk cts.actDeactivating with { date = day };
+    eq (ia ac today).activity cts.actHistoric;
+
+    today = dt.mkTime 9 3 2020 20 0 0;
+    day = dt.mkTime 7 3 2020 6 0 0;
+    ac = a.mk cts.actSleeping2 with { date = day };
+    eq (ia ac today).activity cts.actSleeping2;
+    day = dt.mkTime 9 3 2020 19 0 0;
+    ac = a.mk cts.actSleeping1 with { date = day };
+    eq (ia ac today).activity cts.actSleeping1;
+    day = dt.mkTime 9 3 2020 10 0 0;
+    ac = a.mk cts.actActive with { date = day };
+    eq (ia ac today).activity cts.actActive;
+    ac = a.mk cts.actActivating with { date = day };
+    eq (ia ac today).activity cts.actActivating;
+    ac = a.mk cts.actDeactivating with { date = day };
+    eq (ia ac today).activity cts.actDeactivating;
+
+    println "  Finished",
+}

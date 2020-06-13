@@ -7,10 +7,10 @@
 export default class Flea {
   /* .
   _rc_ Flea: serial
-    date : string
-    cycle: number
-    id   : number
-    gen  : !Array<number>
+    date    : string
+    cycle   : number
+    id      : number
+    params  : !Array<number>
   */
 
   /*--*/
@@ -18,9 +18,9 @@ export default class Flea {
       @param {string} date
       @param {number} cycle
       @param {number} id
-      @param {!Array<number>} gen
+      @param {!Array<number>} params
   **/
-  constructor (date, cycle, id, gen) {
+  constructor (date, cycle, id, params) {
 
     /**
         @private
@@ -44,7 +44,7 @@ export default class Flea {
         @private
         @type {!Array<number>}
     **/
-    this._gen = gen;
+    this._params = params;
 
   }
 
@@ -72,8 +72,8 @@ export default class Flea {
   /**
       @return {!Array<number>}
   **/
-  get gen () {
-    return this._gen;
+  get params () {
+    return this._params;
   }
 
   /**
@@ -84,7 +84,7 @@ export default class Flea {
       this._date,
       this._cycle,
       this._id,
-      this._gen
+      this._params
     ];
   }
 

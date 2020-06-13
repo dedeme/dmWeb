@@ -11,16 +11,16 @@ export default class Fmodel {
       @param {!Array<string>} parNames
       @param {!Array<number>} parMins
       @param {!Array<number>} parMaxs
-      @param {!Array<string>} parJsFmt
+      @param {!Array<number>} parDecs
 ¡
   **/
-  constructor (id, name, parNames, parMins, parMaxs, parJsFmt) {
+  constructor (id, name, parNames, parMins, parMaxs, parDecs) {
     this._id = id;
     this._name = name;
     this._parNames = parNames;
     this._parMins = parMins;
     this._parMaxs = parMaxs;
-    this._parJsFmt = parJsFmt;
+    this._parDecs = parDecs;
   }
 
   /**
@@ -59,10 +59,10 @@ export default class Fmodel {
   }
 
   /**
-      @return {!Array<string>}
+      @return {!Array<number>}
   **/
-  get parJsFmt () {
-    return this._parJsFmt;
+  get parDecs () {
+    return this._parDecs;
   }
 
   /**

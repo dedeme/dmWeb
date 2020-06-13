@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html><meta http-equiv="Content-Type" content="text/html;charset=utf-8" ><style type="text/css">
+.main { background: white; line-height: 130%; font-family: sans-serif }
+.type { background: white; font-size: 12pt; }
+.sn { font: 13pt monospace }
+.vn { font-size: 13pt }
+.other { background: #cccccc; display: inline; }
+.field { padding: 1.5pt }
+.wdoc { padding-top: 0.5em; padding-bottom: 0.4em; }
+var { font: 11pt monospace }
+.args { padding-left: 1.4em }
+.args tr td { vertical-align: text-top }
+td.arg { width: 100% }
+/*.wdoc { margin-top: 0.6em; margin-bottom: 0.6em; } */
+.box { border: 1px solid black;
+    /* top/bottom right/left | top right/left bottom | top right bottom left */
+    padding: 1px 0.1em 1pt;
+    margin: 1px 1pt 0pt;
+    display: inline-block; }
+.module { color: #000080 }
+.group { font: 16pt sans-serif; border-bottom: solid black 1px;
+         padding: 0px; margin: 0.5em 0px; text-align: center }
+em { color: #000080; font: bold 13pt sans-serif }
+.function { background: #ffffff }
+.struct { background: #ffffff }
+.variant { background: #c7c7ff }
+/* background: #bbffbb; */
+.ft { padding-left: 0em }
+.doc { background: #ffffa8;
+    padding: 0.5em 0.5em 0.5em 2em;
+    font-size: 12pt; }
+.contents { background: #dddddd; padding: 0.5em; font-size: 10pt }
+.contents a { text-decoration: none }
+.contents a:hover { text-decoration: underline }
+.doc p { margin: 0.6em 0px 1px; font-weight: bold }
+.doc pre { background: #ffffc8;
+    border: 1px dashed black;
+    margin: 0.3em 1.5em 0.3em 0px;
+    padding: 0.3em; overflow: auto }
+</style><title>db</title>
+<body>
+<div class="main">
+<h2><span class=module>module</span> db</h2>
+<p>
+<h3>Module signature</h3>
+<div class="type"><em>{</em><div class="box struct" style="display: block; margin: 2pt"><div class=contents><a href="#deletePath">deletePath</a> <a href="#getLang">getLang</a> <a href="#getLcPath">getLcPath</a> <a href="#getShowAll">getShowAll</a> <a href="#init">init</a> <a href="#modifyPath">modifyPath</a> <a href="#newPath">newPath</a> <a href="#readPaths">readPaths</a> <a href="#setLang">setLang</a> <a href="#setLcPath">setLcPath</a> <a href="#setShow">setShow</a> <a href="#setShowAll">setShowAll</a> <a href="#tmpDir">tmpDir</a></div><div id="deletePath" class=field><span class=sn>deletePath</span><em> is </em>string &rarr; (), </div>
+<div id="getLang" class=field><span class=sn>getLang</span><em> is </em>() &rarr; json.t, </div>
+<div id="getLcPath" class=field><span class=sn>getLcPath</span><em> is </em>() &rarr; json.t, </div>
+<div id="getShowAll" class=field><span class=sn>getShowAll</span><em> is </em>() &rarr; json.t, </div>
+<div id="init" class=field><span class=sn>init</span><em> is </em>() &rarr; (), </div>
+<div id="modifyPath" class=field><span class=sn>modifyPath</span><em> is </em>string &rarr; string &rarr; string &rarr; boolean, </div>
+<div id="newPath" class=field><span class=sn>newPath</span><em> is </em>string &rarr; string &rarr; boolean, </div>
+<div id="readPaths" class=field><span class=sn>readPaths</span><em> is </em><div class="box function"><div class=field>() &rarr; </div>
+<div class=field>list<tt>&lt;</tt><em>{</em><div class="box struct"><div id="exists?" class=field><em>var </em><span class=sn>exists?</span><em> is </em>boolean, </div>
+<div id="name" class=field><span class=sn>name</span><em> is </em>string, </div>
+<div id="path" class=field><span class=sn>path</span><em> is </em>string, </div>
+<div id="selected?" class=field><span class=sn>selected?</span><em> is </em>boolean</div>
+</div><em>}</em><tt>&gt;</tt></div>
+</div>, </div>
+<div id="setLang" class=field><span class=sn>setLang</span><em> is </em>json.t &rarr; (), </div>
+<div id="setLcPath" class=field><span class=sn>setLcPath</span><em> is </em>json.t &rarr; (), </div>
+<div id="setShow" class=field><span class=sn>setShow</span><em> is </em>string &rarr; boolean &rarr; (), </div>
+<div id="setShowAll" class=field><span class=sn>setShowAll</span><em> is </em>json.t &rarr; (), </div>
+<div id="tmpDir" class=field><span class=sn>tmpDir</span><em> is </em>() &rarr; string</div>
+</div><em>}</em></div>
+</div>
+</body></html>

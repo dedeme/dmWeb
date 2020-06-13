@@ -1,0 +1,87 @@
+// Copyright 21-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Log table.
+///
+/// Exceptions:
+///   MMarketException - Create in 'error()' function.
+module db.log;
+
+load es.dm.std;
+sync = load es.dm.sync;
+file = load es.dm.file;
+json = load es.dm.json;
+row = load data.logRow;
+cts = load data.cts;
+
+class MMarketException (String msg) extends Exception (msg) end;
+
+(
+  var path = "";
+
+  write lk ajs =
+    ( cut a = if (strLength (json.wa a |> json.toStr) > cts.logMaxLength) then
+                cut (take (length a - 1) a)
+              else
+                a
+              fi;
+      file.writeAll path (cut ajs |> json.wa |> json.toStr)
+    );
+
+{
+  /// Initializes log.
+  ///
+  /// Arguments:
+  ///   parent - Parent directory.
+  init parent
+  is string -> () =
+    path := parent ^/ "Log.tb";
+    if not file.exists? path then reset () fi,
+
+  /// Reinitializes log.
+  ///
+  /// Arguments:
+  ///   () - None.
+  reset ()
+  is () -> () =
+    file.writeAll path "[]",
+
+  /// Read the content of log serialized in JSON.
+  ///
+  /// Arguments:
+  ///   () - None.
+  read ()
+  is () -> json.t =
+    file.readAll path |> json.fromStr,
+
+  /// Adds an informative message to log.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   msg - Message to show.
+  info lk msg
+  is sync.t -> string -> () =
+    write lk ((row.info msg |> row.toJs) :: (read () |> json.ra)),
+
+  /// Adds an error message to log.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   msg - Message to show.
+  error lk msg
+  is sync.t -> string -> () =
+    write lk
+      ( (row.error new MMarketException(msg) |> row.toJs) ::
+        (read () |> json.ra)
+      ),
+
+  /// Adds an error message to log from an object Throwable.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   e - Object throwable.
+  exc lk e
+  is sync.t -> ~java.lang.Throwable -> () =
+    write lk ((row.error e |> row.toJs) :: (read () |> json.ra)),
+
+})

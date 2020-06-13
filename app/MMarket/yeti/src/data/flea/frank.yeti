@@ -1,0 +1,49 @@
+// Copyright 27-May-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Record for evaluated fleas ranking
+module data.flea.frank;
+
+load es.dm.std;
+json = load es.dm.json;
+load es.dm.jsonM;
+eval = load data.flea.eval;
+
+typedef t =
+  { date is string,
+    ranking is list<eval.t>
+  };
+
+{
+  /// Cretes a new 'frank'.
+  ///
+  /// Arguments:
+  ///   date - Date
+  ///   ranking - evaluated fleas list.
+  mk date ranking
+  is string -> list<eval.t> -> t =
+    { date, ranking },
+
+  /// Returns an 'frank' JSONized.
+  ///
+  /// Arguments:
+  ///   fr - 'frank'.
+  toJs fr
+  is t -> json.t =
+    json.wa
+      [ json.ws fr.date,
+        jswList eval.toJs fr.ranking
+      ],
+
+  /// Returns an 'frank' from a JSON.
+  ///
+  ///  Arguments:
+  ///    js -  JSON value.
+  fromJs js
+  is json.t -> t =
+    a = json.ra js |> array;
+    { date = json.rs a[0],
+      ranking = jsrList eval.fromJs a[1]
+    },
+
+}

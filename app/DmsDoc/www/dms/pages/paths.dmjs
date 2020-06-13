@@ -64,8 +64,8 @@
                     style: "width: 70px"
                     on: {click: (
                       Pg#
-                      "#nameIn" ui,$+ (value) ui,prop str,trim
-                      "#pathIn" ui,$+ (value) ui,prop str,trim
+                      "#nameIn" {} [] ui,$+ (value) ui,prop str,trim
+                      "#pathIn" {} [] ui,$+ (value) ui,prop str,trim
                         this,newPath.
                     )}
                   } [

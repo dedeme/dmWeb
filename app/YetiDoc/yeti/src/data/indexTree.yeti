@@ -1,0 +1,36 @@
+// Copyright 18-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+module data.indexTree;
+
+json = load es.dm.json;
+load es.dm.jsonM;
+
+typedef t = IndexTreeDir
+              { name is string,
+                contents is list<t>
+              }
+          | IndexTreeFile
+              { name is string, // Without extension
+                documentation is string
+              }
+          ;
+
+{
+  toJs tree
+  is t -> json.t =
+    case tree of
+      IndexTreeDir {name, contents} :
+        json.wa
+          [ json.wb true,
+            json.ws name,
+            jswList toJs contents
+          ];
+      IndexTreeFile {name, documentation} :
+        json.wa
+          [ json.wb false,
+            json.ws name,
+            json.ws documentation
+          ];
+    esac,
+}

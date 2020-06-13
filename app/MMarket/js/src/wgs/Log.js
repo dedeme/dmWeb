@@ -1,11 +1,11 @@
-// Copyright 09-Mar-2020 ºDeme
+// Copyright 23-Apr-2020 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 import Ui from "../dmjs/Ui.js";
 import Domo from "../dmjs/Domo.js"; // eslint-disable-line
 import DateDm from "../dmjs/DateDm.js";
 import {_} from "../I18n.js";
-import LogEntry from "../data/LogEntry.js";
+import LogRow from "../data/LogRow.js"; //eslint-disable-line
 
 const $ = e => Ui.$(e);
 
@@ -14,28 +14,21 @@ const $ = e => Ui.$(e);
 **/
 export default class Log {
   /**
-      @param {boolean} is2Days
-      @param {boolean} isErrors
-      @param {!Array<!LogEntry>} log
-      @param {function ():!Promise<!Array<!LogEntry>>} load
+      @param {!Domo} wg
+      @param {!Array<!LogRow>} log
+      @param {function ():!Promise<!Array<!LogRow>>} load
       @param {function ():!Promise<void>} reset
   **/
-  constructor (is2Days, isErrors, log, load, reset) {
-    this._is2Days = is2Days;
-    this._isErrors = isErrors;
+  constructor (wg, log, load, reset) {
+    this._is2Days = true;
+    this._isErrors = true;
+    this._lineWidth = 120;
+    this._wg = wg;
     this._log = log;
     this._load = load;
     this._reset = reset;
 
-    this._wg = $("div");
     this.view();
-  }
-
-  /**
-      @return {!Domo}
-  **/
-  get wg () {
-    return this._wg;
   }
 
   // View ----------------------------------------------------------------------
@@ -53,15 +46,13 @@ export default class Log {
       let r = $("span").klass("frame");
       if (!isSel) r = Ui.link(() => { action() }).klass("link");
       return r.text(id);
-
-
     }
 
     const lmenu = $("div");
     const rmenu = $("div");
     const area = $("textarea").att("spellcheck", false)
       .att("readOnly", true)
-      .att("rows", 25).att("cols", LogEntry.lineWidth() + 5);
+      .att("rows", 25).att("cols", this._lineWidth + 5);
 
     lmenu
       .add($("span")
@@ -104,7 +95,7 @@ export default class Log {
           (this._is2Days ? today.df(e.date) < 3 : true) &&
           (this._isErrors ? e.isError : true)
         )
-        .map(e => e.toString())
+        .map(e => e.format(this._lineWidth))
         .join("\n")
     );
 
@@ -124,21 +115,37 @@ export default class Log {
 
   // Control -------------------------------------------------------------------
 
+  /**
+      @private
+      @return void
+  **/
   on2Days () {
     this._is2Days = true;
     this.view();
   }
 
+  /**
+      @private
+      @return void
+  **/
   onAllD () {
     this._is2Days = false;
     this.view();
   }
 
+  /**
+      @private
+      @return void
+  **/
   async onReload () {
     this._log = await this._load();
     this.view();
   }
 
+  /**
+      @private
+      @return void
+  **/
   async onDelete () {
     if (confirm(_("All log entries will be deleted.\nContinue?"))) {
       await this._reset();
@@ -147,11 +154,19 @@ export default class Log {
     }
   }
 
+  /**
+      @private
+      @return void
+  **/
   onErrors () {
     this._isErrors = true;
     this.view();
   }
 
+  /**
+      @private
+      @return void
+  **/
   onAll () {
     this._isErrors = false;
     this.view();
@@ -160,15 +175,14 @@ export default class Log {
   // Static --------------------------------------------------------------------
 
   /**
-      @param {boolean} is2Days
-      @param {boolean} isErrors
-      @param {function ():!Promise<!Array<!LogEntry>>} load
+      @param {!Domo} wg
+      @param {function ():!Promise<!Array<!LogRow>>} load
       @param {function ():!Promise<void>} reset
       @return {!Promise<!Log>}
   **/
-  static async mk (is2Days, isErrors, load, reset) {
+  static async mk (wg, load, reset) {
     const log = await load();
-    return new Log(is2Days, isErrors, log, load, reset);
+    return new Log(wg, log, load, reset);
   }
 
 }

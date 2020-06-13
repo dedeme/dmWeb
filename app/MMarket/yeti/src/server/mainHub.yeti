@@ -1,0 +1,86 @@
+// Copyright 22-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Main server entries.
+module server.mainHub;
+
+load es.dm.std;
+cgi = load es.dm.cgi;
+cryp = load es.dm.cryp;
+json = load es.dm.json;
+load std;
+logRow = load data.logRow;
+conf = load db.conf;
+wgsHub = load server.wgs.wgsHub;
+home = load server.pgs.home;
+fleas = load server.pgs.fleas;
+ranking = load server.pgs.ranking;
+daily = load server.pgs.daily;
+acc = load server.pgs.acc;
+settings = load server.pgs.settings;
+
+(
+  process ck rq =
+    case cgi.rqString rq "rq" of
+    "lang":
+      cgi.rp ck [ "lang": conf.lang () |> json.ws ];
+    k:
+      failedKey k
+    esac;
+
+  subHub ck rq =
+    case cgi.rqString rq "source" of
+    "main" : process ck rq;
+    k : failedKey k
+    esac;
+
+  hub ck rq =
+    case cgi.rqString rq "module" of
+    "main" : subHub ck rq;
+    "home" : home.process ck rq;
+    "fleas" : fleas.process ck rq;
+    "ranking" : ranking.process ck rq;
+    "daily" : daily.process ck rq;
+    "acc" : acc.process ck rq;
+    "settings" : settings.process ck rq;
+    "wgs" : wgsHub.process ck rq;
+    k : failedKey k
+    esac;
+
+{
+  /// Request process.
+  ///
+  /// Arguments:
+  ///   rq - Request.
+  process rq
+  is string -> string =
+    try
+      case cindex ":" rq of
+      None () : // .............................................. CONNECTION
+        cgi.connect rq;
+      Some 0 : // ............................................AUTHENTICATION
+        key = cryp.key (cgi.klen ()) (cgi.appName ());
+        a = array (strRight rq 1 |> cryp.decryp key |> csplit ':');
+        cgi.authentication key a[0] a[1] (a[2] == "1");
+      Some i : // ................................................NORMAL DATA
+        sessionId = strLeft rq i;
+        rest = strRight rq (i + 1);
+        { conKey, data } =
+          case cindex ':' rest of
+          None () :
+            { conKey = "", data = rest };
+          Some i :
+            { conKey = strLeft rest i, data = strRight rest (i + 1) }
+          esac;
+        case cgi.getComKey sessionId conKey of
+        None () :
+          cgi.rpExpired ();
+        Some comKey :
+          data = cryp.decryp comKey data |> json.fromStr |> json.ro;
+          hub comKey data
+        esac
+      esac;
+    catch java.lang.Throwable ex:
+      logRow.format ex
+    yrt;
+})

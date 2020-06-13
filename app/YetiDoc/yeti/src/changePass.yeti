@@ -1,0 +1,14 @@
+// Copyright 17-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+module changePass;
+
+load es.dm.all;
+json = load es.dm.json;
+
+{
+  process ck rq is
+  string -> map<string, json.t> -> string =
+    cgi.changePass ck (json.rs rq["user"]) (json.rs rq["old"])
+                      (json.rs rq["new"]),
+}

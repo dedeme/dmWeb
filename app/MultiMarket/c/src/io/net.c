@@ -49,7 +49,7 @@ static Opt *mkdate(char *d, char *sep, int is_eu) {
   Opt *readYahoo () {
     Arr *months = arr_new_c (12, (void *[]){
       "ene.", "feb.", "mar.", "abr.", "may.", "jun.",
-      "jul.", "ago.", "sept.", "oct.", "nov.", "dic"
+      "jul.", "ago.", "sept.", "oct.", "nov.", "dic."
     });
     // Arr[char]
     Arr *parts = str_csplit(d, ' ');

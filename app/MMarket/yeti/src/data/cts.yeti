@@ -1,0 +1,145 @@
+//Copyright 21-Apr-2020 ºDeme
+//GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+///Global constants.
+module data.cts;
+
+{
+  //Application ----------------------------------------------------------------
+
+  /// Application name
+  appName = "MMarket",
+
+  /// Data version
+  dataVersion = "MMarket\nData version: 202004\n",
+
+  /// Data directory relative to sys_home()
+  dataPath = "data",
+
+  /// Log maximum entries
+  logMaxLength = 25000,
+
+  ///Number of quotes used to calculate companies volume.
+  quotesVolume = 100,
+
+  // Server --------------------------------------------------------------------
+
+  /// Communications port.
+  port = 50204,
+
+  /// Time (seconds) of connection expiration
+  expiration = 900,
+
+  /// Time (milliseconds) to wait a web server response
+  webWait = 125000,
+
+  /// Server configuration stopped
+  serverStopped = 0,
+
+  /// Server configuration active
+  serverActive = 1,
+
+  /// Server configuration selected
+  serverSelected = 2,
+
+  // Scheduler -----------------------------------------------------------------
+
+  /// Time to scheduler sleep (milliseconds)
+  schedulerSleep = 2000,
+
+  /// Tics of schedulerSleep
+  schedulerTimes = 60, //2 minutes
+
+  /// External servers (Infobolsa, Finanzas, etc.) delay in SECONDS
+  serversDelay = 1200,
+
+  /// Activity state
+  actSleeping1 = "Sleeping (1)",
+
+  /// Activity state
+  actHistoric = "Historic",
+
+  /// Activity state
+  actSleeping2 = "Sleeping (2)",
+
+  /// Activity state
+  actActivating = "Activating",
+
+  /// Activity state
+  actActive = "Active",
+
+  /// Activity state
+  actDeactivating = "Deactivating",
+
+  /// Hour to start actHistoric fase
+  actHistoricStart = 3,
+
+  /// Hour to finish actHistoric fase
+  actHistoricEnd = 8,
+
+  // Accounting ----------------------------------------------------------------
+
+  /// Number of investors
+  managers = 2,
+
+  // Fleas ---------------------------------------------------------------------
+
+  /// Number of quotes in historic
+  historicQuotes = 610,
+
+  /// Fleas initial capital for each cycle
+  initialCapital = 100000.0,
+
+  /// Bet
+  bet = 10000.0,
+
+  /// Minimun cash to bet
+  minToBet = 11000.0,
+
+  /// Minimum operations to survive (multiplicator: days * minSells)
+  minSells = 0.08,
+
+  /// Maximun operations to survive (multiplicator: days * maxSells)
+  maxSells = 0.16,
+
+  /// Maximum of mutation
+  mutationMultiplier = 0.3,
+
+  /// Number of cycle per parameter after insertion to finish a process
+  cycles = 5,
+
+  /// Number of cycle to insert historic results
+  insertionCycle = 10,
+
+  /// Number of fleas per model
+  fleasPerModel = 2000,
+
+  // Fleas evaluation ----------------------------------------------------------
+
+  /// Historic simulation ratio
+  assetsRatio = 0.3,
+
+  /// Average of profits ratio
+  profitsAvgRatio = 0.3,
+
+  /// Variance of profits ratio
+  profitsVaRatio = 0.1,
+
+  /// Flea age ratio
+  ageRatio = 0.2,
+
+  /// Number of fleas in pool
+  poolNumber = 1000,
+
+  /// Number of new fleas for adding to pool.
+  poolAddNumber = 10,
+
+  /// Number of fleas in ranking
+  rankingNumber = 40,
+
+  /// Number of fleas that changes per session
+  rankingChanges = 4,
+
+  /// Number of days of historic rankings.
+  rankingDays = 10,
+}

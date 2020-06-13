@@ -1,0 +1,44 @@
+// Copyright 24-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Settings group hub.
+module server.pgs.settings;
+
+cgi = load es.dm.cgi;
+load std;
+sett = load server.pgs.settings.settings;
+calendar = load server.pgs.settings.calendar;
+nicks = load server.pgs.settings.nicks;
+nicksList = load server.pgs.settings.nicksList;
+nicksEditor = load server.pgs.settings.nicksEditor;
+servers = load server.pgs.settings.servers;
+serversConfiguration = load server.pgs.settings.serversConfiguration;
+serversCode = load server.pgs.settings.serversCode;
+acc = load server.pgs.settings.acc;
+accAll = load server.pgs.settings.accAll;
+accEditor = load server.pgs.settings.accEditor;
+models = load server.pgs.settings.models;
+
+{
+  /// Request process.
+  ///
+  /// Arguments:
+  ///   ck - Comunication key.
+  ///   rq - Request.
+process ck rq =
+    case cgi.rqString rq "source" of
+    "settings" : sett.process ck rq;
+    "calendar" : calendar.process ck rq;
+    "nicks" : nicks.process ck rq;
+    "nicks/list" : nicksList.process ck rq;
+    "nicks/editor" : nicksEditor.process ck rq;
+    "servers" : servers.process ck rq;
+    "servers/configuration" : serversConfiguration.process ck rq;
+    "servers/code" : serversCode.process ck rq;
+    "acc" : acc.process ck rq;
+    "acc/all" : accAll.process ck rq;
+    "acc/editor" : accEditor.process ck rq;
+    "models" : models.process ck rq;
+    k : failedKey k
+    esac;
+}

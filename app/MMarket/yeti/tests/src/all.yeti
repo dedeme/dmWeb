@@ -1,0 +1,13 @@
+
+sys = load es.dm.sys;
+db = load db.db;
+cts = load data.cts;
+
+sys.init cts.appName;
+db.init ();
+(load initActTest).run ();
+(load nickTest).run ();
+(load quoteTest).run ();
+(load quote2Test).run ();
+(load fleaTest).run ();
+

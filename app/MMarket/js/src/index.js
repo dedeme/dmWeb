@@ -1,4 +1,4 @@
-// Copyright 18-Aug-2019 ºDeme
+// Copyright 19-Apr-2020 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 import Main from "./Main.js";
@@ -8,7 +8,7 @@ import Main from "./Main.js";
     @return {void}
 **/
 export function main () {
-  Main.show();
+  Main.run();
 }
 
 /**

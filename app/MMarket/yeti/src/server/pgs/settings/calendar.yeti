@@ -1,0 +1,49 @@
+// Copyright 24-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Calendar page.
+module server.pgs.settings.calendar;
+
+cgi = load es.dm.cgi;
+json = load es.dm.json;
+sync = load es.dm.sync;
+calendarTb = load db.calendarTb;
+load std;
+
+{
+  /// Request process.
+  ///
+  /// Arguments:
+  ///   ck - Comunication key.
+  ///   rq - Request.
+  process ck rq
+  is string -> hash<string, json.t> -> string =
+    case cgi.rqString rq "rq" of
+    "idata" :
+      var rp = [:];
+      sync.run do lk:
+        rp["general"] := calendarTb.general lk;
+        rp["holidays"] := calendarTb.holidays lk;
+        rp["specialDays"] := calendarTb.specialDays lk;
+        done;
+      cgi.rp ck rp;
+    "setGeneral" :
+      sync.run do lk:
+        calendarTb.setGeneral lk rq["timetable"]
+        done;
+      cgi.rpEmpty ck;
+    "setHolidays" :
+      sync.run do lk:
+        calendarTb.setHolidays lk rq["holidays"]
+        done;
+      cgi.rpEmpty ck;
+    "setSpecialDays" :
+      sync.run do lk:
+        calendarTb.setSpecialDays lk rq["specialDays"]
+        done;
+      cgi.rpEmpty ck;
+    k:
+      failedKey k
+    esac,
+
+}

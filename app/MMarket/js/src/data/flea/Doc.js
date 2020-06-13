@@ -11,22 +11,77 @@ const footer = `
 
 
 const apprDoc = `
-  <dl>
-  <dt>PARÁMETROS</dt>
-  <dd><ul>
-      <li>ic (%): Inicio de compra [rf = q * (1 + pc)]</li>
-      <li>pc (%): Paso de compra [rf' = rf - ((rf - q) * pc)]</li>
-      <li>iv (%): Inicio de venta [rf = q * (1 - pv)]</li>
-      <li>pv (%): Paso de venta [rf' = rf + ((q - rf) * pv)]</li></ul></dd>
-  <dt>INICIO</dt>
-  <dd>Se fija un inicio de venta.</dd>
-  <dt>COMPRA</dt>
-  <dd>rf va disminuyendo porcentualmente y cuando rf < q se compra.</dd>
-  <dt>VENTA</dt>
-  <dd>rf va aumentando porcentualmente y cuando rf > q se vende.</dd>
-  </dl>
+  <pre>
+  PARÁMETROS
+    ic (%): Inicio de compra [rf = q * (1 + pc)]
+    pc (%): Paso de compra [rf' = rf - ((rf - q) * pc)]
+    iv (%): Inicio de venta [rf = q * (1 - pv)]
+    pv (%): Paso de venta [rf' = rf + ((q - rf) * pv)]
+
+  INICIO
+    * Se fija un inicio de venta igual a la primera cotización.
+
+  COMPRA
+    * rf va disminuyendo porcentualmente y cuando rf' < q se compra.
+
+  VENTA
+    * rf va aumentando porcentualmente y cuando rf' > q se vende.
+  </pre>
   ` + footer;
 
+const incrDoc = `
+  <pre>
+  PARÁMETROS
+    d     : Días.</li>
+    fc (%): Franja de compra
+              Referencia base -> [rf = q(-d)]
+              Referencia operativa -> [rf' = rf * (1 + fc)]
+    fv (%): Franja de venta
+              Referencia base -> [rf = q(-d)]
+              Referencia operativa -> [rf' = rf * (1 - fv)]
+
+  INICIO
+    * Se espera 'd' dias y entonces se fija un inicio de venta (rf).
+
+  COMPRA
+    * Se va disminuyendo rf cuando q(-d) disminuye. En otro caso rf se
+      mantiene.
+    * Cuando rf' < q se compra.
+
+  VENTA
+    * Se va aumentando rf cuando q(-d) aumenta. En otro caso rf se mantiene.
+      Cuando rf' > q se vende.
+  </pre>
+  ` + footer;
+
+const maxMinDoc = `
+  <pre>
+  PARÁMETROS
+    bc (%): Banda de compra [rf = maximo del último período * (1 + bc)]
+    pc (%): Paso de compra [rf' = rf - ((rf - q) * pc)]
+    bv (%): Banda de venta [rf = mínimo del último período * (1 - bv)]
+    pv (%): Paso de venta [rf' = rf + ((q - rf) * pv)]
+
+  INICIO
+    * Se fija una referncia de venta igual a la banda de venta de la primera
+      cotización.
+    * Se fija un máximo de cotización igual a la primera cotización
+
+  COMPRA
+    * rf va disminuyendo porcentualmente y cuando rf' < q se compra.
+    * Si no se compra y q es menor que el mínimo de cotización, se utiliza q
+      como mínimo.
+    * Si se compra se fija rf igual a la banda de venta del mínimo de cotización
+      y se fija q como máximo de cotización.
+
+  VENTA
+    * rf va aumentando porcentualmente y cuando rf' > q se vende.
+    * Si no se vende y q es mayor que el máximo de cotización, se utiliza q
+      como máximo.
+    * Si se vende se fija rf igual a la banda de compra del máximo de cotización
+      y se fija q como mínimo de cotización.
+  </pre>
+  ` + footer;
 
 /**
     Flea models documentation.
@@ -39,6 +94,8 @@ export default class Doc {
   static read (modelId) {
     switch (modelId) {
     case "APPR": return apprDoc;
+    case "INCR": return incrDoc;
+    case "MM": return maxMinDoc;
     }
     return "<p>Sin documentación</p>";
   }

@@ -1,0 +1,87 @@
+// Copyright 17-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+module YetiDoc;
+
+import java.lang.Throwable;
+
+load es.dm.all;
+cts = load cts;
+db = load db;
+mainPage = load mainPage;
+paths = load paths;
+changePass = load changePass;
+index = load index;
+pmodule = load pages.pmodule;
+code = load pages.code;
+
+// hub -----------------------------------------------------------------------
+
+hub ck sessionId rq =
+  case cgi.rqString rq "source" of
+  "Main" :
+    mainPage.process ck sessionId rq;
+  "Paths":
+    paths.process ck rq;
+  "Index":
+    index.process ck rq;
+   "Module":
+    pmodule.process ck rq;
+   "Code":
+    code.process ck rq;
+  "ChangePass":
+    changePass.process ck rq;
+  s:
+  throw (exc.illegalArgument "Source '\(s)' is unknown")
+  esac;
+
+/* main ----------------------------------------------------------- */
+
+main args =
+  try
+    cgi.init cts.appName cts.appDir
+             cts.appExpiration "Yeti doc interesting key";
+    db.init ();
+
+    case args of
+    rq::_ :
+      case cindex ":" rq of
+      None () : // ................................................ CONNECTION
+        print (cgi.connect rq);
+      Some 0 : // ..............................................AUTHENTICATION
+        key = cryp.key (cgi.klen ()) (cgi.appName ());
+        a = array (strRight rq 1 |> cryp.decryp key |> csplit ':');
+        print (cgi.authentication key a[0] a[1] (a[2] == "1"));
+      Some i : // ..................................................NORMAL DATA
+        sessionId = strLeft rq i;
+        rest = strRight rq (i + 1);
+        {conKey, data} =
+          case cindex ':' rest of
+          None () :
+            {conKey = "", data = rest};
+          Some i :
+            { conKey = strLeft rest i,
+              data = strRight rest (i + 1) }
+          esac;
+        case cgi.getComKey sessionId conKey of
+        None () :
+          print (cgi.rpExpired ());
+        Some comKey :
+          data = cryp.decryp comKey data |> json.fromStr |> json.ro;
+          print (hub comKey sessionId data)
+        esac
+      esac;
+    a: throw (exc.illegalArgument(
+        "Sys.argv has \(length a) parameters and must have 1"
+       ))
+    esac;
+  catch Throwable ex:
+    exc.print ex;
+  yrt;
+
+/* Java class ----------------------------------------------------- */
+
+class Main
+  static void main(String[] args)
+    main (args)
+end;

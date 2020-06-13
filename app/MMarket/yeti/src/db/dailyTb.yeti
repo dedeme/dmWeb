@@ -1,0 +1,47 @@
+// Copyright 06-Jun-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Last daily quotes table.
+module db.dailyTb;
+
+load es.dm.std;
+sync = load es.dm.sync;
+file = load es.dm.file;
+json = load es.dm.json;
+load es.dm.jsonM;
+nick = load data.nick;
+
+(
+  var path = "";
+
+
+{
+  /// Initializes configuration table.
+  ///
+  /// Arguments:
+  ///   parent - Parent directory.
+  init parent
+  is string -> () =
+    path := parent ^/ "Daily.tb";
+    if not file.exists? path then
+      file.writeAll path "[]";
+    fi,
+
+  /// Returns daily quotes.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  read lk
+  is sync.t -> list<nick.qvalueT> =
+    file.readAll path |> json.fromStr |> jsrList nick.qvalueFromJs,
+
+  /// Write daily quotes.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   qs - daily quotes.
+  write lk qs
+  is sync.t -> list<nick.qvalueT> -> () =
+    jswList nick.qvalueToJs qs |> json.toStr |> file.writeAll path,
+
+})

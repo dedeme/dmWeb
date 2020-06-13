@@ -8,6 +8,7 @@
 
 #include "dmc/async.h"
 #include "data/Server.h"
+#include "data/Rconf.h"
 
 /*--*/
 

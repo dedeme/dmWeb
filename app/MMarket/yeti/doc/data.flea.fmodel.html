@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html><meta http-equiv="Content-Type" content="text/html;charset=utf-8" ><style type="text/css">
+.main { background: white; line-height: 130%; font-family: sans-serif }
+.type { background: white; font-size: 12pt; }
+.sn { font: 13pt monospace }
+.vn { font-size: 13pt }
+.other { background: #cccccc; display: inline; }
+.field { padding: 1.5pt }
+.wdoc { padding-top: 0.5em; padding-bottom: 0.4em; }
+var { font: 11pt monospace }
+.args { padding-left: 1.4em }
+.args tr td { vertical-align: text-top }
+td.arg { width: 100% }
+/*.wdoc { margin-top: 0.6em; margin-bottom: 0.6em; } */
+.box { border: 1px solid black;
+    /* top/bottom right/left | top right/left bottom | top right bottom left */
+    padding: 1px 0.1em 1pt;
+    margin: 1px 1pt 0pt;
+    display: inline-block; }
+.module { color: #000080 }
+.group { font: 16pt sans-serif; border-bottom: solid black 1px;
+         padding: 0px; margin: 0.5em 0px; text-align: center }
+em { color: #000080; font: bold 13pt sans-serif }
+.function { background: #ffffff }
+.struct { background: #ffffff }
+.variant { background: #c7c7ff }
+/* background: #bbffbb; */
+.ft { padding-left: 0em }
+.doc { background: #ffffa8;
+    padding: 0.5em 0.5em 0.5em 2em;
+    font-size: 12pt; }
+.contents { background: #dddddd; padding: 0.5em; font-size: 10pt }
+.contents a { text-decoration: none }
+.contents a:hover { text-decoration: underline }
+.doc p { margin: 0.6em 0px 1px; font-weight: bold }
+.doc pre { background: #ffffc8;
+    border: 1px dashed black;
+    margin: 0.3em 1.5em 0.3em 0px;
+    padding: 0.3em; overflow: auto }
+</style><title>data.flea.fmodel</title>
+<body>
+<div class="main">
+<h2><span class=module>module</span> data.flea.fmodel</h2>
+<div class="doc">Fleas model.</div><p><div class="type"><em>typedef</em> assetsRsT = <em>{</em><div class="box struct" style="display: block; margin: 2pt"><div id="assets" class="field wdoc"><span class=sn>assets</span><em> is </em>number, <div class="doc">Money.</div></div>
+<div id="buys" class="field wdoc"><span class=sn>buys</span><em> is </em>number, <div class="doc">Buys number.</div></div>
+<div id="sells" class="field wdoc"><span class=sn>sells</span><em> is </em>number<div class="doc">Sells number.</div></div>
+</div><em>}</em></div><p><div class="type"><em>typedef</em> fcalcT = double[][] &rarr; array<tt>&lt;</tt>number<tt>&gt;</tt> &rarr; (double[] &rarr; double[] &rarr; ()) &rarr; ()</div><p><div class="type"><em>typedef</em> orderDataT = <em>{</em><div class="box struct" style="display: block; margin: 2pt"><div id="date" class=field><span class=sn>date</span><em> is </em>string, </div>
+<div id="nick" class=field><span class=sn>nick</span><em> is </em>string, </div>
+<div id="price" class=field><span class=sn>price</span><em> is </em>number, </div>
+<div id="stocks" class=field><span class=sn>stocks</span><em> is </em>number</div>
+</div><em>}</em></div><p><div class="type"><em>typedef</em> orderT = <span class=vn>Buy</span> orderDataT | <span class=vn>Sell</span> orderDataT</div><p><div class="type"><em>typedef</em> dailyOrderT = <span class=vn>DBuy</span> <em>{</em><span class=sn>iCo</span><em> is </em>number, <span class=sn>pond</span><em> is </em>number<em>}</em> | <span class=vn>DSell</span> number</div><p><div class="type"><em>typedef</em> t = <em>{</em><div class="box struct" style="display: block; margin: 2pt"><div id="fcalc" class="field wdoc"><span class=sn>fcalc</span><em> is </em>fcalcT, <div class="doc">Function to call every market day.<p>Description</p>Function which returns none and with the following parameters:
+<pre>
+ closes is ~double[][]
+   Daily closes of several companies from before to after.
+   Its rows are 'days' and its columns 'companies'.
+ params is array&lt;number&gt;
+   Parameters to make calculus.
+ action is ~double[] -&gt; ~double -&gt; ()
+   Function called with closes and references, after making calculus.
+   Its parameters are:
+     closes is ~double[]
+       Day closes.
+     references is ~double[]
+       Day stops.
+   This function is defined in Refs, Profits, Orders and Assets.
+</pre></div></div>
+<div id="id" class="field wdoc"><span class=sn>id</span><em> is </em>string, <div class="doc">Brief identifier. 4 characters maximum (e.g. APPR).</div></div>
+<div id="name" class="field wdoc"><span class=sn>name</span><em> is </em>string, <div class="doc">Model name.</div></div>
+<div id="parDecs" class="field wdoc"><span class=sn>parDecs</span><em> is </em>array<tt>&lt;</tt>number<tt>&gt;</tt>, <div class="doc">Decimals number of parameters.<p>Notes</p><pre>
+ Expected values:
+    4, 6: Percentage format.
+   other: No meaning.
+</pre></div></div>
+<div id="parMaxs" class="field wdoc"><span class=sn>parMaxs</span><em> is </em>array<tt>&lt;</tt>number<tt>&gt;</tt>, <div class="doc">Maximun value for parameters.</div></div>
+<div id="parMins" class="field wdoc"><span class=sn>parMins</span><em> is </em>array<tt>&lt;</tt>number<tt>&gt;</tt>, <div class="doc">Minimun value for parameters.</div></div>
+<div id="parNames" class="field wdoc"><span class=sn>parNames</span><em> is </em>list<tt>&lt;</tt>string<tt>&gt;</tt><div class="doc">Parameter names.</div></div>
+</div><em>}</em></div>
+<h3>Module signature</h3>
+<div class="type"><em>{</em><div class="box struct" style="display: block; margin: 2pt"><div id="assets" class="field wdoc"><span class=sn>assets</span> <var>md</var> <var>opens</var> <var>closes</var> <var>params</var><em> is </em><div class="box function"><div class=field>t &rarr; </div>
+<div class=field>qtable.t &rarr; </div>
+<div class=field>qtable.t &rarr; </div>
+<div class=field>array<tt>&lt;</tt>number<tt>&gt;</tt> &rarr; </div>
+<div class=field>assetsRsT</div>
+</div>, <div class="doc">Calculates assets of a investor.<table class="args"><tr><td><var>md</var><td>-<td class=arg>Model.<tr><td><var>opens</var><td>-<td class=arg>Open quotes table.<tr><td><var>closes</var><td>-<td class=arg>Close quotes table.<tr><td><var>params</var><td>-<td class=arg>Parameters to calculate.</table></div></div>
+<div id="assetsRsToJs" class="field wdoc"><span class=sn>assetsRsToJs</span> <var>rs</var><em> is </em>assetsRsT &rarr; json.t, <div class="doc">Result of function assets JSONized.<table class="args"><tr><td><var>rs</var><td>-<td class=arg>Result</table></div></div>
+<div id="historicAssets" class="field wdoc"><span class=sn>historicAssets</span> <var>md</var> <var>opens</var> <var>closes</var> <var>params</var><em> is </em><div class="box function"><div class=field>t &rarr; </div>
+<div class=field>qtable.t &rarr; </div>
+<div class=field>qtable.t &rarr; </div>
+<div class=field>array<tt>&lt;</tt>number<tt>&gt;</tt> &rarr; </div>
+<div class=field>list<tt>&lt;</tt>number<tt>&gt;</tt></div>
+</div>, <div class="doc">Returns historic assets.<table class="args"><tr><td><var>md</var><td>-<td class=arg>Model.<tr><td><var>opens</var><td>-<td class=arg>Open quotes table.<tr><td><var>closes</var><td>-<td class=arg>Close quotes table.<tr><td><var>params</var><td>-<td class=arg>Parameters to calculate.</table></div></div>
+<div id="orderToJs" class="field wdoc"><span class=sn>orderToJs</span> <var>o</var><em> is </em>orderT &rarr; json.t, <div class="doc">Returns order JSONized.<table class="args"><tr><td><var>o</var><td>-<td class=arg>order</table></div></div>
+<div id="orders" class="field wdoc"><span class=sn>orders</span> <var>md</var> <var>dates</var> <var>opens</var> <var>closes</var> <var>params</var><em> is </em><div class="box function"><div class=field>t &rarr; </div>
+<div class=field>list<tt>&lt;</tt>string<tt>&gt;</tt> &rarr; </div>
+<div class=field>qtable.t &rarr; </div>
+<div class=field>qtable.t &rarr; </div>
+<div class=field>array<tt>&lt;</tt>number<tt>&gt;</tt> &rarr; </div>
+<div class=field>list<tt>&lt;</tt>orderT<tt>&gt;</tt></div>
+</div>, <div class="doc">Returns orders of a model.<table class="args"><tr><td><var>md</var><td>-<td class=arg>Model.<tr><td><var>dates</var><td>-<td class=arg>Dates of opens and closes.<tr><td><var>opens</var><td>-<td class=arg>All the companies opens.<tr><td><var>closes</var><td>-<td class=arg>All the companies closes.<tr><td><var>params</var><td>-<td class=arg>Parameters to calculate.</table></div></div>
+<div id="profits" class="field wdoc"><span class=sn>profits</span> <var>md</var> <var>opens</var> <var>closes</var> <var>params</var><em> is </em><div class="box function"><div class=field>t &rarr; </div>
+<div class=field>double[][] &rarr; </div>
+<div class=field>double[][] &rarr; </div>
+<div class=field>array<tt>&lt;</tt>number<tt>&gt;</tt> &rarr; </div>
+<div class=field>number</div>
+</div>, <div class="doc">Calculates profits ratio of one company.<table class="args"><tr><td><var>md</var><td>-<td class=arg>Model.<tr><td><var>opens</var><td>-<td class=arg>(double[days][1]) Open quotes of a company
+(from before to after).<tr><td><var>closes</var><td>-<td class=arg>(double[days][1]) Close quotes of a company
+(from before to after).<tr><td><var>params</var><td>-<td class=arg>Parameters to calculate.</table></div></div>
+<div id="profitsAvgVa" class="field wdoc"><span class=sn>profitsAvgVa</span> <var>md</var> <var>opens</var> <var>closes</var> <var>params</var><em> is </em><div class="box function"><div class=field>t &rarr; </div>
+<div class=field>qtable.t &rarr; </div>
+<div class=field>qtable.t &rarr; </div>
+<div class=field>array<tt>&lt;</tt>number<tt>&gt;</tt> &rarr; </div>
+<div class=field><em>{</em><span class=sn>avg</span><em> is </em>number, <span class=sn>va</span><em> is </em>number<em>}</em></div>
+</div>, <div class="doc">Calculate profits average and variance of all the companies of
+a investor.<table class="args"><tr><td><var>md</var><td>-<td class=arg>Model.<tr><td><var>opens</var><td>-<td class=arg>Open quotes table.<tr><td><var>closes</var><td>-<td class=arg>Close quotes table.<tr><td><var>params</var><td>-<td class=arg>Parameters to calculate.</table></div></div>
+<div id="refs" class="field wdoc"><span class=sn>refs</span> <var>md</var> <var>closes</var> <var>params</var><em> is </em>t &rarr; double[][] &rarr; array<tt>&lt;</tt>number<tt>&gt;</tt> &rarr; double[], <div class="doc">Returns references of one company.<table class="args"><tr><td><var>md</var><td>-<td class=arg>Model.<tr><td><var>closes</var><td>-<td class=arg>(double[days][1]) Close quotes of a company
+(from before to after).<tr><td><var>params</var><td>-<td class=arg>Parameters to calculate.</table></div></div>
+<div id="toJs" class="field wdoc"><span class=sn>toJs</span> <var>md</var><em> is </em>t &rarr; json.t<div class="doc">Intended only to pass data to javascript.<table class="args"><tr><td><var>md</var><td>-<td class=arg>Flea model</table><p>Notes</p>Only the folowing fields are serialized:
+<pre>
+ id, name, parNames, parMins, parMaxs and parJsFmts.
+</pre></div></div>
+</div><em>}</em></div>
+</div>
+</body></html>

@@ -18,7 +18,7 @@ export default class Cts {
       @return {string}
   **/
   static get version () {
-    return "2020.03";
+    return "2020.04";
   }
 
   /**

@@ -1,8 +1,8 @@
 // Copyright 23-Mar-2020 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-import Fmodel from "./Fmodel.js";
 import Eflea from "./Eflea.js";
+import Fmodel from "./Fmodel.js";
 
 /**
     Investor data.
@@ -10,20 +10,20 @@ import Eflea from "./Eflea.js";
 export default class Investor {
   /* .
   _rc_ Investor: from
-    model   : !Fmodel
+    model   : Fmodel
     eflea   : !Eflea
   */
 
   /*--*/
   /**
-      @param {!Fmodel} model
+      @param {Fmodel} model
       @param {!Eflea} eflea
   **/
   constructor (model, eflea) {
 
     /**
         @private
-        @type {!Fmodel}
+        @type {Fmodel}
     **/
     this._model = model;
 
@@ -36,7 +36,7 @@ export default class Investor {
   }
 
   /**
-      @return {!Fmodel}
+      @return {Fmodel}
   **/
   get model () {
     return this._model;
@@ -55,10 +55,17 @@ export default class Investor {
   **/
   static fromJs (serial) {
     return new Investor(
-      Fmodel.fromJs(serial[0]),
+      serial[0] ? Fmodel.fromJs(serial[0]) : null,
       Eflea.fromJs(serial[1])
     );
   }
   /*--*/
+
+  /**
+      @return {string}
+  **/
+  get name () {
+    return this._model.id + "-" + this._eflea.flea.name;
+  }
 
 }

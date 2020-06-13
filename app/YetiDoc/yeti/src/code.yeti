@@ -1,0 +1,130 @@
+// Copyright 19-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Code page.
+module pages.code;
+
+load es.dm.all;
+json = load es.dm.json;
+load es.dm.jsonM;
+highlight = load highlight;
+
+(
+  hyperlink link code =
+    ( splitLink link =
+        ( if link == "hp::" or strLength link < 5 then
+            []
+          else
+            case csplit "." (strRight link 4) of
+            ["~", r] : [r];
+            [l, r]   : [l, r];
+            _        : []
+            esac
+          fi
+        );
+
+      splitCode c = map2 pair (iterate (+ 1) 1) (csplit "\n" c);
+
+      mod start key k1 k2 lineCodes =
+        ( case lineCodes of
+          lc :: lcs :
+            ( l = lc.snd;
+              if start then
+                s = if strStarts? l "{" then false else true fi;
+                mod s key k1 k2 lcs
+              else
+                l = strTrim l;
+                if strStarts? l k1 or strStarts? l k2 or l == key
+                then lc.fst
+                else mod start key k1 k2 lcs
+                fi
+              fi
+            );
+          _ :
+            1;
+          esac
+        );
+
+      type start tk1 tk2 key k1 k2 lineCodes =
+        ( case lineCodes of
+          lc :: lcs :
+            ( l = lc.snd;
+              if start then
+                l = strTrim l;
+                if strStarts? l "typedef "
+                then
+                  l = strTrim (strRight l 8);
+                  if strStarts? l tk1 or strStarts? l tk2
+                  then
+                    if none? (sindex k1 l) and none? (sindex k2 l) and
+                      not strEnds? l key
+                    then type false tk1 tk2 key k1 k2 lcs
+                    else lc.fst
+                    fi
+                  else
+                    type start tk1 tk2 key k1 k2 lcs
+                  fi
+                else
+                  type start tk1 tk2 key k1 k2 lcs
+                fi;
+              else
+                if none? (sindex k1 l) and none? (sindex k2 l) and
+                   strTrim l != key
+                then
+                  if strStarts? l "{" or strStarts? (strTrim l) "typedef "
+                  then 1
+                  else type start tk1 tk2 key k1 k2 lcs
+                  fi
+                else
+                  lc.fst
+                fi
+              fi
+            );
+          _ :
+            1;
+          esac
+        );
+
+      case splitLink link of
+      [r]    : mod true r (r ^ " ") (r ^ "=") (splitCode code);
+      [l, r] : type true (l ^ " ") (l ^ "=")
+                    r (r ^ " ") (r ^ "=") (splitCode code);
+      _      : 1
+      esac
+    );
+
+  readCode link tx =
+    ( line = hyperlink link tx;
+      tx = if not strEnds? tx "\n" then tx ^ "\n" else tx fi |>
+           strReplace "&" "&amp;" |>
+           strReplace "<" "&lt;";
+      code = highlight.run tx;
+      { code, line }
+    );
+
+  mkCode link filePath =
+    ( if file.exists? filePath then
+        { code, line } = readCode link (file.readAll filePath);
+        { code = Some code, line }
+      else
+        { code = None (), line = -1 }
+      fi
+    );
+
+{
+  /// Request process.
+  ///
+  /// Arguments:
+  ///   ck - Communication key.
+  ///   rq - Request.
+  process ck rq is
+  string -> map<string, json.t> -> string =
+    link = cgi.rqString rq "link";
+    filePath = cgi.rqString rq "filePath";
+
+    { code, line } = mkCode link filePath;
+    cgi.rp ck
+      [ "code": jswMaybe json.ws code,
+        "line": json.wn line
+      ],
+})

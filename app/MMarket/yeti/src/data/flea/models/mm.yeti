@@ -1,0 +1,79 @@
+// Copyright 21-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// MaxMin investor model.
+module data.flea.models.mm;
+
+matrix = load data.matrix;
+fmodel = load data.flea.fmodel;
+
+(
+  fcalc closes params action
+  is ~double[][] ->
+    array<number> ->
+    (~double[] -> ~double[] -> ()) ->
+    () =
+  ( nDays = length closes;
+    nCos = length closes[0];
+    stripToBuy = params[0];
+    stepToBuy = params[1];
+    stripToSell = params[2];
+    stepToSell = params[3];
+
+    mm = matrix.mk nCos;
+    refs = matrix.mk nCos;
+    toBuys = matrix.mkBoolean nCos;
+    for [0..nCos - 1] do iCo:
+      iDay = avoid do iDay:
+                     closes[iDay][iCo] <= 0
+                     done
+                   [0..nDays - 1];
+      mm[iCo] := closes[iDay][iCo];
+      refs[iCo] := mm[iCo] * (1 - stripToSell);
+      toBuys[iCo] := false;
+      done;
+
+    for [0..nDays - 1] do iDay:
+      for [0..nCos - 1] do iCo:
+        q = closes[iDay][iCo];
+        if q > 0 then
+          ref = refs[iCo];
+          if toBuys[iCo] then
+            ref = ref - (ref - q) * stepToBuy;
+            if q > ref then
+              refs[iCo] := mm[iCo] * (1 - stripToSell);
+              mm[iCo] := q;
+              toBuys[iCo] := false
+            else
+              refs[iCo] := ref;
+              if q < mm[iCo] then mm[iCo] := q fi
+            fi
+          else
+            ref = ref + (q - ref) * stepToSell;
+            if q < ref then
+              refs[iCo] := mm[iCo] * (1 + stripToBuy);
+              mm[iCo] := q;
+              toBuys[iCo] := true
+            else
+              refs[iCo] := ref;
+              if q > mm[iCo] then mm[iCo] := q fi
+            fi
+          fi
+        fi
+        done;
+      action closes[iDay] refs;
+      done;
+  );
+{
+  /// Creates a model.
+  mk ()
+  is () -> fmodel.t =
+    { id = "MM",
+      name = "MaxMin",
+      parNames = ["Banda C", "Paso C", "Banda V", "Paso V"],
+      parMins = array [0.00, 0.001, 0.00, 0.001],
+      parMaxs = array [0.3, 0.1, 0.3, 0.1],
+      parDecs = array [6, 6, 6, 6],
+      fcalc
+    },
+})

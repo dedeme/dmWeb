@@ -13,13 +13,24 @@ export default class Wrule {
 
   /**
       @private
+      @param {number} width
+      @param {string} color
+      @param {string} title
+      @return !Domo
   **/
   static mk (width, color, title) {
-    return $("table").klass("main").style(`color:${color}`)
+    return $("table")
+      .klass("main")
+      .style(`color:${color}`)
       .add($("tr")
-        .add($("td").style(`width:${String(width)}px;`).add($("hr")))
-        .add($("td").style("width:5px;white-space: nowrap;").html(title))
-        .add($("td").add($("hr"))))
+        .add($("td")
+          .style(`width:${String(width)}px;`)
+          .add($("hr")))
+        .add($("td")
+          .style("width:5px;white-space: nowrap;")
+          .html(title))
+        .add($("td")
+          .add($("hr"))))
     ;
   }
 

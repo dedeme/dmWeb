@@ -1,0 +1,52 @@
+// Copyright 24-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Timetable data.
+module data.timetable;
+
+json = load es.dm.json;
+
+typedef t =
+  { hopen is number,
+    mopen is number,
+    hclose is number,
+    mclose is number
+  };
+
+{
+  /// Create a timetable base.
+  mk ()
+  is () -> t =
+    { hopen = 0,
+      mopen = 0,
+      hclose = 23,
+      mclose = 55
+    },
+
+  /// Serializes to JSON.
+  ///
+  /// Arguments:
+  ///   tt - Timetable to serialize.
+  toJs tt
+  is t -> json.t =
+    json.wa
+      [ json.wn tt.hopen,
+        json.wn tt.mopen,
+        json.wn tt.hclose,
+        json.wn tt.mclose
+      ],
+
+  /// Deserializes from JSON.
+  ///
+  /// Arguments:
+  ///   js - JSON value.
+  fromJs js
+  is json.t -> t =
+    a = array (json.ra js);
+    { hopen = json.rn a[0],
+      mopen = json.rn a[1],
+      hclose = json.rn a[2],
+      mclose = json.rn a[3]
+    },
+
+}

@@ -1,0 +1,54 @@
+// Copyright 20-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Management of double[] and double[][]
+module data.matrix;
+
+{
+  /// Create an double[].
+  ///
+  /// Arguments:
+  ///   cols - Elements number.
+  mk cols
+  is number -> ~double[] =
+    new double[cols], //()
+
+  /// Create an double[][].
+  ///
+  /// Arguments:
+  ///   rows - Rows number.
+  ///   cols - Columns number.
+  mk2 rows cols
+  is number -> number -> ~double[][] =
+    r = new double[rows][]; //()
+    for [0..rows - 1] do i: r[i] := new double[cols] done; // ()
+    r,
+
+  /// Returns a double[length col][1] from a column of values.
+  ///
+  /// Arguments:
+  ///   table - Table to extract the column
+  ///   ix - Index of table
+  getCol table ix
+  is ~double[][] -> number -> ~double[][] =
+    size = length table;
+    r = mk2 size 1;
+    for [0..size - 1] do i: r[i][0] := table[i][ix] done;
+    r,
+
+  /// Create an int[].
+  ///
+  /// Arguments:
+  ///   cols - Elements number.
+  mkInt cols
+  is number -> ~int[] =
+    new int[cols], //()
+
+  /// Create an boolean[].
+  ///
+  /// Arguments:
+  ///   cols - Elements number.
+  mkBoolean cols
+  is number -> ~boolean[] =
+    new boolean[cols],
+}

@@ -1,0 +1,60 @@
+// Copyright 27-May-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Record for investors ranking
+module data.flea.irank;
+
+load es.dm.std;
+json = load es.dm.json;
+load es.dm.jsonM;
+investor = load data.flea.investor;
+
+typedef t =
+  { date is string,
+    ranking is list<investor.t>
+  };
+
+{
+  /// Cretes a new 'irank'.
+  ///
+  /// Arguments:
+  ///   date - Date
+  ///   ranking - Investors list.
+  mk date ranking
+  is string -> list<investor.t> -> t =
+    { date, ranking },
+
+  /// Returns an 'irank' JSONized.
+  ///
+  /// Arguments:
+  ///   ir - 'irank'.
+  toJs ir
+  is t -> json.t =
+    json.wa
+      [ json.ws ir.date,
+        jswList investor.toJs ir.ranking
+      ],
+
+  /// Returns an 'irank' JSONized for sending to client (javascript).
+  ///
+  /// Arguments:
+  ///   ir - 'irank'.
+  toJsClient ir
+  is t -> json.t =
+    json.wa
+      [ json.ws ir.date,
+        jswList investor.toJsClient ir.ranking
+      ],
+
+  /// Returns an 'irank' from a JSON.
+  ///
+  ///  Arguments:
+  ///    js -  JSON value.
+  fromJs js
+  is json.t -> t =
+    a = json.ra js |> array;
+    { date = json.rs a[0],
+      ranking = investor.fromJsList (json.ra a[1])
+    },
+
+}

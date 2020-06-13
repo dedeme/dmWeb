@@ -1,0 +1,32 @@
+// Copyright 11-Jun-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Accounting-profits page.
+module server.pgs.acc.profits;
+
+load es.dm.std;
+cgi = load es.dm.cgi;
+json = load es.dm.json;
+sync = load es.dm.sync;
+profitsDb = load db.acc.profitsDb;
+load std;
+
+{
+  /// Request process.
+  ///
+  /// Arguments:
+  ///   ck - Comunication key.
+  ///   rq - Request.
+  process ck rq
+  is string -> hash<string, json.t> -> string =
+    case cgi.rqString rq "rq" of
+    "idata" :
+      var rp = [:];
+      sync.run do lk:
+        rp["data"] := profitsDb.readJs lk;
+        done;
+      cgi.rp ck rp;
+    k:
+      failedKey k
+    esac,
+}

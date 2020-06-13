@@ -1,0 +1,78 @@
+// Copyright 25-May-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Fleas tests references page.
+module server.pgs.fleas.ftestsReferences;
+
+load es.dm.std;
+cgi = load es.dm.cgi;
+json = load es.dm.json;
+load es.dm.jsonM;
+sync = load es.dm.sync;
+load std;
+nicksTb = load db.nicksTb;
+quotesDb = load db.quotesDb;
+log = load db.log;
+qtable = load data.qtable;
+fmodel = load data.flea.fmodel;
+fmodels = load data.flea.fmodels;
+
+{
+  /// Request process.
+  ///
+  /// Arguments:
+  ///   ck - Comunication key.
+  ///   rq - Request.
+  process ck rq
+  is string -> hash<string, json.t> -> string =
+    case cgi.rqString rq "rq" of
+    "nickList" :
+      rp = [:];
+      sync.run do lk:
+        nickNames = map do n: n.name done (nicksTb.selectedNicks lk);
+        rp["nickList"] := jswList json.ws nickNames
+        done;
+      cgi.rp ck rp;
+    "chartData" :
+      modelId = cgi.rqString rq "modelId";
+      nickName = cgi.rqString rq "nickName";
+      params = jsrList json.rn rq["params"] |> array;
+      rp = [:];
+      sync.run do lk:
+        opens = quotesDb.opens lk;
+        nkOpens = qtable.nickValues opens nickName;
+        if none? nkOpens then log.error lk "Opens of \(nickName) not found" fi;
+
+        closes = quotesDb.closes lk;
+        nkCloses = qtable.nickValues closes nickName;
+        if none? nkCloses then
+          log.error lk "Closes of \(nickName) not found"
+        fi;
+
+        model = fmodels.getModel modelId;
+        if none? model then log.error lk "Model \(modelId) not found" fi;
+
+        rp["ok"] := json.wb false;
+        _ = nkOpens >>= do nkOs:
+            nkCloses >>= do nkCs:
+            model >>= do md:
+              dates = quotesDb.dates lk;
+              refs = fmodel.refs md nkCs params;
+              rp["dates"] := jswList json.ws (list dates);
+              rp["opens"] :=
+                jswList json.wn (map do i: nkOs[i][0] done [0..length nkOs -1]);
+              rp["closes"] :=
+                jswList json.wn (map do i: nkCs[i][0] done [0..length nkCs -1]);
+              rp["refs"] :=
+                jswList json.wn (list refs);
+              rp["profits"] :=
+                json.wn (fmodel.profits md nkOs nkCs params);
+              rp["ok"] := json.wb true;
+              Some ()
+              done done done
+        done;
+      cgi.rp ck rp;
+    k:
+      failedKey k
+    esac,
+}

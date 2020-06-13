@@ -1,0 +1,85 @@
+// Copyright 06-Jun-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Daily server box table.
+module db.sboxTb;
+
+load es.dm.std;
+sync = load es.dm.sync;
+file = load es.dm.file;
+json = load es.dm.json;
+load es.dm.jsonM;
+load es.dm.rbox;
+server = load data.server;
+serversTb = load db.serversTb;
+log = load db.log;
+
+(
+  var path = "";
+
+  read ()
+  is () -> list<string> =
+    file.readAll path |> json.fromStr |> jsrList json.rs;
+
+  write svs
+  is list<string> -> () =
+    jswList json.ws svs |> json.toStr |> file.writeAll path;
+
+{
+  /// Initializes configuration table.
+  ///
+  /// Arguments:
+  ///   parent - Parent directory.
+  init parent
+  is string -> () =
+    path := parent ^/ "Sbox.tb";
+    if not file.exists? path then
+      file.writeAll path "[]";
+    fi,
+
+  /// Returns the current selected server.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  getServer lk
+  is sync.t -> server.t =
+    svList =
+      ( {servers} = serversTb.dailyList lk;
+        servers
+      );
+
+    case read () of
+    sv::svs :
+      case find do s: s.shortName == sv done svList of
+      s::_ :
+        s;
+      _ :
+        log.error lk "Daily server \(sv) not found";
+        nextServer lk;
+        getServer lk
+      esac;
+    _ :
+      nextServer lk;
+      getServer lk
+    esac,
+
+  /// Prepares next server as current server.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  nextServer lk
+  is sync.t -> () =
+    svList =
+      ( {servers} = serversTb.dailyList lk;
+        servers
+      );
+
+    case read () of
+    sv::svs :
+      write svs;
+    _ :
+      ls = map do sv: pair sv.shortName 1 done svList;
+      write (take (length ls) (mkRbox ls))
+    esac,
+
+})

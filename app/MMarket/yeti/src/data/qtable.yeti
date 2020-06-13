@@ -1,0 +1,80 @@
+// Copyright 20-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Table with data of nicks and quotes.
+module data.qtable;
+
+load es.dm.std;
+cts = load data.cts;
+matrix = load data.matrix;
+
+typedef t =
+  {
+    /// Nick names.
+    nicks is array<string>,
+    /// Quote values (closes, opens...) of nicks.
+    ///
+    /// Description:
+    /// They are "double[rows][colums]".
+    /// : - rows are 'days' dates.
+    /// : - colums are 'length nicks' companies.
+    values is ~double[][]
+  };
+
+{
+  /// Constructor.
+  ///
+  /// Arguments:
+  ///   nicks - Nick names.
+  ///   values - Quote values (closes, opens...) of nicks.
+  mk nicks values
+  is array<string> -> ~double[][] -> t =
+    { nicks, values },
+
+  /// Returns a double[days][1] values of a nick, from before to after.
+  ///
+  /// Arguments:
+  ///   table - All the companies data.
+  ///   nick - Nick to search.
+  nickValues table nick
+  is t -> string -> option<~double[][]> =
+    ix = index nick table.nicks;
+    if ix == -1 then None()
+    else Some (matrix.getCol table.values ix)
+    fi,
+
+  /// Returns a double[days][1] values of a nick, from before to after, adding
+  /// at the end "value" and removing the first value.
+  ///
+  /// Arguments:
+  ///   table - All the companies data.
+  ///   nick - Nick to search.
+  ///   value - Value to add.
+  nickValuesAdd table nick value
+  is t -> string -> number -> option<~double[][]> =
+    nickValues table nick >>= do qs:
+      for [0..length qs - 2] do i: qs[i] := qs[i + 1] done;
+      qs[length qs - 1][0] := value;
+      Some qs
+      done,
+
+  /// Returns the last valid value of a company with index 'iCo'.
+  ///
+  /// Arguments:
+  ///   matrix - Table to search.
+  ///   iCo - Company index (column number)
+  lastRowOk matrix iCo
+  is ~double[][] -> number -> number =
+    var r = -1;
+    var i = cts.historicQuotes - 1;
+    i >= 0 loop if matrix[i][iCo] >= 0 then
+                  r := matrix[i][iCo];
+                  i := -1
+                else
+                  i := i - 1;
+                fi;
+
+    if r < 0 then failWith "All values are < 0"
+    else r
+    fi,
+}

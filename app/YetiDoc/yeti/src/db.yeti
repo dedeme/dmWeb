@@ -1,0 +1,140 @@
+// Copyright 17-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+module db;
+
+load es.dm.all;
+json = load es.dm.json;
+load es.dm.jsonM;
+libEntry = load data.libEntry;
+
+dataPath () = cgi.home () ^/ "data";
+confPath () = dataPath () ^/ "conf.db";
+libsPath () = dataPath () ^/ "libs.db";
+tmpPath () = dataPath () ^/ "tmp";
+
+(
+  // CONF
+
+  confGet key default =
+    ( dbase = file.readAll (confPath ()) |> json.fromStr |> json.ro;
+      if key in dbase then dbase[key]
+      else default
+      fi
+    );
+
+  confSet key js =
+    ( dbase = file.readAll(confPath ()) |> json.fromStr |> json.ro;
+      dbase[key] := js;
+      file.writeAll (confPath ()) (dbase |> json.wo |> json.toStr)
+    );
+
+  // PATHS
+
+  readPaths' ()
+  is () -> list<libEntry.t> =
+    file.readAll (libsPath ()) |> json.fromStr |> jsrList libEntry.fromJs;
+
+
+  writePaths paths =
+    file.writeAll (libsPath ()) (paths |> jswList libEntry.toJs |> json.toStr);
+
+
+{
+  init ()
+  is () -> () =
+    if not file.exists? (dataPath ()) then
+      file.mkdir (dataPath ());
+      file.writeAll (confPath ()) (json.wo [:] |> json.toStr);
+      file.writeAll (libsPath ()) (json.wa [] |> json.toStr);
+    fi,
+
+  // CONF
+
+  getLcPath ()
+  is () -> json.t =
+    confGet "lcPath" (jswList json.ws ["@"]),
+
+  setLcPath value
+  is json.t -> () =
+    confSet "lcPath" value,
+
+  getLang ()
+  is () -> json.t =
+    confGet "lang" (json.ws "es"),
+
+  setLang value
+  is json.t -> () =
+    confSet "lang" value,
+
+  getShowAll ()
+  is () -> json.t =
+    confGet "showAll" (json.wb true),
+
+  setShowAll value
+  is json.t -> () =
+    confSet "showAll" value,
+
+  // PATHS
+
+  readPaths ()
+  is () -> list<libEntry.t> =
+    paths = readPaths'();
+    for paths
+      do e :
+        if file.directory? e.path then e.exists? := true
+        else e.exists? := false
+        fi;
+      done;
+    paths,
+
+  newPath name path
+  is string -> string -> boolean =
+    paths = readPaths' ();
+    if any do e: e.name == name done paths then
+      false
+    else
+      writePaths (libEntry.mk name path :: paths);
+      true
+    fi,
+
+  setShow name value
+  is string -> boolean -> () =
+    writePaths (
+      map
+        do e:
+          if e.name == name then e with { selected? = value }
+          else e
+          fi
+        done
+        (readPaths' ())),
+
+  modifyPath oldName newName path
+  is string -> string -> string -> boolean =
+    paths = readPaths' ();
+    ok = oldName == newName or not any do e: e.name == newName done paths;
+    if ok then
+      writePaths (
+        map
+          do e:
+            if e.name == oldName then e with { name = newName, path }
+            else e
+            fi
+          done
+          paths);
+    fi;
+    ok,
+
+  deletePath name
+  is string -> () =
+    writePaths (filter do e: e.name != name done (readPaths' ())),
+
+  tmpDir ()
+  is () -> string =
+    tmp = tmpPath ();
+    file.del tmp;
+    file.mkdir tmp;
+    tmp,
+
+
+})

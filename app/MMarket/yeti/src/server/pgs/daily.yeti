@@ -1,0 +1,22 @@
+// Copyright 07-Jun-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Daily charts group hub.
+module server.pgs.daily;
+
+cgi = load es.dm.cgi;
+load std;
+daily = load server.pgs.daily.daily;
+
+{
+  /// Request process.
+  ///
+  /// Arguments:
+  ///   ck - Comunication key.
+  ///   rq - Request.
+process ck rq =
+    case cgi.rqString rq "source" of
+    "daily" : daily.process ck rq;
+    k : failedKey k
+    esac;
+}

@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html><meta http-equiv="Content-Type" content="text/html;charset=utf-8" ><style type="text/css">
+.main { background: white; line-height: 130%; font-family: sans-serif }
+.type { background: white; font-size: 12pt; }
+.sn { font: 13pt monospace }
+.vn { font-size: 13pt }
+.other { background: #cccccc; display: inline; }
+.field { padding: 1.5pt }
+.wdoc { padding-top: 0.5em; padding-bottom: 0.4em; }
+var { font: 11pt monospace }
+.args { padding-left: 1.4em }
+.args tr td { vertical-align: text-top }
+td.arg { width: 100% }
+/*.wdoc { margin-top: 0.6em; margin-bottom: 0.6em; } */
+.box { border: 1px solid black;
+    /* top/bottom right/left | top right/left bottom | top right bottom left */
+    padding: 1px 0.1em 1pt;
+    margin: 1px 1pt 0pt;
+    display: inline-block; }
+.module { color: #000080 }
+.group { font: 16pt sans-serif; border-bottom: solid black 1px;
+         padding: 0px; margin: 0.5em 0px; text-align: center }
+em { color: #000080; font: bold 13pt sans-serif }
+.function { background: #ffffff }
+.struct { background: #ffffff }
+.variant { background: #c7c7ff }
+/* background: #bbffbb; */
+.ft { padding-left: 0em }
+.doc { background: #ffffa8;
+    padding: 0.5em 0.5em 0.5em 2em;
+    font-size: 12pt; }
+.contents { background: #dddddd; padding: 0.5em; font-size: 10pt }
+.contents a { text-decoration: none }
+.contents a:hover { text-decoration: underline }
+.doc p { margin: 0.6em 0px 1px; font-weight: bold }
+.doc pre { background: #ffffc8;
+    border: 1px dashed black;
+    margin: 0.3em 1.5em 0.3em 0px;
+    padding: 0.3em; overflow: auto }
+</style><title>db.quotesdb</title>
+<body>
+<div class="main">
+<h2><span class=module>module</span> db.quotesdb</h2>
+<div class="doc">Quotes data base.</div><p>
+<h3>Module signature</h3>
+<div class="type"><em>{</em><div class="box struct" style="display: block; margin: 2pt"><div class=contents><a href="#addNick">addNick</a> <a href="#check">check</a> <a href="#checkQs">checkQs</a> <a href="#closes">closes</a> <a href="#dates">dates</a> <a href="#delNick">delNick</a> <a href="#init">init</a> <a href="#modifyNickName">modifyNickName</a> <a href="#opens">opens</a> <a href="#read">read</a> <a href="#readModel">readModel</a> <a href="#setQuotes">setQuotes</a> <a href="#volumes">volumes</a></div><div id="addNick" class="field wdoc"><span class=sn>addNick</span> <var>lk</var> <var>nickName</var><em> is </em>sync.t &rarr; string &rarr; boolean, <div class="doc">Adds a nick. If nick already exists, logs an error and returns <var>"false"</var>.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.<tr><td><var>nickName</var><td>-<td class=arg>Name of nick to add.</table></div></div>
+<div id="check" class="field wdoc"><span class=sn>check</span> <var>lk</var> <var>qsTx</var><em> is </em><div class="box function"><div class=field>sync.t &rarr; </div>
+<div class=field>string &rarr; </div>
+<div class=field><em>{</em><div class="box struct"><div id="error?" class=field><span class=sn>error?</span><em> is </em>boolean, </div>
+<div id="qs" class=field><span class=sn>qs</span><em> is </em>list<tt>&lt;</tt><em>{</em><div class="box struct"><div id="close" class=field><span class=sn>`close</span><em> is </em>number, </div>
+<div id="date" class=field><span class=sn>`date</span><em> is </em>string, </div>
+<div id="err" class=field><span class=sn>`err</span><em> is </em>boolean, </div>
+<div id="max" class=field><span class=sn>`max</span><em> is </em>number, </div>
+<div id="min" class=field><span class=sn>`min</span><em> is </em>number, </div>
+<div id="open" class=field><span class=sn>`open</span><em> is </em>number, </div>
+<div id="vol" class=field><span class=sn>`vol</span><em> is </em>number</div>
+</div><em>}</em><tt>&gt;</tt>, </div>
+<div id="warning?" class=field><span class=sn>warning?</span><em> is </em>boolean</div>
+</div><em>}</em></div>
+</div>, <div class="doc">Checks quotes in text format.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.<tr><td><var>qsTx</var><td>-<td class=arg>Quotes in text format.</table><p>Notes</p>Returns:
+<pre>
+ error?   - 'true' if an error happend. In this case "qs" = [].
+ warning? - 'true' if some quotes were corrected.
+ qs       - Quotes, corrected if necessary.
+</pre></div></div>
+<div id="checkQs" class="field wdoc"><span class=sn>checkQs</span> <var>lk</var> <var>nickName</var><em> is </em><div class="box function"><div class=field>sync.t &rarr; </div>
+<div class=field>string &rarr; </div>
+<div class=field><em>{</em><div class="box struct"><div id="error?" class=field><span class=sn>error?</span><em> is </em>boolean, </div>
+<div id="qs" class=field><span class=sn>qs</span><em> is </em>list<tt>&lt;</tt><em>{</em><div class="box struct"><div id="close" class=field><span class=sn>`close</span><em> is </em>number, </div>
+<div id="date" class=field><span class=sn>`date</span><em> is </em>string, </div>
+<div id="err" class=field><span class=sn>`err</span><em> is </em>boolean, </div>
+<div id="max" class=field><span class=sn>`max</span><em> is </em>number, </div>
+<div id="min" class=field><span class=sn>`min</span><em> is </em>number, </div>
+<div id="open" class=field><span class=sn>`open</span><em> is </em>number, </div>
+<div id="vol" class=field><span class=sn>`vol</span><em> is </em>number</div>
+</div><em>}</em><tt>&gt;</tt>, </div>
+<div id="warning?" class=field><span class=sn>warning?</span><em> is </em>boolean</div>
+</div><em>}</em></div>
+</div>, <div class="doc">Checks quotes of a company.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.<tr><td><var>nickName</var><td>-<td class=arg>Nick name.</table><p>Notes</p>Returns:
+<pre>
+ error?   - 'true' if an error happend.
+ warning? - 'true' if some quotes were corrected.
+</pre></div></div>
+<div id="closes" class="field wdoc"><span class=sn>closes</span> <var>lk</var><em> is </em>sync.t &rarr; <em>{</em><span class=sn>nicks</span><em> is </em>array<tt>&lt;</tt>string<tt>&gt;</tt>, <span class=sn>values</span><em> is </em>double[][]<em>}</em>, <div class="doc">Returns a qtable of closes of the selected companies.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.</table></div></div>
+<div id="dates" class="field wdoc"><span class=sn>dates</span><em> is </em>sync.t &rarr; list<tt>&lt;</tt>string<tt>&gt;</tt>, <div class="doc">Returns dates of nicks tables fron before to after. Its length is
+'cts.historicQuotes'. If fails, returns an empty list.<p></p>lk - Synchronization lock.</div></div>
+<div id="delNick" class="field wdoc"><span class=sn>delNick</span> <var>lk</var> <var>nickName</var><em> is </em>sync.t &rarr; string &rarr; (), <div class="doc">Removes nick with name <var>"nickName"</var>.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.<tr><td><var>nickName</var><td>-<td class=arg>Name of nick to add.</table></div></div>
+<div id="init" class="field wdoc"><span class=sn>init</span> <var>parent</var><em> is </em>string &rarr; (), <div class="doc">Initializes configuration table.<table class="args"><tr><td><var>parent</var><td>-<td class=arg>Parent directory.</table></div></div>
+<div id="modifyNickName" class="field wdoc"><span class=sn>modifyNickName</span> <var>lk</var> <var>oldName</var> <var>newName</var><em> is </em>sync.t &rarr; string &rarr; string &rarr; (), <div class="doc">Modify nick name.<p></p>If <var>"newName"</var> already exists or <var>"oldName"</var> does not exists, it does nothing.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.<tr><td><var>oldName</var><td>-<td class=arg>Name of nick to modify.<tr><td><var>newName</var><td>-<td class=arg>New name of nick.</table></div></div>
+<div id="opens" class="field wdoc"><span class=sn>opens</span> <var>lk</var><em> is </em>sync.t &rarr; <em>{</em><span class=sn>nicks</span><em> is </em>array<tt>&lt;</tt>string<tt>&gt;</tt>, <span class=sn>values</span><em> is </em>double[][]<em>}</em>, <div class="doc">Returns a qtable of opens of the selected companies.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.</table></div></div>
+<div id="read" class="field wdoc"><span class=sn>read</span> <var>lk</var> <var>nickName</var><em> is </em><div class="box function"><div class=field>sync.t &rarr; </div>
+<div class=field>string &rarr; </div>
+<div class=field>list<tt>&lt;</tt><em>{</em><div class="box struct"><div id="close" class=field><span class=sn>`close</span><em> is </em>number, </div>
+<div id="date" class=field><span class=sn>`date</span><em> is </em>string, </div>
+<div id="err" class=field><span class=sn>`err</span><em> is </em>boolean, </div>
+<div id="max" class=field><span class=sn>`max</span><em> is </em>number, </div>
+<div id="min" class=field><span class=sn>`min</span><em> is </em>number, </div>
+<div id="open" class=field><span class=sn>`open</span><em> is </em>number, </div>
+<div id="vol" class=field><span class=sn>`vol</span><em> is </em>number</div>
+</div><em>}</em><tt>&gt;</tt></div>
+</div>, <div class="doc">Reads quotes of a company.<p></p>If an error happens the returned list is empty.<p></p>The order of quotes is from after to before.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.<tr><td><var>nickName</var><td>-<td class=arg>Nick.</table></div></div>
+<div id="readModel" class="field wdoc"><span class=sn>readModel</span> <var>lk</var><em> is </em><div class="box function"><div class=field>sync.t &rarr; </div>
+<div class=field>list<tt>&lt;</tt><em>{</em><div class="box struct"><div id="close" class=field><span class=sn>`close</span><em> is </em>number, </div>
+<div id="date" class=field><span class=sn>`date</span><em> is </em>string, </div>
+<div id="err" class=field><span class=sn>`err</span><em> is </em>boolean, </div>
+<div id="max" class=field><span class=sn>`max</span><em> is </em>number, </div>
+<div id="min" class=field><span class=sn>`min</span><em> is </em>number, </div>
+<div id="open" class=field><span class=sn>`open</span><em> is </em>number, </div>
+<div id="vol" class=field><span class=sn>`vol</span><em> is </em>number</div>
+</div><em>}</em><tt>&gt;</tt></div>
+</div>, <div class="doc">Returns company model quotes.<p></p>If an error happens the returned list is empty.<p></p>The order of quotes is from after to before.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.</table></div></div>
+<div id="setQuotes" class="field wdoc"><span class=sn>setQuotes</span> <var>lk</var> <var>nickId</var> <var>qs</var><em> is </em><div class="box function"><div class=field>sync.t &rarr; </div>
+<div class=field>number &rarr; </div>
+<div class=field>list<tt>&lt;</tt><em>{</em><div class="box struct"><div id="close" class=field><span class=sn>.close</span><em> is </em>number, </div>
+<div id="date" class=field><span class=sn>.date</span><em> is </em>string, </div>
+<div id="err" class=field><span class=sn>.err</span><em> is </em>boolean, </div>
+<div id="max" class=field><span class=sn>.max</span><em> is </em>number, </div>
+<div id="min" class=field><span class=sn>.min</span><em> is </em>number, </div>
+<div id="open" class=field><span class=sn>.open</span><em> is </em>number, </div>
+<div id="vol" class=field><span class=sn>.vol</span><em> is </em>number</div>
+</div><em>}</em><tt>&gt;</tt> &rarr; </div>
+<div class=field>boolean</div>
+</div>, <div class="doc">Set quotes of a company. If operation fails return 'false'.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.<tr><td><var>nickId</var><td>-<td class=arg>Nick identifier.<tr><td><var>qs</var><td>-<td class=arg>Quotes to update.</table></div></div>
+<div id="volumes" class="field wdoc"><span class=sn>volumes</span> <var>lk</var> <var>nicks</var><em> is </em><div class="box function"><div class=field>sync.t &rarr; </div>
+<div class=field>list<tt>&lt;</tt><em>{</em><div class="box struct"><div id="id" class="field wdoc"><span class=sn>.id</span><em> is </em>number, <div class="doc">Identifier.</div></div>
+<div id="name" class="field wdoc"><span class=sn>.name</span><em> is </em>string, <div class="doc">Name (TEF, ACS...).</div></div>
+<div id="sel?" class="field wdoc"><span class=sn>.sel?</span><em> is </em>boolean<div class="doc">If is selected to operate.</div></div>
+</div><em>}</em><tt>&gt;</tt> &rarr; </div>
+<div class=field>hash<tt>&lt;</tt>string, number<tt>&gt;</tt></div>
+</div><div class="doc">Returns a Hash[nick, volume] with the 100 last days volume average of
+every nick in <var>"nicks"</var>.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.<tr><td><var>nicks</var><td>-<td class=arg>Nick list.</table></div></div>
+</div><em>}</em></div>
+</div>
+</body></html>

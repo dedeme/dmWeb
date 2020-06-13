@@ -1,0 +1,105 @@
+// Copyright 23-May-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Data base of flea models.
+///
+/// Description:
+///   Each model has three tables:
+///   : pool: With the historic bests 'cts.poolNumber' fleas.
+///   : bests: With the best flea from the last 'cts.poolNumber' days.
+///   : ranking: With 40 'hits'.
+module db.fleas.fmodels;
+
+load es.dm.std;
+sync = load es.dm.sync;
+file = load es.dm.file;
+json = load es.dm.json;
+load es.dm.jsonM;
+fmodels = load data.flea.fmodels;
+eval = load data.flea.eval;
+evalDate = load data.flea.evalDate;
+frank = load data.flea.frank;
+
+(
+  var parentDir = "";
+  modelDir modelId = parentDir ^/ modelId;
+  poolPath modelId = modelDir modelId ^/ "Pool.tb";
+  bestsPath modelId = modelDir modelId ^/ "Bests.tb";
+  rankingPath modelId = modelDir modelId ^/ "Ranking.tb";
+
+{
+  /// Initializes data base.
+  /// Arguments:
+  ///   parent - Parent directory.
+  init parent
+  is string -> () =
+    parentDir := parent;
+    for (fmodels.list ()) do md:
+      if not file.exists? (modelDir md.id) then
+        file.mkdir (modelDir md.id);
+        file.writeAll (poolPath md.id) "[]";
+        file.writeAll (bestsPath md.id) "[]";
+        file.writeAll (rankingPath md.id) "[]";
+      fi
+      done,
+
+  /// Writes an evaluated fleas pool.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   modelId - Model identifier.
+  ///   efleas - Evaluated fleas.
+  writePool lk modelId efleas
+  is sync.t -> string -> list<eval.t> -> () =
+    file.writeAll (poolPath modelId) (jswList eval.toJs efleas |> json.toStr),
+
+  /// Reads an evaluated fleas pool.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   modelId - Model identifier.
+  readPool lk modelId
+  is sync.t -> string -> list<eval.t> =
+    file.readAll (poolPath modelId) |> json.fromStr |> jsrList eval.fromJs,
+
+  /// Writes an evaluated fleas pool of bests ones.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   modelId - Model identifier.
+  ///   efleas - Evaluated fleas.
+  writeBests lk modelId efleas
+  is sync.t -> string -> list<evalDate.t> -> () =
+    file.writeAll (bestsPath modelId)
+                  (jswList evalDate.toJs efleas |> json.toStr),
+
+  /// Reads an evaluated fleas pool of bests ones.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   modelId - Model identifier.
+  readBests lk modelId
+  is sync.t -> string -> list<evalDate.t> =
+    file.readAll (bestsPath modelId) |> json.fromStr |> jsrList evalDate.fromJs,
+
+  /// Writes an evaluated fleas ranking.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   modelId - Model identifier.
+  ///   ranks - Evaluated fleas rankings (sorted from after to before).
+  writeRanking lk modelId ranks
+  is sync.t -> string -> list<frank.t> -> () =
+    file.writeAll (rankingPath modelId)
+                  (jswList frank.toJs ranks |> json.toStr),
+
+  /// Reads evaluated fleas rankings (sorted from after to before).
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   modelId - Model identifier.
+  readRanking lk modelId
+  is sync.t -> string -> list<frank.t> =
+    file.readAll (rankingPath modelId) |> json.fromStr |> jsrList frank.fromJs,
+
+})

@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html><meta http-equiv="Content-Type" content="text/html;charset=utf-8" ><style type="text/css">
+.main { background: white; line-height: 130%; font-family: sans-serif }
+.type { background: white; font-size: 12pt; }
+.sn { font: 13pt monospace }
+.vn { font-size: 13pt }
+.other { background: #cccccc; display: inline; }
+.field { padding: 1.5pt }
+.wdoc { padding-top: 0.5em; padding-bottom: 0.4em; }
+var { font: 11pt monospace }
+.args { padding-left: 1.4em }
+.args tr td { vertical-align: text-top }
+td.arg { width: 100% }
+/*.wdoc { margin-top: 0.6em; margin-bottom: 0.6em; } */
+.box { border: 1px solid black;
+    /* top/bottom right/left | top right/left bottom | top right bottom left */
+    padding: 1px 0.1em 1pt;
+    margin: 1px 1pt 0pt;
+    display: inline-block; }
+.module { color: #000080 }
+.group { font: 16pt sans-serif; border-bottom: solid black 1px;
+         padding: 0px; margin: 0.5em 0px; text-align: center }
+em { color: #000080; font: bold 13pt sans-serif }
+.function { background: #ffffff }
+.struct { background: #ffffff }
+.variant { background: #c7c7ff }
+/* background: #bbffbb; */
+.ft { padding-left: 0em }
+.doc { background: #ffffa8;
+    padding: 0.5em 0.5em 0.5em 2em;
+    font-size: 12pt; }
+.contents { background: #dddddd; padding: 0.5em; font-size: 10pt }
+.contents a { text-decoration: none }
+.contents a:hover { text-decoration: underline }
+.doc p { margin: 0.6em 0px 1px; font-weight: bold }
+.doc pre { background: #ffffc8;
+    border: 1px dashed black;
+    margin: 0.3em 1.5em 0.3em 0px;
+    padding: 0.3em; overflow: auto }
+</style><title>net.net</title>
+<body>
+<div class="main">
+<h2><span class=module>module</span> net.net</h2>
+<div class="doc">Internet servers management.</div><p><div class="type"><em>typedef</em> dailyEntryT = <em>{</em><span class=sn>close</span><em> is </em>number, <span class=sn>code</span><em> is </em>string<em>}</em></div><p><div class="type"><em>typedef</em> historicEntryT = <em>{</em><div class="box struct" style="display: block; margin: 2pt"><div id="close" class=field><span class=sn>close</span><em> is </em>number, </div>
+<div id="date" class=field><span class=sn>date</span><em> is </em>string, </div>
+<div id="max" class=field><span class=sn>max</span><em> is </em>number, </div>
+<div id="min" class=field><span class=sn>min</span><em> is </em>number, </div>
+<div id="open" class=field><span class=sn>open</span><em> is </em>number, </div>
+<div id="vol" class=field><span class=sn>vol</span><em> is </em>number</div>
+</div><em>}</em></div>
+<h3>Module signature</h3>
+<div class="type"><em>{</em><div class="box struct" style="display: block; margin: 2pt"><div id="serverReadDaily" class="field wdoc"><span class=sn>serverReadDaily</span> <var>lk</var> <var>sv</var><em> is </em><div class="box function"><div class=field>sync.t &rarr; </div>
+<div class=field><em>{</em><div class="box struct"><div id="codes" class=field><span class=sn>`codes</span><em> is </em>list<tt>&lt;</tt><em>{</em><span class=sn>`code</span><em> is </em>option<tt>&lt;</tt>string<tt>&gt;</tt>, <span class=sn>`nickId</span><em> is </em>number<em>}</em><tt>&gt;</tt>, </div>
+<div id="dailyConf" class=field><span class=sn>`dailyConf</span><em> is </em>option<tt>&lt;</tt>server.confT<tt>&gt;</tt>, </div>
+<div id="historicConf" class=field><span class=sn>`historicConf</span><em> is </em>option<tt>&lt;</tt>server.confT<tt>&gt;</tt>, </div>
+<div id="id" class=field><span class=sn>`id</span><em> is </em>number, </div>
+<div id="name" class=field><span class=sn>`name</span><em> is </em>string, </div>
+<div id="shortName" class=field><span class=sn>`shortName</span><em> is </em>string</div>
+</div><em>}</em> &rarr; </div>
+<div class=field>option<tt>&lt;</tt>list<tt>&lt;</tt>nick.qvalueT<tt>&gt;</tt><tt>&gt;</tt></div>
+</div>, <div class="doc">Reads daily quotes.<p></p>Companies without server code or whose code is not found generate a
+quote value of '0' and produce a log error.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.<tr><td><var>sv</var><td>-<td class=arg>Web server.</table></div></div>
+<div id="serverReadHistoric" class="field wdoc"><span class=sn>serverReadHistoric</span> <var>lk</var> <var>sv</var> <var>nickId</var><em> is </em><div class="box function"><div class=field>sync.t &rarr; </div>
+<div class=field><em>{</em><div class="box struct"><div id="codes" class=field><span class=sn>`codes</span><em> is </em>list<tt>&lt;</tt><em>{</em><span class=sn>`code</span><em> is </em>option<tt>&lt;</tt>string<tt>&gt;</tt>, <span class=sn>`nickId</span><em> is </em>number<em>}</em><tt>&gt;</tt>, </div>
+<div id="dailyConf" class=field><span class=sn>`dailyConf</span><em> is </em>option<tt>&lt;</tt>server.confT<tt>&gt;</tt>, </div>
+<div id="historicConf" class=field><span class=sn>`historicConf</span><em> is </em>option<tt>&lt;</tt>server.confT<tt>&gt;</tt>, </div>
+<div id="id" class=field><span class=sn>`id</span><em> is </em>number, </div>
+<div id="name" class=field><span class=sn>`name</span><em> is </em>string, </div>
+<div id="shortName" class=field><span class=sn>`shortName</span><em> is </em>string</div>
+</div><em>}</em> &rarr; </div>
+<div class=field>number &rarr; </div>
+<div class=field>option<tt>&lt;</tt>list<tt>&lt;</tt>quote.t<tt>&gt;</tt><tt>&gt;</tt></div>
+</div>, <div class="doc">Reads historic quotes.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.<tr><td><var>sv</var><td>-<td class=arg>Web server.<tr><td><var>nickId</var><td>-<td class=arg>Company nick identifier.</table></div></div>
+<div id="testDailyConf" class="field wdoc"><span class=sn>testDailyConf</span> <var>lk</var> <var>id</var><em> is </em>sync.t &rarr; number &rarr; boolean, <div class="doc">Test daily configuration of a server and returns 'true' if the result
+was ok.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.<tr><td><var>id</var><td>-<td class=arg>Server identifier.</table></div></div>
+<div id="testHistoricConf" class="field wdoc"><span class=sn>testHistoricConf</span> <var>lk</var> <var>id</var> <var>nickId</var><em> is </em>sync.t &rarr; number &rarr; number &rarr; boolean, <div class="doc">Test daily configuration of server-company and returns 'true' if the
+result was ok.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.<tr><td><var>id</var><td>-<td class=arg>Server identifier.<tr><td><var>nickId</var><td>-<td class=arg>Nick indentifier.</table></div></div>
+<div id="updateHistoric" class="field wdoc"><span class=sn>updateHistoric</span> <var>lk</var> <var>nickId</var><em> is </em>sync.t &rarr; number &rarr; <em>{</em><span class=sn>errors?</span><em> is </em>boolean, <span class=sn>warnings?</span><em> is </em>boolean<em>}</em><div class="doc">Updates historic quotes of <var>"nickId"</var>.<table class="args"><tr><td><var>lk</var><td>-<td class=arg>Synchronization lock.<tr><td><var>nickId</var><td>-<td class=arg>Company nick identifier.</table></div></div>
+</div><em>}</em></div>
+</div>
+</body></html>

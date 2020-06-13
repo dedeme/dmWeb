@@ -1,0 +1,107 @@
+// Copyright 10-Jun-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Profits historic data base.
+module db.acc.profitsDb;
+
+load es.dm.std;
+file = load es.dm.file;
+json = load es.dm.json;
+date = load es.dm.date;
+sync = load es.dm.sync;
+load es.dm.jsonM;
+profits = load data.profits;
+cts = load data.cts;
+
+(
+  var basePath = "";
+
+  rpath investor = basePath ^/ "Investor-\(investor)";
+  path investor =  rpath investor ^/ "profits" ;
+  ypath investor year = path investor ^/ (year ^ ".tb");
+
+{
+  /// Initializes configuration table.
+  ///
+  /// Arguments:
+  ///   parent - Parent directory (data/acc).
+  init parent
+  is string -> () =
+    basePath := parent;
+    mans = cts.managers;
+    year = date.format "%Y" (date.now ());
+    for [0..mans - 1] do i:
+      if not file.exists? (path i) then
+        file.mkdir (rpath i);
+        file.mkdir (path i);
+        d = date.now ();
+        file.writeAll (ypath i year)
+          ([profits.mk (date.toStr d) 0 0 0] |>
+             jswList profits.toJs |> json.toStr)
+      fi;
+      done,
+
+  /// Read all the investors tables. If an investor has not data,
+  /// the function returns an empty list for it.
+  ///
+  /// Description:
+  /// Uses the following format:
+  ///   : [Investors], where each investor is
+  ///   : [entries], where each entry is a data.profits ordered from after to
+  ///   :   before.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  readJs lk
+  is sync.t -> json.t =
+    ys = years lk |> sortBy (>);
+    json.wa (map do i:
+        json.wa (concatMap do year:
+          p = ypath i year;
+          if file.exists? p then file.readAll p |> json.fromStr |> json.ra
+          else [] fi
+          done ys)
+        done [0..cts.managers - 1]),
+
+  /// Returns the list of years with data of any investor. This list is
+  /// unsorted.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  years lk
+  is sync.t -> list<string> =
+    fold do r i:
+           fold do r2 f:
+                  n = strLeft f (strLength f - 3);
+                  if not any do e: e == n done r2 then (n::r2)
+                  else r2 fi
+                  done
+                r (file.dir (path i))
+           done
+         [] [0..cts.managers - 1],
+
+  /// Writes the last entry of an investor.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   investor - Inversor number.
+  ///   total - Total profits.
+  ///   acc - Accounting profits.
+  ///   risk - Risk profits.
+  add lk investor total acc risk
+  is sync.t -> number -> number -> number -> number -> () =
+    d = date.now ();
+    ds = date.toStr d;
+    y = date.format "%Y" d;
+    p = ypath investor y;
+    newAnn = profits.mk ds total acc risk;
+    if file.exists? p then
+      var anns = file.readAll p |> json.fromStr |> jsrList profits.fromJs;
+      if (head anns).date == ds then anns := newAnn::tail anns
+      else anns := newAnn::anns fi;
+      file.writeAll p (jswList profits.toJs anns |> json.toStr)
+    else
+      file.writeAll p (jswList profits.toJs [newAnn] |> json.toStr)
+    fi,
+
+})

@@ -1,0 +1,31 @@
+// Copyright 22-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Utilities for application.
+module std;
+
+exc = load es.dm.exc;
+sync = load es.dm.sync;
+log = load db.log;
+
+class MMarketException (String msg) extends Exception (msg) end;
+
+{
+  /// Throw an illegalArgumentExcetion with the text:
+  ///
+  /// "Key 'xxx' not found."
+  ///
+  /// Arguments:
+  ///   key - Identifier of key not found.
+  failedKey key
+  is string -> 'a =
+    throw (exc.illegalArgument "Key '\(key)' not found"),
+
+  /// Logs and throws a MMarketException.
+  mmFail msg
+  is string -> 'a =
+    e = new MMarketException(msg);
+    sync.run do lk: log.exc lk e done;
+    throw e;
+
+}

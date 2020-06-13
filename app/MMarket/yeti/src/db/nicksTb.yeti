@@ -1,0 +1,217 @@
+// Copyright 26-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Nicks table.
+module db.nicksTb;
+
+load es.dm.std;
+sync = load es.dm.sync;
+file = load es.dm.file;
+json = load es.dm.json;
+load es.dm.jsonM;
+nick = load data.nick;
+log = load db.log;
+
+typedef t =
+  { nextId is number,
+    model is number,
+    lst is list<nick.t>
+  };
+
+(
+  toJs data =
+    json.wa
+      [ json.wn data.nextId,
+        json.wn data.model,
+        jswList nick.toJs data.lst
+      ];
+
+  fromJs js =
+    ( a = array (json.ra js);
+      { nextId = json.rn a[0],
+        model = json.rn a[1],
+        lst = jsrList nick.fromJs a[2]
+      }
+    );
+
+  var path = "";
+
+  write lk data =
+    file.writeAll path (toJs data |> json.toStr);
+
+  read lk =
+    file.readAll path |> json.fromStr |> fromJs;
+
+{
+  /// Initializes configuration table.
+  ///
+  /// Arguments:
+  ///   parent - Parent directory.
+  init parent
+  is string -> () =
+    path := parent ^/ "Nicks.tb";
+    if not file.exists? path
+    then
+      sync.run do lk:
+        write lk
+          { nextId = 0,
+            model = -1,
+            lst = []
+          }
+        done
+    fi,
+
+  /// Returns the list of nicks.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  nicks lk
+  is sync.t -> list<nick.t> =
+    (read lk).lst,
+
+  /// Returns the list of selected nicks.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  selectedNicks lk
+  is sync.t -> list<nick.t> =
+    filter do n: n.sel? done (nicks lk),
+
+  /// Returns the nick which id is 'id'.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   nickId - Nick to search.
+  getNick lk nickId
+  is sync.t -> number -> option<nick.t> =
+    case find do n: n.id == nickId done (nicks lk) of
+    n::_ : Some n;
+    _ : None ()
+    esac,
+
+  /// Returns list and model of nicks.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  data lk
+  is sync.t -> { model is number, lst is list<nick.t> } =
+    read lk,
+
+  /// Adds a new nick if it is not duplicated. In such case it logs an error
+  /// and returns "false". If the operation succeeds, the nick identifier is
+  /// returned.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   nickName - Name of nick to add.
+  add lk nickName
+  is sync.t -> string -> {nickId is number, ok is boolean} =
+    data = read lk;
+    nks = data.lst;
+    if any do e: e.name == nickName done nks then
+      log.error lk "Nick name '\(nickName)' is duplicated";
+      {nickId = -1, ok = false}
+    else
+      nickId = data.nextId;
+      nk = nick.mk nickId nickName;
+      write lk
+        { nextId = nickId + 1,
+          model = data.model,
+          lst = nk :: nks
+        };
+      {nickId, ok = true}
+    fi,
+
+  /// Removes the nick with id "nickId".
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   nickId - Identifier of nick to delete.
+  del lk nickId
+  is sync.t -> number -> () =
+    data = read lk;
+    lst = filter do e: e.id != nickId done data.lst;
+    write lk
+      { nextId = data.nextId,
+        model = data.model,
+        lst
+      },
+
+  /// Modifies the name of nick with id "nickId".
+  ///
+  /// If the name is duplicated or nickId does no exist, it returns 'false'.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   nickId - Identifier of nick to modify.
+  ///   name - New name.
+  setName lk nickId name
+  is sync.t -> number -> string -> option<string> =
+    data = read lk;
+    var oldName = Some name;
+    var dup = false;
+    lst = map do e:
+      if e.id == nickId then
+        oldName := Some e.name;
+        e with { name }
+      else
+        if e.name == name then dup := true fi;
+        e
+      fi
+      done data.lst;
+
+    if dup then
+      log.error lk "Nick name '\(name)' is duplicated";
+      None ()
+    else
+      write lk
+        { nextId = data.nextId,
+          model = data.model,
+          lst
+        };
+      oldName
+    fi,
+
+  /// Selects/Deselects the nick with id "nickId"
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   nickId - Identifier of nick to select/deselect.
+  ///   value - 'true' If selected.
+  setIsSel lk nickId value
+  is sync.t -> number -> boolean -> () =
+    data = read lk;
+    lst = map do e:
+      if e.id == nickId then e with { sel? = value }
+      else e
+      fi
+      done data.lst;
+    write lk
+      { nextId = data.nextId,
+        model = data.model,
+        lst
+      },
+
+  /// Returns Nick model. If it is not defined, returns the any nick. If
+  /// an error happens, returns none.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  getModel lk
+  is sync.t -> option<t> =
+    data = read lk;
+    if data.model != -1 then getNick lk data.model
+    else if empty? data.lst then None() else Some (head data.lst) fi
+    fi,
+
+  /// Set the nick with id "nickId" as nick model.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   nickId - Identifier of nick to select/deselect.
+  setModel lk nickId
+  is sync.t -> number -> () =
+    data = read lk;
+    write lk (data with { model = nickId }),
+
+})

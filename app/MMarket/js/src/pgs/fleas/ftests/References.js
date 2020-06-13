@@ -1,4 +1,4 @@
-// Copyright 17-Mar-2020 ºDeme
+// Copyright 25-May-2020 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 import Domo from "../../../dmjs/Domo.js"; //eslint-disable-line
@@ -6,10 +6,12 @@ import Client from "../../../dmjs/Client.js"; //eslint-disable-line
 import Ui from "../../../dmjs/Ui.js";
 import Dec from "../../../dmjs/Dec.js";
 import {_, _args} from "../../../I18n.js";
-import Model from "../../../data/flea/Fmodel.js"; //eslint-disable-line
 import Params from "../../../wgs/Params.js";
-import HistoricChart from "../../../wgs/HistoricChart.js";
-import Operations from "../../../wgs/Operations.js";
+import Msg from "../../../wgs/Msg.js";
+import Cts from "../../../data/Cts.js";
+import Fmodel from "../../../data/flea/Fmodel.js"; //eslint-disable-line
+import HistoricChart from "../wgs/HistoricChart.js";
+import Operations from "../wgs/Operations.js";
 
 const $ = e => Ui.$(e);
 
@@ -19,13 +21,13 @@ const $ = e => Ui.$(e);
 export default class References {
   /**
       @private
-      @param {!Client} client
-      @param {!Model} model
+      @param {!Domo} wg
+      @param {!Fmodel} model
       @param {!Array<string>} nickList
   **/
-  constructor (client, model, nickList) {
+  constructor (wg, model, nickList) {
     nickList.sort((s1, s2) => s1 > s2 ? 1 : -1);
-    this._client = client;
+    this._wg = wg;
     this._model = model;
     this._nickList = nickList;
     this._nickSel = 0;
@@ -35,15 +37,7 @@ export default class References {
     this._chartDiv = $("div");
     this._ordersDiv = $("div");
     this._resultDiv = $("div");
-    this._wg = $("div");
     this.view();
-  }
-
-  /**
-      @return {!Domo}
-  **/
-  get wg () {
-    return this._wg;
   }
 
   // View ----------------------------------------------------------------------
@@ -62,10 +56,12 @@ export default class References {
         nkRows.push(row);
         row = $("tr");
       }
-      row.add($("td").style("text-align:left")
+      row.add($("td")
+        .style("text-align:left")
         .add(Ui.link(() => { this.selNick(i) })
           .klass(i === ns ? "link frame" : "link")
-          .setStyle("font-family", "monospace").html(nk))
+          .setStyle("font-family", "monospace")
+          .html(nk))
       );
     });
     const mod = this._nickList.length % 10;
@@ -76,29 +72,48 @@ export default class References {
       nkRows.push(row);
     }
 
-    this._wg.removeAll()
+    this._wg
+      .removeAll()
       .add($("table").klass("main")
         .add($("tr")
-          .add($("td").style("width:50%;text-align:center")
-            .add($("div").klass("head").text(_("Companies")))
-            .add($("table").klass("border").att("align", "center")
-              .style("padding:5px")
+          .add($("td")
+            .style("width:50%;text-align:center")
+            .add($("div").klass("head")
+              .text(_("Companies")))
+            .add($("table")
+              .klass("frame3")
+              .att("align", "center")
+              .style("padding: 5px")
               .adds(nkRows)))
-          .add($("td").style("width:50%;text-align:center")
-            .add($("div").klass("head").text(_("Parameters")))
-            .add($("table").att("align", "center").add($("tr").add($("td")
-              .add(this._wgParams.wg))))))
+          .add($("td")
+            .style("width:50%;text-align:center")
+            .add($("div")
+              .klass("head")
+              .text(_("Parameters")))
+            .add($("table")
+              .att("align", "center")
+              .add($("tr")
+                .add($("td")
+                  .add(this._wgParams.wg))))))
         .add($("tr")
-          .add($("td").att("colspan", 2).style("text-align:center")
-            .add($("div").style("height:5px"))
-            .add($("button").att("id", "showBt").text(_("Show"))
+          .add($("td")
+            .att("colspan", 2)
+            .style("text-align:center")
+            .add($("div")
+              .style("height:5px"))
+            .add($("button")
+              .att("id", "showBt")
+              .text(_("Show"))
               .on("click", () => this.showChart()))
-            .add($("div").style("height:5px"))
+            .add($("div")
+              .style("height:5px"))
             .add(this._chartDiv.removeAll()
               .add(new HistoricChart(true, []).wg.klass("frame0")))
-            .add($("div").style("height:5px"))
+            .add($("div")
+              .style("height:5px"))
             .add(this._ordersDiv.removeAll())
-            .add($("div").style("height:5px"))
+            .add($("div")
+              .style("height:5px"))
             .add(this._resultDiv.removeAll())))
       );
   }
@@ -109,14 +124,20 @@ export default class References {
       @private
   **/
   async showChart () {
-    const rp = await this._client.send({
-      "module": "Fleas",
-      "source": "References",
+    const rp = await Cts.client.send({
+      "module": "fleas",
+      "source": "ftests/references",
       "rq": "chartData",
       "modelId": this._model.id,
       "nickName": this._nickList[this._nickSel],
       "params": this._wgParams.value
     });
+
+    if (!rp["ok"]) {
+      Msg.error(Cts.failMsg, () => {});
+      return;
+    }
+
     const dates = rp["dates"];
     const closes = rp["closes"];
     const opens = rp["opens"];
@@ -151,17 +172,17 @@ export default class References {
   // Static --------------------------------------------------------------------
 
   /**
-      @param {!Client} client
-      @param {!Model} model
+      @param {!Domo} wg
+      @param {!Fmodel} model
       @return {!Promise<!References>}
   **/
-  static async mk (client, model) {
-    const rp = await client.send({
-      "module": "Fleas",
-      "source": "References",
+  static async mk (wg, model) {
+    const rp = await Cts.client.send({
+      "module": "fleas",
+      "source": "ftests/references",
       "rq": "nickList"
     });
-    return new References(client, model, rp["nickList"]);
+    return new References(wg, model, rp["nickList"]);
   }
 
 }

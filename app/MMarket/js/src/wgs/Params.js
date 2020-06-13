@@ -18,12 +18,16 @@ export default class Params {
       @param {string} id TextFields root id. Final id will be made with
                          id + index.
       @param {string} nextId Id of next widget to pass focus.
+      @param {!Array<number>=} values Default values.
   **/
-  constructor (names, mins, maxs, id, nextId) {
+  constructor (names, mins, maxs, id, nextId, values) {
     this._ps = [];
     for (let i = 0; i < mins.length; ++i) {
       const nx = (i < mins.length - 1) ? id + String(i + 1) : nextId;
-      this._ps.push(new Param(names[i], mins[i], maxs[i], id + String(i), nx));
+      this._ps.push(values === undefined
+        ? new Param(names[i], mins[i], maxs[i], id + String(i), nx)
+        : new Param(names[i], mins[i], maxs[i], id + String(i), nx, values[i])
+      );
     }
 
     this._wg = $("div");
@@ -38,7 +42,7 @@ export default class Params {
   }
 
   /**
-      @return {Array<number>}
+      @return {!Array<number>}
   **/
   get value () {
     return this._ps.map(p => p.value);
@@ -46,6 +50,9 @@ export default class Params {
 
   // View ----------------------------------------------------------------------
 
+  /**
+      @private
+  **/
   view () {
     this._wg.removeAll()
       .add($("table").klass("frame")

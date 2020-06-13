@@ -1,0 +1,318 @@
+// Copyright 22-May-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Fleas management.
+module scheduler.fleas;
+
+load es.dm.std;
+date = load es.dm.date;
+dec = load es.dm.dec;
+sync = load es.dm.sync;
+eval = load data.flea.eval;
+evalDate = load data.flea.evalDate;
+matrix = load data.matrix;
+investor = load data.flea.investor;
+qtable = load data.qtable;
+fmodel = load data.flea.fmodel;
+flea = load data.flea.flea;
+fmodelsData = load data.flea.fmodels;
+frank = load data.flea.frank;
+irank = load data.flea.irank;
+fmodels = load db.fleas.fmodels;
+ranking = load db.fleas.ranking;
+log = load db.log;
+flog = load db.fleas.flog;
+quotesDb = load db.quotesDb;
+cts = load data.cts;
+load std;
+
+(
+  report efleas logId cycle
+  is list<eval.t> -> string -> number -> () =
+    ( var sumAssets = 0;
+      var sumProfitsAvg = 0;
+      var sumProfitsVa = 0;
+      var sumEval = 0;
+      first = head efleas;
+      var minAssets = first.assets;
+      var maxAssets = first.assets;
+      var minProfitsAvg = first.profitsAvg;
+      var maxProfitsAvg = first.profitsAvg;
+      var minProfitsVa = first.profitsVa;
+      var maxProfitsVa = first.profitsVa;
+      var minEval = first.eval;
+      var maxEval = first.eval;
+
+      for efleas do e:
+        assets = e.assets;
+        profitsAvg = e.profitsAvg;
+        profitsVa = e.profitsVa;
+        eval = e.eval;
+        sumAssets := sumAssets + assets;
+        sumProfitsAvg := sumProfitsAvg + profitsAvg;
+        sumProfitsVa := sumProfitsVa + profitsVa;
+        sumEval := sumEval + eval;
+        if assets < minAssets then minAssets := assets fi;
+        if assets > maxAssets then maxAssets := assets fi;
+        if profitsAvg < minProfitsAvg then minProfitsAvg := profitsAvg fi;
+        if profitsAvg > maxProfitsAvg then maxProfitsAvg := profitsAvg fi;
+        if profitsVa < minProfitsVa then minProfitsVa := profitsVa fi;
+        if profitsVa > maxProfitsVa then maxProfitsVa := profitsVa fi;
+        if eval < minEval then minEval := eval fi;
+        if eval > maxEval then maxEval := eval fi;
+        done;
+
+      n = length efleas;
+      flog.info logId
+       ( "Cycle: \(cycle). Survivers: \(n)" ^
+         "\n  Max = Assets: \(dec.toFix 2 (maxAssets)). " ^
+                   "PrfAvg: \(dec.toFix 4 (maxProfitsAvg)). " ^
+                   "PrfVa : \(dec.toFix 4 (maxProfitsVa)). " ^
+                   "Eval. : \(dec.toFix 2 (maxEval * 100)). " ^
+         "\n  Avg = Assets: \(dec.toFix 2 (sumAssets / n)). " ^
+                   "PrfAvg: \(dec.toFix 4 (sumProfitsAvg / n)). " ^
+                   "PrfVa : \(dec.toFix 4 (sumProfitsVa / n)). " ^
+                   "Eval. : \(dec.toFix 2 (sumEval * 100 / n)). " ^
+         "\n  Min = Assets: \(dec.toFix 2 (minAssets)). " ^
+                   "PrfAvg: \(dec.toFix 4 (minProfitsAvg)). " ^
+                   "PrfVa : \(dec.toFix 4 (minProfitsVa)). " ^
+                   "Eval. : \(dec.toFix 2 (minEval * 100)). "
+       )
+    );
+
+  runCycle opens closes md minSells maxSells efleas
+  is qtable.t -> qtable.t -> fmodel.t -> number -> number -> list<eval.t> ->
+     list<eval.t> =
+    ( if length efleas < 25 then
+        mmFail "Ev. fleas \(length efleas) (< 25) in model \(md.id)"
+      fi;
+
+      var mnSells = minSells;
+      var mxSells = maxSells;
+      var newEfleas = [];
+      var minAssets = 2000000;
+      var maxAssets = (-2000000);
+      var minProfitsAvg = 2000;
+      var maxProfitsAvg = (-2000);
+      var minProfitsVa = 2000;
+      var maxProfitsVa = (-2000);
+      fn () =
+        ( for efleas do e:
+            var addEval = true;
+            if e.eval < 0 then
+              rs = fmodel.assets md opens closes e.flea.params;
+              sells = rs.sells;
+              if sells >= mnSells and sells <= mxSells then
+                e.buys := rs.buys;
+                e.sells := sells;
+                e.assets := rs.assets;
+                {avg, va} = fmodel.profitsAvgVa md opens closes e.flea.params;
+                e.profitsAvg := avg;
+                e.profitsVa := va
+              else
+                addEval := false
+              fi
+            fi;
+            if addEval then
+              assets = e.assets;
+              profitsAvg = e.profitsAvg;
+              profitsVa = e.profitsVa;
+              if assets < minAssets then minAssets := assets fi;
+              if assets > maxAssets then maxAssets := assets fi;
+              if profitsAvg < minProfitsAvg then minProfitsAvg := profitsAvg fi;
+              if profitsAvg > maxProfitsAvg then maxProfitsAvg := profitsAvg fi;
+              if profitsVa < minProfitsVa then minProfitsVa := profitsVa fi;
+              if profitsVa > maxProfitsVa then maxProfitsVa := profitsVa fi;
+              newEfleas := e::newEfleas
+            fi
+            done;
+
+          if length newEfleas >= 20 then // Assures a minimum number
+            ()
+          else
+            mxSells := mxSells * 1.1;
+            mnSells := mnSells / 1.1;
+            sync.run do lk:
+              log.error lk "Less than 20 surviver fleas in model \(md.id)"
+              done;
+            fn ()
+          fi
+        );
+      fn ();
+
+      assetsDif = maxAssets - minAssets;
+      profitsAvgDif = maxProfitsAvg - minProfitsAvg;
+      profitsVaDif = maxProfitsVa - minProfitsVa;
+      var sm = 0;
+      for newEfleas do e:
+        ev = flea.evaluate e.flea
+                           ((e.assets - minAssets) / assetsDif)
+                           ((e.profitsAvg - minProfitsAvg) / profitsAvgDif)
+                           ((e.profitsVa - minProfitsVa) / profitsVaDif);
+        e.eval := ev;
+        sm := sm + ev;
+        done;
+      avg = sm / length newEfleas;
+
+      var tmp = [];
+      sm := 0;
+      for newEfleas do e:
+        if e.eval > avg then
+          tmp := e::tmp;
+          sm := sm + e.eval
+        fi
+        done;
+
+      avg = sm / length tmp;
+      var r = [];
+      for tmp do e:
+        if e.eval > avg then
+          r := e::r;
+        fi
+        done;
+
+      r
+    );
+{
+  /// Returns selected evaluate fleas.
+  ///
+  /// Arguments:
+  ///   opens - Opens table.
+  ///   closes - Closes table.
+  ///   md - Flea model.
+  ///   logId - Identifier to activate log reports. If its value is None()
+  ///           no report will be emmited.
+  selection opens closes md logId
+  is qtable.t -> qtable.t -> fmodel.t -> option<string> -> list<eval.t> =
+    var efleas = [];
+    date = date.toStr (date.now ());
+    var pool is list<eval.t> = [];
+    sync.run do lk:
+      pool := fmodels.readPool lk md.id;
+      for (fmodels.readBests lk md.id) do b:
+        if not (eval.containsEval? b.eflea pool) then
+          pool := b.eflea::pool
+        fi
+      done;
+    done;
+
+    maxSells = round (cts.historicQuotes * cts.maxSells);
+    minSells = round (cts.historicQuotes * cts.minSells);
+    nParams = length md.parMins;
+    nCycles = cts.insertionCycle + cts.cycles * nParams;
+    for [1..nCycles] do cycle:
+      var id = cts.fleasPerModel + 1;
+      if cycle == 1 then
+        for [1..cts.fleasPerModel] do i:
+          efleas := (flea.mk md date cycle i |> eval.mk)::efleas;
+          done
+      elif cycle == cts.insertionCycle then
+        efleas := efleas ++ pool
+      else
+        olds = efleas;
+        fn n os =
+          if n >= cts.fleasPerModel then
+            ()
+          else case os of
+               ev::os' :
+                efleas := (flea.mutate md ev.flea date cycle id |> eval.mk)
+                            ::efleas;
+                id := id + 1;
+                efleas := (flea.mk md date cycle id |> eval.mk)::efleas;
+                id := id + 1;
+                efleas := (flea.mk md date cycle id |> eval.mk)::efleas;
+                id := id + 1;
+                fn (n + 3) os';
+               _ :
+                fn n olds
+               esac
+          fi;
+        fn (length efleas) olds
+      fi;
+
+      efleas := runCycle opens closes md minSells maxSells efleas;
+      case logId of
+      Some id : report efleas id cycle;
+      None () : ()
+      esac;
+      done;
+
+    case logId of
+    Some id : flog.stop id;
+    None () : ()
+    esac;
+    efleas,
+
+  evolution ()
+  is () -> () =
+    dt = date.toStr (date.now ());
+    var rankingPoolNews = [];
+
+    var opens = qtable.mk (array [""]) (matrix.mk2 1 1);
+    var closes = opens;
+    sync.run do lk:
+      opens := quotesDb.opens lk;
+      closes := quotesDb.closes lk
+      done;
+
+    for (fmodelsData.list ()) do md:
+      efleas = selection opens closes md (None ());
+      efleas = eval.sort efleas;
+
+      bests = take cts.poolAddNumber efleas;
+      rankingPoolNews := rankingPoolNews ++
+                          (map do e: investor.mk md e done bests);
+
+      sync.run do lk:
+        pool = fmodels.readPool lk md.id;
+        pool = eval.complete efleas pool (cts.poolNumber + cts.poolAddNumber);
+        pool = eval.sort pool;
+        fmodels.writePool lk md.id (take cts.poolNumber pool);
+
+        bests = fmodels.readBests lk md.id;
+        bests = if not empty? bests and (head bests).date == dt then tail bests
+                else bests fi;
+        bests = evalDate.mk dt (head pool)::bests;
+        fmodels.writeBests lk md.id (take cts.poolNumber bests);
+
+        ranks = fmodels.readRanking lk md.id;
+        ranks = if not empty? ranks and (head ranks).date == dt then tail ranks
+                else ranks fi;
+        newRank = if empty? ranks then
+                    take cts.rankingNumber pool |> frank.mk dt
+                  else
+                    n = cts.rankingNumber - cts.rankingChanges;
+                    rank = take n (head ranks).ranking;
+                    efleas = eval.complete pool rank cts.rankingNumber;
+                    eval.evaluate md opens closes efleas;
+                    frank.mk dt (eval.sort efleas)
+                  fi;
+        ranks = newRank::ranks;
+        fmodels.writeRanking lk md.id (take cts.rankingDays ranks)
+        done
+      done;
+
+    sync.run do lk:
+      pool = ranking.readPool lk;
+      pool = investor.complete rankingPoolNews pool
+                               (length rankingPoolNews + length pool);
+      investor.evaluate opens closes pool;
+      pool = investor.sort pool;
+      ranking.writePool lk pool;
+
+      ranks = ranking.readRanking lk;
+      ranks = if not empty? ranks and (head ranks).date == dt then tail ranks
+              else ranks fi;
+      newRank = if empty? ranks then
+                  take cts.rankingNumber pool |> irank.mk dt
+                else
+                  n = cts.rankingNumber - cts.rankingChanges;
+                  rank = take n (head ranks).ranking;
+                  invs = investor.complete pool rank cts.rankingNumber;
+                  investor.evaluate opens closes invs;
+                  irank.mk dt (investor.sort invs)
+                fi;
+      ranks = newRank::ranks;
+      ranking.writeRanking lk (take cts.rankingDays ranks)
+      done,
+})

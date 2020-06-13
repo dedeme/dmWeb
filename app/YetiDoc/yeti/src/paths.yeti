@@ -1,0 +1,36 @@
+// Copyright 17-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+module paths;
+
+load es.dm.all;
+json = load es.dm.json;
+db = load db;
+
+{
+  process ck rq is
+  string -> map<string, json.t> -> string =
+    case cgi.rqString rq "rq" of
+    "changeLang" :
+      db.setLang rq["lang"];
+      cgi.rpEmpty ck;
+    "new" :
+      ok = db.newPath (cgi.rqString rq "name") (cgi.rqString rq "path");
+      cgi.rpOk ck ok;
+    "setShowAll" :
+      db.setShowAll (json.wb (cgi.rqBoolean rq "value"));
+      cgi.rpEmpty ck;
+    "setShow" :
+      db.setShow (cgi.rqString rq "name") (cgi.rqBoolean rq "value");
+      cgi.rpEmpty ck;
+    "modify" :
+      ok = db.modifyPath (cgi.rqString rq "oldName") (cgi.rqString rq "newName")
+                         (cgi.rqString rq "path");
+      cgi.rpOk ck ok;
+    "delete" :
+      db.deletePath (cgi.rqString rq "name");
+      cgi.rpEmpty ck;
+    s:
+    throw (exc.illegalArgument "Request '\(s)' is unknown")
+    esac,
+}

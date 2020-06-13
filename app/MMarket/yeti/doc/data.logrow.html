@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html><meta http-equiv="Content-Type" content="text/html;charset=utf-8" ><style type="text/css">
+.main { background: white; line-height: 130%; font-family: sans-serif }
+.type { background: white; font-size: 12pt; }
+.sn { font: 13pt monospace }
+.vn { font-size: 13pt }
+.other { background: #cccccc; display: inline; }
+.field { padding: 1.5pt }
+.wdoc { padding-top: 0.5em; padding-bottom: 0.4em; }
+var { font: 11pt monospace }
+.args { padding-left: 1.4em }
+.args tr td { vertical-align: text-top }
+td.arg { width: 100% }
+/*.wdoc { margin-top: 0.6em; margin-bottom: 0.6em; } */
+.box { border: 1px solid black;
+    /* top/bottom right/left | top right/left bottom | top right bottom left */
+    padding: 1px 0.1em 1pt;
+    margin: 1px 1pt 0pt;
+    display: inline-block; }
+.module { color: #000080 }
+.group { font: 16pt sans-serif; border-bottom: solid black 1px;
+         padding: 0px; margin: 0.5em 0px; text-align: center }
+em { color: #000080; font: bold 13pt sans-serif }
+.function { background: #ffffff }
+.struct { background: #ffffff }
+.variant { background: #c7c7ff }
+/* background: #bbffbb; */
+.ft { padding-left: 0em }
+.doc { background: #ffffa8;
+    padding: 0.5em 0.5em 0.5em 2em;
+    font-size: 12pt; }
+.contents { background: #dddddd; padding: 0.5em; font-size: 10pt }
+.contents a { text-decoration: none }
+.contents a:hover { text-decoration: underline }
+.doc p { margin: 0.6em 0px 1px; font-weight: bold }
+.doc pre { background: #ffffc8;
+    border: 1px dashed black;
+    margin: 0.3em 1.5em 0.3em 0px;
+    padding: 0.3em; overflow: auto }
+</style><title>data.logrow</title>
+<body>
+<div class="main">
+<h2><span class=module>module</span> data.logrow</h2>
+<div class="doc">Log entry.</div><p><div class="type"><em>typedef</em> t = <em>{</em><div class="box struct" style="display: block; margin: 2pt"><div id="error?" class="field wdoc"><span class=sn>error?</span><em> is </em>boolean, <div class="doc">'true' of the entry is an error message.</div></div>
+<div id="msg" class="field wdoc"><span class=sn>msg</span><em> is </em>string, <div class="doc">Message to show.</div></div>
+<div id="time" class="field wdoc"><span class=sn>time</span><em> is </em>string<div class="doc">Time in format <var>"dd/mm/yyyy(hh:mm:ss)"</var>.</div></div>
+</div><em>}</em></div>
+<h3>Module signature</h3>
+<div class="type"><em>{</em><div class="box struct" style="display: block; margin: 2pt"><div id="error" class="field wdoc"><span class=sn>error</span> <var>e</var><em> is </em>~java.lang.Throwable &rarr; t, <div class="doc">Creates an error message.<table class="args"><tr><td><var>e</var><td>-<td class=arg>Throwable to show.</table></div></div>
+<div id="format" class="field wdoc"><span class=sn>format</span><em> is </em>~java.lang.Throwable &rarr; string, <div class="doc">Returns formated exception with stack trace.<p></p>Arguments
+e - java.lang.Throwable</div></div>
+<div id="info" class="field wdoc"><span class=sn>info</span> <var>msg</var><em> is </em>string &rarr; t, <div class="doc">Creates an informative message.<table class="args"><tr><td><var>msg</var><td>-<td class=arg>Message to show.</table></div></div>
+<div id="toJs" class="field wdoc"><span class=sn>toJs</span> <var>r</var><em> is </em>t &rarr; json.t<div class="doc">Serializes to JSON.<table class="args"><tr><td><var>r</var><td>-<td class=arg>Row to serialize.</table></div></div>
+</div><em>}</em></div>
+</div>
+</body></html>

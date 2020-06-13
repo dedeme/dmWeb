@@ -1,0 +1,73 @@
+// Copyright 27-May-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Data base of flea ranking.
+///
+/// Description:
+///   Data basde has two tables:
+///   : pool: With the historic bests 'cts.poolNumber' investors.
+///   : ranking: With 40 'hits'.
+module db.fleas.ranking;
+
+load es.dm.std;
+sync = load es.dm.sync;
+file = load es.dm.file;
+json = load es.dm.json;
+load es.dm.jsonM;
+investor = load data.flea.investor;
+irank = load data.flea.irank;
+
+(
+  var poolPath = "";
+  var rankingPath = "";
+
+{
+  /// Initializes data base.
+  /// Arguments:
+  ///   parent - Parent directory.
+  init parent
+  is string -> () =
+    poolPath := parent ^/ "Pool.tb";
+    rankingPath := parent ^/ "Ranking.tb";
+    if not file.exists? poolPath then
+      file.writeAll poolPath "[]"
+    fi;
+    if not file.exists? rankingPath then
+      file.writeAll rankingPath "[]"
+    fi,
+
+  /// Writes an investors pool.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   invs - Investors.
+  writePool lk invs
+  is sync.t -> list<investor.t> -> () =
+    file.writeAll poolPath (jswList investor.toJs invs |> json.toStr),
+
+  /// Reads an investors pool.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  readPool lk
+  is sync.t -> list<investor.t> =
+    file.readAll poolPath |> json.fromStr |> json.ra |> investor.fromJsList,
+
+  /// Writes an investors ranking.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   iranks - investors rankings (sorted from after to before).
+  writeRanking lk iranks
+  is sync.t -> list<irank.t> -> () =
+    file.writeAll rankingPath (jswList irank.toJs iranks |> json.toStr),
+
+  /// Reads investors rankings (sorted from after to before).
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  readRanking lk
+  is sync.t -> list<irank.t> =
+    file.readAll rankingPath |> json.fromStr |> jsrList irank.fromJs,
+
+})

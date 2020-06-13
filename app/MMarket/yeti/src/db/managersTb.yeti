@@ -1,0 +1,126 @@
+// Copyright 03-Jun-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Managers database
+module db.managersTb;
+
+load es.dm.std;
+sync = load es.dm.sync;
+file = load es.dm.file;
+json = load es.dm.json;
+load es.dm.jsonM;
+manager = load data.manager;
+cts = load data.cts;
+qtable = load data.qtable;
+fmodel = load data.flea.fmodel;
+nicksTb = load db.nicksTb;
+quotesDb = load db.quotesDb;
+
+(
+  var path = "";
+
+  readJs' lk
+  is sync.t -> list<json.t> =
+    file.readAll path |> json.fromStr |> json.ra;
+
+  write lk managers
+  is sync.t -> array<manager.t> -> () =
+    jswList manager.toJs (list managers) |> json.toStr |> file.writeAll path;
+
+{
+  /// Initializes configuration table.
+  ///
+  /// Arguments:
+  ///   parent - Parent directory.
+  init parent
+  is string -> () =
+    path := parent ^/ "Managers.tb";
+    if not file.exists? path
+    then
+      mgs = map do _: manager.toJs (manager.mk ()) done [1..cts.managers];
+      file.writeAll path (json.wa mgs |> json.toStr);
+    fi,
+
+  /// Returns managers list.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  read lk
+  is sync.t -> array<manager.t> =
+    readJs' lk |> map manager.fromJs |> array,
+
+  /// Sets the model base of a manager and regularize company models.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   man - Manager id.
+  ///   model - Model to set.
+  ///   params - Model parameters.
+  setBase lk man model params
+  is sync.t -> number -> fmodel.t -> array<number> -> () =
+    mgs = read lk;
+    mg = mgs[man];
+    mg.base := { model, params };
+    write lk mgs;
+    regularize lk man,
+
+  /// Sets the model base of a company of an investor.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   man - Manager id.
+  ///   nickName - Company nick.
+  ///   model - Model to set.
+  ///   params - Model parameters.
+  setNick lk man nickName model params
+  is sync.t -> number -> string -> fmodel.t -> array<number> -> () =
+    mgs = read lk;
+    mg = mgs[man];
+    mg.nicks[nickName] := { model, params };
+    write lk mgs,
+
+  /// Regularizes company models.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   man - Manager id.
+  regularize lk man
+  is sync.t -> number -> () =
+    mgs = read lk;
+    mg = mgs[man];
+    baseCf = mg.base;
+    nicks = nicksTb.selectedNicks lk;
+    for nicks do nk:
+      if nk.name in mg.nicks then
+        nkCf = mg.nicks[nk.name];
+        if not manager.entryEq baseCf nkCf then
+          case qtable.nickValues (quotesDb.closes lk) nk.name of
+          Some closes :
+            lastCl = (closes is ~double[][])[length closes - 1][0];
+            refs = fmodel.refs baseCf.model closes baseCf.params;
+            lastBaseRf = refs[length refs - 1];
+            refs = fmodel.refs nkCf.model closes nkCf.params;
+            lastNkRf = refs[length refs - 1];
+            if (lastBaseRf > lastCl and lastNkRf > lastCl) or
+               (lastBaseRf < lastCl and lastNkRf < lastCl)
+            then
+              mg.nicks[nk.name] := mg.base
+            fi;
+           None () :
+            mg.nicks[nk.name] := mg.base
+          esac
+        fi
+      else
+        mg.nicks[nk.name] := mg.base;
+      fi
+      done;
+
+    for (keys mg.nicks) do nkName:
+      if not any do nk: nk.name == nkName done nicks
+      then
+        delete mg.nicks nkName
+      fi
+      done;
+
+    write lk mgs,
+})

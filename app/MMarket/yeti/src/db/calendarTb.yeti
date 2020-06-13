@@ -1,0 +1,168 @@
+// Copyright 24-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Calendar table.
+module db.calendarTb;
+
+load es.dm.std;
+json = load es.dm.json;
+date = load es.dm.date;
+load es.dm.jsonM;
+sync = load es.dm.sync;
+file = load es.dm.file;
+timetable = load data.timetable;
+marketDay = load data.marketDay;
+
+(
+  var path = "";
+
+  var calendar =
+    { general = timetable.mk (),
+      holidays = [],
+      specialDays = []
+    };
+
+  write lk tb =
+    ( calendar :=
+        { general = tb["general"] |> timetable.fromJs,
+          holidays = tb["holidays"] |> jsrList json.rs,
+          specialDays = tb["specialDays"] |> jsrList marketDay.fromJs
+        };
+      json.wo tb |> json.toStr |> file.writeAll path
+    );
+
+  read lk =
+    file.readAll path |> json.fromStr |> json.ro;
+
+{
+  /// Initializes configuration table.
+  ///
+  /// Arguments:
+  ///   parent - Parent directory.
+  init parent
+  is string -> () =
+    path := parent ^/ "Calendar.tb";
+    if not file.exists? path
+    then
+      sync.run do lk:
+        write lk
+          [ "general": timetable.mk () |> timetable.toJs,
+            "holidays": json.wa [],
+            "specialDays": json.wa []
+          ];
+        done
+    else
+      sync.run do lk:
+        read lk |> write lk
+      done
+    fi,
+
+  /// Returns general time table
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  general lk
+  is sync.t -> json.t =
+    (read lk)["general"],
+
+  /// Modifies general time table.
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   js - Timetable 'JSONized'
+  setGeneral lk js
+  is sync.t -> json.t -> () =
+    tb = read lk;
+    tb["general"] := js;
+    write lk tb,
+
+  /// Returns holidays list 'JSONized'
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  holidays lk
+  is sync.t -> json.t =
+    (read lk)["holidays"],
+
+  /// Modifies holidays list .
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   js - holidays list 'JSONized'
+  setHolidays lk js
+  is sync.t -> json.t -> () =
+    tb = read lk;
+    tb["holidays"] := js;
+    write lk tb,
+
+  /// Returns specialDays list 'JSONized'
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  specialDays lk
+  is sync.t -> json.t =
+    (read lk)["specialDays"],
+
+  /// Modifies specialDays list .
+  ///
+  /// Arguments:
+  ///   lk - Synchronization lock.
+  ///   js - specialDays list 'JSONized'
+  setSpecialDays lk js
+  is sync.t -> json.t -> () =
+    tb = read lk;
+    tb["specialDays"] := js;
+    write lk tb,
+
+ ///  Returns 'true' if day is a market day.
+ ///
+ ///  Arguments:
+ ///    day - Date of day.
+ isMarketDay day
+ is date.t -> boolean =
+   wd = date.weekDay day;
+   if wd == 1 or wd == 7 then
+    false
+   else
+    ds = date.toStr day;
+    if any (ds ==) calendar.holidays then false
+    else true
+    fi
+  fi,
+
+ ///  Returns 'true' if day is a market day and its time is inside the
+ ///  corresponding timetable.
+ ///
+ ///  Arguments:
+ ///    day - Date of day.
+ isOpen day
+  is date.t -> boolean =
+    day = date.addMinutes (-15) day;
+    if isMarketDay day then
+      h = date.hour(day);
+      m = date.minute(day);
+      ds = date.toStr day;
+      tt = case find do s: s.date == ds done calendar.specialDays of
+           [d] : d;
+           _ : calendar.general with { date = ds }
+           esac;
+      if (h > tt.hopen or (h == tt.hopen and m > tt.mopen)) and
+         (h < tt.hclose or (h == tt.hclose and m <= tt.mclose))
+      then true
+      else false
+      fi
+    else
+      false
+    fi,
+
+ ///  Returns the date of the previous market day. (First day to search is
+ ///  today - 1).
+ ///
+ ///  Arguments:
+ ///    day - Date of day.
+  previousMarketDay day
+  is date.t -> date.t =
+    fn d = if isMarketDay d then d else fn (date.addDays (-1) d) fi;
+    fn (date.addDays (-1) day),
+
+})

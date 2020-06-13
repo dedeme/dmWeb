@@ -1,0 +1,48 @@
+// Copyright 27-May-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Record for bests fleas files (date + eval).
+module data.flea.evalDate;
+
+load es.dm.std;
+json = load es.dm.json;
+eval = load data.flea.eval;
+
+typedef t =
+  { date is string,
+    eflea is eval.t
+  };
+
+{
+  /// Cretes a new 'evalDate'.
+  ///
+  /// Arguments:
+  ///   date - Date
+  ///   eflea - Evaluated flea.
+  mk date eflea
+  is string -> eval.t -> t =
+    { date, eflea },
+
+  /// Returns an 'evalDate' JSONized.
+  ///
+  /// Arguments:
+  ///   ed - Evaluated flea with date.
+  toJs ed
+  is t -> json.t =
+    json.wa
+      [ json.ws ed.date,
+        eval.toJs ed.eflea
+      ],
+
+  /// Returns a evaluated flea with date from a JSON value.
+  ///
+  ///  Arguments:
+  ///    js -  JSON value.
+  fromJs js
+  is json.t -> t =
+    a = json.ra js |> array;
+    { date = json.rs a[0],
+      eflea = eval.fromJs a[1]
+    },
+
+}

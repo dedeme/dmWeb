@@ -1,0 +1,51 @@
+// Copyright 02-Jun-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Fleas charts page.
+module server.pgs.fleas.charts;
+
+load es.dm.std;
+cgi = load es.dm.cgi;
+json = load es.dm.json;
+load es.dm.jsonM;
+sync = load es.dm.sync;
+load std;
+quotesDb = load db.quotesDb;
+log = load db.log;
+fmodel = load data.flea.fmodel;
+fmodels = load data.flea.fmodels;
+
+{
+  /// Request process.
+  ///
+  /// Arguments:
+  ///   ck - Comunication key.
+  ///   rq - Request.
+  process ck rq
+  is string -> hash<string, json.t> -> string =
+    case cgi.rqString rq "rq" of
+    "assets" :
+      modelId = cgi.rqString rq "modelId";
+      params = jsrList json.rn rq["params"] |> array;
+      rp = [:];
+      sync.run do lk:
+        opens = quotesDb.opens lk;
+        closes = quotesDb.closes lk;
+
+        case fmodels.getModel modelId of
+          Some md :
+            dates = quotesDb.dates lk;
+            assets = fmodel.historicAssets md opens closes params;
+            rp["dates"] := jswList json.ws (list dates);
+            rp["assets"] := jswList json.wn assets;
+            rp["ok"] := json.wb true;
+          None () :
+            log.error lk "Model \(modelId) not found";
+            rp["ok"] := json.wb false
+          esac
+        done;
+      cgi.rp ck rp;
+    k:
+      failedKey k
+    esac,
+}

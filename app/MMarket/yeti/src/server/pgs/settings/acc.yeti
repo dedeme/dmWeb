@@ -1,0 +1,39 @@
+// Copyright 18-May-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+// Acc page.
+module server.pgs.settings.acc;
+
+cgi = load es.dm.cgi;
+json = load es.dm.json;
+load es.dm.jsonM;
+sync = load es.dm.sync;
+load std;
+diariesDb = load db.acc.diariesDb;
+cts = load data.cts;
+
+{
+  /// Request process.
+  ///
+  /// Arguments:
+  ///   ck - Comunication key.
+  ///   rq - Request.
+  process ck rq
+  is string -> hash<string, json.t> -> string =
+    case cgi.rqString rq "rq" of
+    "idata" :
+      var rp = [:];
+      sync.run do lk:
+        years = diariesDb.years lk;
+        lastYear = head years;
+        rp["investors"] := json.wn cts.managers;
+        rp["years"] := jswList json.ws years;
+        rp["anns"] := diariesDb.readAllJs lk lastYear;
+        rp["cash"] := json.wn (diariesDb.cashAll lk lastYear);
+        done;
+      cgi.rp ck rp;
+    k:
+      failedKey k
+    esac,
+
+}

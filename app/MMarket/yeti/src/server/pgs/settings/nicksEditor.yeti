@@ -1,0 +1,168 @@
+// Copyright 30-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Nicks/Editor page.
+module server.pgs.settings.nicksEditor;
+
+cgi = load es.dm.cgi;
+json = load es.dm.json;
+load es.dm.jsonM;
+sync = load es.dm.sync;
+load std;
+quote = load data.quote;
+log = load db.log;
+nicksTb = load db.nicksTb;
+quotesDb = load db.quotesDb;
+serversTb = load db.serversTb;
+net = load net.net;
+
+{
+  /// Request process.
+  ///
+  /// Arguments:
+  ///   ck - Comunication key.
+  ///   rq - Request.
+  process ck rq
+  is string -> hash<string, json.t> -> string =
+    case cgi.rqString rq "rq" of
+    "idata" :
+      nickId = cgi.rqNumber rq "nickId";
+      modelId = cgi.rqNumber rq "modelId";
+      rp = [:];
+      sync.run do lk:
+        rp["ok"] := json.wb true;
+        case nicksTb.getNick lk nickId of
+        None () :
+          log.error lk "Nick with id \(nickId) not found";
+          rp["ok"] := json.wb false;
+        Some nick :
+          case nicksTb.getNick lk modelId of
+          None ():
+            log.error lk "Nick model wiht id \(modelId) not found";
+            rp["ok"] := json.wb false;
+          Some model:
+            qs = quotesDb.read lk nick.name;
+            rp["quotes"] := jswList quote.toJs qs;
+            rp["manuals"] := json.wn (quote.manuals qs);
+            mqs = quotesDb.read lk model.name;
+            rp["mquotes"] := jswList quote.toJs mqs;
+            rp["sIdNameCodes"] :=
+              json.wa
+                ( map do sv:
+                    case find do nc: nc.nickId == nickId done sv.codes of
+                    nc::_ :
+                      json.wa
+                        [ json.wn sv.id,
+                          json.ws sv.name,
+                          json.ws case nc.code of Some c : c; _ : "" esac
+                        ];
+                    _ :
+                      log.error lk "Code of \(nick.name) not found in \(sv.name)";
+                      rp["ok"] := json.wb false;
+                      json.wa[]
+                    esac
+                    done (serversTb.read lk)
+                );
+            if length qs == 0 then
+              log.error lk "\(nick.name).db not found or empty";
+              rp["ok"] := json.wb false;
+            fi;
+            if length mqs == 0 then
+              log.error lk "\(model.name).db not found or empty";
+              rp["ok"] := json.wb false;
+            fi
+          esac
+        esac
+        done;
+      cgi.rp ck rp;
+    "modifyNick" :
+      nickId = cgi.rqNumber rq "nickId";
+      name = cgi.rqString rq "name";
+      rp = [:];
+      sync.run do lk:
+        case nicksTb.setName lk nickId name of
+        Some oldName:
+          quotesDb.modifyNickName lk oldName name;
+          rp["ok"] := json.wb true;
+        None ():
+          rp["ok"] := json.wb false
+        esac
+        done;
+      cgi.rp ck rp;
+    "updateCode" :
+      serverId = cgi.rqNumber rq "serverId";
+      nickId = cgi.rqNumber rq "nickId";
+      code = cgi.rqString rq "code";
+      sync.run do lk:
+        serversTb.modifyNickCode lk serverId nickId code
+        done;
+      cgi.rpEmpty ck;
+    "qModify" :
+      nickId = cgi.rqNumber rq "nickId";
+      qsTx = cgi.rqString rq "qs";
+      rp = [:];
+      sync.run do lk:
+        { error?, warning?, qs } = quotesDb.check lk qsTx;
+        rs = if error? then "error"
+             else if (quotesDb.setQuotes lk nickId qs) then
+                    if warning? then "warning" else "" fi
+                  else
+                    "error"
+                  fi
+             fi;
+        rp["result"] := json.ws rs
+        done;
+      cgi.rp ck rp;
+    "download" :
+      nickId = cgi.rqNumber rq "nickId";
+      rp = [:];
+      sync.run do lk:
+        { errors?, warnings? } = net.updateHistoric lk nickId;
+        rs = if errors? then "error"
+             elif warnings? then "warning"
+             else ""
+             fi;
+        rp["result"] := json.ws rs
+        done;
+      cgi.rp ck rp;
+    "test" :
+      qsTx = cgi.rqString rq "qs";
+      rp = [:];
+      sync.run do lk:
+        { error?, warning?, qs } = quotesDb.check lk qsTx;
+        rs = if error? then "error"
+             elif warning? then "warning"
+             else ""
+             fi;
+        rp["result"] := json.ws rs
+        done;
+      cgi.rp ck rp;
+    "serverTests" :
+      serverId = cgi.rqNumber rq "serverId";
+      nickId = cgi.rqNumber rq "nickId";
+      rp = [:];
+      sync.run do lk:
+        try
+          if serversTb.definedHistoricConf? lk serverId then
+            rp["ok"] := json.wb (net.testHistoricConf lk serverId nickId)
+          else
+            rp["ok"] := json.wb true
+          fi
+        catch Exception ex:
+          log.exc lk ex;
+          rp["ok"] := json.wb false
+        yrt
+        done;
+      cgi.rp ck rp;
+    "getQuotes" :
+      nickName = cgi.rqString rq "nickName";
+      rp = [:];
+      sync.run do lk:
+        qs = quotesDb.read lk nickName;
+        rp["quotes"] := jswList quote.toJs qs;
+        done;
+      cgi.rp ck rp;
+    k :
+      failedKey k
+    esac,
+}

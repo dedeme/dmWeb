@@ -1,0 +1,34 @@
+// Copyright 20-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Flea models management.
+module data.flea.fmodels;
+
+load es.dm.std;
+
+fmodel = load data.flea.fmodel;
+appr = load data.flea.models.appr;
+incr = load data.flea.models.incr;
+mm = load data.flea.models.mm;
+
+{
+  /// Returns the model list.
+  list ()
+  is () -> list<fmodel.t> =
+    [ appr.mk (),
+      incr.mk (),
+      mm.mk ()
+    ],
+
+  /// Returns a model from its identifier.
+  ///
+  /// Arguments:
+  ///   modelId - Model identifier.
+  getModel modelId
+  is string -> option<fmodel.t> =
+    case find do m: m.id == modelId done (list ()) of
+    md::_ : Some md;
+    _ : None ()
+    esac,
+
+}

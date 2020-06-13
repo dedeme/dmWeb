@@ -1,0 +1,28 @@
+// Copyright 11-Jun-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Accounting data group hub.
+module server.pgs.acc;
+
+cgi = load es.dm.cgi;
+load std;
+companies = load server.pgs.acc.companies;
+profits = load server.pgs.acc.profits;
+trading = load server.pgs.acc.trading;
+balance = load server.pgs.acc.balance;
+
+{
+  /// Request process.
+  ///
+  /// Arguments:
+  ///   ck - Comunication key.
+  ///   rq - Request.
+process ck rq =
+    case cgi.rqString rq "source" of
+    "companies" : companies.process ck rq;
+    "profits" : profits.process ck rq;
+    "trading" : trading.process ck rq;
+    "balance" : balance.process ck rq;
+    k : failedKey k
+    esac;
+}

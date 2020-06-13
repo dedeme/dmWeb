@@ -9,12 +9,13 @@ import Flea from "./Flea.js";
 export default class Eflea {
   /* .
   _rc_ Eflea: serial
-    flea   : !Flea
-    buys   : number
-    sells  : number
-    assets : number
-    profits: number
-    ev     : number
+    flea      : !Flea
+    buys      : number
+    sells     : number
+    assets    : number
+    profitsAvg: number
+    profitsVa : number
+    ev        : number
   */
 
   /*--*/
@@ -23,7 +24,8 @@ export default class Eflea {
       @param {number} buys
       @param {number} sells
       @param {number} assets
-      @param {number} profits
+      @param {number} profitsAvg
+      @param {number} profitsVa
       @param {number} ev
   **/
   constructor (
@@ -31,7 +33,8 @@ export default class Eflea {
     buys,
     sells,
     assets,
-    profits,
+    profitsAvg,
+    profitsVa,
     ev
   ) {
 
@@ -63,7 +66,13 @@ export default class Eflea {
         @private
         @type {number}
     **/
-    this._profits = profits;
+    this._profitsAvg = profitsAvg;
+
+    /**
+        @private
+        @type {number}
+    **/
+    this._profitsVa = profitsVa;
 
     /**
         @private
@@ -104,8 +113,15 @@ export default class Eflea {
   /**
       @return {number}
   **/
-  get profits () {
-    return this._profits;
+  get profitsAvg () {
+    return this._profitsAvg;
+  }
+
+  /**
+      @return {number}
+  **/
+  get profitsVa () {
+    return this._profitsVa;
   }
 
   /**
@@ -124,7 +140,8 @@ export default class Eflea {
       this._buys,
       this._sells,
       this._assets,
-      this._profits,
+      this._profitsAvg,
+      this._profitsVa,
       this._ev
     ];
   }
@@ -140,7 +157,8 @@ export default class Eflea {
       serial[2],
       serial[3],
       serial[4],
-      serial[5]
+      serial[5],
+      serial[6]
     );
   }
   /*--*/

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html><meta http-equiv="Content-Type" content="text/html;charset=utf-8" ><style type="text/css">
+.main { background: white; line-height: 130%; font-family: sans-serif }
+.type { background: white; font-size: 12pt; }
+.sn { font: 13pt monospace }
+.vn { font-size: 13pt }
+.other { background: #cccccc; display: inline; }
+.field { padding: 1.5pt }
+.wdoc { padding-top: 0.5em; padding-bottom: 0.4em; }
+var { font: 11pt monospace }
+.args { padding-left: 1.4em }
+.args tr td { vertical-align: text-top }
+td.arg { width: 100% }
+/*.wdoc { margin-top: 0.6em; margin-bottom: 0.6em; } */
+.box { border: 1px solid black;
+    /* top/bottom right/left | top right/left bottom | top right bottom left */
+    padding: 1px 0.1em 1pt;
+    margin: 1px 1pt 0pt;
+    display: inline-block; }
+.module { color: #000080 }
+.group { font: 16pt sans-serif; border-bottom: solid black 1px;
+         padding: 0px; margin: 0.5em 0px; text-align: center }
+em { color: #000080; font: bold 13pt sans-serif }
+.function { background: #ffffff }
+.struct { background: #ffffff }
+.variant { background: #c7c7ff }
+/* background: #bbffbb; */
+.ft { padding-left: 0em }
+.doc { background: #ffffa8;
+    padding: 0.5em 0.5em 0.5em 2em;
+    font-size: 12pt; }
+.contents { background: #dddddd; padding: 0.5em; font-size: 10pt }
+.contents a { text-decoration: none }
+.contents a:hover { text-decoration: underline }
+.doc p { margin: 0.6em 0px 1px; font-weight: bold }
+.doc pre { background: #ffffc8;
+    border: 1px dashed black;
+    margin: 0.3em 1.5em 0.3em 0px;
+    padding: 0.3em; overflow: auto }
+</style><title>data.mod</title>
+<body>
+<div class="main">
+<h2><span class=module>module</span> data.mod</h2>
+<div class="doc">Module data</div><p><div class="type"><em>typedef</em> linkT = <em>{</em><div class="box struct" style="display: block; margin: 2pt"><div id="link" class="field wdoc"><span class=sn>link</span><em> is </em>string, <div class="doc">Link to code file.</div></div>
+<div id="name" class="field wdoc"><span class=sn>name</span><em> is </em>string<div class="doc">Module name.</div></div>
+</div><em>}</em></div><p><div class="type"><em>typedef</em> treeEntryT = <em>{</em><div class="box struct" style="display: block; margin: 2pt"><div id="enums" class="field wdoc"><span class=sn>enums</span><em> is </em>list<tt>&lt;</tt>string<tt>&gt;</tt>, <div class="doc">Enums list.</div></div>
+<div id="ms" class="field wdoc"><span class=sn>ms</span><em> is </em>list<tt>&lt;</tt>string<tt>&gt;</tt>, <div class="doc">Functions list.</div></div>
+<div id="ps" class="field wdoc"><span class=sn>ps</span><em> is </em>list<tt>&lt;</tt>string<tt>&gt;</tt>, <div class="doc">Paramenter list.</div></div>
+<div id="tp" class="field wdoc"><span class=sn>tp</span><em> is </em>string<div class="doc">Entry type</div></div>
+</div><em>}</em></div><p><div class="type"><em>typedef</em> t = <em>{</em><div class="box struct" style="display: block; margin: 2pt"><div id="html1" class="field wdoc"><span class=sn>html1</span><em> is </em>string, <div class="doc">Intial html.</div></div>
+<div id="html2" class="field wdoc"><span class=sn>html2</span><em> is </em>string, <div class="doc">Final html.</div></div>
+<div id="link" class="field wdoc"><span class=sn>link</span><em> is </em>linkT, <div class="doc">Link to file code.</div></div>
+<div id="title" class="field wdoc"><span class=sn>title</span><em> is </em>string, <div class="doc">Package reference.</div></div>
+<div id="tree" class="field wdoc"><span class=sn>tree</span><em> is </em>list<tt>&lt;</tt>treeEntryT<tt>&gt;</tt><div class="doc">Index of entries.</div></div>
+</div><em>}</em></div>
+<h3>Module signature</h3>
+<div class="type"><em>{</em><div class="box struct" style="display: block; margin: 2pt"><div id="mk" class="field wdoc"><span class=sn>mk</span><em> is </em><div class="box function"><div class=field>string &rarr; </div>
+<div class=field>string &rarr; </div>
+<div class=field>string &rarr; </div>
+<div class=field>linkT &rarr; </div>
+<div class=field>list<tt>&lt;</tt>treeEntryT<tt>&gt;</tt> &rarr; </div>
+<div class=field>t</div>
+</div>, <div class="doc">Page data.<p></p>Arguments.
+title - Title.
+html1 - Initial html.
+html2 - Final html.
+link - Code file link.
+tree - Index of module.</div></div>
+<div id="mkLink" class="field wdoc"><span class=sn>mkLink</span> <var>name</var> <var>link</var><em> is </em>string &rarr; string &rarr; linkT, <div class="doc">Make a <var>link</var>.<table class="args"><tr><td><var>name</var><td>-<td class=arg>Module name.<tr><td><var>link</var><td>-<td class=arg>Link to code file.</table></div></div>
+<div id="mkTreeEntry" class="field wdoc"><span class=sn>mkTreeEntry</span><em> is </em><div class="box function"><div class=field>string &rarr; </div>
+<div class=field>list<tt>&lt;</tt>string<tt>&gt;</tt> &rarr; </div>
+<div class=field>list<tt>&lt;</tt>string<tt>&gt;</tt> &rarr; </div>
+<div class=field>list<tt>&lt;</tt>string<tt>&gt;</tt> &rarr; </div>
+<div class=field>treeEntryT</div>
+</div>, <div class="doc">Make an index entry.<p></p>Arguments.
+tp - type.
+enums - Enums list.
+ms - functions list.
+ps - parameters list.</div></div>
+<div id="toJs" class="field wdoc"><span class=sn>toJs</span> <var>m</var><em> is </em>t &rarr; json.t<div class="doc">Serialization to JSON.<table class="args"><tr><td><var>m</var><td>-<td class=arg>module.</table></div></div>
+</div><em>}</em></div>
+</div>
+</body></html>

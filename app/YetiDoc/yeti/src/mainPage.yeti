@@ -1,0 +1,31 @@
+// Copyright 17-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+module mainPage;
+
+load es.dm.all;
+json = load es.dm.json;
+load es.dm.jsonM;
+db = load db;
+libEntry = load data.libEntry;
+
+{
+  process ck ssId rq is
+  string -> string -> map<string, json.t> -> string =
+    case cgi.rqString rq "rq" of
+    "idata" :
+      cgi.rp ck
+        [ "lcPath": db.getLcPath (), // Location path.
+          "lang": db.getLang (),
+          "showAll": db.getShowAll (),
+          "paths": jswList libEntry.toJs (db.readPaths ()) // Libreries path.
+        ];
+    "setLcPath" :
+      db.setLcPath (rq["path"]);
+      cgi.rpEmpty ck;
+    "bye" :
+      cgi.delSession ck ssId;
+    s:
+      throw (exc.illegalArgument "Page '\(s)' is unknown")
+    esac,
+}

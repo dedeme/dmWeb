@@ -1,0 +1,541 @@
+// Copyright 20-Apr-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Fleas model.
+module data.flea.fmodel;
+
+json = load es.dm.json;
+load es.dm.jsonM;
+qtable = load data.qtable;
+cts = load data.cts;
+matrix = load data.matrix;
+broker = load data.broker;
+
+typedef assetsRsT =
+  { /// Money.
+    assets is number,
+    /// Buys number.
+    buys is number,
+    /// Sells number.
+    sells is number
+  };
+
+typedef fcalcT =
+  ~double[][] ->
+  array<number> ->
+  (~double[] -> ~double[] -> ()) ->
+  ();
+
+typedef orderDataT =
+  { date is string,
+    nick is string,
+    stocks is number,
+    price is number
+  };
+
+typedef orderT = Buy orderDataT
+                | Sell orderDataT;
+
+typedef dailyOrderT = DBuy {iCo is number, pond is number}
+                    | DSell number; //iCo
+
+typedef t =
+  { /// Brief identifier. 4 characters maximum (e.g. APPR).
+    id is string,
+    /// Model name.
+    name is string,
+    /// Parameter names.
+    parNames is list<string>,
+    /// Minimun value for parameters.
+    parMins is array<number>,
+    /// Maximun value for parameters.
+    parMaxs is array<number>,
+    /// Decimals number of parameters.
+    ///
+    /// Notes:
+    ///   : Expected values:
+    ///   :    4, 6: Percentage format.
+    ///   :   other: No meaning.
+    parDecs is array<number>,
+    /// Function to call every market day.
+    ///
+    /// Description:
+    ///   Function which returns none and with the following parameters:
+    ///   : closes is ~double[][]
+    ///   :   Daily closes of several companies from before to after.
+    ///   :   Its rows are 'days' and its columns 'companies'.
+    ///   : params is array<number>
+    ///   :   Parameters to make calculus.
+    ///   : action is ~double[] -> ~double -> ()
+    ///   :   Function called with closes and references, after making calculus.
+    ///   :   Its parameters are:
+    ///   :     closes is ~double[]
+    ///   :       Day closes.
+    ///   :     references is ~double[]
+    ///   :       Day stops.
+    ///   :   This function is defined in Refs, Profits, Orders and Assets.
+    fcalc is fcalcT
+  };
+
+{
+  /// Intended only to pass data to javascript.
+  ///
+  /// Arguments:
+  ///   md - Flea model
+  ///
+  /// Notes:
+  ///   Only the folowing fields are serialized:
+  ///   : id, name, parNames, parMins, parMaxs and parJsFmts.
+  toJs md
+  is t -> json.t =
+    json.wa
+      [ json.ws md.id,
+        json.ws md.name,
+        jswList json.ws md.parNames,
+        jswList json.wn (list md.parMins),
+        jswList json.wn (list md.parMaxs),
+        jswList json.wn (list md.parDecs)
+      ],
+
+  /// Result of function assets JSONized.
+  ///
+  /// Arguments:
+  ///   rs - Result
+  assetsRsToJs rs
+  is assetsRsT -> json.t =
+    json.wa
+      [ json.wn rs.assets,
+        json.wn rs.buys,
+        json.wn rs.sells
+      ],
+
+  /// Returns order JSONized.
+  ///
+  /// Arguments:
+  ///   o - order
+  orderToJs o
+  is orderT -> json.t =
+    mk o isSell =
+      json.wa
+        [ json.ws o.date,
+          json.ws o.nick,
+          json.wb isSell,
+          json.wn o.stocks,
+          json.wn o.price
+        ];
+    case o of
+    Sell o' : mk o' true;
+    Buy o' : mk o' false
+    esac,
+
+  /// Calculates assets of a investor.
+  ///
+  /// Arguments:
+  ///   md - Model.
+  ///   opens - Open quotes table.
+  ///   closes - Close quotes table.
+  ///   params - Parameters to calculate.
+  assets md opens closes params
+  is t -> qtable.t -> qtable.t -> array<number> -> assetsRsT =
+    nCos = length opens.nicks;
+    ops = opens.values;
+    var iops = 0;
+    cls = closes.values;
+
+    var cash = cts.initialCapital;
+    var buys = 0;
+    var sells = 0;
+
+    stockss = matrix.mkInt nCos;
+    toBuys = matrix.mkBoolean nCos;
+    for [0..nCos - 1] do i:
+      stockss[i] := 0;
+      toBuys[i] := false;
+      done;
+
+    // Auxiliar function -------------------------------------------------------
+    var dorders = [];
+    fn cs refs
+    is ~double[] -> ~double[] -> () =
+      ( os = ops[iops];
+        iops := iops + 1;
+
+        // Execute orders -----------------------
+
+        dorders := sortBy do do1 do2:
+          case do1 of
+          DSell _ : true;
+          DBuy {pond = p1} : case do2 of
+            DSell _ : false;
+            DBuy {iCo = _, pond = p2} : p1 > p2
+            esac
+          esac
+          done dorders;
+        var newDorders = [];
+        for dorders do o:
+          case o of
+          DSell iCo :
+            stocks = stockss[iCo];
+            if stocks > 0 then
+              q = os[iCo];
+              if q >= 0 then
+                cash := cash + broker.sell stocks q;
+                sells := sells + 1;
+                stockss[iCo] := 0
+              else
+                newDorders := o::newDorders;
+              fi
+            fi;
+          DBuy {iCo} :
+            if cash > cts.minToBet then
+              q = os[iCo];
+              if q >= 0 then
+                stocks = int (cts.bet / q);
+                cash := cash - broker.buy stocks q;
+                buys := buys + 1;
+                stockss[iCo] := stocks;
+              else
+                newDorders := o::newDorders;
+              fi
+            fi
+          esac
+          done;
+        dorders := newDorders; // Initiliazed with pending orders.
+
+        // Calculate orders ---------------------
+
+        for [0..nCos - 1] do i:
+          q = cs[i];
+          if q >= 0 then
+            ref = refs[i];
+            if toBuys[i] then
+              if ref < q then
+                dorders := DBuy { iCo = i, pond = q / ref } :: dorders;
+                toBuys[i] := false
+              fi
+            elif ref > q then
+              dorders := DSell i :: dorders;
+              toBuys[i] := true
+            fi
+          fi
+          done;
+      );
+
+    // Main function -----------------------------------------------------------
+
+    md.fcalc cls params fn;
+
+    for [0..nCos - 1] do i:
+      stocks = stockss[i];
+      if stocks > 0 then
+        cash := cash + broker.sell stocks (qtable.lastRowOk cls i)
+      fi
+      done;
+
+    { assets = cash, buys, sells},
+
+  /// Calculates profits ratio of one company.
+  ///
+  /// Arguments:
+  ///   md - Model.
+  ///   opens - (double[days][1]) Open quotes of a company
+  ///           (from before to after).
+  ///   closes - (double[days][1]) Close quotes of a company
+  ///            (from before to after).
+  ///   params - Parameters to calculate.
+  profits md opens closes params
+  is t -> ~double[][] -> ~double[][] -> array<number> -> number =
+    var stocks = 0;
+    var cash = cts.bet;
+    var toSell = true;
+    var todo = false;
+    var ixOpens = 0;
+
+    fn cs refs
+    is ~double[] -> ~double[] -> () =
+      ( oq = opens[ixOpens][0];
+        ixOpens := ixOpens + 1;
+        if todo and oq > 0 then
+          if toSell then // there is a buy order set in the previous call to fn
+            stocks := int (cash / oq);
+            cash := cash - broker.buy stocks oq
+          elif (stocks > 0) then
+            cash := cash + broker.sell stocks oq;
+            stocks := 0
+          fi;
+          todo := false
+        fi;
+
+        q = cs[0];
+        if q >= 0 then
+          ref = refs[0];
+          if toSell then
+            if ref > q then
+              todo := true;
+              toSell := false
+            fi
+          elif ref < q then
+            todo := true;
+            toSell := true
+          fi
+        fi
+      );
+    md.fcalc closes params fn;
+
+    if stocks > 0 then
+      cash := cash + broker.sell stocks (qtable.lastRowOk closes 0)
+    fi;
+    (cash - cts.bet) / cts.bet,
+
+  /// Calculate profits average and variance of all the companies of
+  /// a investor.
+  ///
+  /// Arguments:
+  ///   md - Model.
+  ///   opens - Open quotes table.
+  ///   closes - Close quotes table.
+  ///   params - Parameters to calculate.
+  profitsAvgVa md opens closes params
+  is t -> qtable.t -> qtable.t -> array<number> ->
+          {avg is number, va is number } =
+    ops = opens.values;
+    cls = closes.values;
+    nCos = length ops[0];
+    prfs = map do i:
+      profits md (matrix.getCol ops i) (matrix.getCol cls i) params
+      done [0..nCos - 1];
+    avg = sum prfs / nCos;
+    dvs = map do v: df = v - avg; df * df done prfs;
+    va = sum dvs / nCos;
+    { avg, va },
+
+  /// Returns references of one company.
+  ///
+  /// Arguments:
+  ///   md - Model.
+  ///   closes - (double[days][1]) Close quotes of a company
+  ///            (from before to after).
+  ///   params - Parameters to calculate.
+  refs md closes params
+  is t -> ~double[][] -> array<number> -> ~double[] =
+    r = matrix.mk (length closes);
+    var ix = 0;
+
+    fn cs refs
+    is ~double[] -> ~double[] -> () =
+      ( r[ix] := refs[0];
+        ix := ix + 1
+      );
+    md.fcalc closes params fn;
+
+    r,
+
+  /// Returns historic assets.
+  ///
+  /// Arguments:
+  ///   md - Model.
+  ///   opens - Open quotes table.
+  ///   closes - Close quotes table.
+  ///   params - Parameters to calculate.
+  historicAssets md opens closes params
+  is t -> qtable.t -> qtable.t -> array<number> -> list<number> =
+    nCos = length opens.nicks;
+    ops = opens.values;
+    var iops = 0;
+    cls = closes.values;
+
+    var cash = cts.initialCapital;
+    var assets = [];
+
+    stockss = matrix.mkInt nCos;
+    prices = matrix.mkInt nCos;
+    toBuys = matrix.mkBoolean nCos;
+    for [0..nCos - 1] do i:
+      stockss[i] := 0;
+      toBuys[i] := false;
+      done;
+
+    // Auxiliar function -------------------------------------------------------
+    var dorders = [];
+    fn cs refs
+    is ~double[] -> ~double[] -> () =
+      ( os = ops[iops];
+        iops := iops + 1;
+
+        // Execute orders -----------------------
+
+        dorders := sortBy do do1 do2:
+          case do1 of
+          DSell _ : true;
+          DBuy {pond = p1} : case do2 of
+            DSell _ : false;
+            DBuy {iCo = _, pond = p2} : p1 > p2
+            esac
+          esac
+          done dorders;
+        var newDorders = [];
+        for dorders do o:
+          case o of
+          DSell iCo :
+            stocks = stockss[iCo];
+            if stocks > 0 then
+              q = os[iCo];
+              if q >= 0 then
+                cash := cash + broker.sell stocks q;
+                stockss[iCo] := 0
+              else
+                newDorders := o::newDorders;
+              fi
+            fi;
+          DBuy {iCo} :
+            if cash > cts.minToBet then
+              q = os[iCo];
+              if q >= 0 then
+                stocks = int (cts.bet / q);
+                cash := cash - broker.buy stocks q;
+                stockss[iCo] := stocks;
+              else
+                newDorders := o::newDorders;
+              fi
+            fi
+          esac
+          done;
+        dorders := newDorders; // Initiliazed with pending orders.
+
+        var newAssets = cash;
+        for [0..nCos - 1] do i:
+          q = if cs[i] > 0 then cs[i] else prices[i] fi;
+          prices[i] := q;
+          stocks = stockss[i];
+          if stocks > 0 then
+            newAssets := newAssets + broker.sell stocks q
+          fi
+          done;
+        assets := newAssets::assets;
+
+        // Calculate orders ---------------------
+
+        for [0..nCos - 1] do i:
+          q = cs[i];
+          if q >= 0 then
+            ref = refs[i];
+            if toBuys[i] then
+              if ref < q then
+                dorders := DBuy { iCo = i, pond = q / ref } :: dorders;
+                toBuys[i] := false
+              fi
+            elif ref > q then
+              dorders := DSell i :: dorders;
+              toBuys[i] := true
+            fi
+          fi
+          done;
+      );
+
+    // Main function -----------------------------------------------------------
+
+    md.fcalc cls params fn;
+
+    var newAssets = cash;
+    for [0..nCos - 1] do i:
+      stocks = stockss[i];
+      if stocks > 0 then
+        newAssets := newAssets + broker.sell stocks (qtable.lastRowOk cls i)
+      fi
+      done;
+    assets := newAssets::assets;
+
+    reverse assets,
+
+  /// Returns orders of a model.
+  ///
+  /// Arguments:
+  ///   md - Model.
+  ///   dates - Dates of opens and closes.
+  ///   opens - All the companies opens.
+  ///   closes - All the companies closes.
+  ///   params - Parameters to calculate.
+  orders md dates opens closes params
+  is t -> list<string> -> qtable.t -> qtable.t -> array<number> ->
+          list<orderT> =
+    var orders = [];
+    dts = array dates;
+    nicks = opens.nicks;
+    nCos = length nicks;
+    ops = opens.values;
+    cls = closes.values;
+
+    var cash = cts.initialCapital;
+    stockss = matrix.mk nCos;
+    toSells = matrix.mkBoolean nCos;
+    for [0..nCos - 1] do i: stockss[i] := 0; toSells[i] := true done;
+    var dorders = [];
+    var ix = 0;
+
+    fn cs refs
+    is ~double[] -> ~double[] -> () =
+      ( date = dts[ix];
+        os = ops[ix];
+        ix := ix + 1;
+
+        dorders := sortBy do do1 do2:
+          case do1 of
+          DSell _ : true;
+          DBuy {pond = p1} : case do2 of
+            DSell _ : false;
+            DBuy {iCo = _, pond = p2} : p1 > p2
+            esac
+          esac
+          done dorders;
+        var newDorders = [];
+        for dorders do dor:
+          case dor of
+          DSell iCo:
+            stocks = stockss[iCo];
+            if stocks > 0 then
+              price = os[iCo];
+              if price >= 0 then
+                cash := cash + broker.sell stocks price;
+                stockss[iCo] := 0;
+                orders := Sell {date, nick = nicks[iCo], stocks, price}::orders;
+              else
+                newDorders := dor::newDorders;
+              fi
+            fi;
+          DBuy {iCo} :
+            if cash > cts.minToBet then
+              price = os[iCo];
+              if price >= 0 then
+                stocks = int (cts.bet / price);
+                cash := cash - broker.buy stocks price;
+                stockss[iCo] := stocks;
+                orders := Buy {date, nick = nicks[iCo], stocks, price}::orders;
+              else
+                newDorders := dor::newDorders;
+              fi
+            fi
+          esac
+          done;
+        dorders := newDorders;
+
+        for [0..nCos - 1] do iCo:
+          price = cs[iCo];
+          if price >= 0 then
+            ref = refs[iCo];
+            if toSells[iCo] then
+              if (ref > price) then
+                dorders := DSell iCo::dorders;
+                toSells[iCo] := false
+              fi
+            elif ref < price  then
+              dorders := DBuy {iCo, pond = price / ref}::dorders;
+              toSells[iCo] := true
+            fi
+          fi
+          done;
+      );
+
+    md.fcalc cls params fn;
+
+    reverse orders,
+}
