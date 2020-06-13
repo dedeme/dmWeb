@@ -15,3 +15,9 @@ bin
 .stack-work
 *.cabal
 *~
+
+#yeti
+**/yeti/classes/
+**/yeti/pack/
+**/yeti/doc/
+
