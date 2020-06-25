@@ -16,10 +16,11 @@ const $ = e => Ui.$(e);
 
 /**
     Removes values < 0 and lefts the last 250 values.
+    @param {!Array<string>} dates
     @param {!Array<!Array<number>>} quotes
     @return void
 **/
-function regularize (quotes) {
+function regularize (dates, quotes) {
   function reg (qs) {
     let prev = 0;
     for (let i = 0; i < qs.length; ++i) {
@@ -41,6 +42,7 @@ function regularize (quotes) {
   }
 
   quotes.forEach(qs => { reg(qs) });
+  dates.splice(0, dates.length - 250);
 }
 
 /**
@@ -406,7 +408,7 @@ export default class Chart {
       const /** !Array<string> */ dates = rp["dates"];
       // quotes[i][0] -> close; quotes[i][1...] -> references.
       const /** !Array<!Array<number>> */ quotes = rp["quotes"];
-      regularize(quotes);
+      regularize(dates, quotes);
 
       mkGr(wg, nick, url, price, profits, dates, quotes);
     }

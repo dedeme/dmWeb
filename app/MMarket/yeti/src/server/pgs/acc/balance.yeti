@@ -19,6 +19,7 @@ nicksTb = load db.nicksTb;
 dailyTb = load db.dailyTb;
 quotesDb = load db.quotesDb;
 managersTb = load db.managersTb;
+conf = load db.conf;
 
 load std;
 
@@ -34,6 +35,7 @@ load std;
     "idata" :
       var rp = [:];
       sync.run do lk:
+        {activity} = conf.activity ();
         closes = quotesDb.closes lk;
         qs = dailyTb.read lk;
         mqs = [:];
@@ -44,7 +46,6 @@ load std;
           esac
           done;
         mans = managersTb.read lk;
-
         var ledgers = [];
         var portfolios = [];
         for [0..cts.managers - 1] do i:
@@ -55,17 +56,26 @@ load std;
             nick = e.nick;
             var quote = -1;
             var ref = e.price;
-            if nick in mqs then
-              quote := mqs[nick];
-              {model, params} = manager.getModel mans[i] nick;
-              case qtable.nickValuesAdd closes nick quote of
-              Some cs :
-                refs = fmodel.refs model cs params;
-                ref := head (reverse refs);
-              None () :
-                ()
-              esac
-            fi;
+            ocs = if activity != cts.actSleeping2
+                  then
+                    if nick in mqs then
+                      qtable.nickValuesAdd closes nick mqs[nick]
+                    else
+                      qtable.nickValues closes nick
+                    fi
+                  else
+                    qtable.nickValues closes nick
+                  fi;
+            {model, params} = manager.getModel mans[i] nick;
+            case ocs of
+            Some cs :
+              quote := (cs is ~double[][])[length cs - 1][0];
+              refs = fmodel.refs model cs params;
+              ref := head (reverse refs);
+              if ref > quote then ref := quote fi; // Sell situation.
+            None () :
+              ()
+            esac;
             { nick, stocks = e.stocks, price = e.price, quote, ref }
             done portfolio;
           portfolios := jswList acc.pfEntryToJs portfolio::portfolios;

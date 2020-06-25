@@ -83,6 +83,25 @@ const maxMinDoc = `
   </pre>
   ` + footer;
 
+const gaDoc = `
+  <pre>
+  PARÁMETROS
+    di (%): Días de cálculo (admite decimales)
+            [rf = rf * di / (di + 1) + q / (di + 1)]
+    bc (%): Banda de compra [rf' = rf * (1 + bc)]
+    bv (%): Banda de venta [rf' = rf * (1 - bv)]
+
+  INICIO
+    * Se fija una rf igual a la primera cotización.
+
+  COMPRA
+    * Se determina rf' y si q > rf' se compra.
+
+  VENTA
+    * Se determina rf' y si q < rf' se vende.
+  </pre>
+  ` + footer;
+
 /**
     Flea models documentation.
 **/
@@ -96,6 +115,7 @@ export default class Doc {
     case "APPR": return apprDoc;
     case "INCR": return incrDoc;
     case "MM": return maxMinDoc;
+    case "GA": return gaDoc;
     }
     return "<p>Sin documentación</p>";
   }

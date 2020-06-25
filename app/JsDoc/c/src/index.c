@@ -71,7 +71,6 @@ Arr/*Tp3[char , char, char]*/ *read_dir(int level, char *prefix, char *path) {
     return str_cmp(str_to_upper(id1), str_to_upper(id2)) > 0;
   }
   achar_sortf(dirs, cmp_dirs);
-  achar_reverse(dirs);
 
   EACH(files, Tp, tp) {
     arr_add(r, tp3_new(

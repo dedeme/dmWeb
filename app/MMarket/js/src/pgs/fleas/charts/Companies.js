@@ -32,7 +32,9 @@ async function mkChart (modelId, params, nickName) {
           .style("text-align:right")
           .add($("span")
             .html(new Dec(profits * 100, 2).toIso() + "%&nbsp;&nbsp;"))
-          .add(Ui.img("win").style("vertical-align:middle"))))
+          .add(Ui.img(
+            profits > 0 ? "profits" : profits < 0 ? "losses" : "noresult"
+          ).style("vertical-align:middle"))))
       .add($("tr")
         .add($("td")
           .att("colspan", 2)
@@ -163,7 +165,7 @@ export default class Companies {
     const n = this._nicks.length;
     let sumProfs = 0;
     let sumWins = 0;
-    let sumLooses = 0;
+    let sumLosses = 0;
     let tr = $("tr");
     for (let i = 0; i < n; ++i) {
       const nickName = this._nicks[i];
@@ -171,7 +173,7 @@ export default class Companies {
       const chart = rs[0];
       const profits = rs[1];
       sumProfs += profits;
-      if (profits < 0) ++sumLooses;
+      if (profits < 0) ++sumLosses;
       else ++sumWins;
 
       switch (i % 3) {
@@ -198,11 +200,11 @@ export default class Companies {
     const profits = sumProfs / n;
     summary.add($("tr")
       .add($("td")
-        .add(Ui.img("win").style("vertical-align:middle"))
+        .add(Ui.img("profits").style("vertical-align:middle"))
         .add($("span").html(`: ${sumWins} | `))
-        .add(Ui.img("loose").style("vertical-align:middle"))
+        .add(Ui.img("losses").style("vertical-align:middle"))
         .add($("span").html(
-          `: ${sumLooses} | % : ${new Dec(profits * 100, 2).toIso()}%`
+          `: ${sumLosses} | % : ${new Dec(profits * 100, 2).toIso()}%`
         ))))
     ;
   }

@@ -10,6 +10,7 @@ fmodel = load data.flea.fmodel;
 appr = load data.flea.models.appr;
 incr = load data.flea.models.incr;
 mm = load data.flea.models.mm;
+ga = load data.flea.models.ga;
 
 {
   /// Returns the model list.
@@ -17,7 +18,8 @@ mm = load data.flea.models.mm;
   is () -> list<fmodel.t> =
     [ appr.mk (),
       incr.mk (),
-      mm.mk ()
+      mm.mk (),
+      ga.mk ()
     ],
 
   /// Returns a model from its identifier.

@@ -50,7 +50,7 @@ export default class Cts {
       @return number
   **/
   static get bet () {
-    return 15000;
+    return 10000;
   }
 
   /**
@@ -58,7 +58,7 @@ export default class Cts {
       @return number
   **/
   static get initialCapital () {
-    return 150000;
+    return 100000;
   }
 
   /**

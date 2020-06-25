@@ -92,8 +92,7 @@ load std;
           nickId = nk.id;
           {activity} = conf.activity ();
           closes = quotesDb.closes lk;
-          ocls = if activity == cts.actSleeping1 or
-                    activity == cts.actHistoric
+          ocls = if activity != cts.actSleeping2
                  then
                    case find do e: e.nick == nickId done (dailyTb.read lk) of
                    e::_ : qtable.nickValuesAdd closes nick e.value;

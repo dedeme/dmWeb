@@ -266,6 +266,7 @@ load std;
       sync.run do lk:
         pool = fmodels.readPool lk md.id;
         pool = eval.complete efleas pool (cts.poolNumber + cts.poolAddNumber);
+        eval.evaluate md opens closes pool;
         pool = eval.sort pool;
         fmodels.writePool lk md.id (take cts.poolNumber pool);
 

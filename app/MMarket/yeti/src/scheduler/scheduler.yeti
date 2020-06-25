@@ -65,6 +65,8 @@ profitsDb = load db.acc.profitsDb;
             Some cs :
               refs = fmodel.refs model cs params;
               ref = head (reverse refs);
+              ref = if ref > lastQ then lastQ
+                    else ref fi; // Sell situation.
               risk := risk + e.stocks * ref;
             None () :
               risk := risk + e.stocks * e.price;
@@ -88,11 +90,13 @@ profitsDb = load db.acc.profitsDb;
               nick = nv.nick;
               if not any do nv': nv'.nick == nick done qs then
                 var nvs = [nv.value];
-                for [i..length qss - 1] do j:
+                for [i + 1..length qss - 1] do j:
                   for qss[j] do nv':
                     if nv'.nick == nick then nvs := nv'.value::nvs fi
                     done
                   done;
+                println nvs;
+                println (mostDup nvs);
                 qs := { nick, value = mostDup nvs }::qs
               fi
             done
@@ -387,6 +391,9 @@ profitsDb = load db.acc.profitsDb;
   ///   act - Current activity.
   run act
   is activity.t -> () =
+    // To initialize a new flea model.
+    //fleas.evolution ();
+
     var a = act;
     changeActivity newAct =
       sync.run do lk:

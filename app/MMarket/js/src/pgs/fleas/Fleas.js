@@ -324,6 +324,18 @@ export default class Fleas {
     const /**!Array<string>**/ parNames = rp["parNames"];
     const /**!Array<number>**/ parDecs = rp["parDecs"];
 
+    if (bests.length === 0) {
+      wg
+        .removeAll()
+        .add($("table")
+          .att("align", "center")
+          .add($("tr")
+            .add($("td")
+              .klass("frame")
+              .html(_("Without data")))));
+      return;
+    }
+
     let /** boolean */ isAssets = true;
     let eflea = bests[0].eflea;
 

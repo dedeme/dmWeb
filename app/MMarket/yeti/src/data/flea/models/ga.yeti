@@ -1,0 +1,77 @@
+// Copyright 13-Jun-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Geometric average investor model.
+module data.flea.models.ga;
+
+matrix = load data.matrix;
+fmodel = load data.flea.fmodel;
+
+(
+  fcalc closes params action
+  is ~double[][] ->
+    array<number> ->
+    (~double[] -> ~double[] -> ()) ->
+    () =
+  ( nDays = length closes;
+    nCos = length closes[0];
+    mul = params[0];
+    qmul = 1 / (mul + 1);
+    rmul = mul * qmul;
+    stripToBuy = params[1];
+    stripToSell = params[2];
+
+    refs = matrix.mk nCos;
+    refs' = matrix.mk nCos;
+    toBuys = matrix.mkBoolean nCos;
+    for [0..nCos - 1] do iCo:
+      iDay = avoid do iDay:
+                     closes[iDay][iCo] <= 0
+                     done
+                   [0..nDays - 1];
+      refs[iCo] := closes[iDay][iCo];
+      refs'[iCo] := closes[iDay][iCo] * (1 - stripToSell);
+      toBuys[iCo] := false;
+      done;
+
+    for [0..nDays - 1] do iDay:
+      for [0..nCos - 1] do iCo:
+        q = closes[iDay][iCo];
+        ref = refs[iCo];
+        if q > 0 then
+          ref = ref * rmul + q * qmul;
+          if toBuys[iCo] then
+            ref = if ref > refs[iCo] then refs[iCo] else ref fi;
+            refs[iCo] := ref;
+            ref' = ref * (1 + stripToBuy);
+            refs'[iCo] := ref';
+            if q > ref' then
+              toBuys[iCo] := false
+            fi
+          else
+            ref = if ref < refs[iCo] then refs[iCo] else ref fi;
+            refs[iCo] := ref;
+            ref' = ref * (1 - stripToSell);
+            refs'[iCo] := ref';
+            if q < ref' then
+              toBuys[iCo] := true
+            fi
+          fi
+        fi
+        done;
+      action closes[iDay] refs';
+      done;
+  );
+{
+  /// Creates a model.
+  mk ()
+  is () -> fmodel.t =
+    { id = "GA",
+      name = "Media Geométrica",
+      parNames = ["Días", "Banda C", "Banda V"],
+      parMins = array [30, 0.001, 0.001],
+      parMaxs = array [120, 0.1, 0.1],
+      parDecs = array [3, 6, 6],
+      fcalc
+    },
+})
