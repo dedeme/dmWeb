@@ -40,10 +40,10 @@ is string -> () =
     "start" :
       sync.run do lk: log.info lk "MMarket started" done;
 
+      svThread = thread.run \(server.start ());
+
       activity = scheduler.initialActivity (conf.activity ());
       shThread = thread.run \(scheduler.run activity);
-
-      svThread = thread.run \(server.start ());
 
       thread.join shThread;
       thread.join svThread;

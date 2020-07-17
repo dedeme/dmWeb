@@ -392,15 +392,16 @@ profitsDb = load db.acc.profitsDb;
   run act
   is activity.t -> () =
     // To initialize a new flea model.
-    //fleas.evolution ();
+    // fleas.evolution ();
 
     var a = act;
     changeActivity newAct =
-      sync.run do lk:
-        a := activity.mk newAct;
-        conf.setActivity lk a;
-        log.info lk newAct
-        done;
+      ( a := activity.mk newAct;
+        sync.run do lk:
+          conf.setActivity lk a;
+          log.info lk newAct
+          done
+      );
     (not stopper.stop? ()) loop (
       aact = a.activity;
       if aact == cts.actActivating then

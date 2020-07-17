@@ -443,14 +443,19 @@ export default class Balance {
         for (let i = 0; i < pf.length; ++i) {
           const e = pf[i];
           const nick = e[0];
-          const e2 = portfolio.find(e2 => e2[0] === nick);
-          if (e2 === undefined) {
+          const i2 = portfolio.findIndex(e2 => e2[0] === nick);
+          if (i2 === -1) {
             portfolio.push(e);
           } else {
+            const e2 = portfolio[i2];
             const stocks = e[1] + e2[1];
-            e2[2] = (e[1] * e[2] + e2[1] * e2[2]) / stocks;
-            e2[4] = (e[1] * e[4] + e2[1] * e2[4]) / stocks;
-            e2[1] = stocks;
+            portfolio[i2] = [
+              nick,
+              stocks,
+              (e[1] * e[2] + e2[1] * e2[2]) / stocks,
+              e2[3],
+              (e[1] * e[4] + e2[1] * e2[4]) / stocks
+            ];
           }
         }
       }

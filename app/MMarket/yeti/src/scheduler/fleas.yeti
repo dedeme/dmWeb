@@ -294,6 +294,54 @@ load std;
       done;
 
     sync.run do lk:
+      mdps = map do md:
+        {md, pool = fmodels.readPool lk md.id}
+        done (fmodelsData.list ());
+      n = cts.rankingNumber - length mdps;
+      ranks = ranking.readRanking lk;
+      ranks = if not empty? ranks and (head ranks).date == dt then tail ranks
+              else ranks fi;
+      lastRank = case ranks of r::rs: r.ranking; _: [] esac;
+
+      // Auxiliar function
+      next mdps =
+        ( {md, pool} = head mdps;
+          {
+            newE = investor.mk md (head pool),
+            newMdps = (tail mdps) ++ [{md, pool = tail pool}]
+          }
+        );
+
+      // Auxiliar function
+      mkRank prev i mdps =
+        case prev of
+        e::es:
+          if i < n then
+            e::(mkRank es (i + 1) mdps)
+          elif i < cts.rankingNumber then
+            {newE, newMdps} = next mdps;
+            newE::(mkRank es (i + 1) newMdps)
+          else
+            []
+          fi;
+        _ :
+          if i < cts.rankingNumber then
+            {newE, newMdps} = next mdps;
+            newE::(mkRank [] (i + 1) newMdps)
+          else
+            []
+          fi;
+        esac;
+
+      invs = mkRank lastRank 0 mdps;
+      investor.evaluate opens closes invs;
+      newRank = irank.mk dt (investor.sort invs);
+      ranks = newRank::ranks;
+      ranking.writeRanking lk (take cts.rankingDays ranks)
+      done,
+
+    /* NOTES remove cts.rankingNumber. Remove ranking pool database.
+    sync.run do lk:
       pool = ranking.readPool lk;
       pool = investor.complete rankingPoolNews pool
                                (length rankingPoolNews + length pool);
@@ -316,4 +364,5 @@ load std;
       ranks = newRank::ranks;
       ranking.writeRanking lk (take cts.rankingDays ranks)
       done,
+   */
 })

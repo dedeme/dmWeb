@@ -142,16 +142,22 @@ net = load net.net;
       nickId = cgi.rqNumber rq "nickId";
       rp = [:];
       sync.run do lk:
-        try
-          if serversTb.definedHistoricConf? lk serverId then
-            rp["ok"] := json.wb (net.testHistoricConf lk serverId nickId)
-          else
-            rp["ok"] := json.wb true
-          fi
-        catch Exception ex:
-          log.exc lk ex;
+        case nicksTb.getNick lk nickId of
+        Some nick:
+          try
+            if serversTb.definedHistoricConf? lk serverId then
+              rp["ok"] := json.wb (net.testHistoricConf lk serverId nick)
+            else
+              rp["ok"] := json.wb true
+            fi
+          catch Exception ex:
+            log.exc lk ex;
+            rp["ok"] := json.wb false
+          yrt;
+        None ():
+          log.error lk "Nick id \(nickId) not found";
           rp["ok"] := json.wb false
-        yrt
+        esac
         done;
       cgi.rp ck rp;
     "getQuotes" :

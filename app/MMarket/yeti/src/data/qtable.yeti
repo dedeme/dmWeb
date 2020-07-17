@@ -53,8 +53,10 @@ typedef t =
   nickValuesAdd table nick value
   is t -> string -> number -> option<~double[][]> =
     nickValues table nick >>= do qs:
+      q = matrix.mk 1;
+      q[0] := value;
       for [0..length qs - 2] do i: qs[i] := qs[i + 1] done;
-      qs[length qs - 1][0] := value;
+      qs[length qs - 1] := q;
       Some qs
       done,
 

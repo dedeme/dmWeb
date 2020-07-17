@@ -78,10 +78,10 @@ load std;
             esac;
             { nick, stocks = e.stocks, price = e.price, quote, ref }
             done portfolio;
-          portfolios := jswList acc.pfEntryToJs portfolio::portfolios;
-          rp["ledgers"] := reverse ledgers |> json.wa;
-          rp["portfolios"] := reverse portfolios |> json.wa
-          done
+          portfolios := jswList acc.pfEntryToJs portfolio::portfolios
+          done;
+        rp["ledgers"] := reverse ledgers |> json.wa;
+        rp["portfolios"] := reverse portfolios |> json.wa;
         done;
       cgi.rp ck rp;
     k:

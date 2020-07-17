@@ -27,7 +27,7 @@ private enum CodeProcessorStates {
 class Code {
 
   static var reserved = " break callback case cast catch class continue " +
-    "default do dynamic else enum extends extern false for function if " +
+    "default do dynamic else enum extends extern false final for function if " +
     "implements import in inline interface never new null override package " +
     "private public return static super switch this throw trace true try " +
     "typedef untyped using var while "
@@ -119,7 +119,7 @@ class Code {
         if (ch == "\\" && ch1 != "") {
           r.add("\\" + ch1);
           skip = true;
-        } else if (ch == "'") {
+        } else if (ch == "'" || ch1 == "") {
           state = InCode;
           r.add("'</span>");
         } else {
@@ -129,35 +129,37 @@ class Code {
         if (ch == "\\" && ch1 != "") {
           r.add("\\" + ch1);
           skip = true;
-        } else if (ch == '"') {
+        } else if (ch == '"' || ch1 == "") {
           state = InCode;
           r.add('"</span>');
         } else {
           r.add(ch);
         }
       case Reserved:
-        if (Str.isLetterOrDigit(ch)) {
+        if (Str.isLetterOrDigit(ch) && ch1 != "") {
           tmpBuf.add(ch);
         } else {
+          if (ch1 == "") tmpBuf.add(ch);
           final tmp = tmpBuf.toString();
           if (reserved.indexOf (" " + tmp + " ") != -1)
             r.add("<span class='reserved'>" + tmp + "</span>");
           else
             r.add(tmp);
           state = InCode;
-          r.add(ch);
+          if (ch1 != "") r.add(ch);
         }
       case Klass:
-        if (Str.isLetterOrDigit(ch)) {
+        if (Str.isLetterOrDigit(ch)  && ch1 != "") {
           tmpBuf.add(ch);
         } else {
+          if (ch1 == "") tmpBuf.add(ch);
           r.add("<span class='className'>" + tmpBuf.toString() + "</span>");
           state = InCode;
-           r.add(ch);
+          if (ch1 != "") r.add(ch);
         }
 
       case Number:
-        if (!Str.isDigit (ch) && ch != ".") {
+        if ((!Str.isDigit (ch) && ch != ".") || ch1 == "") {
           state = InCode;
           r.add("</span>");
         }

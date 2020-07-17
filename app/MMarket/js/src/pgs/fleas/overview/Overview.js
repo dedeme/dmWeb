@@ -40,7 +40,7 @@ export default class Overview {
           .add($("td")
             .add($("div")
               .klass("frame")
-              .style("width:600px")
+              .style("width:680px")
               .html(Doc.read(md.id))))))
     ;
   }

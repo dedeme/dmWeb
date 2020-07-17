@@ -1,6 +1,7 @@
 <!doctyp html>
 <html>
   <head>
+  <title>Go doc</title>
   <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
   <meta http-equiv='Pragma' content='no-cache' />
   <meta name='lang' content='es' />
@@ -14,12 +15,19 @@
   <body style="background-color: #fafafb">
     <!------------------------------------------------------------------------>
     <hr>
-    <h2>Menu</h2>
+    <h2>Start application</h2>
 
-    <a href="menus.html">Menus</a><br>
-    <a href="dataBase.html">Data Base</a><br>
-    <a href="activity.html">Activity</a><br>
-    <br><a href="todo.html">To Do</a><br>
+    <pre>
+$ mkdir hello # Alternatively, clone it if it already exists in version control.
+$ cd hello
+$ go mod init github.com/dedeme/hello
+go: creating new go.mod: module github.com/dedeme/hello
+$ cat go.mod
+module github.com/dedeme/hello
 
+go 1.14
+$
+  </pre>
+  
   </body>
 </html>

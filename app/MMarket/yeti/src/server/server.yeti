@@ -51,9 +51,9 @@ mainHub = load server.mainHub;
           yrt
         );
       serverSocket#close();
-    catch java.lang.Exception ex:
+    catch java.lang.Throwable ex:
+      stopper.doStop ();
       e = ex;
       sync.run do lk: log.exc lk e  done;
-      throw ex
     yrt,
 }

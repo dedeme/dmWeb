@@ -112,15 +112,16 @@ typedef tradingOpT =
           anns = diariesDb.readAnnotations lk i;
           {portfolio} = acc.settlement anns;
           for nicksA do nick:
+            var q1 = nkQ1[nick];
+            var q = nkQ[nick];
             var ref = -1;
             var ref1 = -1;
             if activity == cts.actSleeping1 or
                activity == cts.actHistoric
             then
-              nkQ1[nick] := nkQ[nick];
               if nick in mqs then
-                q = mqs[nick];
-                nkQ[nick] := q;
+                q1 := q;
+                q := mqs[nick];
                 {model, params} = manager.getModel mans[i] nick;
                 case qtable.nickValuesAdd closes nick q of
                 Some cs :
@@ -145,8 +146,6 @@ typedef tradingOpT =
             if ref1 >= 0 and ref >= 0 and
                (nick in nkQ) and (nick in nkQ1)
             then
-              q1 = nkQ1[nick];
-              q = nkQ[nick];
               if q1 >= 0 and q >= 0 then
                 if ref1 > q1 and ref < q then // buy
                   operations := addBuy operations i nick

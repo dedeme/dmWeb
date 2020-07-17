@@ -16,6 +16,7 @@ serversTb = load db.serversTb;
 server = load data.server;
 nick = load data.nick;
 quote = load data.quote;
+manual = load net.manual;
 
 typedef dailyEntryT =
   { code is string,
@@ -329,9 +330,10 @@ typedef historicEntryT =
   /// Arguments:
   ///   lk - Synchronization lock.
   ///   sv - Web server.
-  ///   nickId - Company nick identifier.
-  serverReadHistoric lk sv nickId
-  is sync.t -> server.t -> number -> option<list<quote.t>> =
+  ///   nick - Company nick.
+  serverReadHistoric lk sv nick
+  is sync.t -> server.t -> nick.t -> option<list<quote.t>> =
+    nickId = nick.id;
     tryRead n lk conf code =
       case readHistoric lk conf code of
       Some es :
@@ -346,7 +348,8 @@ typedef historicEntryT =
           fi
         else
           Some (map do e:
-                      quote.mk e.date e.open e.close e.max e.min e.vol false
+                      vol = manual.fixVolume sv e.close e.vol;
+                      quote.mk e.date e.open e.close e.max e.min vol false
                       done es)
         fi;
       None () :
@@ -404,12 +407,12 @@ typedef historicEntryT =
   /// Arguments:
   ///   lk - Synchronization lock.
   ///   id - Server identifier.
-  ///   nickId - Nick indentifier.
-  testHistoricConf lk id nickId
-  is sync.t -> number -> number -> boolean =
+  ///   nick - Company nick.
+  testHistoricConf lk id nick
+  is sync.t -> number -> nick.t -> boolean =
     case find do sv: sv.id == id done (serversTb.read lk) of
     sv::_ :
-      case serverReadHistoric lk sv nickId of
+      case serverReadHistoric lk sv nick of
       Some _ : true;
       None () : false
       esac;
@@ -457,7 +460,7 @@ typedef historicEntryT =
         ( log.info lk "Updating \(nk.name)";
           { servers, selected } = serversTb.historicList lk;
           { qsIx, ix } = fold do {qsIx, ix} sv:
-              { qsIx = { qs = serverReadHistoric lk sv nk.id, ix }::qsIx,
+              { qsIx = { qs = serverReadHistoric lk sv nk, ix }::qsIx,
                 ix = ix + 1
               }
               done { qsIx = [], ix = 0 } servers;

@@ -11,6 +11,7 @@ sync = load es.dm.sync;
 load std;
 net = load net.net;
 log = load db.log;
+nicksTb = load db.nicksTb;
 
 {
   /// Request process.
@@ -26,12 +27,18 @@ log = load db.log;
       nickId = cgi.rqNumber rq "nickId";
       rp = [:];
       sync.run do lk:
-        try
-          rp["ok"] := json.wb (net.testHistoricConf lk serverId nickId)
-        catch Exception ex:
-          log.exc lk ex;
+        case nicksTb.getNick lk nickId of
+        Some nick:
+          try
+              rp["ok"] := json.wb (net.testHistoricConf lk serverId nick)
+          catch Exception ex:
+            log.exc lk ex;
+            rp["ok"] := json.wb false
+          yrt;
+        None ():
+          log.error lk "Nick id \(nickId) not found";
           rp["ok"] := json.wb false
-        yrt
+        esac
         done;
       cgi.rp ck rp;
     k :
