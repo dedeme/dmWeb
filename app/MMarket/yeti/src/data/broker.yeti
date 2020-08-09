@@ -18,6 +18,7 @@ module data.broker;
             elif amount > 35000 then 6.4 + amount * 0.00007
             else 4.65 + amount * 0.00012
             fi;
+    bolsa = bolsa + 0.11; // Execution fee.
 
     broker + bolsa,
 

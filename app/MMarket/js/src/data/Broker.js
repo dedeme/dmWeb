@@ -23,6 +23,7 @@ export default class Broker {
     } else if (amount > 35000) {
       bolsa = 6.4 + amount * 0.00007;
     }
+    bolsa += 0.11; // Execution fee.
 
     return broker + bolsa;
   }

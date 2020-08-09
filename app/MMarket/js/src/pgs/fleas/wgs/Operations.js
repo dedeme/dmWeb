@@ -19,7 +19,7 @@ const BALANCE = 13;
 const PROFITS = 12;
 const RATIO = 10;
 
-function lastQuote (qs) {
+function lastRef (qs) {
   let ix = qs.length - 1;
   while (ix >= 0) {
     if (qs[ix] > 0) return qs[ix];
@@ -170,7 +170,7 @@ export default class Operations {
     }
 
     if (stocks > 0) {
-      const q = lastQuote(cs);
+      const q = lastRef(rs);
       cash += Broker.sell(stocks, q);
       const date = ds[ds.length - 1];
       const profits = cash - bet;

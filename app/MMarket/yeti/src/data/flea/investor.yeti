@@ -121,11 +121,14 @@ typedef t =
     profitsAvgDif = maxProfitsAvg - minProfitsAvg;
     profitsVaDif = maxProfitsVa - minProfitsVa;
     for invs do inv:
+      aEval = if assetsDif == 0 then 0.5
+              else ((inv.eflea.assets - minAssets) / assetsDif) fi;
+      paEval = if profitsAvgDif == 0 then 0.5
+               else ((inv.eflea.profitsAvg - minProfitsAvg) / profitsAvgDif) fi;
+      pvEval = if profitsVaDif == 0 then 0.5
+               else ((inv.eflea.profitsVa - minProfitsVa) / profitsVaDif) fi;
       inv.eflea.eval :=
-        flea.evaluate inv.eflea.flea
-                      ((inv.eflea.assets - minAssets) / assetsDif)
-                      ((inv.eflea.profitsAvg - minProfitsAvg) / profitsAvgDif)
-                      ((inv.eflea.profitsVa - minProfitsVa) / profitsVaDif)
+        flea.evaluate inv.eflea.flea aEval paEval pvEval
       done,
 
   /// Sorts an investor list for better to worse.

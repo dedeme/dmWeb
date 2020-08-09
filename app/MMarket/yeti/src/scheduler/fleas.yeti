@@ -304,65 +304,47 @@ load std;
       lastRank = case ranks of r::rs: r.ranking; _: [] esac;
 
       // Auxiliar function
-      next mdps =
+      next prev mdps =
         ( {md, pool} = head mdps;
-          {
-            newE = investor.mk md (head pool),
-            newMdps = (tail mdps) ++ [{md, pool = tail pool}]
-          }
+          // Remove duplicates
+          mkInv p =
+            ( i = investor.mk md (head p);
+              if investor.containsInvestor? i prev and length p > 1
+              then
+                mkInv (tail p)
+              else
+                {i, p}
+              fi
+            );
+          {i, p} = mkInv pool;
+          { newE = i, newMdps = (tail mdps) ++ [{md, pool = tail p}]}
         );
 
       // Auxiliar function
-      mkRank prev i mdps =
-        case prev of
+      mkRank prev rest i mdps =
+        case rest of
         e::es:
           if i < n then
-            e::(mkRank es (i + 1) mdps)
+            e::(mkRank prev es (i + 1) mdps)
           elif i < cts.rankingNumber then
-            {newE, newMdps} = next mdps;
-            newE::(mkRank es (i + 1) newMdps)
+            {newE, newMdps} = next prev mdps;
+            newE::(mkRank prev es (i + 1) newMdps)
           else
             []
           fi;
         _ :
           if i < cts.rankingNumber then
-            {newE, newMdps} = next mdps;
-            newE::(mkRank [] (i + 1) newMdps)
+            {newE, newMdps} = next prev mdps;
+            newE::(mkRank prev [] (i + 1) newMdps)
           else
             []
           fi;
         esac;
 
-      invs = mkRank lastRank 0 mdps;
+      invs = mkRank lastRank lastRank 0 mdps;
       investor.evaluate opens closes invs;
       newRank = irank.mk dt (investor.sort invs);
       ranks = newRank::ranks;
       ranking.writeRanking lk (take cts.rankingDays ranks)
       done,
-
-    /* NOTES remove cts.rankingNumber. Remove ranking pool database.
-    sync.run do lk:
-      pool = ranking.readPool lk;
-      pool = investor.complete rankingPoolNews pool
-                               (length rankingPoolNews + length pool);
-      investor.evaluate opens closes pool;
-      pool = investor.sort pool;
-      ranking.writePool lk pool;
-
-      ranks = ranking.readRanking lk;
-      ranks = if not empty? ranks and (head ranks).date == dt then tail ranks
-              else ranks fi;
-      newRank = if empty? ranks then
-                  take cts.rankingNumber pool |> irank.mk dt
-                else
-                  n = cts.rankingNumber - cts.rankingChanges;
-                  rank = take n (head ranks).ranking;
-                  invs = investor.complete pool rank cts.rankingNumber;
-                  investor.evaluate opens closes invs;
-                  irank.mk dt (investor.sort invs)
-                fi;
-      ranks = newRank::ranks;
-      ranking.writeRanking lk (take cts.rankingDays ranks)
-      done,
-   */
 })

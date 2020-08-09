@@ -66,12 +66,12 @@ export default class Operations {
   /**
       @param {!Array<Forder>} orders
       @param {!Array<string>} nicks
-      @param {!Array<number>} lastCloses
+      @param {!Array<number>} lastRefs
   **/
-  constructor (orders, nicks, lastCloses) {
+  constructor (orders, nicks, lastRefs) {
     this._orders = orders;
     this._nicks = nicks;
-    this._lastCloses = lastCloses;
+    this._lastRefs = lastRefs;
 
     this._wg = $("TextArea").att("spellcheck", false)
       .att("cols", 68).att("rows", 20);
@@ -118,7 +118,7 @@ export default class Operations {
     });
     pf.forEach((e, i) => {
       if (pf[i] > 0)
-        cash += Broker.sell(pf[i], this._lastCloses[i]);
+        cash += Broker.sell(pf[i], this._lastRefs[i]);
     });
     tx += "|" + ff(NUM) + ":" + ff(CV) + ":" + ff(DATE) + ":" +
       ff(NICK) + ":" + ff(STOCKS) + ":" + ff(PRICE) + ":" +

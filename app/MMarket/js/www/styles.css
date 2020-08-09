@@ -71,6 +71,14 @@ TD.number2 {
   border: 1px solid rgb(110,130,150);
 }
 
+TD.numberSum {
+  width: 80px;
+  text-align: right;
+  font-style: italic;
+  background-color: rgb(220, 220, 220);
+  border: 1px solid rgb(110,130,150);
+}
+
 TD.separator {
   border-right: 1px solid rgb(110,130,150);
   border-left: 1px solid rgb(110,130,150);

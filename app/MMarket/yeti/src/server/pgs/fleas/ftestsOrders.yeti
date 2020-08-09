@@ -12,7 +12,6 @@ sync = load es.dm.sync;
 load std;
 quotesDb = load db.quotesDb;
 log = load db.log;
-qtable = load data.qtable;
 fmodel = load data.flea.fmodel;
 fmodels = load data.flea.fmodels;
 
@@ -37,9 +36,8 @@ fmodels = load data.flea.fmodels;
         case fmodels.getModel modelId of
           Some md :
             rp["nicks"] := jswList json.ws (list opens.nicks);
-            rp["lastCloses"] := jswList json.wn
-              ([0..length closes.nicks - 1] |>
-                map do i: qtable.lastRowOk closes.values i done);
+            rp["lastRefs"] := jswList json.wn
+                              (fmodel.lastRefs md closes params);
             rp["assets"] := fmodel.assetsRsToJs
                               (fmodel.assets md opens closes params);
             rp["orders"] := jswList fmodel.orderToJs

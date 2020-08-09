@@ -138,6 +138,24 @@ export default class Balance {
       return e;
     });
 
+    let sumValues = 0;
+    let sumProfits = 0;
+    let sumRisks = 0;
+    let sumBets = 0;
+    if (currentProfits === null) {
+      sumValues = null;
+      sumProfits = null;
+      sumRisks = null;
+      sumBets = null;
+    } else {
+      portfolio.forEach(e => {
+        sumValues += e[3] * e[1];
+        sumProfits += fprofits(e[1], e[2], e[3]);
+        sumRisks += frisk(e[1], e[2], e[4]);
+        sumBets += fbet(e[1], e[3], e[4]);
+      });
+    }
+
     wg
       .removeAll()
       .add($("div")
@@ -408,7 +426,38 @@ export default class Balance {
             .add($("span")
               .html(e[3] === null
                 ? "[?]"
-                : formatN(fref(e[3], e[4]), 0)))))))
+                : formatN(fref(e[3], e[4]), 0))))))
+        .add($("tr")
+          .add($("td"))
+          .add($("td"))
+          .add($("td"))
+          .add($("td"))
+          .add($("td")
+            .klass("numberSum")
+            .add($("span")
+              .html(sumValues === null
+                ? "[?]"
+                : formatN(sumValues, 2))))
+          .add($("td")
+            .klass("numberSum")
+            .add($("span")
+              .html(sumProfits === null
+                ? "[?]"
+                : formatN(sumProfits, 2))))
+          .add($("td")
+            .klass("numberSum")
+            .add($("span")
+              .html(sumRisks === null
+                ? "[?]"
+                : formatN(sumRisks, 2))))
+          .add($("td")
+            .klass("numberSum")
+            .add($("span")
+              .html(sumBets === null
+                ? "[?]"
+                : formatN(sumBets, 2))))
+          .add($("td"))
+        ))
     ;
 
   }
