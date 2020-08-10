@@ -128,7 +128,7 @@ export default class Operations {
       const oq = os[i];
       if (toDo && oq > 0) {
         if (toSell) { // there is buy order.
-          stocks = (cash / oq) | 0;
+          stocks = (Cts.bet / oq) | 0;
           cash -= Broker.buy(stocks, oq);
 
           const date = ds[i];

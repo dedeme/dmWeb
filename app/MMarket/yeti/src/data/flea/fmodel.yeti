@@ -262,7 +262,7 @@ typedef t =
         ixOpens := ixOpens + 1;
         if todo and oq > 0 then
           if toSell then // there is a buy order set in the previous call to fn
-            stocks := int (cash / oq);
+            stocks := int (cts.bet / oq);
             cash := cash - broker.buy stocks oq
           elif (stocks > 0) then
             cash := cash + broker.sell stocks oq;
