@@ -7,7 +7,6 @@
 
 import Domo from "../../dmjs/Domo.js"; //eslint-disable-line
 import Ui from "../../dmjs/Ui.js";
-import DateDm from "../../dmjs/DateDm.js";
 import B64 from "../../dmjs/B64.js";
 import {Menu} from "../../dmjs/Menu.js";
 import Dmenu from "../../wgs/Dmenu.js"; //eslint-disable-line
@@ -182,8 +181,7 @@ export default class Fleas {
   **/
   onModelSelection (id) {
     this._mSel = this._models[id];
-    this._lcPath[0] = this._mSel.id;
-    this.view();
+    location.assign("?fleas&" + this._mSel.id + "&" + this._lcPath[1]);
   }
 
   /**
@@ -246,7 +244,7 @@ export default class Fleas {
 
     const cols = mkHeaderBase();
     cols.splice(1, 0, new Col(
-      _("Date"), Col.STRING, -1, false, false
+      _("Date"), Col.DATE, -1, false, false
     ));
 
     for (let i = 0; i < parNames.length; ++i) {
@@ -254,7 +252,7 @@ export default class Fleas {
     }
 
     const table = bests.map(ed => {
-      const dt = DateDm.fromStr(ed.date).toString();
+      const dt = ed.date; //DateDm.fromStr(ed.date).toString();
       const e = ed.eflea;
       const r = [
         e, 0, dt, e.flea.name, e.assets, e.profitsAvg, e.profitsVa,

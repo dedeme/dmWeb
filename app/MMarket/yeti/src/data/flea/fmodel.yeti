@@ -145,7 +145,6 @@ typedef t =
     var cash = cts.initialCapital;
     var buys = 0;
     var sells = 0;
-    var lastRefs = new double[0]; //()
 
     stockss = matrix.mkInt nCos;
     toBuys = matrix.mkBoolean nCos;
@@ -158,8 +157,7 @@ typedef t =
     var dorders = [];
     fn cs refs
     is ~double[] -> ~double[] -> () =
-      ( lastRefs := refs;
-        os = ops[iops];
+      ( os = ops[iops];
         iops := iops + 1;
 
         // Execute orders -----------------------
@@ -230,8 +228,7 @@ typedef t =
     for [0..nCos - 1] do i:
       stocks = stockss[i];
       if stocks > 0 then
-        cash := cash + broker.sell stocks lastRefs[i]
-          // (qtable.lastRowOk cls i)
+        cash := cash + broker.sell stocks (qtable.lastRowOk cls i)
       fi
       done;
 
@@ -253,12 +250,10 @@ typedef t =
     var toSell = true;
     var todo = false;
     var ixOpens = 0;
-    var lastRefs = new double[0]; //()
 
     fn cs refs
     is ~double[] -> ~double[] -> () =
-      ( lastRefs := refs;
-        oq = opens[ixOpens][0];
+      ( oq = opens[ixOpens][0];
         ixOpens := ixOpens + 1;
         if todo and oq > 0 then
           if toSell then // there is a buy order set in the previous call to fn
@@ -288,8 +283,7 @@ typedef t =
     md.fcalc closes params fn;
 
     if stocks > 0 then
-      cash := cash + broker.sell stocks lastRefs[0]
-        //(qtable.lastRowOk closes 0)
+      cash := cash + broker.sell stocks (qtable.lastRowOk closes 0)
     fi;
     (cash - cts.bet) / cts.bet,
 
@@ -352,7 +346,6 @@ typedef t =
 
     var cash = cts.initialCapital;
     var assets = [];
-    var lastRefs = new double[0]; //()
 
     stockss = matrix.mkInt nCos;
     prices = matrix.mkInt nCos;
@@ -366,8 +359,7 @@ typedef t =
     var dorders = [];
     fn cs refs
     is ~double[] -> ~double[] -> () =
-      ( lastRefs := refs;
-        os = ops[iops];
+      ( os = ops[iops];
         iops := iops + 1;
 
         // Execute orders -----------------------
@@ -448,8 +440,7 @@ typedef t =
     for [0..nCos - 1] do i:
       stocks = stockss[i];
       if stocks > 0 then
-        newAssets := newAssets + broker.sell stocks lastRefs[i]
-          // (qtable.lastRowOk cls i)
+        newAssets := newAssets + broker.sell stocks (qtable.lastRowOk cls i)
       fi
       done;
     assets := newAssets::assets;
@@ -547,22 +538,4 @@ typedef t =
     md.fcalc cls params fn;
 
     reverse orders,
-
-  /// Returns last references of a model.
-  ///
-  /// Arguments:
-  ///   md - Model.
-  ///   closes - Close quotes table.
-  ///   params - Parameters to calculate.
-  lastRefs md closes params
-  is t -> qtable.t -> array<number> -> list<number> =
-    var lastRefs = new double[0]; //()
-
-    // Auxiliar function -------------------------------------------------------
-    fn cs refs
-    is ~double[] -> ~double[] -> () =
-      lastRefs := refs;
-
-    md.fcalc (closes.values) params fn;
-    lastRefs,
 }

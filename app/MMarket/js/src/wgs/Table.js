@@ -9,6 +9,7 @@ import Domo from "../dmjs/Domo.js"; //eslint-disable-line
 import Ui from "../dmjs/Ui.js";
 import It from "../dmjs/It.js";
 import Dec from "../dmjs/Dec.js";
+import DateDm from "../dmjs/DateDm.js";
 import {_} from "../I18n.js";
 import Cts from "../data/Cts.js";
 
@@ -137,6 +138,8 @@ export class Col {
   static get COUNTER () { return 4 }
 
   static get ICON () { return 5 }
+
+  static get DATE () { return 6 }
 }
 
 /**
@@ -226,15 +229,19 @@ export class Table {
                   : $("td")
                     .klass(t === Col.NUMBER ? "fnumber" : "fparam")
                     .text(Cts.nformat(v, c.format))
-                : c.link
+                : t === Col.DATE
                   ? $("td")
-                    .klass(t === Col.STRING ? "menu" : "fparam")
-                    .add($("a")
-                      .att("href", this._link(element, i))
-                      .text(v))
-                  : $("td")
-                    .klass(t === Col.STRING ? "menu" : "fparam")
-                    .text(v)
+                    .klass("menu")
+                    .text(DateDm.fromStr(v).toString())
+                  : c.link
+                    ? $("td")
+                      .klass(t === Col.STRING ? "menu" : "fparam")
+                      .add($("a")
+                        .att("href", this._link(element, i))
+                        .text(v))
+                    : $("td")
+                      .klass(t === Col.STRING ? "menu" : "fparam")
+                      .text(v)
           ;
         }));
     });

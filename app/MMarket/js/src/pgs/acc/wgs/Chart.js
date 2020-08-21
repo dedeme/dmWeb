@@ -57,10 +57,10 @@ function backColor (qs1, qs) {
     if (qs1[i] < qs1[0] && qs[i] > qs[0]) sell = true;
   }
   return buy && !sell
-    ? "#ff8100"
+    ? "#fff0f0"
     : !buy && sell
-      ? "#00aaff"
-      : buy && sell ? "#80ff80" : "#c9c9c9"
+      ? "#f0f0ff"
+      : buy && sell ? "#f0fff0" : "#c9c9c9"
   ;
 }
 

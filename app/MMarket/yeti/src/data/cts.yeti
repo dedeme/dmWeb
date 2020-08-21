@@ -117,16 +117,16 @@ module data.cts;
   // Fleas evaluation ----------------------------------------------------------
 
   /// Historic simulation ratio
-  assetsRatio = 0.3,
+  assetsRatio = 0.2,
 
   /// Average of profits ratio
-  profitsAvgRatio = 0.3,
+  profitsAvgRatio = 0.45,
 
   /// Variance of profits ratio
-  profitsVaRatio = 0.1,
+  profitsVaRatio = 0.175,
 
   /// Flea age ratio
-  ageRatio = 0.2,
+  ageRatio = 0.175,
 
   /// Number of fleas in pool
   poolNumber = 1000,

@@ -65,8 +65,8 @@ fmodel = load data.flea.fmodel;
     { id = "APPR",
       name = "Approx",
       parNames = ["Inicio C", "Paso C", "Inicio V", "Paso V"],
-      parMins = array [0.00, 0.001, 0.00, 0.001],
-      parMaxs = array [0.3, 0.1, 0.3, 0.1],
+      parMins = array [0.05, 0.01, 0.05, 0.01],
+      parMaxs = array [0.3, 0.15, 0.3, 0.15],
       parDecs = array [6, 6, 6, 6],
       fcalc
     },

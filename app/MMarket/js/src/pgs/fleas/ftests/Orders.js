@@ -94,7 +94,7 @@ export default class Orders {
     const orders = rp["orders"].map(e => Forder.fromJs(e));
 
     this._ordersDiv.removeAll()
-      .add(new OrdersWg(orders, rp["nicks"], rp["lastRefs"]).wg
+      .add(new OrdersWg(orders, rp["nicks"], rp["lastCloses"]).wg
         .klass("frame0"));
 
     const rs = Rs.fromJs(rp["assets"]);

@@ -72,7 +72,7 @@ fmodel = load data.flea.fmodel;
       name = "MaxMin",
       parNames = ["Banda C", "Paso C", "Banda V", "Paso V"],
       parMins = array [0.00, 0.001, 0.00, 0.001],
-      parMaxs = array [0.3, 0.1, 0.3, 0.1],
+      parMaxs = array [0.3, 0.15, 0.3, 0.15],
       parDecs = array [6, 6, 6, 6],
       fcalc
     },

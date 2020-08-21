@@ -23,9 +23,10 @@ fmodel = load data.flea.fmodel;
     refs' = matrix.mk nCos; // References for sending to action
     toBuys = matrix.mkBoolean nCos;
     for [0..nCos - 1] do iCo:
-      refs[iCo] := avoid do iDay:
-                           closes[iDay][iCo] <= 0
-                           done [0..nDays - 1];
+      iDay = avoid do iDay:
+                      closes[iDay][iCo] <= 0
+                      done [0..nDays - 1];
+      refs[iCo] := closes[iDay][iCo];
       toBuys[iCo] := false;
       done;
 

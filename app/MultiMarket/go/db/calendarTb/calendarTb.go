@@ -1,0 +1,166 @@
+// Copyright 19-Aug-2020 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+// Calendar table.
+package calendarTb
+
+import (
+	"github.com/dedeme/MultiMarket/data/cts"
+	"github.com/dedeme/MultiMarket/data/marketDay"
+	"github.com/dedeme/MultiMarket/data/timetable"
+	"github.com/dedeme/MultiMarket/global/sync"
+	"github.com/dedeme/golib/date"
+	"github.com/dedeme/golib/file"
+	"github.com/dedeme/golib/json"
+	"path"
+)
+
+var fpath string
+
+var general *timetable.T
+var holidays *[]string
+var specialDays *[]*marketDay.T
+
+// Auxiliar function
+func write(lk sync.T, tb map[string]json.T) {
+	general = timetable.FromJs(tb["general"])
+
+	var h []string
+	for _, e := range tb["holidays"].Ra() {
+		h = append(h, e.Rs())
+	}
+	holidays = &h
+
+	var s []*marketDay.T
+	for _, e := range tb["specialDays"].Ra() {
+		s = append(s, marketDay.FromJs(e))
+	}
+	specialDays = &s
+
+	file.WriteAll(fpath, json.Wo(tb).String())
+}
+
+// Auxiliar function
+func read(lk sync.T) map[string]json.T {
+	return json.FromString(file.ReadAll(fpath)).Ro()
+}
+
+// Initializes calendar table.
+//    parent: Parent directory.
+func Initialize(parent string) {
+	fpath = path.Join(parent, "Calendar.tb")
+	if !file.Exists(fpath) {
+		sync.Run(func(lk sync.T) {
+			write(lk, map[string]json.T{
+				"general":     timetable.New().ToJs(),
+				"holidays":    json.Wa([]json.T{}),
+				"specialDays": json.Wa([]json.T{}),
+			})
+		})
+		return
+	}
+	sync.Run(func(lk sync.T) {
+		write(lk, read(lk))
+	})
+}
+
+// Returns general time table 'JSONized'.
+//    lk: Synchronization lock.
+func General(lk sync.T) json.T {
+	return read(lk)["general"]
+}
+
+// Modifies general time table.
+//    lk: Synchronization lock.
+//    js:  'JSONized' Timetable.
+func SetGeneral(lk sync.T, js json.T) {
+	tb := read(lk)
+	tb["general"] = js
+	write(lk, tb)
+}
+
+// Returns holidays list 'JSONized'.
+//    lk: Synchronization lock.
+func Holidays(lk sync.T) json.T {
+	return read(lk)["holidays"]
+}
+
+// Modifies holidays list.
+//    lk: Synchronization lock.
+//    js:  'JSONized' holidays list.
+func SetHolidays(lk sync.T, js json.T) {
+	tb := read(lk)
+	tb["holidays"] = js
+	write(lk, tb)
+}
+
+// Returns specialDays list 'JSONized'.
+//    lk: Synchronization lock.
+func SpecialDays(lk sync.T) json.T {
+	return read(lk)["specialDays"]
+}
+
+// Modifies specialDays list.
+//    lk: Synchronization lock.
+//    js:  'JSONized' specialDays list.
+func SetSpecialDays(lk sync.T, js json.T) {
+	tb := read(lk)
+	tb["specialDays"] = js
+	write(lk, tb)
+}
+
+// Returns 'true' if day is a market day.
+//    day: Date to ask.
+func isMarkerDay(day date.T) bool {
+	wd := day.Weekday()
+	if wd == 0 || wd == 6 {
+		return false
+	}
+	ds := day.String()
+	for _, d := range *holidays {
+		if ds == d {
+			return false
+		}
+	}
+	return true
+}
+
+// Returns 'true' if day is a market day and its time is inside the
+// corresponding timetable.
+//    day: Date to ask.
+func isOpen(day date.T) bool {
+	day = day.AddSeconds(-cts.ServersDelay)
+	if isMarkerDay(day) {
+		h := day.Hour()
+		m := day.Minute()
+		ds := day.String()
+		hopen := general.Hopen()
+		mopen := general.Mopen()
+		hclose := general.Hclose()
+		mclose := general.Mclose()
+		for _, e := range *specialDays {
+			if e.Date() == ds {
+				hopen = e.Hopen()
+				mopen = e.Mopen()
+				hclose = e.Hclose()
+				mclose = e.Mclose()
+				break
+			}
+		}
+		return (h > hopen || (h == hopen && m > mopen)) &&
+			(h < hclose || (h == hclose && m <= mclose))
+	}
+	return false
+}
+
+// Returns the date of the previous market day. (First day to search is
+// today - 1).
+//    day: Date to ask.
+func previousMarketDay(day date.T) date.T {
+	for {
+		day = day.Add(-1)
+		if isMarkerDay(day) {
+			return day
+		}
+	}
+}
