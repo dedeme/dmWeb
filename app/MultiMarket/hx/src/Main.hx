@@ -10,6 +10,10 @@ import wgs.Msg;
 import wgs.Dmenu;
 import pgs.settings.Settings;
 import pgs.home.Home;
+import pgs.fleas.Fleas;
+import pgs.ranking.Ranking;
+import pgs.daily.Daily;
+import pgs.acc.Acc;
 
 /// Application entry.
 class Main {
@@ -52,6 +56,14 @@ class Main {
           switch (target) {
             case "home":
               Home.mk(bodyDiv);
+            case "fleas":
+              Fleas.mk(bodyDiv, menu, lcPath);
+            case "ranking":
+              Ranking.mk(bodyDiv);
+            case "acc":
+              new Acc(bodyDiv, menu, lcPath);
+            case "daily":
+              Daily.mk(bodyDiv, menu, lcPath);
             case "settings":
               Settings.mk(bodyDiv, menu, lcPath, lang);
             default:

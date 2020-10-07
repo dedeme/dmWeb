@@ -5,8 +5,9 @@ using StringTools;
 
 import dm.Client;
 import dm.Ui.Q;
+import dm.Dec;
 import I18n._;
-import haxe.ds.Option;
+import dm.Opt;
 
 /// Constants and global functions.
 class Cts {
@@ -56,6 +57,6 @@ class Cts {
     n = n.trim().replace(".", "").replace(",", ".");
     if (n == "") return Some(0.0);
     final r = Std.parseFloat(n);
-    return Math.isNaN(r) ? None : Some(r);
+    return Math.isNaN(r) ? None : Some(Dec.round(r, 2));
   }
 }

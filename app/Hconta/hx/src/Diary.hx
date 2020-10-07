@@ -3,7 +3,6 @@
 
 using StringTools;
 
-import haxe.ds.Option;
 import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
@@ -11,6 +10,7 @@ import dm.It;
 import dm.Dec;
 import dm.Str;
 import dm.Dt;
+import dm.Opt;
 import dm.DatePicker;
 import data.All;
 import data.Acc;
@@ -231,7 +231,7 @@ class Diary {
       }
     }
 
-    if (dsum != csum) {
+    if (!Dec.eq(dsum, csum, 0.00001)) {
       Ui.alert(_("Debits sum is different from Credits sum"));
       return;
     }

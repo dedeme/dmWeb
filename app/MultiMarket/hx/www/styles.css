@@ -192,10 +192,6 @@ H6 {
   font-size:11px;
 }
 
-.link{
-  text-decoration: none; font-family: sans;
-  color: #000080; font-weight: normal;font-size:14px;
-}
 .linkBold{
   text-decoration: none; font-family: sans;
   color: #000080; font-weight: bold;font-size:14px;

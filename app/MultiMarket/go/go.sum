@@ -1,5 +1,10 @@
+github.com/dedeme/golib v0.0.0-20200330071632-829800ae8435 h1:qlqXJprOJ40poAORFlF0UaSSCpsDp/E4wtDpfoBzD4A=
 github.com/dedeme/golib v0.0.0-20200703114630-0b54da288591 h1:DXUCNUc/4EfGSRFMuq/U1uFJnBgXMq4k+2J29dx//fw=
 github.com/dedeme/golib v0.0.0-20200703114630-0b54da288591/go.mod h1:noFvniK3uFLAYzP/upJSBBzyHL8OzYq2NOTQVwyHXlE=
+github.com/dedeme/golib v0.0.0-20200901090355-8dab974814ad h1:YfpVGuUjjPBokwz9YqO/Rm7Npy875v84QrEIsO4Y1kY=
+github.com/dedeme/golib v0.0.0-20200901090355-8dab974814ad/go.mod h1:noFvniK3uFLAYzP/upJSBBzyHL8OzYq2NOTQVwyHXlE=
+github.com/dedeme/golib v0.0.0-20200929182744-56164c01fcf2 h1:zCs8RJ7a98MkSsWjDSiCStvjdofPwIFMLyWP7Uvq9uY=
+github.com/dedeme/golib v0.0.0-20200929182744-56164c01fcf2/go.mod h1:noFvniK3uFLAYzP/upJSBBzyHL8OzYq2NOTQVwyHXlE=
 github.com/yuin/goldmark v1.1.27 h1:nqDD4MMMQA0lmWq03Z2/myGPYLQoXtmi0rGVs95ntbo=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=

@@ -66,7 +66,7 @@ typedef t =
     ///   :   Its rows are 'days' and its columns 'companies'.
     ///   : params is array<number>
     ///   :   Parameters to make calculus.
-    ///   : action is ~double[] -> ~double -> ()
+    ///   : action is ~double[] -> ~double[] -> ()
     ///   :   Function called with closes and references, after making calculus.
     ///   :   Its parameters are:
     ///   :     closes is ~double[]
@@ -348,7 +348,7 @@ typedef t =
     var assets = [];
 
     stockss = matrix.mkInt nCos;
-    prices = matrix.mkInt nCos;
+    prices = matrix.mk nCos;
     toBuys = matrix.mkBoolean nCos;
     for [0..nCos - 1] do i:
       stockss[i] := 0;

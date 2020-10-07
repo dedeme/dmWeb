@@ -1,5 +1,6 @@
 module github.com/dedeme/HxDoc
 
-go 1.14
+go 1.15
 
-require github.com/dedeme/golib v0.0.0-20200622101558-26a19cb0235a
+// v2020.03
+require github.com/dedeme/golib v0.0.0-20200901090355-8dab974814ad

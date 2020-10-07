@@ -7,10 +7,12 @@ import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
 import dm.Js;
+import dm.It;
 import dm.Menu;
-import haxe.ds.Option;
+import dm.Opt;
 import data.Cts;
 import data.Nick;
+import wgs.Msg;
 import I18n._;
 import I18n._args;
 
@@ -19,12 +21,12 @@ class Nicks {
   var wg: Domo;
   var model: Int;
   var nicks: Array<Nick>;
-  var volumes: Map<String, Int>;
+  var volumes: Map<String, Float>;
   var withVolume = true;
   var selectedNick = None;
 
   function new (
-    wg: Domo, model: Int, nicks: Array<Nick>, volumes: Map<String, Int>
+    wg: Domo, model: Int, nicks: Array<Nick>, volumes: Map<String, Float>
   ) {
     this.wg = wg;
     this.model = model;
@@ -62,11 +64,7 @@ class Nicks {
         var nickModel = nicks[0];
         for (e in nicks) if (e.id == model) { nickModel = e; break; }
         Editor.mk(
-          inputDiv, menuDiv, bodyDiv, nicks, nick, nickModel,
-          () -> {
-            selectedNick = None;
-            Nicks.mk(wg);
-          }
+          inputDiv, menuDiv, bodyDiv, nicks, nick, nickModel
         );
       case None:
         new List(
@@ -104,11 +102,78 @@ class Nicks {
 
   // Control -------------------------------------------------------------------
 
+  /// Add a new nick.
+  public function addNick (nickName: String) {
+    if (nickName == "") {
+      Msg.error(_("Nick name is missing"), () -> {});
+      return;
+    }
+    if (It.from(nicks).some(e -> e.name == nickName)) {
+      Msg.error(_args(_("Nick '%0' is duplicated"), [nickName]), () -> {});
+      return;
+    }
+
+    Cts.client.ssend([
+      "module" => Js.ws("settings"),
+      "source" => Js.ws("nicks"),
+      "rq" => Js.ws("add"),
+      "nickName" => Js.ws(nickName)
+    ], rp -> {
+      if (!rp["ok"].rb()) {
+        Msg.error(Cts.failMsg, () -> {});
+      }
+      Nicks.mk(wg);
+    });
+  }
+
+  public function setModel (nick: Nick) {
+    Cts.client.ssend([
+      "module" => Js.ws("settings"),
+      "source" => Js.ws("nicks"),
+      "rq" => Js.ws("setModel"),
+      "id" => Js.wi(nick.id)
+    ], rp -> {
+      Nicks.mk(wg);
+    });
+  }
+
+  public function setIsSel (nick: Nick) {
+    Cts.client.ssend([
+      "module" => Js.ws("settings"),
+      "source" => Js.ws("nicks"),
+      "rq" => Js.ws("setIsSel"),
+      "id" => Js.wi(nick.id),
+      "value" => Js.wb(!nick.isSel)
+    ], rp -> {
+      Nicks.mk(wg);
+    });
+}
+
+  public function del (nick: Nick) {
+    if (!Ui.confirm(_args(_("Delete '%0'?"), [nick.name]))) {
+      return;
+    }
+    Cts.client.ssend([
+      "module" => Js.ws("settings"),
+      "source" => Js.ws("nicks"),
+      "rq" => Js.ws("del"),
+      "id" => Js.wi(nick.id)
+    ], rp -> {
+      Nicks.mk(wg);
+    });
+  }
+
+  public function selectNick (nick: Nick) {
+    selectedNick = Some(nick);
+    view();
+  }
+
   function list (withVolume: Bool) {
     this.withVolume = withVolume;
     selectedNick = None;
     view();
   }
+
 
   // Static --------------------------------------------------------------------
 
@@ -130,7 +195,7 @@ class Nicks {
     ], rp -> {
       final model = rp["model"].ri();
       final nicks = rp["nicks"].ra().map(e -> Nick.fromJs(e));
-      final volumes = rp["volumes"].rMap(e -> e.ri());
+      final volumes = rp["volumes"].rMap(e -> e.rf());
 
       new Nicks(wg, model, nicks, volumes);
     });

@@ -22,7 +22,7 @@ module data.broker;
 
     broker + bolsa,
 
-  //  Returns net cost of operation.
+  /// Returns net cost of operation.
   ///
   /// Arguments:
   ///   stocks - Stocks number.
@@ -32,7 +32,7 @@ module data.broker;
     amount = stocks * price;
     amount + fees amount,
 
-  //  Returns net incomes of operation.
+  /// Returns net incomes of operation.
   /// Arguments:
   ///   stocks - Stocks number.
   ///   price - Stocks price.

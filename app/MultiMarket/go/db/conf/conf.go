@@ -44,14 +44,12 @@ func setField(lk sync.T, key string, js json.T) {
 
 // Intializes table.
 //    parent: Parent directory of "Conf.tb".
-func Initialize(parent string) {
+func Initialize(lk sync.T, parent string) {
 	fpath = path.Join(parent, "Conf.tb")
 	if !file.Exists(fpath) {
-		sync.Run(func(lk sync.T) {
-			write(lk, map[string]json.T{
-				langKey:     json.Ws("es"),
-				activityKey: activity.New(cts.ActSleeping2).ToJs(),
-			})
+		write(lk, map[string]json.T{
+			langKey:     json.Ws("es"),
+			activityKey: activity.New(cts.ActSleeping2).ToJs(),
 		})
 	}
 }
@@ -69,7 +67,7 @@ func SetLang(lk sync.T, lang string) {
 }
 
 // Gets current activity.
-func Activity() *activity.T {
+func Activity(lk sync.T) *activity.T {
 	return activity.FromJs(getField(activityKey))
 }
 

@@ -12,6 +12,9 @@ import I18n._;
 import pgs.settings.settings.Settings as Set;
 import pgs.settings.calendar.Calendar;
 import pgs.settings.nicks.Nicks;
+import pgs.settings.servers.Servers;
+import pgs.settings.acc.Acc;
+import pgs.settings.models.Models;
 
 /// Main settings page.
 class Settings {
@@ -33,7 +36,7 @@ class Settings {
              "models":
           lcPath[0];
         default:
-          "settings";
+          "nicks";
       }
 
     final lopts = [
@@ -59,12 +62,18 @@ class Settings {
     switch (target) {
       case "nicks":
         Nicks.mk(wg);
+      case "servers":
+        Servers.mk(wg);
+      case "annotations":
+        Acc.mk(wg);
+      case "models":
+        Models.mk(wg, 0);
       case "calendar":
         Calendar.mk(wg);
       case "settings":
         Set.mk(wg, lang);
       default:
-        Set.mk(wg, lang);
+        Nicks.mk(wg);
     }
   }
 }

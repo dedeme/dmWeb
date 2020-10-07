@@ -59,15 +59,12 @@ func read(lk sync.T) *t {
 	return fromJs(json.FromString(file.ReadAll(fpath)))
 }
 
-// Initializes calendar table.
+// Initializes table.
 //    parent: Parent directory.
-func Initialize(parent string) {
+func Initialize(lk sync.T, parent string) {
 	fpath = path.Join(parent, "Nicks.tb")
 	if !file.Exists(fpath) {
-		sync.Run(func(lk sync.T) {
-			write(lk, &t{0, -1, []*nick.T{}})
-		})
-		return
+		write(lk, &t{0, -1, []*nick.T{}})
 	}
 }
 
@@ -82,7 +79,7 @@ func Nicks(lk sync.T) []*nick.T {
 func SelectedNicks(lk sync.T) []*nick.T {
 	var l []*nick.T
 	for _, e := range read(lk).lst {
-		if e.IsSel {
+		if e.IsSel() {
 			l = append(l, e)
 		}
 	}
@@ -95,7 +92,7 @@ func SelectedNicks(lk sync.T) []*nick.T {
 //    nickId: Nick identifier.
 func GetNick(lk sync.T, nickId int) (nk *nick.T, ok bool) {
 	for _, e := range read(lk).lst {
-		if e.Id == nickId {
+		if e.Id() == nickId {
 			nk = e
 			ok = true
 			return
@@ -107,27 +104,121 @@ func GetNick(lk sync.T, nickId int) (nk *nick.T, ok bool) {
 // Returns list and model of nicks.
 //    lk: Synchronization lock.
 func Data(lk sync.T) (model int, lst []*nick.T) {
-  d := read(lk)
-  model = d.model
-  lst = d.lst
-  return
+	d := read(lk)
+	model = d.model
+	lst = d.lst
+	return
 }
 
+// Adds a new nick if it is not duplicated. In such case it logs an error
+// and returns "false". If the operation succeeds, the nick identifier is
+// returned.
+//    lk    : Synchronization lock.
+//    nickName: Nick name.
 func Add(lk sync.T, nickName string) (nickId int, ok bool) {
-  d := read(lk)
-  for _, e := range d.lst {
-    if e.Name == nickName {
-      log.Error(lk, "Nick name " + nickName + " is duplicated")
-      return
-    }
-  }
+	d := read(lk)
+	for _, e := range d.lst {
+		if e.Name() == nickName {
+			log.Error(lk, "Nick name "+nickName+" is duplicated")
+			return
+		}
+	}
 
-  nickId = d.nextId
-  nk := nick.New(nickId, nickName)
-  d.nextId++
-  d.lst = append(d.lst, nk)
-  write(lk, d)
-  ok = true
-  return
+	nickId = d.nextId
+	nk := nick.New(nickId, nickName)
+	d.nextId++
+	d.lst = append(d.lst, nk)
+	write(lk, d)
+	ok = true
+	return
 }
 
+// Removes the nick which id is 'nickId'.
+//    lk    : Synchronization lock.
+//    nickId: Nick identifier.
+func Del(lk sync.T, nickId int) {
+	d := read(lk)
+	var l []*nick.T
+	for _, e := range d.lst {
+		if e.Id() != nickId {
+			l = append(l, e)
+		}
+	}
+	d.lst = l
+	write(lk, d)
+}
+
+// Modifies the name of nick with id "nickId" and returns its old name.
+//
+// If the name is duplicated or nickId does no exist, it returns 'ok = false'.
+//    lk    : Synchronization lock.
+//    nickId: Nick identifier.
+//    name  : New name.
+func SetName(lk sync.T, nickId int, name string) (oldName string, ok bool) {
+	d := read(lk)
+	var l []*nick.T
+	for _, e := range d.lst {
+		if e.Id() == nickId {
+			oldName = e.Name()
+			e.SetName(name)
+			l = append(l, e)
+		} else {
+			if e.Name() == name {
+				return
+			}
+			l = append(l, e)
+		}
+	}
+	d.lst = l
+	write(lk, d)
+	ok = true
+	return
+}
+
+// Selects/Deselects the nick with id "nickId"
+//    lk    : Synchronization lock.
+//    nickId: Nick identifier.
+//    value : 'true' If selected.
+func SetIsSel(lk sync.T, nickId int, value bool) {
+	d := read(lk)
+	var l []*nick.T
+	for _, e := range d.lst {
+		if e.Id() == nickId {
+			e.SetSel(value)
+		}
+		l = append(l, e)
+	}
+	d.lst = l
+	write(lk, d)
+}
+
+// Returns the nick model.
+//
+// If it is not defined, returns the first nick.
+//
+// If there are not nicks in table, returns 'ok = false'.
+//    lk    : Synchronization lock.
+func GetModel(lk sync.T) (nk *nick.T, ok bool) {
+	d := read(lk)
+	if len(d.lst) == 0 {
+		return
+	}
+	nk = d.lst[0]
+	for _, e := range d.lst {
+		if e.Id() == d.model {
+			nk = e
+			break
+		}
+	}
+	ok = true
+	return
+}
+
+// Set the nick with id "nickId" as nick model.
+//    lk    : Synchronization lock.
+//    nickId: Nick identifier.
+func SetModel(lk sync.T, nickId int) {
+	d := read(lk)
+	d.model = nickId
+	write(lk, d)
+}

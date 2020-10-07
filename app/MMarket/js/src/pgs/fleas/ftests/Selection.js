@@ -73,6 +73,7 @@ export default class Selection {
       alert(_("Play ground stoped.\nRestart doing click in 'Selection'."));
       return;
     }
+
     async function loop () {
       const lid = self._log.isNothing() ? "" : self._log.fromJust().id;
       const rp = await Cts.client.send({

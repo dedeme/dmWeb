@@ -31,7 +31,10 @@ module data.cts;
   expiration = 900,
 
   /// Time (milliseconds) to wait a web server response
-  webWait = 125000,
+  webWait = 50000,
+
+  /// Minimum entries for a valid reading of historic quotes.
+  historicMinimumEntries = 5,
 
   /// Server configuration stopped
   serverStopped = 0,
@@ -72,7 +75,7 @@ module data.cts;
   actDeactivating = "Deactivating",
 
   /// Hour to start actHistoric fase
-  actHistoricStart = 3,
+  actHistoricStart = 4,
 
   /// Hour to finish actHistoric fase
   actHistoricEnd = 8,

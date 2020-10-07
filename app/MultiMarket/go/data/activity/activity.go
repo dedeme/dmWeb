@@ -12,9 +12,19 @@ import (
 
 type T struct {
 	// Record date.
-	Date date.T
+	date date.T
 	// One of cts.ActXXX.
-	Activity string
+	activity string
+}
+
+// Starting date.
+func (a *T) Date() date.T {
+	return a.date
+}
+
+// One of cts.ActXXX.
+func (a *T) Activity() string {
+	return a.activity
 }
 
 // Creates a new activity.t with the current time.
@@ -23,10 +33,16 @@ func New(act string) *T {
 	return &T{date.Now(), act}
 }
 
+// Creates a new activity.t for debug.
+//    act: One of cts.ActXXX.
+func New2(d date.T, act string) *T {
+	return &T{d, act}
+}
+
 func (ac *T) ToJs() json.T {
 	return json.Wa([]json.T{
-		json.Wl(time.Time(ac.Date).Unix()),
-		json.Ws(ac.Activity),
+		json.Wl(time.Time(ac.date).Unix()),
+		json.Ws(ac.activity),
 	})
 }
 

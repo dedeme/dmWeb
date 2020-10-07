@@ -20,6 +20,7 @@ import data.Cts;
 import I18n._;
 import I18n._args;
 
+/// Page to set market calendar.
 class Calendar {
   var wg: Domo;
   var general: Timetable;
@@ -108,7 +109,7 @@ class Calendar {
             .add(Ui.img("minus"))))
         .add(Q("td")
           .style("text-align:center")
-          .text(Dt.toIso(Opt.oget(Dt.from(d), Date.now()))))
+          .text(Dt.toIso(Opt.eget(Dt.from(d)))))
       );
     }
     final dp = new DatePicker();
@@ -163,7 +164,7 @@ class Calendar {
             .add(Ui.img("minus"))))
         .add(Q("td")
           .style("text-align:center")
-          .text(Dt.toIso(Opt.oget(Dt.from(e.date), Date.now()))))
+          .text(Dt.toIso(Opt.eget(Dt.from(e.date)))))
         .add(Q("td")
           .style("text-align:center")
           .text('${Cts.format00(e.hopen)}:${Cts.format00(e.mopen)}'))

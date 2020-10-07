@@ -3,7 +3,6 @@
 
 package wgs;
 
-import haxe.ds.Option;
 import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;

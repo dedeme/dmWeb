@@ -9,7 +9,6 @@ import dm.Client;
 import dm.Dec;
 import dm.Ui.Q;
 import I18n._;
-import haxe.ds.Option;
 
 /// Constants and global functions.
 class Cts {
@@ -65,7 +64,7 @@ class Cts {
   ///     Other - Normal number with 'other' decimals positions.
   public static function nformat (v: Float, f: Int): String {
     return f == 4 || f == 6
-      ? Dec.toIso(v, f - 2) + "%"
+      ? Dec.toIso(v * 100, f - 2) + "%"
       : Dec.toIso(v, f)
     ;
   }
@@ -76,5 +75,4 @@ class Cts {
     if (n < 10) return "0" + Std.string(n);
     return Std.string(n);
   }
-
 }

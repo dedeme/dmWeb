@@ -7,13 +7,13 @@ import dm.Js;
 
 /// Quote data.
 class Quote {
-  var date(default, null): String;
-  var open(default, null): Float;
-  var close(default, null): Float;
-  var max(default, null): Float;
-  var min(default, null): Float;
-  var vol(default, null): Int;
-  var error(default, null): Bool;
+  public var date(default, null): String;
+  public var open(default, null): Float;
+  public var close(default, null): Float;
+  public var max(default, null): Float;
+  public var min(default, null): Float;
+  public var vol(default, null): Int;
+  public var error(default, null): Bool;
 
   /// Constructor.
   public function new (
@@ -42,7 +42,7 @@ class Quote {
   // Static  -------------------------------------------------------------------
 
   public static function fromString (s: String): Quote {
-    final q = s.split(";");
+    final q = s.split(":");
     return new Quote(
       q[0],
       Std.parseFloat(q[1]),

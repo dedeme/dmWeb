@@ -1,6 +1,7 @@
 // Copyright 25-Jun-2020 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+using StringTools;
 import dm.Domo;
 import dm.Ui.Q;
 import dm.Ui;
@@ -70,8 +71,8 @@ class Authentication {
         .att("id", "accept")
         .on(CLICK, e -> {
           send(
-            userIn.getValue().trim(),
-            pass.getValue().trim(),
+            cast(userIn.getValue(), String).trim(),
+            cast(pass.getValue(), String).trim(),
             !persistent.getChecked()
           );
         })

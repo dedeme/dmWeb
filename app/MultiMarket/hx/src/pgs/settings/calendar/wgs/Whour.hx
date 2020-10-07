@@ -9,6 +9,7 @@ import dm.Ui.Q;
 import dm.It;
 import data.Cts;
 
+/// Widget to show an hour.
 class Whour {
   var h: Domo;
   var m: Domo;

@@ -16,7 +16,6 @@ serversTb = load db.serversTb;
 server = load data.server;
 nick = load data.nick;
 quote = load data.quote;
-manual = load net.manual;
 
 typedef dailyEntryT =
   { code is string,
@@ -337,19 +336,19 @@ typedef historicEntryT =
     tryRead n lk conf code =
       case readHistoric lk conf code of
       Some es :
-        if length es < 10 then
+        if length es < cts.historicMinimumEntries then
           if n > 0 then
             tryRead (n - 1) lk conf code
           else
             nk = (optGet (nicksTb.getNick lk nickId)).name;
             log.error lk ("Historic entries of nick '\(nk)' in server " ^
-                          "'\(sv.name)' are less than 10 (\(length es))");
+                          "'\(sv.name)' are less than " ^
+                          "\(cts.historicMinimumEntries) (\(length es))");
             None ()
           fi
         else
           Some (map do e:
-                      vol = manual.fixVolume sv e.close e.vol;
-                      quote.mk e.date e.open e.close e.max e.min vol false
+                      quote.mk e.date e.open e.close e.max e.min e.vol false
                       done es)
         fi;
       None () :
@@ -401,7 +400,7 @@ typedef historicEntryT =
       false
     esac,
 
-  /// Test daily configuration of server-company and returns 'true' if the
+  /// Test historic configuration of server-company and returns 'true' if the
   /// result was ok.
   ///
   /// Arguments:

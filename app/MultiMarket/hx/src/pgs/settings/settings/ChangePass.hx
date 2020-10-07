@@ -3,6 +3,7 @@
 
 package pgs.settings.settings;
 
+using StringTools;
 import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
@@ -34,9 +35,9 @@ class ChangePass {
     }
 
     final accept = () -> {
-      final opass = oldPass.getValue().trim();
-      final npass = newPass.getValue().trim();
-      final npass2 = newPass2.getValue().trim();
+      final opass = cast(oldPass.getValue(), String).trim();
+      final npass = cast(newPass.getValue(), String).trim();
+      final npass2 = cast(newPass2.getValue(), String).trim();
 
       if (opass == "") {
         Ui.alert(_("Current password is missing"));

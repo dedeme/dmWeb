@@ -9,7 +9,11 @@ import (
 	"github.com/dedeme/MultiMarket/data/cts"
 	"github.com/dedeme/MultiMarket/data/logRow"
 	"github.com/dedeme/MultiMarket/db/conf"
+	"github.com/dedeme/MultiMarket/server/pgs/acc"
+	"github.com/dedeme/MultiMarket/server/pgs/daily"
+	"github.com/dedeme/MultiMarket/server/pgs/fleas"
 	"github.com/dedeme/MultiMarket/server/pgs/home"
+	"github.com/dedeme/MultiMarket/server/pgs/ranking"
 	"github.com/dedeme/MultiMarket/server/pgs/settings"
 	"github.com/dedeme/MultiMarket/server/pgs/wgs"
 	"github.com/dedeme/golib/cgi"
@@ -37,6 +41,14 @@ func hub(ck string, mrq map[string]json.T) string {
 		return wgs.Process(ck, mrq)
 	case "home":
 		return home.Process(ck, mrq)
+	case "fleas":
+		return fleas.Process(ck, mrq)
+	case "ranking":
+		return ranking.Process(ck, mrq)
+	case "daily":
+		return daily.Process(ck, mrq)
+	case "acc":
+		return acc.Process(ck, mrq)
 	case "settings":
 		return settings.Process(ck, mrq)
 	default:

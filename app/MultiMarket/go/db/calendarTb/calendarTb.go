@@ -47,21 +47,17 @@ func read(lk sync.T) map[string]json.T {
 
 // Initializes calendar table.
 //    parent: Parent directory.
-func Initialize(parent string) {
+func Initialize(lk sync.T, parent string) {
 	fpath = path.Join(parent, "Calendar.tb")
 	if !file.Exists(fpath) {
-		sync.Run(func(lk sync.T) {
-			write(lk, map[string]json.T{
-				"general":     timetable.New().ToJs(),
-				"holidays":    json.Wa([]json.T{}),
-				"specialDays": json.Wa([]json.T{}),
-			})
+		write(lk, map[string]json.T{
+			"general":     timetable.New().ToJs(),
+			"holidays":    json.Wa([]json.T{}),
+			"specialDays": json.Wa([]json.T{}),
 		})
 		return
 	}
-	sync.Run(func(lk sync.T) {
-		write(lk, read(lk))
-	})
+	write(lk, read(lk))
 }
 
 // Returns general time table 'JSONized'.
@@ -111,7 +107,7 @@ func SetSpecialDays(lk sync.T, js json.T) {
 
 // Returns 'true' if day is a market day.
 //    day: Date to ask.
-func isMarkerDay(day date.T) bool {
+func IsMarketDay(day date.T) bool {
 	wd := day.Weekday()
 	if wd == 0 || wd == 6 {
 		return false
@@ -125,12 +121,34 @@ func isMarkerDay(day date.T) bool {
 	return true
 }
 
+// Returns 'true' if day is a market day and its time is before closing.
+//    day: Date to ask.
+func ForClose(day date.T) bool {
+	day = day.AddSeconds(-cts.ServersDelay)
+	if IsMarketDay(day) {
+		h := day.Hour()
+		m := day.Minute()
+		ds := day.String()
+		hclose := general.Hclose()
+		mclose := general.Mclose()
+		for _, e := range *specialDays {
+			if e.Date() == ds {
+				hclose = e.Hclose()
+				mclose = e.Mclose()
+				break
+			}
+		}
+		return h < hclose || (h == hclose && m <= mclose)
+	}
+	return false
+}
+
 // Returns 'true' if day is a market day and its time is inside the
 // corresponding timetable.
 //    day: Date to ask.
-func isOpen(day date.T) bool {
+func IsOpen(day date.T) bool {
 	day = day.AddSeconds(-cts.ServersDelay)
-	if isMarkerDay(day) {
+	if IsMarketDay(day) {
 		h := day.Hour()
 		m := day.Minute()
 		ds := day.String()
@@ -156,10 +174,10 @@ func isOpen(day date.T) bool {
 // Returns the date of the previous market day. (First day to search is
 // today - 1).
 //    day: Date to ask.
-func previousMarketDay(day date.T) date.T {
+func PreviousMarketDay(day date.T) date.T {
 	for {
 		day = day.Add(-1)
-		if isMarkerDay(day) {
+		if IsMarketDay(day) {
 			return day
 		}
 	}

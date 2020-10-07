@@ -25,10 +25,10 @@ func write(lk sync.T, a []json.T) {
 
 // Initializes log.
 //    parent: Parent directory of "Log.tb".
-func Initialize(parent string) {
+func Initialize(lk sync.T, parent string) {
 	fpath = path.Join(parent, "Log.tb")
 	if !file.Exists(fpath) {
-		file.WriteAll(fpath, "[]")
+		write(lk, []json.T{})
 	}
 }
 

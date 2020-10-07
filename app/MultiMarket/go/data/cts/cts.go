@@ -29,7 +29,10 @@ const (
 	Expiration = 900
 
 	// Time (milliseconds) to wait a web server response
-	WebWait = 125000
+	WebWait = 30000
+
+	// Minimum entries for a valid reading of historic quotes.
+	HistoricMinimumEntries = 4
 
 	// Server configuration stopped
 	ServerStopped = 0
@@ -104,7 +107,7 @@ const (
 	Cycles = 5
 
 	// Number of cycle to insert historic results
-	InsertionCycle = 10
+	InsertionCycle = 9
 
 	// Number of fleas per model
 	FleasPerModel = 2000

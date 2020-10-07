@@ -19,7 +19,7 @@ type T struct {
 
 // Auxiliar function
 func now() string {
-	return date.Now().Format("(%D/%M/%Y(%t)")
+	return date.Now().Format("%D/%M/%Y(%t)")
 }
 
 // Adds the stack trace to a message.
@@ -50,14 +50,14 @@ func Format(msg string) string {
 	return bf.String()
 }
 
-/// Creates an informative message.
-///   msg: Message to show.
+// Creates an informative message.
+//    msg: Message to show.
 func Info(msg string) *T {
 	return &T{false, now(), msg}
 }
 
-/// Creates an error message with stack trace.
-///   msg: Message to show.
+// Creates an error message with stack trace.
+//    msg: Message to show.
 func Error(msg string) *T {
 	return &T{true, now(), Format(msg)}
 }
@@ -68,4 +68,13 @@ func (r *T) ToJs() json.T {
 		json.Ws(r.time),
 		json.Ws(r.msg),
 	})
+}
+
+func FromJs(js json.T) *T {
+	a := js.Ra()
+	return &T{
+		a[0].Rb(),
+		a[1].Rs(),
+		a[2].Rs(),
+	}
 }

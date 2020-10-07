@@ -16,7 +16,7 @@ class LogRow {
   public var date(get, never): Date;
   function get_date() {
     final ix = time.indexOf("(");
-    return Opt.oget(Dt.fromIso(time.substring(0, ix).trim()), Date.now());
+    return Opt.eget(Dt.fromIso(time.substring(0, ix).trim()));
   }
   var time: String;
   var msg: String;

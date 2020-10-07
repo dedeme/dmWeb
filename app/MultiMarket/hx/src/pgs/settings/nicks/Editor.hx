@@ -3,17 +3,22 @@
 
 package pgs.settings.nicks;
 
+using StringTools;
 import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
 import dm.Js;
+import dm.It;
+import dm.Dec;
 import dm.Menu;
+import dm.ModalBox;
 import data.Nick;
 import data.Cts;
 import data.Quote;
 import wgs.Msg;
 import wgs.Wrule;
 import I18n._;
+import I18n._args;
 
 /// Nicks editor.
 class Editor {
@@ -65,8 +70,10 @@ class Editor {
     mquotes: Array<Quote>,
     sIdNameCodes: Array<ServerData>
   ) {
+    nicks.sort((e1, e2) -> e1.name > e2.name ? 1 : -1);
     this.inputDiv = inputDiv;
     this.menu2 = menu2;
+    this.bodyDiv = bodyDiv;
     this.nicks = nicks;
     this.nick = nick;
     this.nickModel = nickModel;
@@ -130,7 +137,10 @@ class Editor {
             .add(Q("button")
               .att("id", "inBt")
               .text(_("Modify"))
-              .on(CLICK, e -> modifyNick(nickIn.getValue().trim()))))))
+              .on(
+                CLICK,
+                e -> modifyNick(cast(nickIn.getValue(), String).trim())
+              )))))
     ;
 
     final lopts = [
@@ -195,7 +205,10 @@ class Editor {
         .att("type", "text")
         .style("width:125px")
         .value(inc.code);
-      field.on(CHANGE, e -> updateCode(inc.id, field.getValue().trim()));
+      field.on(
+        CHANGE,
+        e -> updateCode(inc.id, cast(field.getValue(), String).trim())
+      );
       return Q("td")
         .style("text-align:center")
         .add(Q("span")
@@ -273,45 +286,245 @@ class Editor {
     return new Menu(lopts, ropts, "");
   }
 
+  function setWait (nickName: String) {
+    msgWait.removeAll();
+
+    if (nickName != "") {
+      final box = new ModalBox(
+        Q("div")
+          .add(Q("div")
+            .style("text-align:center")
+            .add(Ui.img("wait2.gif").klass("frame")))
+          .add(Q("div").style("text-align:center").html(nickName)),
+        false
+      );
+      msgWait.add(box.wg);
+      box.show(true);
+    }
+  }
+
   // Control -------------------------------------------------------------------
 
   function modifyNick(nickName: String) {
-  }
-
-  function updateCode (serverId: Int, code: String) {
+    if (nickName == "") {
+      Msg.error(_("Nick name is missing"), () -> view());
+      return;
+    }
+    Cts.client.ssend([
+      "module" => Js.ws("settings"),
+      "source" => Js.ws("nicks/editor"),
+      "rq" => Js.ws("modifyNick"),
+      "nickId" => Js.wi(nick.id),
+      "name" => Js.ws(nickName)
+    ], rp -> {
+      if (!rp["ok"].rb()) {
+        Msg.error(
+          Cts.failMsg,
+          () -> Editor.mk(inputDiv, menu2, bodyDiv, nicks, nick, nickModel)
+        );
+      } else {
+        Msg.ok(
+          Cts.okMsg,
+          () -> js.Browser.location.assign("?settings&nicks")
+        );
+      }
+    });
   }
 
   function download () {
+    setWait(_("Downloading..."));
+    Cts.client.ssend([
+      "module" => Js.ws("settings"),
+      "source" => Js.ws("nicks/editor"),
+      "rq" => Js.ws("download"),
+      "nickId" => Js.wi(nick.id),
+    ], rp ->{
+      setWait("");
+
+      final result = rp["result"].rs();
+      if (result == "error") {
+        Msg.error(_("Some error was found.<br>See Log."));
+        return;
+      }
+      if (result == "warning") {
+        Msg.info(_("Some quote was modified.<br>See Log."));
+      } else {
+        Msg.ok(_("Download ok."));
+      }
+
+      Editor.mk(inputDiv, menu2, bodyDiv, nicks, nick, nickModel);
+    });
   }
 
   function test () {
+    Cts.client.ssend([
+      "module" => Js.ws("settings"),
+      "source" => Js.ws("nicks/editor"),
+      "rq" => Js.ws("test"),
+      "qs" => Js.ws(cast(leftArea.getValue(), String).trim())
+    ], rp ->{
+      final result = rp["result"].rs();
+      if (result == "error") {
+        Msg.error(_("Some error was found.<br>See Log."));
+        return;
+      }
+      if ( result == "warning") {
+        Msg.info(_("Some quote needs modification.<br>See Log."));
+      } else {
+        Msg.ok(_("Test ok."));
+      }
+    });
+  }
+
+  function updateCode (serverId: Int, code: String) {
+    if (code == "") {
+      Msg.error(_("Nick code is missing"), () -> this.view());
+      return;
+    }
+    Cts.client.ssend([
+      "module" => Js.ws("settings"),
+      "source" => Js.ws("nicks/editor"),
+      "rq" => Js.ws("updateCode"),
+      "serverId" => Js.wi(serverId),
+      "nickId" => Js.wi(nick.id),
+      "code" => Js.ws(code)
+    ], rp -> {
+    });
   }
 
   function serverTests () {
+    var ok = true;
+    It.from(sIdNameCodes).eachSync(
+      (e, fn) -> {
+        setWait(e.code);
+        Cts.client.ssend([
+          "module" => Js.ws("settings"),
+          "source" => Js.ws("nicks/editor"),
+          "rq" => Js.ws("serverTests"),
+          "serverId" => Js.wi(e.id),
+          "nickId" => Js.wi(nick.id)
+        ], rp -> {
+          fn(rp);
+        });
+      },
+      rp -> {
+        ok = ok && rp["ok"].rb();
+      },
+      () -> {
+        setWait("");
+        serverTestSpan.removeAll().add(Ui.img(ok ? "well" : "error"));
+      }
+    );
   }
 
   function qEdit () {
+    editBt.disabled(true);
+    cancelBt.disabled(false);
+    modifyBt.disabled(false);
+    leftArea.disabled(false);
+    splitBt.disabled(true);
   }
 
   function qCancel () {
-  }
+    editBt.disabled(false);
+    cancelBt.disabled(true);
+    modifyBt.disabled(true);
+    leftArea.disabled(true);
+    splitBt.disabled(false);
+    view();
+}
 
   function qModify () {
+    Cts.client.ssend([
+      "module" => Js.ws("settings"),
+      "source" => Js.ws("nicks/editor"),
+      "rq" => Js.ws("qModify"),
+      "nickId" => Js.wi(nick.id),
+      "qs" => Js.ws(cast(leftArea.getValue(), String).trim())
+    ], rp -> {
+      if (rp["result"].rs() == "error") {
+        Msg.error(_("No modification was performed.<br>See Log."));
+        return;
+      }
+      if (rp["result"].rs() == "warning") {
+        Msg.info(_("Quotes were modified with corrections.<br>See Log."));
+      } else {
+        Msg.ok(_("Quotes were successfully modified"));
+      }
+      Editor.mk(inputDiv, menu2, bodyDiv, nicks, nick, nickModel);
+    });
   }
 
   function setRightArea (nick: Nick) {
+    Cts.client.ssend([
+      "module" => Js.ws("settings"),
+      "source" => Js.ws("nicks/editor"),
+      "rq" => Js.ws("getQuotes"),
+      "nickName" => Js.ws(nick.name),
+    ], rp -> {
+      final qs = rp["quotes"].ra().map(e -> Quote.fromJs(e));
+      rightArea.text(qs.map(q -> q.toString()).join("\n"));
+    });
   }
 
   function splitMenu () {
+    final lopts = [
+      new MenuEntry(None, Q("span").text(_("Mult.") + ":")),
+      new MenuEntry(None, Q("span").html("&nbsp;")),
+      new MenuEntry(None, splitMul),
+      new MenuEntry(None, Q("span").html("&nbsp;")),
+      new MenuEntry(None, splitSeeWg)
+    ];
+    final ropts = [
+      new MenuEntry(None, splitCancelWg),
+      new MenuEntry(None, Q("span").html("&nbsp;")),
+      new MenuEntry(None, splitAcceptWg),
+    ];
+    final menu = new Menu(lopts, ropts, "");
+
+    splitDiv
+      .removeAll()
+      .add(menu.wg)
+    ;
+
+    editBt.disabled(true);
+    rightArea.text(leftArea.getText());
   }
 
   function splitSee () {
+    final mul = cast(splitMul.getValue(), String).trim();
+    var m = 0.0;
+    switch (Dec.from(mul)) {
+      case None:
+        Ui.alert(_args(_("'%0' is not a number"), [mul]));
+        return false;
+      case Some(v):
+        m = v;
+    }
+
+    final quotes = cast(leftArea.getValue(), String).trim().split("\n")
+      .map(s -> Quote.fromString(s))
+      .map(q -> new Quote(
+        q.date, q.open * m, q.close * m, q.max * m, q.min * m,
+        Math.round(q.vol / m), q.error
+      ).toString());
+
+    splitAcceptWg.disabled(true);
+    rightArea.value(quotes.join("\n"));
+    return true;
   }
 
   function splitCancel () {
+    Editor.mk(inputDiv, menu2, bodyDiv, nicks, nick, nickModel);
   }
 
   function splitAccept () {
+    if (Ui.confirm(_args(_("Modify quotes of '%0'?"), [nick.name]))) {
+      if (splitSee()) {
+        leftArea.value(cast(rightArea.getValue(), String).trim());
+        qModify();
+      }
+    }
   }
 
   // Static --------------------------------------------------------------------
@@ -338,15 +551,13 @@ class Editor {
   ///   nicks    : Nicks list.
   ///   nick     : Nick to edit.
   ///   nickModel: Nick model.
-  ///   fnFail   : Function to do if 'nick' can not be edited.
   public static function mk (
     inputDiv: Domo,
     menu2: Domo,
     bodyDiv: Domo,
     nicks: Array<Nick>,
     nick: Nick,
-    nickModel: Nick,
-    fnFail: () -> Void
+    nickModel: Nick
   ) {
     Cts.client.ssend([
       "module" => Js.ws("settings"),

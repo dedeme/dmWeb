@@ -4,8 +4,6 @@
 package pgs.home;
 
 import dm.Domo;
-import dm.Ui;
-import dm.Ui.Q;
 import dm.Js;
 import data.LogRow;
 import data.Cts;

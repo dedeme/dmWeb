@@ -267,8 +267,8 @@ profitsDb = load db.acc.profitsDb;
                       {portfolio} = acc.settlement anns;
                       { pf = portfolio, manager = managers[i] }
                       done [0..cts.managers - 1];
-                      entries :=
-                        mkDailyCharInit closes hour nkCl dqs pfMgs::entries
+                    entries :=
+                      mkDailyCharInit closes hour nkCl dqs pfMgs::entries
                   else
                     log.error lk "All the quotes of \(nk.name) are not valid"
                   fi;
