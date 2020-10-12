@@ -1,4 +1,4 @@
-module github.com/dedeme/MultiMarket
+module github.com/dedeme/MrBackup
 
 go 1.15
 

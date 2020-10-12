@@ -38,9 +38,11 @@ class Cts {
     ;
   });
   /// Ammount to make a buy.
-  public static final bet = 10000;
+  public static final bet = 10000.0;
   /// Investor initial capital.
-  public static final initialCapital = 100000;
+  public static final initialCapital = 100000.0;
+  /// Minimun cash to bet
+	public static final minToBet = 11000.0;
   /// Extern program name.
   public static final wget = "Wget";
   /// Extern program name.

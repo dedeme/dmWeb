@@ -5,10 +5,11 @@
 package fmodel
 
 import (
-	"github.com/dedeme/MultiMarket/data/broker"
+	broker "github.com/dedeme/MultiMarket/data/brokerF"
 	"github.com/dedeme/MultiMarket/data/cts"
 	"github.com/dedeme/MultiMarket/data/qtable"
 	"github.com/dedeme/golib/json"
+	"math"
 	"sort"
 )
 
@@ -328,7 +329,7 @@ func (md *T) Assets(opens, closes *qtable.T, params []float64) *AssetsRsT {
 	return NewAssetsRs(cash, buys, sells)
 }
 
-// Calculates profits ratio of one company.
+// Calculates profits ratio of one company (from -1 to ...).
 //    opens : (double[days][1]) Open quotes of a company
 //            (from before to after).
 //    closes: (double[days][1]) Close quotes of a company
@@ -336,7 +337,7 @@ func (md *T) Assets(opens, closes *qtable.T, params []float64) *AssetsRsT {
 //    params: Parameters to calculate.
 func (md *T) Profits(opens, closes [][]float64, params []float64) float64 {
 	stocks := 0
-	cash := float64(0)
+	cash := float64(cts.InitialCapital)
 	toSell := true
 	todo := false
 	ixOpens := 0
@@ -347,8 +348,10 @@ func (md *T) Profits(opens, closes [][]float64, params []float64) float64 {
 
 		if todo && oq > 0 {
 			if toSell { // there is a buy order set in the previous call to fn
-				stocks = int(float64(cts.Bet) / oq)
-				cash -= broker.Buy(stocks, oq)
+				if cash > cts.MinToBet {
+					stocks = int(cash / oq)
+					cash -= broker.Buy(stocks, oq)
+				}
 			} else if stocks > 0 {
 				cash += broker.Sell(stocks, oq)
 				stocks = 0
@@ -377,16 +380,17 @@ func (md *T) Profits(opens, closes [][]float64, params []float64) float64 {
 		cash += broker.Sell(stocks, qtable.LastRowOk(closes, 0))
 	}
 
-	return cash / float64(cts.Bet)
+	return (cash - float64(cts.InitialCapital)) / float64(cts.InitialCapital)
 }
 
-// Calculates profits average and variance of all the companies of an investor.
+// Calculates profits average (see Profits) and standard deviation of all
+// the companies of an investor.
 //    opens : Open quotes table.
 //    closes: Close quotes table.
 //    params: Parameters to calculate.
-func (md *T) ProfitsAvgVa(
+func (md *T) ProfitsAvgSd(
 	opens, closes *qtable.T, params []float64,
-) (avg float64, va float64) {
+) (avg float64, sd float64) {
 	ops := opens.Values()
 	cls := closes.Values()
 	nCos := len(ops[0])
@@ -397,11 +401,12 @@ func (md *T) ProfitsAvgVa(
 		avg += prf
 	}
 	avg /= float64(nCos)
+	va := 0.0
 	for _, e := range prfs {
 		df := e - avg
 		va += df * df
 	}
-	va /= float64(nCos)
+	sd = math.Sqrt(va / float64(nCos-1))
 	return
 }
 
@@ -481,7 +486,7 @@ func (md *T) HistoricAssets(
 				if cash > cts.MinToBet {
 					q := os[iCo]
 					if q >= 0 {
-						stocks := int(float64(cts.Bet) / q)
+						stocks := int(cash / q)
 						cash -= broker.Buy(stocks, q)
 						stockss[iCo] = stocks
 					} else {

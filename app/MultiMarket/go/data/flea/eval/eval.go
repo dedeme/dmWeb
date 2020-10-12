@@ -5,6 +5,7 @@
 package eval
 
 import (
+	"github.com/dedeme/MultiMarket/data/cts"
 	"github.com/dedeme/MultiMarket/data/flea"
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
 	"github.com/dedeme/MultiMarket/data/qtable"
@@ -18,7 +19,7 @@ type T struct {
 	sells      int
 	assets     float64
 	profitsAvg float64
-	profitsVa  float64
+	profitsSd  float64
 	// Point results of evaluation. If its value is less than 0, the flea has not
 	// been evaluated.
 	Eval float64
@@ -53,9 +54,9 @@ func (e *T) ProfitsAvg() float64 {
 	return e.profitsAvg
 }
 
-// Variance of profits distribution between companies.
-func (e *T) ProfitsVa() float64 {
-	return e.profitsVa
+// Standard deviation of profits distribution between companies.
+func (e *T) ProfitsSd() float64 {
+	return e.profitsSd
 }
 
 // Returns true if "es" contains "e". Compare only 'e.flea' with 'flea.Eq'.
@@ -74,13 +75,13 @@ func (e *T) IsIn(es []*T) bool {
 //    sells     : Sells number.
 //    assets    : Assets (money) earned.
 //    profitsAvg: Profits average (ratio) earned.
-//    profitsVa : Variance of profits distribution between companies.
-func (e *T) Update(buys, sells int, assets, profitsAvg, profitsVa float64) {
+//    profitsSd : Standard deviation of profits distribution between companies.
+func (e *T) Update(buys, sells int, assets, profitsAvg, profitsSd float64) {
 	e.buys = buys
 	e.sells = sells
 	e.assets = assets
 	e.profitsAvg = profitsAvg
-	e.profitsVa = profitsVa
+	e.profitsSd = profitsSd
 }
 
 func (e *T) ToJs() json.T {
@@ -90,7 +91,7 @@ func (e *T) ToJs() json.T {
 		json.Wi(e.sells),
 		json.Wd(e.assets),
 		json.Wd(e.profitsAvg),
-		json.Wd(e.profitsVa),
+		json.Wd(e.profitsSd),
 		json.Wd(e.Eval),
 	})
 }
@@ -114,54 +115,22 @@ func FromJs(js json.T) *T {
 //    closes: Close quotes table.
 //    es    : Evaluated fleas list.
 func Evaluate(md *fmodel.T, opens, closes *qtable.T, es []*T) {
-	minAssets := 2000000.0
-	maxAssets := -2000000.0
-	minProfitsAvg := 2000.0
-	maxProfitsAvg := -2000.0
-	minProfitsVa := 2000.0
-	maxProfitsVa := -2000.0
 	for _, e := range es {
 		rs := md.Assets(opens, closes, e.flea.Params())
 		e.buys = rs.Buys()
 		e.sells = rs.Sells()
 		e.assets = rs.Assets()
 
-		avg, va := md.ProfitsAvgVa(opens, closes, e.flea.Params())
+		avg, sd := md.ProfitsAvgSd(opens, closes, e.flea.Params())
 		e.profitsAvg = avg
-		e.profitsVa = va
-
-		assets := e.assets
-		profitsAvg := e.profitsAvg
-		profitsVa := e.profitsVa
-		if assets < minAssets {
-			minAssets = assets
-		}
-		if assets > maxAssets {
-			maxAssets = assets
-		}
-		if profitsAvg < minProfitsAvg {
-			minProfitsAvg = profitsAvg
-		}
-		if profitsAvg > maxProfitsAvg {
-			maxProfitsAvg = profitsAvg
-		}
-		if profitsVa < minProfitsVa {
-			minProfitsVa = profitsVa
-		}
-		if profitsVa > maxProfitsVa {
-			maxProfitsVa = profitsVa
-		}
+		e.profitsSd = sd
 	}
-
-	assetsDf := maxAssets - minAssets
-	profitsAvgDf := maxProfitsAvg - minProfitsAvg
-	profitsVaDf := maxProfitsVa - minProfitsVa
 
 	for _, e := range es {
 		e.Eval = e.flea.Evaluate(
-			(e.assets-minAssets)/assetsDf,
-			(e.profitsAvg-minProfitsAvg)/profitsAvgDf,
-			(e.profitsVa-minProfitsVa)/profitsVaDf,
+			e.assets/cts.InitialCapital,
+			e.profitsAvg+1,
+			e.profitsSd,
 		)
 	}
 }

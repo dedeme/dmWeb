@@ -29,26 +29,26 @@ import (
 func report(efleas []*eval.T, logId string, cycle int) {
 	sumAssets := 0.0
 	sumProfitsAvg := 0.0
-	sumProfitsVa := 0.0
+	sumProfitsSd := 0.0
 	sumEval := 0.0
 	first := efleas[0]
 	minAssets := first.Assets()
 	maxAssets := first.Assets()
 	minProfitsAvg := first.ProfitsAvg()
 	maxProfitsAvg := first.ProfitsAvg()
-	minProfitsVa := first.ProfitsVa()
-	maxProfitsVa := first.ProfitsVa()
+	minProfitsSd := first.ProfitsSd()
+	maxProfitsSd := first.ProfitsSd()
 	minEval := first.Eval
 	maxEval := first.Eval
 
 	for _, e := range efleas {
 		assets := e.Assets()
 		profitsAvg := e.ProfitsAvg()
-		profitsVa := e.ProfitsVa()
+		profitsSd := e.ProfitsSd()
 		eval := e.Eval
 		sumAssets += assets
 		sumProfitsAvg += profitsAvg
-		sumProfitsVa += profitsVa
+		sumProfitsSd += profitsSd
 		sumEval += eval
 		if assets < minAssets {
 			minAssets = assets
@@ -62,11 +62,11 @@ func report(efleas []*eval.T, logId string, cycle int) {
 		if profitsAvg > maxProfitsAvg {
 			maxProfitsAvg = profitsAvg
 		}
-		if profitsVa < minProfitsVa {
-			minProfitsVa = profitsVa
+		if profitsSd < minProfitsSd {
+			minProfitsSd = profitsSd
 		}
-		if profitsVa > maxProfitsVa {
-			maxProfitsVa = profitsVa
+		if profitsSd > maxProfitsSd {
+			maxProfitsSd = profitsSd
 		}
 		if eval < minEval {
 			minEval = eval
@@ -93,11 +93,11 @@ func report(efleas []*eval.T, logId string, cycle int) {
 			"Eval: %v. ",
 		cycle, n,
 		fn.Fix(maxAssets, 2), fn.Fix(maxProfitsAvg, 4),
-		fn.Fix(maxProfitsVa, 4), fn.Fix(maxEval*100, 2),
+		fn.Fix(maxProfitsSd, 4), fn.Fix(maxEval*100, 2),
 		fn.Fix(sumAssets/float64(n), 2), fn.Fix(sumProfitsAvg/float64(n), 4),
-		fn.Fix(sumProfitsVa/float64(n), 4), fn.Fix(sumEval/float64(n)*100, 2),
+		fn.Fix(sumProfitsSd/float64(n), 4), fn.Fix(sumEval/float64(n)*100, 2),
 		fn.Fix(minAssets, 2), fn.Fix(minProfitsAvg, 4),
-		fn.Fix(minProfitsVa, 4), fn.Fix(minEval*100, 2),
+		fn.Fix(minProfitsSd, 4), fn.Fix(minEval*100, 2),
 	))
 
 }
@@ -113,12 +113,6 @@ func runCycle(
 	var newEfleas []*eval.T
 	mnSells := float64(minSells)
 	mxSells := float64(maxSells)
-	minAssets := 2000000.0
-	maxAssets := -2000000.0
-	minProfitsAvg := 2000.0
-	maxProfitsAvg := -2000.0
-	minProfitsVa := 2000.0
-	maxProfitsVa := -2000.0
 
 	for {
 		for _, e := range efleas {
@@ -127,34 +121,13 @@ func runCycle(
 				rs := md.Assets(opens, closes, e.Flea().Params())
 				sells := rs.Sells()
 				if sells >= int(mnSells) && sells <= int(mxSells) {
-					avg, va := md.ProfitsAvgVa(opens, closes, e.Flea().Params())
+					avg, va := md.ProfitsAvgSd(opens, closes, e.Flea().Params())
 					e.Update(rs.Buys(), sells, rs.Assets(), avg, va)
 				} else {
 					addEval = false
 				}
 			}
 			if addEval {
-				assets := e.Assets()
-				profitsAvg := e.ProfitsAvg()
-				profitsVa := e.ProfitsVa()
-				if assets < minAssets {
-					minAssets = assets
-				}
-				if assets > maxAssets {
-					maxAssets = assets
-				}
-				if profitsAvg < minProfitsAvg {
-					minProfitsAvg = profitsAvg
-				}
-				if profitsAvg > maxProfitsAvg {
-					maxProfitsAvg = profitsAvg
-				}
-				if profitsVa < minProfitsVa {
-					minProfitsVa = profitsVa
-				}
-				if profitsVa > maxProfitsVa {
-					maxProfitsVa = profitsVa
-				}
 				newEfleas = append(newEfleas, e)
 			}
 		}
@@ -170,15 +143,12 @@ func runCycle(
 		})
 	}
 
-	assetsDf := maxAssets - minAssets
-	profitsAvgDf := maxProfitsAvg - minProfitsAvg
-	profitsVaDf := maxProfitsVa - minProfitsVa
 	sum := 0.0
 	for _, e := range newEfleas {
 		ev := e.Flea().Evaluate(
-			(e.Assets()-minAssets)/assetsDf,
-			(e.ProfitsAvg()-minProfitsAvg)/profitsAvgDf,
-			(e.ProfitsVa()-minProfitsVa)/profitsVaDf,
+			e.Assets()/cts.InitialCapital,
+			e.ProfitsAvg()+1,
+			e.ProfitsSd(),
 		)
 		e.Eval = ev
 		sum += ev
@@ -263,7 +233,7 @@ func Evolution() {
 			} else {
 				n := cts.RankingNumber - cts.RankingChanges
 				rank := make([]*eval.T, len(ranks[0].Ranking()))
-        copy(rank, ranks[0].Ranking())
+				copy(rank, ranks[0].Ranking())
 				if len(rank) > n {
 					rank = rank[:n]
 				}

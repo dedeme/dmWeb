@@ -80,20 +80,21 @@ func (f *T) Eq(f2 *T) (ok bool) {
 }
 
 // Evaluate a flea.
+// Ratios are 0 -> -100%, 1 -> 0%, 2 -> 100%, 3 -> 200%...
 //    f         : Flea
 //    assets    : Ratio of assets
 //    profitsAvg: Ratio of profits average.
-//    profitsVa : Ratio of profits variance.
-func (f *T) Evaluate(assets, profitsAvg, profitsVa float64) float64 {
-	age := float64(date.FromString(f.date).Df(date.Now()))
+//    profitsSd : Ratio of profits standard deviation.
+func (f *T) Evaluate(assets, profitsAvg, profitsSd float64) float64 {
+	age := float64(date.Now().Df(date.FromString(f.date)))
 	if age >= cts.HistoricQuotes {
 		age = float64(1)
 	} else {
 		age = age / float64(cts.HistoricQuotes)
 	}
-	return assets*float64(cts.AssetsRatio) +
-		profitsAvg*float64(cts.ProfitsAvgRatio) +
-		(float64(1)-profitsVa)*float64(cts.ProfitsVaRatio) +
+	sd := 1 - profitsSd
+	return assets*sd*float64(cts.AssetsRatio) +
+		profitsAvg*sd*float64(cts.ProfitsAvgRatio) +
 		age*float64(cts.AgeRatio)
 }
 

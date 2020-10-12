@@ -5,6 +5,7 @@
 package investor
 
 import (
+	"github.com/dedeme/MultiMarket/data/cts"
 	"github.com/dedeme/MultiMarket/data/flea/eval"
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
 	"github.com/dedeme/MultiMarket/data/flea/fmodels"
@@ -89,52 +90,20 @@ func FromJsList(jss []json.T) (invs []*T) {
 //    closes: Close quotes table.
 //    invs  : Investors list.
 func Evaluate(opens, closes *qtable.T, invs []*T) {
-	minAssets := 2000000.0
-	maxAssets := -2000000.0
-	minProfitsAvg := 2000.0
-	maxProfitsAvg := -2000.0
-	minProfitsVa := 2000.0
-	maxProfitsVa := -2000.0
 	for _, inv := range invs {
 		md := inv.model
 		e := inv.eflea
 		rs := md.Assets(opens, closes, e.Flea().Params())
-		avg, va := md.ProfitsAvgVa(opens, closes, e.Flea().Params())
-		e.Update(rs.Buys(), rs.Sells(), rs.Assets(), avg, va)
-
-		assets := rs.Assets()
-		profitsAvg := avg
-		profitsVa := va
-		if assets < minAssets {
-			minAssets = assets
-		}
-		if assets > maxAssets {
-			maxAssets = assets
-		}
-		if profitsAvg < minProfitsAvg {
-			minProfitsAvg = profitsAvg
-		}
-		if profitsAvg > maxProfitsAvg {
-			maxProfitsAvg = profitsAvg
-		}
-		if profitsVa < minProfitsVa {
-			minProfitsVa = profitsVa
-		}
-		if profitsVa > maxProfitsVa {
-			maxProfitsVa = profitsVa
-		}
+		avg, sd := md.ProfitsAvgSd(opens, closes, e.Flea().Params())
+		e.Update(rs.Buys(), rs.Sells(), rs.Assets(), avg, sd)
 	}
-
-	assetsDf := maxAssets - minAssets
-	profitsAvgDf := maxProfitsAvg - minProfitsAvg
-	profitsVaDf := maxProfitsVa - minProfitsVa
 
 	for _, inv := range invs {
 		e := inv.eflea
 		e.Eval = e.Flea().Evaluate(
-			(e.Assets()-minAssets)/assetsDf,
-			(e.ProfitsAvg()-minProfitsAvg)/profitsAvgDf,
-			(e.ProfitsVa()-minProfitsVa)/profitsVaDf,
+			e.Assets()/cts.InitialCapital,
+			e.ProfitsAvg()+1,
+			e.ProfitsSd(),
 		)
 	}
 }

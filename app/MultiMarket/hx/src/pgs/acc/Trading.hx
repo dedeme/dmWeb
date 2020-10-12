@@ -10,7 +10,7 @@ import dm.Js;
 import dm.Dec;
 import dm.Opt;
 import data.Cts;
-import data.Broker;
+import data.BrokerA;
 import I18n._;
 
 /// Accounting profits.
@@ -169,7 +169,7 @@ class Trading {
       return;
     }
     var rs = Std.int(b / p);
-    while (rs > 0 && Broker.buy(rs, p) > b) --rs;
+    while (rs > 0 && BrokerA.buy(rs, p) > b) --rs;
 
     result.text(Dec.toIso(rs, 0));
   }

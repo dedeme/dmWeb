@@ -83,7 +83,7 @@ func Regularize(lk sync.T, man int) {
 	mgs := Read(lk)
 	mg := mgs[man]
 	baseCf := mg.Base
-	nicks := nicksTb.SelectedNicks(lk)
+	nicks := nicksTb.Nicks(lk)
 	for _, nk := range nicks {
 		nkCf, ok := mg.Nicks()[nk.Name()]
 		if !ok {

@@ -174,12 +174,12 @@ func updateProfitsHistoric() {
 					me := m.GetModel(e.Nick())
 					cs, ok := closes.NickValuesAdd(e.Nick(), lastQ)
 					if ok {
-            refs := me.Model().Refs(cs, me.Params())
-            ref := refs[len(refs)-1]
-            if ref > lastQ { // Ref exceed
-              ref = lastQ
-            }
-            risk += float64(e.Stocks()) * ref
+						refs := me.Model().Refs(cs, me.Params())
+						ref := refs[len(refs)-1]
+						if ref > lastQ { // Ref exceed
+							ref = lastQ
+						}
+						risk += float64(e.Stocks()) * ref
 					} else {
 						risk += float64(e.Stocks()) * e.Price()
 					}

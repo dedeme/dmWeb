@@ -9,7 +9,7 @@ import dm.Ui.Q;
 import dm.Opt;
 import dm.Dec;
 import data.Cts;
-import data.Broker;
+import data.BrokerF;
 import I18n._;
 
 /// TextArea to show operations.
@@ -48,9 +48,10 @@ class Operations {
     final os = opens;
     final cs = closes;
     final rs = refs;
-    final bet: Float = Cts.bet;
+    //final bet: Float = Cts.bet;
+    final initialCapital = Cts.initialCapital;
     var stocks = 0;
-    var cash = bet;
+    var cash = Cts.initialCapital;
     var toSell = true;
     var toDo = false;
 
@@ -69,24 +70,26 @@ class Operations {
       final oq = os[i];
       if (toDo && oq > 0) {
         if (toSell) { // there is buy order.
-          stocks = Std.int(Cts.bet / oq);
-          cash -= Broker.buy(stocks, oq);
+          if (cash > Cts.minToBet) {
+            stocks = Std.int(cash / oq);
+            cash -= BrokerF.buy(stocks, oq);
 
-          final date = ds[i];
-          tx += row(
-            _("B(uy)"), date, stocks, oq,
-            None, None, None
-          );
+            final date = ds[i];
+            tx += row(
+              _("B(uy)"), date, stocks, oq,
+              None, None, None
+            );
+          }
         } else if (stocks > 0) {
-          cash += Broker.sell(stocks, oq);
+          cash += BrokerF.sell(stocks, oq);
 
           final date = ds[i];
-          final profits = cash - bet;
+          final profits = cash - initialCapital;
           tx += row(
             _("S(ell)"), date, stocks, oq,
             Some(cash),
             Some(profits),
-            Some(profits / bet)
+            Some(profits / initialCapital)
           );
 
           stocks = 0;
@@ -112,14 +115,14 @@ class Operations {
 
     if (stocks > 0) {
       final q = lastClose(cs);
-      cash += Broker.sell(stocks, q);
+      cash += BrokerF.sell(stocks, q);
       final date = ds[ds.length - 1];
-      final profits = cash - bet;
+      final profits = cash - initialCapital;
       tx += row(
         "V", date, stocks, q,
         Some(cash),
         Some(profits),
-        Some(profits / bet)
+        Some(profits / initialCapital)
       );
     }
 

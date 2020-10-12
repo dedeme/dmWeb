@@ -10,7 +10,7 @@ import dm.Dec;
 import dm.It;
 import data.flea.Forder;
 import data.Cts;
-import data.Broker;
+import data.BrokerF;
 import I18n._;
 
 /// Widgets to show market orders.
@@ -60,17 +60,17 @@ class OrdersWg {
       final price = o.price;
       final nickIx = nicks.indexOf(nick);
       if (o.isSell) {
-        cash += Broker.sell(stocks, price);
+        cash += BrokerF.sell(stocks, price);
         pf[nickIx] = 0;
       } else {
-        cash -= Broker.buy(stocks, price);
+        cash -= BrokerF.buy(stocks, price);
         pf[nickIx] = stocks;
       }
       tx += row(ix + 1, op, date, nick, stocks, price, cash);
     });
     It.from(pf).eachIx((e, i) -> {
       if (pf[i] > 0)
-        cash += Broker.sell(pf[i], lastRefs[i]);
+        cash += BrokerF.sell(pf[i], lastRefs[i]);
     });
     tx += "|" + ff(NUM) + ":" + ff(CV) + ":" + ff(DATE) + ":" +
       ff(NICK) + ":" + ff(STOCKS) + ":" + ff(PRICE) + ":" +

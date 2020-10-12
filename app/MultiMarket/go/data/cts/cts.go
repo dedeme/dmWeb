@@ -114,13 +114,10 @@ const (
 
 	// Fleas evaluation ----------------------------------------------------------
 	// Historic simulation ratio
-	AssetsRatio = 0.3
+	AssetsRatio = 0.4
 
 	// Average of profits ratio
-	ProfitsAvgRatio = 0.3
-
-	// Variance of profits ratio
-	ProfitsVaRatio = 0.1
+	ProfitsAvgRatio = 0.4
 
 	// Flea age ratio
 	AgeRatio = 0.2
