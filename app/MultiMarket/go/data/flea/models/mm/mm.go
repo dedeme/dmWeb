@@ -76,7 +76,7 @@ func Mk() *fmodel.T {
 	return fmodel.New(
 		"MM",
 		"MaxMin",
-		[]string{"Bandao C", "Paso C", "Banda V", "Paso V"},
+		[]string{"Banda C", "Paso C", "Banda V", "Paso V"},
 		[]float64{0.00, 0.001, 0.00, 0.001},
 		[]float64{0.3, 0.15, 0.3, 0.15},
 		[]int{6, 6, 6, 6},

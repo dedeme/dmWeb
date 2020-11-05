@@ -80,11 +80,13 @@ func (f *T) Eq(f2 *T) (ok bool) {
 }
 
 // Evaluate a flea.
-// Ratios are 0 -> -100%, 1 -> 0%, 2 -> 100%, 3 -> 200%...
+//
+// Ratios of assets and profitsAvg are 0 -> -100%, 1 -> 0%, 2 -> 100%,
+// 3 -> 200%...
 //    f         : Flea
 //    assets    : Ratio of assets
 //    profitsAvg: Ratio of profits average.
-//    profitsSd : Ratio of profits standard deviation.
+//    profitsSd : Ratio of profits standard deviation (between 0 and 1).
 func (f *T) Evaluate(assets, profitsAvg, profitsSd float64) float64 {
 	age := float64(date.Now().Df(date.FromString(f.date)))
 	if age >= cts.HistoricQuotes {
@@ -92,10 +94,20 @@ func (f *T) Evaluate(assets, profitsAvg, profitsSd float64) float64 {
 	} else {
 		age = age / float64(cts.HistoricQuotes)
 	}
-	sd := 1 - profitsSd
-	return assets*sd*float64(cts.AssetsRatio) +
-		profitsAvg*sd*float64(cts.ProfitsAvgRatio) +
-		age*float64(cts.AgeRatio)
+	pond := 1.0
+  if assets < 1.1 {
+    pond = 0.5
+  }
+  if profitsAvg < 1 {
+    pond = pond * 0.5
+  }
+  if profitsSd > 0.25 {
+    pond = pond * 0.5
+  }
+	return assets*pond*float64(cts.AssetsRatio) +
+		profitsAvg*pond*float64(cts.ProfitsAvgRatio) +
+    (1 - profitsSd)*pond*float64(cts.ProfitsSdRatio) +
+		age*pond*float64(cts.AgeRatio)
 }
 
 // Returns a new muted flea.
