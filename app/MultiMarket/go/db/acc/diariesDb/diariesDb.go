@@ -229,6 +229,27 @@ func CashAll(lk sync.T, year string) (r float64, serrors []string) {
 	return
 }
 
+// Returns the sum of cash of all the investors of last year until 'd'.
+//    lk: Synchronization lock.
+//    d : Final date inclusive.
+func CashAllUpTo(lk sync.T, d string) (r float64, serrors []string) {
+	for i := 0; i < cts.Managers; i++ {
+		data, ok := Read(lk, i, Years(lk)[0])
+    var anns []*acc.AnnotationT
+    for _, a := range data.annotations {
+      if a.Date() <= d {
+        anns = append(anns, a)
+      }
+    }
+		if ok {
+			ledger, _, serrs := acc.Settlement(anns)
+			r += ledger.Cash()
+			serrors = append(serrors, serrs...)
+		}
+	}
+	return
+}
+
 // Deletes one annotation.
 //    lk      : Synchronization lock.
 //    investor: Inversor number.

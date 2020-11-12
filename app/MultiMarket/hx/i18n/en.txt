@@ -6,26 +6,26 @@
 # src/pgs/settings/servers/Configuration.hx: 598
 %0 is missing = %0 is missing
 
-# src/pgs/settings/acc/Editor.hx: 517
+# src/pgs/settings/acc/Editor.hx: 518
 '%0' is empty = '%0' is empty
 
-# src/pgs/settings/acc/Editor.hx: 571
+# src/pgs/settings/acc/Editor.hx: 572
 '%0' is not a cero or positive number = '%0' is not a cero or positive number
 
 # src/pgs/settings/nicks/Editor.hx: 499
 '%0' is not a number = '%0' is not a number
 
-# src/pgs/settings/acc/Editor.hx: 526
+# src/pgs/settings/acc/Editor.hx: 527
 '%0' is not a positive integer = '%0' is not a positive integer
 
-# src/pgs/settings/acc/Editor.hx: 549
+# src/pgs/settings/acc/Editor.hx: 550
 '%0' is not a positive number = '%0' is not a positive number
 
 # src/wgs/Log.hx: 66
 2 Days = 2 Days
 
 # src/Authentication.hx: 79
-# src/pgs/settings/acc/Editor.hx: 93
+# src/pgs/settings/acc/Editor.hx: 94
 # src/pgs/settings/models/Models.hx: 112
 # src/pgs/settings/nicks/Editor.hx: 117
 # src/pgs/settings/settings/ChangePass.hx: 102
@@ -50,7 +50,7 @@ Active = Active
 
 # src/pgs/acc/Balance.hx: 435
 # src/pgs/acc/Profits.hx: 38
-# src/pgs/acc/wgs/ProfitsWg.hx: 202
+# src/pgs/acc/wgs/ProfitsWg.hx: 204
 # src/pgs/daily/Summary.hx: 45
 # src/pgs/settings/acc/Acc.hx: 44
 # src/wgs/Log.hx: 71
@@ -66,32 +66,32 @@ All Companies = All Companies
 # src/wgs/Log.hx: 145
 All log entries will be deleted.\nContinue? = All log entries will be deleted.\nContinue?
 
-# src/pgs/settings/acc/Editor.hx: 191
 # src/pgs/settings/acc/Editor.hx: 192
-# src/pgs/settings/acc/Editor.hx: 202
-# src/pgs/settings/acc/Editor.hx: 217
+# src/pgs/settings/acc/Editor.hx: 193
+# src/pgs/settings/acc/Editor.hx: 203
 # src/pgs/settings/acc/Editor.hx: 218
-# src/pgs/settings/acc/Editor.hx: 229
-# src/pgs/settings/acc/Editor.hx: 245
+# src/pgs/settings/acc/Editor.hx: 219
+# src/pgs/settings/acc/Editor.hx: 230
 # src/pgs/settings/acc/Editor.hx: 246
-# src/pgs/settings/acc/Editor.hx: 258
-# src/pgs/settings/acc/Editor.hx: 276
+# src/pgs/settings/acc/Editor.hx: 247
+# src/pgs/settings/acc/Editor.hx: 259
 # src/pgs/settings/acc/Editor.hx: 277
-# src/pgs/settings/acc/Editor.hx: 290
-# src/pgs/settings/acc/Editor.hx: 308
+# src/pgs/settings/acc/Editor.hx: 278
+# src/pgs/settings/acc/Editor.hx: 291
 # src/pgs/settings/acc/Editor.hx: 309
-# src/pgs/settings/acc/Editor.hx: 322
-# src/pgs/settings/acc/Editor.hx: 340
+# src/pgs/settings/acc/Editor.hx: 310
+# src/pgs/settings/acc/Editor.hx: 323
 # src/pgs/settings/acc/Editor.hx: 341
-# src/pgs/settings/acc/Editor.hx: 354
+# src/pgs/settings/acc/Editor.hx: 342
+# src/pgs/settings/acc/Editor.hx: 355
 Ammount = Ammount
 
-# src/pgs/settings/acc/Editor.hx: 448
+# src/pgs/settings/acc/Editor.hx: 449
 Annotation con id '%0' not found = Annotation con id '%0' not found
 
 # src/pgs/settings/Settings.hx: 49
-# src/pgs/settings/acc/All.hx: 66
-# src/pgs/settings/acc/Editor.hx: 414
+# src/pgs/settings/acc/All.hx: 78
+# src/pgs/settings/acc/Editor.hx: 415
 Annotations = Annotations
 
 # src/wgs/Dmenu.hx: 63
@@ -101,25 +101,25 @@ Annotations & Settings = Annotations & Settings
 Application exit? = Application exit?
 
 # src/pgs/acc/Balance.hx: 203
-# src/pgs/fleas/Fleas.hx: 316
+# src/pgs/fleas/Fleas.hx: 317
 # src/pgs/fleas/charts/Charts.hx: 57
 # src/pgs/fleas/charts/Charts.hx: 80
 # src/pgs/fleas/charts/Charts.hx: 170
 # src/pgs/ranking/Ranking.hx: 154
 Assets = Assets
 
-# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 55
-# src/pgs/fleas/wgs/Operations.hx: 76
+# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 56
+# src/pgs/fleas/wgs/Operations.hx: 79
 B(uy) = B
 
 # src/pgs/acc/Acc.hx: 46
 # src/pgs/acc/Balance.hx: 194
 Balance = Balance
 
-# src/pgs/fleas/wgs/Operations.hx: 63
+# src/pgs/fleas/wgs/Operations.hx: 65
 Balance(Operations) = Balance
 
-# src/pgs/fleas/Fleas.hx: 95
+# src/pgs/fleas/Fleas.hx: 96
 Bests = Bests
 
 # src/pgs/acc/Balance.hx: 339
@@ -127,13 +127,13 @@ Bet = Bet
 
 # src/pgs/acc/Balance.hx: 298
 # src/pgs/acc/Trading.hx: 89
-# src/pgs/settings/acc/Editor.hx: 171
-# src/pgs/settings/acc/Editor.hx: 390
-# src/pgs/settings/acc/wgs/Annotations.hx: 60
+# src/pgs/settings/acc/Editor.hx: 172
+# src/pgs/settings/acc/Editor.hx: 391
+# src/pgs/settings/acc/wgs/Annotations.hx: 61
 Buy = Buy
 
 # src/pgs/acc/Trading.hx: 130
-# src/pgs/fleas/Fleas.hx: 327
+# src/pgs/fleas/Fleas.hx: 328
 # src/pgs/fleas/charts/Charts.hx: 84
 # src/pgs/ranking/Ranking.hx: 165
 Buys = Buys
@@ -145,10 +145,10 @@ Calculate = Calculate
 Calculated by server:<br>Assets: %0. Buys: %1. Sells: %2 = Calculated by server:<br>Assets: %0. Buys: %1. Sells: %2
 
 # src/pgs/settings/Settings.hx: 55
-# src/pgs/settings/calendar/Calendar.hx: 238
+# src/pgs/settings/calendar/Calendar.hx: 239
 Calendar = Calendar
 
-# src/pgs/settings/acc/Editor.hx: 89
+# src/pgs/settings/acc/Editor.hx: 90
 # src/pgs/settings/models/Models.hx: 107
 # src/pgs/settings/nicks/Editor.hx: 89
 # src/pgs/settings/nicks/Editor.hx: 114
@@ -159,12 +159,15 @@ Cancel = Cancel
 Capital = Capital
 
 # src/pgs/acc/Balance.hx: 232
-# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 51
+# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 52
 Cash = Cash
 
-# src/pgs/settings/acc/All.hx: 77
-# src/pgs/settings/acc/Editor.hx: 431
+# src/pgs/settings/acc/All.hx: 90
+# src/pgs/settings/acc/Editor.hx: 432
 Cash: = Cash:
+
+# src/pgs/settings/acc/All.hx: 110
+Change = Change
 
 # src/SettingsPage.hx: 44
 # src/pgs/settings/settings/Settings.hx: 38
@@ -174,7 +177,7 @@ Change Language to %0 = Change Language to %0
 # src/pgs/settings/settings/Settings.hx: 46
 Change Password = Change Password
 
-# src/pgs/fleas/Fleas.hx: 99
+# src/pgs/fleas/Fleas.hx: 100
 Charts = Charts
 
 # src/Authentication.hx: 154
@@ -185,13 +188,13 @@ Check gray squares = Check gray squares
 Click %0 to continue. = Click %0 to continue.
 
 # src/pgs/fleas/charts/Companies.hx: 176
-# src/pgs/settings/acc/Editor.hx: 377
+# src/pgs/settings/acc/Editor.hx: 378
 # src/wgs/Msg.hx: 39
 # src/wgs/Msg.hx: 100
 Close = Close
 
-# src/pgs/settings/calendar/Calendar.hx: 73
-# src/pgs/settings/calendar/Calendar.hx: 219
+# src/pgs/settings/calendar/Calendar.hx: 74
+# src/pgs/settings/calendar/Calendar.hx: 220
 # src/pgs/settings/nicks/Editor.hx: 538
 # src/pgs/settings/servers/Configuration.hx: 584
 # src/pgs/settings/servers/Configuration.hx: 586
@@ -216,7 +219,7 @@ Companies = Companies
 # src/pgs/settings/settings/ChangePass.hx: 52
 Confirm password is missing = 'Confirm password' is missing
 
-# src/pgs/acc/wgs/ProfitsWg.hx: 198
+# src/pgs/acc/wgs/ProfitsWg.hx: 200
 Current Year = Current Year
 
 # src/pgs/settings/settings/ChangePass.hx: 109
@@ -246,30 +249,30 @@ Daily configuration selected = Daily configuration selected
 # src/pgs/settings/servers/wgs/Wserver.hx: 45
 Daily configuration stopped = Daily configuration stopped
 
-# src/pgs/fleas/Fleas.hx: 195
-# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 49
-# src/pgs/fleas/wgs/Operations.hx: 61
-# src/pgs/settings/acc/Editor.hx: 79
-# src/pgs/settings/acc/Editor.hx: 116
-# src/pgs/settings/acc/Editor.hx: 154
-# src/pgs/settings/acc/Editor.hx: 190
-# src/pgs/settings/acc/Editor.hx: 216
-# src/pgs/settings/acc/Editor.hx: 244
-# src/pgs/settings/acc/Editor.hx: 275
-# src/pgs/settings/acc/Editor.hx: 307
-# src/pgs/settings/acc/Editor.hx: 339
-# src/pgs/settings/acc/Editor.hx: 368
-# src/pgs/settings/calendar/Calendar.hx: 213
+# src/pgs/fleas/Fleas.hx: 196
+# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 50
+# src/pgs/fleas/wgs/Operations.hx: 63
+# src/pgs/settings/acc/Editor.hx: 80
+# src/pgs/settings/acc/Editor.hx: 117
+# src/pgs/settings/acc/Editor.hx: 155
+# src/pgs/settings/acc/Editor.hx: 191
+# src/pgs/settings/acc/Editor.hx: 217
+# src/pgs/settings/acc/Editor.hx: 245
+# src/pgs/settings/acc/Editor.hx: 276
+# src/pgs/settings/acc/Editor.hx: 308
+# src/pgs/settings/acc/Editor.hx: 340
+# src/pgs/settings/acc/Editor.hx: 369
+# src/pgs/settings/calendar/Calendar.hx: 214
 # src/pgs/settings/nicks/Editor.hx: 536
 # src/pgs/settings/servers/Configuration.hx: 587
 Date = Date
 
-# src/pgs/settings/calendar/Calendar.hx: 308
-# src/pgs/settings/calendar/Calendar.hx: 330
+# src/pgs/settings/calendar/Calendar.hx: 309
+# src/pgs/settings/calendar/Calendar.hx: 331
 Date '%0' is duplicated = Date '%0' is duplicated
 
-# src/pgs/settings/calendar/Calendar.hx: 304
-# src/pgs/settings/calendar/Calendar.hx: 326
+# src/pgs/settings/calendar/Calendar.hx: 305
+# src/pgs/settings/calendar/Calendar.hx: 327
 Date before today = Date before today
 
 # src/pgs/settings/servers/Configuration.hx: 227
@@ -291,33 +294,33 @@ Default Model = Default Model
 # src/wgs/Log.hx: 83
 Delete = Delete
 
-# src/pgs/settings/acc/Editor.hx: 456
+# src/pgs/settings/acc/Editor.hx: 457
 Delete %0? = Delete %0?
 
-# src/pgs/settings/calendar/Calendar.hx: 316
-# src/pgs/settings/calendar/Calendar.hx: 338
+# src/pgs/settings/calendar/Calendar.hx: 317
+# src/pgs/settings/calendar/Calendar.hx: 339
 # src/pgs/settings/nicks/Nicks.hx: 153
 # src/pgs/settings/servers/Servers.hx: 201
 Delete '%0'? = Delete '%0'?
 
-# src/pgs/settings/acc/Editor.hx: 247
-# src/pgs/settings/acc/Editor.hx: 259
-# src/pgs/settings/acc/Editor.hx: 278
-# src/pgs/settings/acc/Editor.hx: 291
-# src/pgs/settings/acc/Editor.hx: 310
-# src/pgs/settings/acc/Editor.hx: 323
-# src/pgs/settings/acc/Editor.hx: 342
-# src/pgs/settings/acc/Editor.hx: 355
+# src/pgs/settings/acc/Editor.hx: 248
+# src/pgs/settings/acc/Editor.hx: 260
+# src/pgs/settings/acc/Editor.hx: 279
+# src/pgs/settings/acc/Editor.hx: 292
+# src/pgs/settings/acc/Editor.hx: 311
+# src/pgs/settings/acc/Editor.hx: 324
+# src/pgs/settings/acc/Editor.hx: 343
+# src/pgs/settings/acc/Editor.hx: 356
 Description = Description
 
-# src/pgs/settings/acc/Editor.hx: 320
-# src/pgs/settings/acc/Editor.hx: 398
-# src/pgs/settings/acc/wgs/Annotations.hx: 84
+# src/pgs/settings/acc/Editor.hx: 321
+# src/pgs/settings/acc/Editor.hx: 399
+# src/pgs/settings/acc/wgs/Annotations.hx: 85
 Diff. + = Diff. +
 
-# src/pgs/settings/acc/Editor.hx: 352
-# src/pgs/settings/acc/Editor.hx: 399
-# src/pgs/settings/acc/wgs/Annotations.hx: 90
+# src/pgs/settings/acc/Editor.hx: 353
+# src/pgs/settings/acc/Editor.hx: 400
+# src/pgs/settings/acc/wgs/Annotations.hx: 91
 Diff. - = Diff. -
 
 # src/pgs/acc/Balance.hx: 277
@@ -351,15 +354,15 @@ Errors and warnings found. = Errors and warnings found.
 # src/pgs/settings/nicks/List.hx: 253
 Errors found. = Errors found.
 
-# src/pgs/fleas/Fleas.hx: 323
+# src/pgs/fleas/Fleas.hx: 324
 # src/pgs/fleas/charts/Charts.hx: 83
 # src/pgs/ranking/Ranking.hx: 161
 Eval. = Eval.
 
 # src/pgs/acc/Balance.hx: 253
-# src/pgs/settings/acc/Editor.hx: 288
-# src/pgs/settings/acc/Editor.hx: 396
-# src/pgs/settings/acc/wgs/Annotations.hx: 78
+# src/pgs/settings/acc/Editor.hx: 289
+# src/pgs/settings/acc/Editor.hx: 397
+# src/pgs/settings/acc/wgs/Annotations.hx: 79
 Fees = Fees
 
 # src/pgs/settings/servers/Configuration.hx: 244
@@ -368,7 +371,7 @@ Fields order = Fields order
 # src/wgs/Dmenu.hx: 53
 Fleas = Fleas
 
-# src/pgs/settings/calendar/Calendar.hx: 244
+# src/pgs/settings/calendar/Calendar.hx: 245
 General Time Table = General Time Table
 
 # src/Authentication.hx: 43
@@ -391,26 +394,26 @@ Historic configuration selected = Historic configuration selected
 # src/pgs/settings/servers/wgs/Wserver.hx: 55
 Historic configuration stopped = Historic configuration stopped
 
-# src/pgs/settings/calendar/Calendar.hx: 252
+# src/pgs/settings/calendar/Calendar.hx: 253
 Holidays = Holidays
 
 # src/wgs/Dmenu.hx: 51
 Home = Home
 
-# src/pgs/fleas/Fleas.hx: 315
+# src/pgs/fleas/Fleas.hx: 316
 # src/pgs/fleas/charts/Charts.hx: 66
 # src/pgs/ranking/Ranking.hx: 153
 Id = Id
 
-# src/pgs/settings/acc/wgs/Annotations.hx: 66
+# src/pgs/settings/acc/wgs/Annotations.hx: 67
 In Stock = In Stock
 
-# src/pgs/settings/acc/Editor.hx: 201
-# src/pgs/settings/acc/Editor.hx: 392
-# src/pgs/settings/acc/wgs/Annotations.hx: 96
+# src/pgs/settings/acc/Editor.hx: 202
+# src/pgs/settings/acc/Editor.hx: 393
+# src/pgs/settings/acc/wgs/Annotations.hx: 97
 Income = Income
 
-# src/pgs/settings/acc/Editor.hx: 453
+# src/pgs/settings/acc/Editor.hx: 454
 Intial stockage can not be deleted = Intial stockage can not be deleted
 
 # src/pgs/acc/Trading.hx: 135
@@ -437,10 +440,10 @@ Is ISO number? = Is ISO number?
 # src/Authentication.hx: 112
 Keep connected = Keep connected
 
-# src/pgs/acc/wgs/ProfitsWg.hx: 196
+# src/pgs/acc/wgs/ProfitsWg.hx: 198
 Last Month = Last Month
 
-# src/pgs/acc/wgs/ProfitsWg.hx: 200
+# src/pgs/acc/wgs/ProfitsWg.hx: 202
 Last Year = Last Year
 
 # src/pgs/settings/nicks/Nicks.hx: 50
@@ -471,7 +474,7 @@ Min = Min
 # src/pgs/settings/nicks/wgs/Wnick.hx: 41
 Model = Model
 
-# src/pgs/fleas/Fleas.hx: 84
+# src/pgs/fleas/Fleas.hx: 85
 # src/pgs/settings/Settings.hx: 51
 Models = Models
 
@@ -479,7 +482,7 @@ Models = Models
 # src/pgs/settings/nicks/Editor.hx: 139
 # src/pgs/settings/servers/Codes.hx: 145
 # src/pgs/settings/servers/Configuration.hx: 32
-# src/pgs/settings/servers/Names.hx: 79
+# src/pgs/settings/servers/Names.hx: 80
 Modify = Modify
 
 # src/pgs/settings/nicks/Editor.hx: 522
@@ -488,10 +491,10 @@ Modify quotes of '%0'? = Modify quotes of '%0'?
 # src/pgs/settings/nicks/Editor.hx: 472
 Mult. = Mult.
 
-# src/pgs/settings/servers/Names.hx: 67
+# src/pgs/settings/servers/Names.hx: 68
 Name = Name
 
-# src/pgs/settings/servers/Names.hx: 100
+# src/pgs/settings/servers/Names.hx: 101
 Name is missing = Name is missing
 
 # src/pgs/settings/servers/Servers.hx: 104
@@ -512,9 +515,9 @@ New password and confirm password do not match = New password and confirm passwo
 New password is missing = 'New password' is missing
 
 # src/pgs/daily/Cos.hx: 68
-# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 49
-# src/pgs/settings/acc/Editor.hx: 135
-# src/pgs/settings/acc/Editor.hx: 173
+# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 50
+# src/pgs/settings/acc/Editor.hx: 136
+# src/pgs/settings/acc/Editor.hx: 174
 # src/pgs/settings/models/Models.hx: 193
 Nick = Nick
 
@@ -532,8 +535,8 @@ Nick models = Nick models
 Nick name is missing = Nick name is missing
 
 # src/pgs/settings/Settings.hx: 45
-# src/pgs/settings/acc/Editor.hx: 117
-# src/pgs/settings/acc/Editor.hx: 155
+# src/pgs/settings/acc/Editor.hx: 118
+# src/pgs/settings/acc/Editor.hx: 156
 Nicks = Nicks
 
 # src/pgs/settings/nicks/Editor.hx: 446
@@ -545,30 +548,30 @@ No selected company = No selected company
 # src/pgs/settings/servers/Servers.hx: 97
 No server selected = No server selected
 
-# src/pgs/fleas/Fleas.hx: 314
-# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 48
+# src/pgs/fleas/Fleas.hx: 315
+# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 49
 # src/pgs/ranking/Ranking.hx: 151
 Nº = Nº
 
-# src/pgs/settings/calendar/Calendar.hx: 70
-# src/pgs/settings/calendar/Calendar.hx: 216
+# src/pgs/settings/calendar/Calendar.hx: 71
+# src/pgs/settings/calendar/Calendar.hx: 217
 # src/pgs/settings/nicks/Editor.hx: 537
 # src/pgs/settings/servers/Configuration.hx: 588
 Open = Open
 
-# src/data/Cts.hx: 57
+# src/data/Cts.hx: 59
 Operation failed.\nSee log. = Operation failed.\nSee log.
 
-# src/data/Cts.hx: 55
+# src/data/Cts.hx: 57
 Operation successfully done. = Operation successfully done.
 
 # src/pgs/daily/Cos.hx: 65
 Order by = Order by
 
-# src/pgs/fleas/ftests/Ftests.hx: 33
+# src/pgs/fleas/ftests/Ftests.hx: 34
 Orders = Orders
 
-# src/pgs/fleas/Fleas.hx: 91
+# src/pgs/fleas/Fleas.hx: 92
 Overview = Overview
 
 # src/pgs/fleas/ftests/Orders.hx: 55
@@ -584,20 +587,20 @@ Password is missing = Password is missing
 # src/pgs/settings/settings/ChangePass.hx: 77
 Password successfully changed = Password successfully changed
 
-# src/pgs/fleas/Fleas.hx: 317
+# src/pgs/fleas/Fleas.hx: 318
 # src/pgs/fleas/charts/Charts.hx: 81
 # src/pgs/ranking/Ranking.hx: 155
 Pf. Avg = Pf. Avg
 
-# src/pgs/fleas/Fleas.hx: 319
+# src/pgs/fleas/Fleas.hx: 320
 # src/pgs/fleas/charts/Charts.hx: 82
 # src/pgs/ranking/Ranking.hx: 157
 Pf. Var = Pf. Var
 
-# src/pgs/fleas/ftests/Selection.hx: 98
+# src/pgs/fleas/ftests/Selection.hx: 99
 Play ground stoped.\nRestart doing click in 'Selection'. = Play ground stoped.\nRestart doing click in 'Selection'.
 
-# src/pgs/fleas/Fleas.hx: 97
+# src/pgs/fleas/Fleas.hx: 98
 Pool = Pool
 
 # src/pgs/acc/Companies.hx: 84
@@ -605,14 +608,14 @@ Pool = Pool
 Portfolio = Portfolio
 
 # src/pgs/acc/Trading.hx: 105
-# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 50
-# src/pgs/fleas/wgs/Operations.hx: 62
-# src/pgs/settings/acc/Editor.hx: 120
+# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 51
+# src/pgs/fleas/wgs/Operations.hx: 64
 # src/pgs/settings/acc/Editor.hx: 121
-# src/pgs/settings/acc/Editor.hx: 137
-# src/pgs/settings/acc/Editor.hx: 158
+# src/pgs/settings/acc/Editor.hx: 122
+# src/pgs/settings/acc/Editor.hx: 138
 # src/pgs/settings/acc/Editor.hx: 159
-# src/pgs/settings/acc/Editor.hx: 175
+# src/pgs/settings/acc/Editor.hx: 160
+# src/pgs/settings/acc/Editor.hx: 176
 Price = Price
 
 # src/pgs/acc/Acc.hx: 50
@@ -620,10 +623,10 @@ Price = Price
 # src/pgs/acc/Balance.hx: 265
 # src/pgs/acc/Balance.hx: 319
 # src/pgs/fleas/charts/Companies.hx: 45
-# src/pgs/fleas/wgs/Operations.hx: 63
-# src/pgs/settings/acc/Editor.hx: 256
-# src/pgs/settings/acc/Editor.hx: 395
-# src/pgs/settings/acc/wgs/Annotations.hx: 72
+# src/pgs/fleas/wgs/Operations.hx: 65
+# src/pgs/settings/acc/Editor.hx: 257
+# src/pgs/settings/acc/Editor.hx: 396
+# src/pgs/settings/acc/wgs/Annotations.hx: 73
 Profits = Profits
 
 # src/pgs/fleas/ftests/References.hx: 157
@@ -638,17 +641,17 @@ Quotes were modified with corrections.<br>See Log. = Quotes were modified with c
 # src/pgs/settings/nicks/Editor.hx: 452
 Quotes were successfully modified = Quotes were successfully modified
 
-# src/pgs/fleas/Fleas.hx: 93
+# src/pgs/fleas/Fleas.hx: 94
 # src/wgs/Dmenu.hx: 55
 Ranking = Ranking
 
-# src/pgs/fleas/wgs/Operations.hx: 64
+# src/pgs/fleas/wgs/Operations.hx: 66
 Ratio = Ratio
 
 # src/pgs/acc/Balance.hx: 181
 Reference (‰) = Reference (‰)
 
-# src/pgs/fleas/ftests/Ftests.hx: 29
+# src/pgs/fleas/ftests/Ftests.hx: 30
 References = References
 
 # src/pgs/settings/servers/Configuration.hx: 207
@@ -665,7 +668,7 @@ Remove %0 configuration? = Remove %0 configuration?
 
 # src/pgs/settings/servers/Codes.hx: 140
 # src/pgs/settings/servers/Configuration.hx: 29
-# src/pgs/settings/servers/Names.hx: 74
+# src/pgs/settings/servers/Names.hx: 75
 Reset = Reset
 
 # src/pgs/daily/Cos.hx: 78
@@ -686,8 +689,8 @@ Row end = Row end
 # src/pgs/settings/servers/Configuration.hx: 266
 Row start = Row start
 
-# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 55
-# src/pgs/fleas/wgs/Operations.hx: 85
+# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 56
+# src/pgs/fleas/wgs/Operations.hx: 89
 S(ell) = S
 
 # src/pgs/settings/nicks/Editor.hx: 111
@@ -697,21 +700,21 @@ See = See
 Selected = Selected
 
 # src/pgs/daily/Daily.hx: 87
-# src/pgs/fleas/ftests/Ftests.hx: 35
+# src/pgs/fleas/ftests/Ftests.hx: 36
 # src/pgs/settings/nicks/wgs/Wnick.hx: 52
 # src/pgs/settings/nicks/wgs/Wnick.hx: 59
 # src/pgs/settings/nicks/wgs/Wnick.hx: 62
 Selection = Selection
 
 # src/pgs/acc/Balance.hx: 300
-# src/pgs/settings/acc/Editor.hx: 133
-# src/pgs/settings/acc/Editor.hx: 389
-# src/pgs/settings/acc/wgs/Annotations.hx: 54
+# src/pgs/settings/acc/Editor.hx: 134
+# src/pgs/settings/acc/Editor.hx: 390
+# src/pgs/settings/acc/wgs/Annotations.hx: 55
 Sell = Sell
 
 # src/pgs/acc/Balance.hx: 241
 # src/pgs/acc/Trading.hx: 140
-# src/pgs/fleas/Fleas.hx: 331
+# src/pgs/fleas/Fleas.hx: 332
 # src/pgs/fleas/charts/Charts.hx: 85
 # src/pgs/ranking/Ranking.hx: 169
 Sells = Sells
@@ -734,10 +737,10 @@ Session is expired. = Session is expired.
 # src/pgs/settings/settings/Settings.hx: 28
 Settings = Settings
 
-# src/pgs/settings/servers/Names.hx: 61
+# src/pgs/settings/servers/Names.hx: 62
 Short Name = Short Name
 
-# src/pgs/settings/servers/Names.hx: 95
+# src/pgs/settings/servers/Names.hx: 96
 Short Name is missing = Short Name is missing
 
 # src/pgs/fleas/ftests/Orders.hx: 67
@@ -763,13 +766,13 @@ Some quote needs modification.<br>See Log. = Some quote needs modification.<br>S
 # src/pgs/settings/nicks/Editor.hx: 350
 Some quote was modified.<br>See Log. = Some quote was modified.<br>See Log.
 
-# src/pgs/settings/calendar/Calendar.hx: 256
+# src/pgs/settings/calendar/Calendar.hx: 257
 Special days = Special days
 
 # src/pgs/settings/nicks/Editor.hx: 103
 Split = Split
 
-# src/pgs/fleas/ftests/Selection.hx: 51
+# src/pgs/fleas/ftests/Selection.hx: 52
 Start = Start
 
 # src/pgs/settings/nicks/Editor.hx: 542
@@ -779,22 +782,22 @@ State = State
 # src/pgs/acc/Balance.hx: 284
 # src/pgs/acc/Trading.hx: 122
 # src/pgs/acc/Trading.hx: 147
-# src/pgs/settings/acc/Editor.hx: 118
 # src/pgs/settings/acc/Editor.hx: 119
-# src/pgs/settings/acc/Editor.hx: 136
-# src/pgs/settings/acc/Editor.hx: 156
+# src/pgs/settings/acc/Editor.hx: 120
+# src/pgs/settings/acc/Editor.hx: 137
 # src/pgs/settings/acc/Editor.hx: 157
-# src/pgs/settings/acc/Editor.hx: 174
+# src/pgs/settings/acc/Editor.hx: 158
+# src/pgs/settings/acc/Editor.hx: 175
 Stocks = Stocks
 
-# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 50
-# src/pgs/fleas/wgs/Operations.hx: 62
+# src/pgs/fleas/ftests/wgs/OrdersWg.hx: 51
+# src/pgs/fleas/wgs/Operations.hx: 64
 Stocks(Operations) = Stocks
 
-# src/pgs/fleas/ftests/Selection.hx: 56
+# src/pgs/fleas/ftests/Selection.hx: 57
 Stop = Stop
 
-# src/pgs/fleas/ftests/Selection.hx: 123
+# src/pgs/fleas/ftests/Selection.hx: 124
 Stop process? = Stop process?
 
 # src/pgs/settings/servers/Configuration.hx: 157
@@ -820,7 +823,7 @@ Test = Test
 # src/pgs/settings/nicks/List.hx: 258
 Test ok. = Test ok.
 
-# src/pgs/fleas/Fleas.hx: 101
+# src/pgs/fleas/Fleas.hx: 102
 Tests = Tests
 
 # src/pgs/acc/Balance.hx: 169
@@ -837,6 +840,9 @@ URL = URL
 
 # src/pgs/settings/servers/Configuration.hx: 457
 URL is missing = URL is missing
+
+# src/pgs/settings/acc/All.hx: 120
+Up to = Up to
 
 # src/Authentication.hx: 85
 User = User
@@ -861,9 +867,9 @@ Volume = Volume
 # src/pgs/settings/nicks/List.hx: 256
 Warning found. = Warning found.
 
-# src/pgs/settings/acc/Editor.hx: 228
-# src/pgs/settings/acc/Editor.hx: 393
-# src/pgs/settings/acc/wgs/Annotations.hx: 102
+# src/pgs/settings/acc/Editor.hx: 229
+# src/pgs/settings/acc/Editor.hx: 394
+# src/pgs/settings/acc/wgs/Annotations.hx: 103
 Withdrawal = Withdrawal
 
 # src/pgs/settings/servers/Servers.hx: 68
@@ -875,17 +881,17 @@ Without Nicks = Without Nicks
 
 # src/pgs/acc/wgs/Chart.hx: 118
 # src/pgs/acc/wgs/Chart.hx: 223
-# src/pgs/acc/wgs/ProfitsWg.hx: 28
-# src/pgs/acc/wgs/ProfitsWg.hx: 169
-# src/pgs/fleas/Fleas.hx: 270
+# src/pgs/acc/wgs/ProfitsWg.hx: 30
+# src/pgs/acc/wgs/ProfitsWg.hx: 171
+# src/pgs/fleas/Fleas.hx: 271
 # src/pgs/fleas/ranking/Ranking.hx: 57
-# src/pgs/fleas/wgs/HistoricChart.hx: 53
+# src/pgs/fleas/wgs/HistoricChart.hx: 54
 # src/pgs/ranking/Ranking.hx: 51
 # src/wgs/Table.hx: 60
 Without data = Without data
 
-# src/pgs/settings/calendar/Calendar.hx: 102
-# src/pgs/settings/calendar/Calendar.hx: 157
+# src/pgs/settings/calendar/Calendar.hx: 103
+# src/pgs/settings/calendar/Calendar.hx: 158
 Without dates = Without dates
 
 # src/pgs/acc/Trading.hx: 51
