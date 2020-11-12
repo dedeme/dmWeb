@@ -281,6 +281,9 @@ Date separator = Date separator
 # src/pgs/settings/servers/Configuration.hx: 468
 Date separator is missing = Date separator is missing
 
+# src/pgs/daily/Cos.hx: 82
+Day = Day
+
 # src/pgs/daily/Daily.hx: 214
 Deactivating = Deactivating
 
@@ -514,7 +517,7 @@ New password and confirm password do not match = New password and confirm passwo
 # src/pgs/settings/settings/ChangePass.hx: 48
 New password is missing = 'New password' is missing
 
-# src/pgs/daily/Cos.hx: 68
+# src/pgs/daily/Cos.hx: 77
 # src/pgs/fleas/ftests/wgs/OrdersWg.hx: 50
 # src/pgs/settings/acc/Editor.hx: 136
 # src/pgs/settings/acc/Editor.hx: 174
@@ -542,7 +545,7 @@ Nicks = Nicks
 # src/pgs/settings/nicks/Editor.hx: 446
 No modification was performed.<br>See Log. = No modification was performed.<br>See Log.
 
-# src/pgs/daily/Cos.hx: 88
+# src/pgs/daily/Cos.hx: 102
 No selected company = No selected company
 
 # src/pgs/settings/servers/Servers.hx: 97
@@ -565,7 +568,7 @@ Operation failed.\nSee log. = Operation failed.\nSee log.
 # src/data/Cts.hx: 57
 Operation successfully done. = Operation successfully done.
 
-# src/pgs/daily/Cos.hx: 65
+# src/pgs/daily/Cos.hx: 74
 Order by = Order by
 
 # src/pgs/fleas/ftests/Ftests.hx: 34
@@ -671,7 +674,7 @@ Remove %0 configuration? = Remove %0 configuration?
 # src/pgs/settings/servers/Names.hx: 75
 Reset = Reset
 
-# src/pgs/daily/Cos.hx: 78
+# src/pgs/daily/Cos.hx: 92
 Reverse = Reverse
 
 # src/pgs/acc/Balance.hx: 349
@@ -747,7 +750,7 @@ Short Name is missing = Short Name is missing
 # src/pgs/fleas/ftests/References.hx: 109
 Show = Show
 
-# src/pgs/daily/Cos.hx: 73
+# src/pgs/daily/Cos.hx: 87
 Signal = Signal
 
 # src/pgs/daily/Daily.hx: 209

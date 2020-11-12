@@ -9,6 +9,7 @@ bin
 
 #js
 **/www/index.js
+**/www/index.js.map
 **/www/js
 
 #haskell

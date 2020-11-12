@@ -281,6 +281,9 @@ Date separator = Separador de fechas
 # src/pgs/settings/servers/Configuration.hx: 468
 Date separator is missing = Falta el separador de fechas
 
+# src/pgs/daily/Cos.hx: 82
+Day = Día
+
 # src/pgs/daily/Daily.hx: 214
 Deactivating = Desactivando
 
@@ -514,7 +517,7 @@ New password and confirm password do not match = La nueva contraseña y su confi
 # src/pgs/settings/settings/ChangePass.hx: 48
 New password is missing = Falta indicar la nueva contraseña
 
-# src/pgs/daily/Cos.hx: 68
+# src/pgs/daily/Cos.hx: 77
 # src/pgs/fleas/ftests/wgs/OrdersWg.hx: 50
 # src/pgs/settings/acc/Editor.hx: 136
 # src/pgs/settings/acc/Editor.hx: 174
@@ -542,7 +545,7 @@ Nicks = Nicks
 # src/pgs/settings/nicks/Editor.hx: 446
 No modification was performed.<br>See Log. = No se realizó ninguna modificación.<br>Ver el registro.
 
-# src/pgs/daily/Cos.hx: 88
+# src/pgs/daily/Cos.hx: 102
 No selected company = No se ha seleccionado ninguna compañía
 
 # src/pgs/settings/servers/Servers.hx: 97
@@ -565,7 +568,7 @@ Operation failed.\nSee log. = La operación ha fallado.\nVer el registro.
 # src/data/Cts.hx: 57
 Operation successfully done. = Operatión terminada correctamente.
 
-# src/pgs/daily/Cos.hx: 65
+# src/pgs/daily/Cos.hx: 74
 Order by = Ordenado por
 
 # src/pgs/fleas/ftests/Ftests.hx: 34
@@ -671,7 +674,7 @@ Remove %0 configuration? = ¿Eliminar la configuración de %0?
 # src/pgs/settings/servers/Names.hx: 75
 Reset = Reiniciar
 
-# src/pgs/daily/Cos.hx: 78
+# src/pgs/daily/Cos.hx: 92
 Reverse = Reverso
 
 # src/pgs/acc/Balance.hx: 349
@@ -747,7 +750,7 @@ Short Name is missing = Falta el nombre corto
 # src/pgs/fleas/ftests/References.hx: 109
 Show = Mostrar
 
-# src/pgs/daily/Cos.hx: 73
+# src/pgs/daily/Cos.hx: 87
 Signal = Señal
 
 # src/pgs/daily/Daily.hx: 209

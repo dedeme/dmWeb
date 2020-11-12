@@ -16,6 +16,7 @@ class Cos {
   var type: String;
   var data: Array<DailyChart>;
   var orderByNick: Bool;
+  var orderByDay: Bool;
   var reverse: Bool;
 
   // type can be "all", "sel" or "portfolio"
@@ -24,6 +25,7 @@ class Cos {
     this.type = type;
     this.data = data;
     orderByNick = false;
+    orderByDay = false;
     reverse = false;
 
     view();
@@ -35,20 +37,27 @@ class Cos {
     if (orderByNick) {
       data.sort((e1, e2) -> e1.nick > e2.nick ? 1 : -1);
     } else {
-      final dataPond = data.map(d -> {
-        final quote = d.quotes[d.quotes.length - 1];
-        var max = -1.0;
-        for (e in d.managersData) {
-          final isSell = e.ref < d.close;
-          final dif = isSell
-            ? 1 - (quote - e.ref) / quote
-            : 1 - (e.ref - quote) / e.ref
-          ;
-          final p = 100 * dif;
-          if (p > max) max = p;
-        };
-        return {data: d, pond: max}
-      });
+      final dataPond = orderByDay
+        ? data.map(d -> {
+            final quote = d.quotes[d.quotes.length - 1];
+            final close = d.close;
+            return {data: d, pond: (quote - close) / close}
+          })
+        : data.map(d -> {
+            final quote = d.quotes[d.quotes.length - 1];
+            var max = -1.0;
+            for (e in d.managersData) {
+              final isSell = e.ref < d.close;
+              final dif = isSell
+                ? 1 - (quote - e.ref) / quote
+                : 1 - (e.ref - quote) / e.ref
+              ;
+              final p = 100 * dif;
+              if (p > max) max = p;
+            };
+            return {data: d, pond: max}
+          })
+      ;
       dataPond.sort((e1, e2) -> e2.pond > e1.pond ? 1 : -1);
       data = dataPond.map(e -> e.data);
     }
@@ -63,13 +72,18 @@ class Cos {
         .add(Q("td")
           .add(Q("span")
             .html(_("Order by") + ":&nbsp;&nbsp;&nbsp;"))
-          .add(Ui.link(e -> changeOrder(true))
+          .add(Ui.link(e -> changeOrder(true, false))
             .klass(orderByNick ? "link frame" : "link")
             .text(_("Nick")))
           .add(Q("span")
             .html("&nbsp;&nbsp;&nbsp;"))
-          .add(Ui.link(e -> changeOrder(false))
-            .klass(!orderByNick ? "link frame" : "link")
+          .add(Ui.link(e -> changeOrder(false, true))
+            .klass(orderByDay ? "link frame" : "link")
+            .text(_("Day")))
+          .add(Q("span")
+            .html("&nbsp;&nbsp;&nbsp;"))
+          .add(Ui.link(e -> changeOrder(false, false))
+            .klass(!orderByNick && !orderByDay ? "link frame" : "link")
             .text(_("Signal")))
           .add(Q("span")
             .html("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"))
@@ -123,8 +137,9 @@ class Cos {
     Cos.mk(wg, type, data);
   }
 
-  function changeOrder (byNick: Bool): Void {
+  function changeOrder (byNick: Bool, byDay: Bool): Void {
     orderByNick = byNick;
+    orderByDay = byDay;
     view();
   }
 
