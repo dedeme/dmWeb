@@ -95,13 +95,13 @@ func (f *T) Evaluate(assets, profitsAvg, profitsSd float64) float64 {
 		age = age / float64(cts.HistoricQuotes)
 	}
 	pond := 1.0
-  if assets < 1.1 {
+  if assets < cts.AssetPenalize {
     pond = 0.5
   }
-  if profitsAvg < 1 {
+  if profitsAvg < cts.AvgPenalize {
     pond = pond * 0.5
   }
-  if profitsSd > 0.25 {
+  if profitsSd > cts.StdPenalize {
     pond = pond * 0.5
   }
 	return assets*pond*float64(cts.AssetsRatio) +

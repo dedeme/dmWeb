@@ -119,11 +119,20 @@ const (
 	// Average of profits ratio
 	ProfitsAvgRatio = 0.3
 
-	// Average of profits ratio
+	// Standard deviation of profits ratio
 	ProfitsSdRatio = 0.2
 
 	// Flea age ratio
 	AgeRatio = 0.2
+
+  // Assets limit to penalize (ratio)
+  AssetPenalize = 1.1
+
+  // Avg profits limit to penalize (ratio)
+  AvgPenalize = 1
+
+  // Std profits limit to penlize (ratio)
+  StdPenalize = 0.4
 
 	// Number of fleas in pool
 	PoolNumber = 1000
