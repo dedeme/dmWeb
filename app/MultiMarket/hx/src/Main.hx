@@ -63,7 +63,7 @@ class Main {
             case "acc":
               new Acc(bodyDiv, menu, lcPath);
             case "daily":
-              Daily.mk(bodyDiv, menu, lcPath);
+              Daily.mk(bodyDiv, menu, lcPath, SIGNAL, false);
             case "settings":
               Settings.mk(bodyDiv, menu, lcPath, lang);
             default:

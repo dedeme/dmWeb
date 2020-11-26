@@ -14,6 +14,7 @@ import dm.Menu;
 import wgs.Dmenu;
 import data.Cts;
 import data.DailyChart;
+import pgs.daily.Cos;
 import I18n._;
 
 /// Daily charts, main page.
@@ -29,13 +30,16 @@ class Daily {
   var activity: String;
   var chartsData: Array<DailyChart>;
   var mSel: String;
+  public var order(default, null): CosOrder;
+  public var reverse(default, null): Bool;
 
   final serverWg = Q("span");
   final activityWg = Q("span");
 
   function new (
     wg:Domo, dmenu: Dmenu, lcPath: Array<String>,
-    server: String, activity: String, chartsData: Array<DailyChart>
+    server: String, activity: String, chartsData: Array<DailyChart>,
+    order: CosOrder, reverse: Bool
   ) {
     if (lcPath.length == 0) lcPath.push("summary");
     this.wg = wg;
@@ -44,11 +48,21 @@ class Daily {
     this.activity = activity;
     this.chartsData = chartsData;
     this.mSel = lcPath[0];
+    this.order = order;
+    this.reverse = reverse;
 
     serverWg.text(server);
 
     view();
     timer();
+  }
+
+  public function setOrder (o: CosOrder): Void {
+    order = o;
+  }
+
+  public function setReverse (isReverse: Bool): Void {
+    reverse = isReverse;
   }
 
   // View ----------------------------------------------------------------------
@@ -110,7 +124,8 @@ class Daily {
     dmenu.setDownMenu(new Menu(lopts, ropts, mSel));
 
     switch (mSel) {
-      case "portfolio" | "all" | "sel": Cos.mk(wg, mSel, chartsData);
+      case "portfolio" | "all" | "sel":
+        Cos.mk(wg, this, mSel, chartsData);
       default: new Summary(wg, chartsData);
     }
 
@@ -151,7 +166,7 @@ class Daily {
       "source" => Js.ws("daily"),
       "rq" => Js.ws("newServer")
     ], rp -> {});
-    Daily.mk(wg, dmenu, lcPath);
+    Daily.mk(wg, dmenu, lcPath, order, reverse);
   }
 
   function timer () {
@@ -181,7 +196,7 @@ class Daily {
       } else {
         Store.put(ticKey, "0");
         if (tm != null) tm.stop();
-        Daily.mk(wg, dmenu, lcPath);
+        Daily.mk(wg, dmenu, lcPath, order, reverse);
       }
     }
 
@@ -195,7 +210,12 @@ class Daily {
   ///   wg    : Container.
   ///   dmenu : Double menu.
   ///   lcPath: Location path.
-  public static function mk (wg:Domo, dmenu: Dmenu, lcPath: Array<String>) {
+  ///   order: Order to show charts.
+  ///   reverse: 'true' if 'order' must be reversed.
+  public static function mk (
+    wg:Domo, dmenu: Dmenu, lcPath: Array<String>,
+    order: CosOrder, reverse: Bool
+  ) {
     Cts.client.send([
       "module" => Js.ws("daily"),
       "source" => Js.ws("daily"),
@@ -213,7 +233,9 @@ class Daily {
         case "Active": activity = _("Active");
         default: activity = _("Deactivating");
       }
-      new Daily(wg, dmenu, lcPath, server, activity, chartsData);
+      new Daily(
+        wg, dmenu, lcPath, server, activity, chartsData, order, reverse
+      );
     });
   }
 

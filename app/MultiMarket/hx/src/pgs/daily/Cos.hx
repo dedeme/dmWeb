@@ -10,23 +10,23 @@ import dm.It;
 import data.DailyChart;
 import I18n._;
 
+enum CosOrder {NICK; DAY; SIGNAL;}
+
 /// Companies daily charts
 class Cos {
   var wg: Domo;
   var type: String;
   var data: Array<DailyChart>;
-  var orderByNick: Bool;
-  var orderByDay: Bool;
-  var reverse: Bool;
+  var parent: Daily;
 
   // type can be "all", "sel" or "portfolio"
-  function new (wg: Domo, type: String, data: Array<DailyChart>) {
+  function new (
+    wg: Domo, parent: Daily, type: String, data: Array<DailyChart>
+  ) {
     this.wg = wg;
     this.type = type;
     this.data = data;
-    orderByNick = false;
-    orderByDay = false;
-    reverse = false;
+    this.parent = parent;
 
     view();
   }
@@ -34,16 +34,19 @@ class Cos {
   // View ----------------------------------------------------------------------
 
   function view () {
-    if (orderByNick) {
-      data.sort((e1, e2) -> e1.nick > e2.nick ? 1 : -1);
-    } else {
-      final dataPond = orderByDay
-        ? data.map(d -> {
+    switch (parent.order) {
+      case NICK:
+          data.sort((e1, e2) -> e1.nick > e2.nick ? 1 : -1);
+      case DAY:
+        final dataPond = data.map(d -> {
             final quote = d.quotes[d.quotes.length - 1];
             final close = d.close;
             return {data: d, pond: (quote - close) / close}
-          })
-        : data.map(d -> {
+          });
+        dataPond.sort((e1, e2) -> e2.pond > e1.pond ? 1 : -1);
+        data = dataPond.map(e -> e.data);
+      case SIGNAL:
+        final dataPond = data.map(d -> {
             final quote = d.quotes[d.quotes.length - 1];
             var max = -1.0;
             for (e in d.managersData) {
@@ -56,12 +59,12 @@ class Cos {
               if (p > max) max = p;
             };
             return {data: d, pond: max}
-          })
-      ;
-      dataPond.sort((e1, e2) -> e2.pond > e1.pond ? 1 : -1);
-      data = dataPond.map(e -> e.data);
+          });
+        dataPond.sort((e1, e2) -> e2.pond > e1.pond ? 1 : -1);
+        data = dataPond.map(e -> e.data);
     }
-    if (reverse) {
+
+    if (parent.reverse) {
       data.reverse();
     }
 
@@ -72,23 +75,23 @@ class Cos {
         .add(Q("td")
           .add(Q("span")
             .html(_("Order by") + ":&nbsp;&nbsp;&nbsp;"))
-          .add(Ui.link(e -> changeOrder(true, false))
-            .klass(orderByNick ? "link frame" : "link")
+          .add(Ui.link(e -> changeOrder(NICK))
+            .klass(parent.order == NICK ? "link frame" : "link")
             .text(_("Nick")))
           .add(Q("span")
             .html("&nbsp;&nbsp;&nbsp;"))
-          .add(Ui.link(e -> changeOrder(false, true))
-            .klass(orderByDay ? "link frame" : "link")
+          .add(Ui.link(e -> changeOrder(DAY))
+            .klass(parent.order == DAY ? "link frame" : "link")
             .text(_("Day")))
           .add(Q("span")
             .html("&nbsp;&nbsp;&nbsp;"))
-          .add(Ui.link(e -> changeOrder(false, false))
-            .klass(!orderByNick && !orderByDay ? "link frame" : "link")
+          .add(Ui.link(e -> changeOrder(SIGNAL))
+            .klass(parent.order == SIGNAL ? "link frame" : "link")
             .text(_("Signal")))
           .add(Q("span")
             .html("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"))
           .add(Ui.link(e -> changeReverse())
-            .klass(reverse ? "link frame" : "link")
+            .klass(parent.reverse ? "link frame" : "link")
             .text(_("Reverse")))))
     ;
 
@@ -134,34 +137,28 @@ class Cos {
     } else {
       Selection.remove(nick);
     }
-    Cos.mk(wg, type, data);
+    Cos.mk(wg, parent, type, data);
   }
 
-  function changeOrder (byNick: Bool, byDay: Bool): Void {
-    orderByNick = byNick;
-    orderByDay = byDay;
+  function changeOrder (newOrder: CosOrder): Void {
+    parent.setOrder(newOrder);
     view();
   }
 
   function changeReverse (): Void {
-    reverse = !reverse;
+    parent.setReverse(!parent.reverse);
     view();
   }
 
   // Static --------------------------------------------------------------------
 
-  /**
-      @param {!Domo} wg
-      @param {string} type All, selected or portfolio companies.
-      @param {!Array<!DailyChart>} chartsData
-      @return !Cos
-  **/
   /// Constructor
   ///   wg: Container.
+  ///   parent: Container class.
   ///   type: Can be "all", "sel" or "portfolio"
   ///   chartsData: Charts data.
   public static function mk (
-    wg:Domo, type: String, chartsData: Array<DailyChart>
+    wg:Domo, parent: Daily, type: String, chartsData: Array<DailyChart>
   ): Void {
     final data = type == "all"
       ? chartsData
@@ -172,6 +169,6 @@ class Cos {
         )
     ;
 
-    new Cos(wg, type, data);
+    new Cos(wg, parent, type, data);
   }
 }
