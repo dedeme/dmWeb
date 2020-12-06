@@ -125,14 +125,15 @@ const (
 	// Flea age ratio
 	AgeRatio = 0.2
 
-  // Assets limit to penalize (ratio)
-  AssetPenalize = 1.1
+	// Assets limit to penalize (ratio)
+	AssetPenalize = 1.1
 
-  // Avg profits limit to penalize (ratio)
-  AvgPenalize = 1
+	// Avg profits limit to penalize (ratio)
+	AvgPenalize = 1
 
-  // Std profits limit to penlize (ratio)
-  StdPenalize = 0.4
+	// Std profits limit to penalize (ratio)
+  // Limit is calculate StdPenaliza - len(flea.params) * 0.05
+	StdPenalize = 0.55
 
 	// Number of fleas in pool
 	PoolNumber = 1000

@@ -46,7 +46,7 @@ func (o *operationT) toJs() json.T {
 }
 
 func addBuy(ops []*operationT, manager int, nick string) (r []*operationT) {
-  r = ops;
+	r = ops
 	new := true
 	for _, e := range ops {
 		if e.nick == nick && e.toBuy {
@@ -64,7 +64,7 @@ func addBuy(ops []*operationT, manager int, nick string) (r []*operationT) {
 func addSell(
 	ops []*operationT, stocks int, manager int, nick string,
 ) (r []*operationT) {
-  r = ops;
+	r = ops
 	new := true
 	for _, e := range ops {
 		if e.nick == nick && e.toSell > 0 {

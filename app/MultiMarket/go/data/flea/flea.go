@@ -83,7 +83,6 @@ func (f *T) Eq(f2 *T) (ok bool) {
 //
 // Ratios of assets and profitsAvg are 0 -> -100%, 1 -> 0%, 2 -> 100%,
 // 3 -> 200%...
-//    f         : Flea
 //    assets    : Ratio of assets
 //    profitsAvg: Ratio of profits average.
 //    profitsSd : Ratio of profits standard deviation (between 0 and 1).
@@ -95,18 +94,18 @@ func (f *T) Evaluate(assets, profitsAvg, profitsSd float64) float64 {
 		age = age / float64(cts.HistoricQuotes)
 	}
 	pond := 1.0
-  if assets < cts.AssetPenalize {
-    pond = 0.5
-  }
-  if profitsAvg < cts.AvgPenalize {
-    pond = pond * 0.5
-  }
-  if profitsSd > cts.StdPenalize {
-    pond = pond * 0.5
-  }
+	if assets < cts.AssetPenalize {
+		pond = 0.5
+	}
+	if profitsAvg < cts.AvgPenalize {
+		pond = pond * 0.5
+	}
+	if profitsSd > cts.StdPenalize - float64(len(f.params)) * 0.05 {
+		pond = pond * 0.5
+	}
 	return assets*pond*float64(cts.AssetsRatio) +
 		profitsAvg*pond*float64(cts.ProfitsAvgRatio) +
-    (1 - profitsSd)*pond*float64(cts.ProfitsSdRatio) +
+		(1-profitsSd)*pond*float64(cts.ProfitsSdRatio) +
 		age*pond*float64(cts.AgeRatio)
 }
 

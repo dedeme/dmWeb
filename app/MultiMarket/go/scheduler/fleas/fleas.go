@@ -353,7 +353,7 @@ func Selection(
 	minSells := int(fn.Fix(cts.HistoricQuotes*cts.MinSells, 0))
 	maxSells := int(fn.Fix(cts.HistoricQuotes*cts.MaxSells, 0))
 	nParams := len(md.ParMins())
-	nCycles := cts.InsertionCycle + cts.Cycles*nParams
+	nCycles := cts.InsertionCycle + cts.Cycles*nParams + 1
 	for cycle := 0; cycle < nCycles; cycle++ {
 		if cycle == 0 {
 			for i := 0; i < cts.FleasPerModel; i++ {

@@ -486,7 +486,7 @@ func (md *T) HistoricAssets(
 				if cash > cts.MinToBet {
 					q := os[iCo]
 					if q >= 0 {
-						stocks := int(cash / q)
+						stocks := int(float64(cts.Bet) / q)
 						cash -= broker.Buy(stocks, q)
 						stockss[iCo] = stocks
 					} else {

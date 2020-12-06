@@ -38,18 +38,18 @@ func fn(
 			if q > 0 {
 				ref := refs[iCo]
 				if toBuys[iCo] {
-          newRef := q * (1.0 + difToBuy)
-          if newRef < ref {
-            refs[iCo] = newRef
-          } else if q > ref {
+					newRef := q * (1.0 + difToBuy)
+					if newRef < ref {
+						refs[iCo] = newRef
+					} else if q > ref {
 						refs[iCo] = q * (1.0 - difToSell)
 						toBuys[iCo] = false
 					}
 				} else {
-          newRef := q * (1.0 - difToSell)
-          if newRef > ref {
-            refs[iCo] = newRef
-          } else if q < ref {
+					newRef := q * (1.0 - difToSell)
+					if newRef > ref {
+						refs[iCo] = newRef
+					} else if q < ref {
 						refs[iCo] = q * (1.0 + difToBuy)
 						toBuys[iCo] = true
 					}

@@ -29,8 +29,8 @@ func Process(ck string, mrq map[string]json.T) string {
 			rp["cash"] = json.Wd(cash)
 		})
 		return cgi.Rp(ck, rp)
-  case "cashUpTo":
-    date := cgi.RqString(mrq, "date")
+	case "cashUpTo":
+		date := cgi.RqString(mrq, "date")
 		rp := map[string]json.T{}
 		sync.Run(func(lk sync.T) {
 			cash, serrors := diariesDb.CashAllUpTo(lk, date)

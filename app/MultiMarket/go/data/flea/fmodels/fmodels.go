@@ -7,10 +7,11 @@ package fmodels
 import (
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
 	"github.com/dedeme/MultiMarket/data/flea/models/appr"
+	"github.com/dedeme/MultiMarket/data/flea/models/dif"
 	"github.com/dedeme/MultiMarket/data/flea/models/ga"
 	"github.com/dedeme/MultiMarket/data/flea/models/incr"
+	"github.com/dedeme/MultiMarket/data/flea/models/jump"
 	"github.com/dedeme/MultiMarket/data/flea/models/mm"
-	"github.com/dedeme/MultiMarket/data/flea/models/dif"
 )
 
 // Returns the model list.
@@ -20,7 +21,8 @@ func List() []*fmodel.T {
 		ga.Mk(),
 		incr.Mk(),
 		mm.Mk(),
-    dif.Mk(),
+		dif.Mk(),
+		jump.Mk(),
 	}
 }
 

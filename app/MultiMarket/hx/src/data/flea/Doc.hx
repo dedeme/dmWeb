@@ -103,6 +103,29 @@ VENTA
 </pre>
 " + footer;
 
+static final difDoc = "
+<pre>
+PARÁMETROS
+  dv (%): Diferencia de compra.
+  dc (%): Diferencia de venta.
+
+INICIO
+  * Se fija una referencia de venta (rf = q * (1 - dv)).
+
+COMPRA
+  * Se determina rf' = q * (1 + dc).
+  * Si rf' > rf, se mantiene rf' = rf.
+  * Si q > rf' se compra y se fija rf = q * (1 - dc); en otro caso se usa rf'
+    como la nueva rf.
+
+VENTA
+  * Se determina rf' = q * (1 - dv).
+  * Si rf' < rf, se mantiene rf' = rf.
+  * Si q < rf' se vende y se fija rf = q * (1 + dc); en otro caso se usa rf'
+    como la nueva rf.
+</pre>
+" + footer;
+
 // -------------------------------------------------------------------------- //
 
   /// Returns summary of a model.
@@ -113,6 +136,7 @@ VENTA
       case "INCR": return incrDoc;
       case "MM": return maxMinDoc;
       case "GA": return gaDoc;
+      case "DIF": return difDoc;
     }
     return "<p>Sin documentación</p>";
   }
