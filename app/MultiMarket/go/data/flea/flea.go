@@ -100,7 +100,7 @@ func (f *T) Evaluate(assets, profitsAvg, profitsSd float64) float64 {
 	if profitsAvg < cts.AvgPenalize {
 		pond = pond * 0.5
 	}
-	if profitsSd > cts.StdPenalize - float64(len(f.params)) * 0.05 {
+	if profitsSd > cts.StdPenalize-float64(len(f.params))*0.05 {
 		pond = pond * 0.5
 	}
 	return assets*pond*float64(cts.AssetsRatio) +

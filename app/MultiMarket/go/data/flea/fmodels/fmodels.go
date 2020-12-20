@@ -9,8 +9,10 @@ import (
 	"github.com/dedeme/MultiMarket/data/flea/models/appr"
 	"github.com/dedeme/MultiMarket/data/flea/models/dif"
 	"github.com/dedeme/MultiMarket/data/flea/models/ga"
+	"github.com/dedeme/MultiMarket/data/flea/models/ijmp"
 	"github.com/dedeme/MultiMarket/data/flea/models/incr"
 	"github.com/dedeme/MultiMarket/data/flea/models/jump"
+	"github.com/dedeme/MultiMarket/data/flea/models/jmp2"
 	"github.com/dedeme/MultiMarket/data/flea/models/mm"
 )
 
@@ -23,6 +25,8 @@ func List() []*fmodel.T {
 		mm.Mk(),
 		dif.Mk(),
 		jump.Mk(),
+    jmp2.Mk(),
+		ijmp.Mk(),
 	}
 }
 

@@ -445,7 +445,7 @@ func InitialActivity2(lastAct *activity.T, today date.T) *activity.T {
 
 func Start(ch chan int, act *activity.T) {
 	// To initialize a new flea model.
-	 fleas.Evolution()
+	// fleas.Evolution()
 
 	changeActivity := func(newAct string) {
 		act = activity.New(newAct)

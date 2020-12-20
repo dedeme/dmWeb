@@ -129,7 +129,7 @@ func Evaluate(md *fmodel.T, opens, closes *qtable.T, es []*T) {
 	for _, e := range es {
 		e.Eval = e.flea.Evaluate(
 			e.assets/cts.InitialCapital,
-			e.profitsAvg+1,
+			e.profitsAvg+1, // (= cash / cts.InitialCapital)
 			e.profitsSd,
 		)
 	}
