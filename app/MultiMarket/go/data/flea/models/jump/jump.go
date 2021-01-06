@@ -6,6 +6,7 @@ package jump
 
 import (
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
+	"github.com/dedeme/MultiMarket/data/flea/refPos"
 	"math"
 )
 
@@ -67,7 +68,8 @@ func GapTests() {
 */
 
 func fn(
-	closes [][]float64, params []float64, action func([]float64, []float64),
+	closes [][]float64, params []float64, init *refPos.T,
+	action func([]float64, []float64),
 ) {
 	nDays := len(closes)
 	nCos := len(closes[0])
@@ -93,6 +95,14 @@ func fn(
 		preqs[iCo] = q
 	}
 
+	if init != nil {
+		if len(closes[0]) > 1 {
+			panic("Closes is > 1")
+		}
+		refs[0] = init.Ref()
+		toBuys[0] = init.ToBuy()
+	}
+
 	for iDay := 0; iDay < nDays; iDay++ {
 		for iCo := 0; iCo < nCos; iCo++ {
 			q := closes[iDay][iCo]
@@ -107,7 +117,7 @@ func fn(
 							refs[iCo] = newRef
 						}
 					} else if q > ref {
-						refs[iCo] = downGap(q, jmp, lgJump)
+						refs[iCo] = downGap(q, jmp, lgJump) / jmp
 						toBuys[iCo] = false
 					}
 				} else {
@@ -117,7 +127,7 @@ func fn(
 							refs[iCo] = newRef
 						}
 					} else if q < ref {
-						refs[iCo] = upGap(q, jmp, lgJump)
+						refs[iCo] = upGap(q, jmp, lgJump) * jmp
 						toBuys[iCo] = true
 					}
 				}
@@ -135,6 +145,7 @@ func Mk() *fmodel.T {
 		[]float64{0.01},
 		[]float64{0.25},
 		[]int{6},
+		true,
 		fn,
 	)
 }

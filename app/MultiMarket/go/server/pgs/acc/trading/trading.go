@@ -14,8 +14,10 @@ import (
 	"github.com/dedeme/MultiMarket/db/managersTb"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
+	"github.com/dedeme/MultiMarket/db/refsDb"
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/golib/cgi"
+	"github.com/dedeme/golib/date"
 	"github.com/dedeme/golib/json"
 )
 
@@ -87,6 +89,8 @@ func Process(ck string, mrq map[string]json.T) string {
 		rp := map[string]json.T{}
 		sync.Run(func(lk sync.T) {
 			activity := conf.Activity(lk).Activity()
+			dates := quotesDb.Dates(lk)
+			dates2 := append(dates, date.Now().String())[1:]
 			closes := quotesDb.Closes(lk)
 			nicks := closes.Nicks()
 			values := closes.Values()
@@ -126,7 +130,9 @@ func Process(ck string, mrq map[string]json.T) string {
 							entry := man.GetModel(nk)
 							cs, ok := closes.NickValuesAdd(nk, q)
 							if ok {
-								refs := entry.Model().Refs(cs, entry.Params())
+								refs := refsDb.MkRefs(
+									lk, nk, dates2, cs, entry.Model(), entry.Params(),
+								)
 								ref1 = refs[len(refs)-2]
 								ref = refs[len(refs)-1]
 							}
@@ -135,7 +141,9 @@ func Process(ck string, mrq map[string]json.T) string {
 						entry := man.GetModel(nk)
 						cs, ok := closes.NickValues(nk)
 						if ok {
-							refs := entry.Model().Refs(cs, entry.Params())
+							refs := refsDb.MkRefs(
+								lk, nk, dates, cs, entry.Model(), entry.Params(),
+							)
 							ref1 = refs[len(refs)-2]
 							ref = refs[len(refs)-1]
 						}

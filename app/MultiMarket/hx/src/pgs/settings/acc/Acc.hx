@@ -10,6 +10,7 @@ import dm.Js;
 import dm.Menu;
 import data.Cts;
 import data.Annotation;
+import wgs.Msg;
 import I18n._;
 
 /// Main accounting annotations page.
@@ -48,7 +49,8 @@ class Acc {
       lopts.push(Menu.separator());
       lopts.push(Menu.toption(lb, lb, () -> investor(i)));
     }
-    final menu = new Menu(lopts, [], menuSel);
+    final ropts = [Menu.toption("close", _("Close Year"), closeYear)];
+    final menu = new Menu(lopts, ropts, menuSel);
     wg
       .removeAll()
       .add(menu.wg)
@@ -68,6 +70,26 @@ class Acc {
     Editor.mk(body, years[0], i);
     menuSel = '${_("Inv")}-${i}';
     view();
+  }
+
+  function closeYear () {
+    final tx = "
+    <p>Para cerrar el ejercicio hay que reiniciar el servidor una vez que
+    el nuevo año ha comenzado.</p>
+    <p>Para modificar datos del año anterior hay que
+      <ol>
+        <li>Eliminar los archivos 'data/investor/diaries/<i>lastYear</i>.db'.</li>
+        <li>Recargar la página web (sin reiniciar el servidor)</li>
+        <li>Realizar las modificaciones.</li>
+        <li>Reiniciar el servidor.</li>
+      </ol></p>
+    <p><i>Todos los datos del actual ejercicio se perderán</i></p>
+    <p>Antes del paso '1' se puede hacer una copia de los archivos que se van
+    a eliminar, borrando los asientos de inicialización, y después del proceso
+    pegar dichos archivos a los nuevos creados.</p>
+    ";
+
+    Msg.info(tx);
   }
 
   // Static --------------------------------------------------------------------

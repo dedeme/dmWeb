@@ -141,19 +141,110 @@ class ProfitsWg {
     return cv;
   }
 
+  static function mkIncrement (data: Array<ProfitsEntry>): Domo {
+    var corrections: Array<Float> = [];
+    var previous = "";
+    for (i in 0...data.length) {
+      final e = data[i];
+      final month = e.date.substring(4, 6);
+      if ( month == "01" && previous == "12") {
+        corrections.push(data[i - 1].acc - e.acc);
+      }
+      previous = month;
+    }
+
+    function mkTr (color: String, first: Float, last: Float) {
+      final dif = last - first;
+      final perc = dif * 100 / first;
+      final ncolor = dif > 0
+        ? "rgba(0, 129, 255)"
+        : dif < 0
+          ? "rgba(255, 40, 0)"
+          : "rgba(0, 0, 0)"
+      ;
+      return Q("tr")
+        .add(Q("td")
+          .style("vertical-align:middle;width:5px")
+          .add(Ui.led(color)))
+        .add(Q("td")
+          .style('width: 80px;text-align: right;color: $ncolor')
+          .text(Dec.toIso(dif, 2)))
+      ;
+    }
+
+    final first = data[0];
+    final last = data[data.length - 1];
+    final r = Q("table")
+      .klass("frame")
+      .style("border-collapse : collapse;")
+      .add(mkTr("rgba(0, 129, 255)", first.total, last.total))
+      .add(mkTr("rgba(0, 0, 0)", first.acc, last.acc))
+      .add(mkTr("rgba(255, 40, 0)", first.risk, last.risk))
+    ;
+
+    if (corrections.length > 0) {
+      r.add(Q("tr")
+        .add(Q("td")
+          .att("colspan", "2")
+          .add(Q("hr"))))
+      ;
+      var sum = 0.0;
+      for (c in corrections) {
+        r.add(Q("tr")
+          .add(Q("td")
+            .text(corrections.length > 1 ? "+" : ""))
+          .add(Q("td")
+            .style("text-align: right;")
+            .text(Dec.toIso(c, 2))))
+        ;
+        sum += c;
+      }
+      if (corrections.length > 1) {
+        r.add(Q("tr")
+          .add(Q("td")
+            .style("border-top: 1px solid rgb(110,130,150);")
+            .text("="))
+          .add(Q("td")
+            .style("border-top: 1px solid rgb(110,130,150);text-align: right;")
+            .text(Dec.toIso(sum, 2))))
+        ;
+      }
+    }
+
+    return r;
+  }
+
   static function lastMonthGr (data: Array<ProfitsEntry>): Domo {
-    final cv = mkCanvas(data, MONTH);
-    return Q("div").add(cv);
+    return Q("table")
+      .att("align", "center")
+      .add(Q("tr")
+        .add(Q("td")
+          .add(mkCanvas(data, MONTH)))
+        .add(Q("td")
+          .add(mkIncrement(data))))
+    ;
   };
 
   static function lastYearGr (data: Array<ProfitsEntry>): Domo {
-    final cv = mkCanvas(data, YEAR);
-    return Q("div").add(cv);
+    return Q("table")
+      .att("align", "center")
+      .add(Q("tr")
+        .add(Q("td")
+          .add(mkCanvas(data, YEAR)))
+        .add(Q("td")
+          .add(mkIncrement(data))))
+    ;
   };
 
   static function allGr (data: Array<ProfitsEntry>): Domo {
-    final cv = mkCanvas(data, ALL);
-    return Q("div").add(cv);
+    return Q("table")
+      .att("align", "center")
+      .add(Q("tr")
+        .add(Q("td")
+          .add(mkCanvas(data, ALL)))
+        .add(Q("td")
+          .add(mkIncrement(data))))
+    ;
   };
 
   /// Constructor

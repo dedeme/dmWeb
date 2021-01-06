@@ -15,6 +15,7 @@ import I18n._args;
 /// Year data.
 class Year {
   var nextId: Int;
+  /// Sorted from before to after.
   public var anns(default, null): Array<Ann>;
   public var error(default, null): String;
   // Report[0] is Report.WHIT_FEES,
@@ -229,6 +230,7 @@ class Year {
         nextId++;
         anns.push(ann);
     }
+    this.anns.sort((e1, e2) -> Dt.compare(e1.date, e2.date));
   }
 
   public function delete(annId: Int): Void {

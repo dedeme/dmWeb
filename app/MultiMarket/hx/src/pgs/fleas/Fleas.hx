@@ -281,7 +281,6 @@ class Fleas {
         eflea = Eflea.fromJs(Js.from(B64.decode(args[1])));
       }
 
-      //eslint-disable-next-line
       new Charts(wg, modelId, isAssets, parNames, parDecs, eflea);
     });
   }

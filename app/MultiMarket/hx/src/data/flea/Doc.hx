@@ -10,7 +10,7 @@ static final footer = '
 <p><small>q = close<br>rf = referencia de compra o venta</small></p>
 ';
 
-
+//*******************
 static final apprDoc = "
 <pre>
 PARÁMETROS
@@ -30,6 +30,7 @@ VENTA
 </pre>
 " + footer;
 
+//******************
 static final incrDoc = "
 <pre>
 PARÁMETROS
@@ -55,6 +56,7 @@ VENTA
 </pre>
 " + footer;
 
+//********************
 static final maxMinDoc = "
 <pre>
 PARÁMETROS
@@ -84,6 +86,7 @@ VENTA
 </pre>
 " + footer;
 
+//****************
 static final gaDoc = "
 <pre>
 PARÁMETROS
@@ -103,6 +106,7 @@ VENTA
 </pre>
 " + footer;
 
+//*****************
 static final difDoc = "
 <pre>
 PARÁMETROS
@@ -126,6 +130,72 @@ VENTA
 </pre>
 " + footer;
 
+//******************
+static final jumpDoc = "
+<pre>
+PARÁMETROS
+  salto (%): Incremento de stops de compras y ventas.
+
+INICIO
+  * Se calcula
+    - jmp = 1 + salto
+    - lgJmp = Log(jmp)
+  * Se define:
+    - upGap(q) = jmp ^ (round(Log(q) / lgJmp) + 1)
+    - downGap2(q) = repeat
+                      ref2 = ref * jmp
+                      if ref2 * jmp ^ (1/2) >= q -> return ref
+                      else ref = ref2
+    -downGap(q) = jmp ^ (round(Log(q) / lgJmp) - 1)
+    -upGap2(q) = repeat
+                  ref2 = ref / jmp
+                  if ref2 / jmp ^ (1/2) <= q -> return ref
+                  else ref = ref2
+  * Se fija una referencia de venta (rf = downGap(q))
+
+COMPRA
+  * Si q > rf se compra y se fija rf = downGap(q) / jmp
+  * En otro caso se calcula rf' = downGap2(q) y si rf' < rf se fija rf = rf'.
+
+VENTA
+  * Si q < rf se vende y se fija rf = upGap(q) * jmp
+  * En otro caso se calcula rf' = upGap2(q) y si rf' > rf se fija rf = rf'.
+
+</pre>
+" + footer;
+
+//******************
+static final jmp2Doc = "
+<pre>
+PARÁMETROS
+  salto (%): Incremento de stops de compras y ventas.
+
+INICIO
+  * Se calcula
+    - jmp = 1 + salto
+    - lgJmp = Log(jmp)
+  * Se define:
+    - downGap(q) = repeat
+                      ref2 = ref * jmp
+                      if ref2 * jmp ^ (1/2) >= q -> return ref
+                      else ref = ref2
+    -upGap(q) = repeat
+                  ref2 = ref / jmp
+                  if ref2 / jmp ^ (1/2) <= q -> return ref
+                  else ref = ref2
+  * Se fija una referencia de venta (rf = q / jmp / jmp)
+
+COMPRA
+  * Si q > rf se compra y se fija rf = q / jmp / jmp
+  * En otro caso se calcula rf' = downGap(q) y si rf' < rf se fija rf = rf'.
+
+VENTA
+  * Si q < rf se vende y se fija rf = q * jmp * jmp
+  * En otro caso se calcula rf' = upGap(q) y si rf' > rf se fija rf = rf'.
+
+</pre>
+" + footer;
+
 // -------------------------------------------------------------------------- //
 
   /// Returns summary of a model.
@@ -137,6 +207,8 @@ VENTA
       case "MM": return maxMinDoc;
       case "GA": return gaDoc;
       case "DIF": return difDoc;
+      case "JUMP": return jumpDoc;
+      case "JMP2": return jmp2Doc;
     }
     return "<p>Sin documentación</p>";
   }

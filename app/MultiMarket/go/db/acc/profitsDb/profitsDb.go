@@ -14,6 +14,7 @@ import (
 	"path"
 	"sort"
 	"strconv"
+  "math"
 )
 
 var basePath string
@@ -71,7 +72,8 @@ func Read(lk sync.T) json.T {
 					managerData = append(managerData, e)
 				}
 			}
-		}
+    }
+
 		all = append(all, json.Wa(managerData))
 	}
 	return json.Wa(all)
@@ -107,11 +109,14 @@ func Years(lk sync.T) (r []string) {
 //   acc    : Accounting profits.
 //   risk   : Risk profits.
 func Add(lk sync.T, manager int, total, acc, risk float64) {
+  rd := func (n float64) float64 {
+    return math.Round(n*100)/100
+  }
 	d := date.Now()
 	ds := d.String()
 	y := d.Format("%Y")
 	p := ypath(manager, y)
-	newAnn := profits.New(ds, total, acc, risk).ToJs()
+	newAnn := profits.New(ds, rd(total), rd(acc), rd(risk)).ToJs()
 	if file.Exists(p) {
 		anns := json.FromString(file.ReadAll(p)).Ra()
 		l1 := len(anns) - 1

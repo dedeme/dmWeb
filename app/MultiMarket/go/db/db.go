@@ -19,6 +19,7 @@ import (
 	"github.com/dedeme/MultiMarket/db/managersTb"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
+	"github.com/dedeme/MultiMarket/db/refsDb"
 	"github.com/dedeme/MultiMarket/db/sboxTb"
 	"github.com/dedeme/MultiMarket/db/serversTb"
 	"github.com/dedeme/MultiMarket/global/sync"
@@ -53,6 +54,7 @@ func Initialize(lk sync.T) {
 	calendarTb.Initialize(lk, p)
 	nicksTb.Initialize(lk, p)
 	quotesDb.Initialize(lk, p)
+	refsDb.Initialize(lk, p)
 	serversTb.Initialize(lk, p)
 	managersTb.Initialize(lk, p)
 	diariesDb.Initialize(lk, path.Join(p, "acc"))

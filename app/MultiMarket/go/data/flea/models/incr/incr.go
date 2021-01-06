@@ -6,10 +6,12 @@ package incr
 
 import (
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
+	"github.com/dedeme/MultiMarket/data/flea/refPos"
 )
 
 func fn(
-	closes [][]float64, params []float64, action func([]float64, []float64),
+	closes [][]float64, params []float64, init *refPos.T,
+	action func([]float64, []float64),
 ) {
 	nDays := len(closes)
 	nCos := len(closes[0])
@@ -32,6 +34,10 @@ func fn(
 			panic("iDay < 0")
 		}
 		refs[iCo] = closes[ixDay][iCo]
+	}
+
+	if init != nil {
+		panic("MM does not admint initialization")
 	}
 
 	for iDay := 0; iDay < nDays; iDay++ {
@@ -84,6 +90,7 @@ func Mk() *fmodel.T {
 		[]float64{20, 0.0001, 0.0001},
 		[]float64{120, 0.25, 0.25},
 		[]int{0, 6, 6},
+		false,
 		fn,
 	)
 }

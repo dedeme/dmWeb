@@ -19,7 +19,7 @@ class Cts {
   /// Store language key.
   public static final langKey = "Lang_" + app;
   /// Initial year.
-  public static final initialYear = "2019";
+  public static final initialYear = "2020";
   /// Number of investors (managers)
   public static final investors = 2;
   /// Page foot.

@@ -17,7 +17,7 @@ import I18n._;
 class OrdersWg {
   var orders: Array<Forder>;
   var nicks: Array<String>;
-  var lastRefs: Array<Float>;
+  var lastCloses: Array<Float>;
 
   public final wg = Q("TextArea")
     .att("spellcheck", false)
@@ -28,11 +28,11 @@ class OrdersWg {
   /// Constructor
   ///   orders  : Orders to show.
   ///   nicks   : Nick names list.
-  ///   lastRefs: Lastregs of each nick.
-  public function new (orders, nicks, lastRefs) {
+  ///   lastCloses: Last closes of each nick.
+  public function new (orders, nicks, lastCloses) {
     this.orders = orders;
     this.nicks = nicks;
-    this.lastRefs = lastRefs;
+    this.lastCloses = lastCloses;
 
     view();
   }
@@ -70,7 +70,7 @@ class OrdersWg {
     });
     It.from(pf).eachIx((e, i) -> {
       if (pf[i] > 0)
-        cash += BrokerF.sell(pf[i], lastRefs[i]);
+        cash += BrokerF.sell(pf[i], lastCloses[i]);
     });
     tx += "|" + ff(NUM) + ":" + ff(CV) + ":" + ff(DATE) + ":" +
       ff(NICK) + ":" + ff(STOCKS) + ":" + ff(PRICE) + ":" +

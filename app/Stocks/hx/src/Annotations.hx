@@ -23,28 +23,40 @@ class Annotations {
   static var allData: All;
   static var update: Void -> Void;
   static var data: Year;
+  static var year: String;
 
   /// Constructor
   ///   wg; Container.
-  public static function mk (wg: Domo) {
+  public static function mk (wg: Domo, year: Option<String>) {
     Annotations.wg = wg;
     All.request(all -> {
       allData = all;
-      update = () -> all.send(() -> mk(wg));
-      data = all.lastYear();
+      Annotations.year = switch (year) {
+        case Some(y): y;
+        case None: all.lastYearId();
+      }
+      update = () -> all.send(() -> mk(wg, Some(Annotations.year)));
+      data = all.data[Annotations.year];
       show();
     });
   }
 
   static function entries (td: Domo): Array<Domo> {
     function entry (ann: Ann): Domo {
+      final is0101 = Dt.day(ann.date) == 1 && Dt.month(ann.date) == 1;
       return Q("tr")
         .add(Q("td")
-          .add(Ui.link(e -> delete(ann))
-            .add(Ui.img("delete"))))
+          .add(is0101
+            ? Q("span")
+              .add(Ui.lightImg("delete"))
+            : Ui.link(e -> delete(ann))
+                .add(Ui.img("delete"))))
         .add(Q("td")
-          .add(Ui.link(e -> mkAnns(td, Some(ann)))
-            .add(Ui.img("edit"))))
+          .add(is0101
+            ? Q("span")
+              .add(Ui.lightImg("edit"))
+            : Ui.link(e -> mkAnns(td, Some(ann)))
+                .add(Ui.img("edit"))))
         .add(Q("td")
           .add(ann.isSell ? Ui.led("#4080ff") : Ui.led("#ff8040")))
         .add(Q("td").klass("frame").text(Dt.toIso(ann.date)))
@@ -187,6 +199,13 @@ class Annotations {
     ;
     Ui.changePoint(cashWg);
 
+    final set0101 = year == allData.lastYearId()
+      ? Ui.link(intialStock)
+        .att("title", _("Set initial stock"))
+        .klass("link")
+        .text("0101")
+      : Q("span")
+    ;
 
     final cancelBt = Q("button")
       .text(_("Cancel"))
@@ -220,10 +239,7 @@ class Annotations {
     final datePicker = datePk.mkText(dateWg);
 
     final editor = Q("table")
-      .style(
-        "background: " +
-        (ann == None ? "rgb(240, 245, 250)" : "rgb(250, 250, 230)")
-      )
+      .att("align", "center")
       .add(Q("tr")
         .add(Q("td")
           .att("colspan", "2")
@@ -270,7 +286,10 @@ class Annotations {
           .add(cashWg)))
       .add(Q("tr")
         .add(Q("td")
-          .att("colspan", 4)
+          .style("text-align: center")
+          .add(set0101))
+        .add(Q("td")
+          .att("colspan", 3)
           .style("text-align: right")
           .add(cancelBt)
           .add(Q("span")
@@ -420,6 +439,20 @@ class Annotations {
 
   // Main ----------------------------------------------------------------------
   static function show () {
+    final lopts = [];
+    var first = true;
+    for (myear in allData.yearIds()) {
+      if (first) {
+        first = false;
+      } else {
+        lopts.push(Menu.separator());
+      }
+      lopts.push(Menu.toption(
+        myear, myear, () -> mk(wg, Some(myear))
+      ));
+    }
+    final menu = new Menu(lopts, [], year);
+
     final annsTd = Q("td")
       .klass("border")
       .style("width: 5px;vertical-align:top")
@@ -434,6 +467,7 @@ class Annotations {
 
     wg
       .removeAll()
+      .add(menu.wg)
       .add(Q("table")
         .klass("main")
         .add(Q("tr")
@@ -447,7 +481,18 @@ class Annotations {
   // Control -------------------------------------------------------------------
 
   static function cancel (): Void {
-    mk(wg);
+    mk(wg, Some(year));
+  }
+
+  static function intialStock (): Void {
+    allData.setO1O1(year, err -> {
+      if (err != "") {
+        Ui.alert(err);
+        return;
+      }
+      update();
+      mk(wg, Some(year));
+    });
   }
 
   static function accept (
@@ -473,9 +518,8 @@ class Annotations {
       date = Opt.get(Dt.fromIso(dateTx));
       if (date == null)
         return _("Date is not valid");
-      final year = Dt.year(Date.now());
-      if (year != Dt.year(date))
-        return _("Date year is not the current year");
+      if (year != Std.string(Dt.year(date)))
+        return _("Date year is not the selected year");
 
       nick = cast(nickWg.getValue(), String).trim();
       if (nick == "")
@@ -485,7 +529,7 @@ class Annotations {
       if (stocks == null)
         return _("Stocks is not a valid integer");
       if (stocks <= 0)
-        return _("Stocks number <= 0");
+        return _("Stocks number < 1");
 
       price = Opt.get(Cts.float(priceWg, 4));
       if (price == null)
@@ -520,7 +564,7 @@ class Annotations {
     data.add(ann, new Ann(isSell, date, inv, nick, stocks, price, cash));
     update();
 
-    mk(wg);
+    mk(wg, Some(year));
   }
 
   static function delete (ann: Ann): Void {
@@ -528,7 +572,7 @@ class Annotations {
       data.delete(ann.id);
       update();
 
-      mk(wg);
+      mk(wg, Some(year));
     }
   }
 }

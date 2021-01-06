@@ -7,10 +7,15 @@ import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
 import dm.Ui;
+import dm.It;
+import dm.Dt;
+import dm.Opt;
 import dm.Js;
 import dm.Menu;
 import data.Cts;
+import data.BrokerF;
 import data.flea.Eflea;
+import data.flea.Forder;
 import pgs.fleas.wgs.HistoricChart;
 import I18n._;
 
@@ -56,6 +61,8 @@ class Charts {
     final lopts = [
       Menu.toption("assets", _("Assets"), () -> menu("assets")),
       Menu.separator(),
+      Menu.toption("orders", _("Orders"), () -> menu("orders")),
+      Menu.separator(),
       Menu.toption("companies", _("Companies"), () -> menu("companies"))
     ];
     final ropts = [];
@@ -96,6 +103,8 @@ class Charts {
     final wg = Q("div");
     if (menuSel == "assets") {
       this.assets(wg);
+    } else if (menuSel == "orders") {
+      this.orders(wg);
     } else {
       Companies.mk(wg, modelId, flea.params);
     }
@@ -128,21 +137,11 @@ class Charts {
 
   // Control -------------------------------------------------------------------
 
-  /**
-      @private
-      @param {string} option
-      @return void
-  **/
   function menu (option: String) {
     menuSel = option;
     this.view();
   }
 
-  /**
-      @private
-      @param {!Domo} wg
-      @return !Promise<void>
-  **/
   function assets (wg: Domo) {
     var chart = new HistoricChart(true, []).wg;
 
@@ -174,6 +173,142 @@ class Charts {
             .add(Q("td")
               .add(chart
                 .klass("frame")))))
+      ;
+    });
+  }
+
+  function orders (wg: Domo) {
+    Cts.client.send([
+      "module" => Js.ws("fleas"),
+      "source" => Js.ws("ftests/orders"), // Reused
+      "rq" => Js.ws("ordersData"),        // Reused
+      "modelId" => Js.ws(modelId),
+      "params" => Js.wa(eflea.flea.params.map(e -> Js.wf(e)))
+    ], rp -> {
+      function mkTr (
+        date: String, buys: Array<String>, sells: Array<String>,
+        portfolio: Map<String, Int>, cash: Float
+      ) {
+        return Q("tr")
+          .add(Q("td")
+            .klass("menu")
+            .text(Dt.toIso(Opt.oget(Dt.from(date), Date.now()))))
+          .add(Q("td")
+            .klass("menu")
+            .style("width:100px")
+            .text(buys.join(", ")))
+          .add(Q("td")
+            .klass("menu")
+            .style("width:100px")
+            .text(sells.join(", ")))
+          .add(Q("td")
+            .klass("menu")
+            .style("width:400px")
+            .text(It.fromMap(portfolio)
+                .filter(tp -> tp.e2 > 0)
+                .map(tp -> tp.e1)
+                .to()
+                .join(", ")
+              ))
+          .add(Q("td")
+            .klass("fnumber")
+            .text(Cts.nformat(cash, 2)))
+        ;
+      }
+
+      //-----------------------------
+
+      final orders = rp["orders"].ra().map(e -> Forder.fromJs(e));
+      final nicks = rp["nicks"].ra().map(e -> e.rs());
+      final lastCloses = rp["lastCloses"].ra().map(e -> e.rf());
+
+      var assets = 0.0;
+      final trs: Array<Domo> = [];
+
+      if (orders.length > 0) {
+        var buys: Array<String> = [];
+        var sells: Array<String> = [];
+        var cash = Cts.initialCapital;
+        var lastDate = "";
+        final portfolio: Map<String, Int> = [];
+        for (nk in nicks) portfolio[nk] = 0;
+
+        var tr = Q("tr");
+        for (o in orders) {
+          if (lastDate == "") {
+            lastDate = o.date;
+          } else if (o.date != lastDate && lastDate != "") {
+            trs.push(mkTr(lastDate, buys, sells, portfolio, cash));
+            buys = [];
+            sells = [];
+            lastDate = o.date;
+          }
+          if (o.isSell) {
+            sells.push(o.nick);
+            portfolio[o.nick] = portfolio[o.nick] - o.stocks;
+            cash += BrokerF.sell(o.stocks, o.price);
+          } else {
+            buys.push(o.nick);
+            portfolio[o.nick] = portfolio[o.nick] + o.stocks;
+            cash -= BrokerF.buy(o.stocks, o.price);
+          }
+        }
+
+        trs.push(mkTr(lastDate, buys, sells, portfolio, cash));
+        assets = It.fromMap(portfolio)
+          .filter(tp -> tp.e2 > 0)
+          .reduce(cash, (r, tp) ->
+              r + BrokerF.sell(tp.e2, lastCloses[nicks.indexOf(tp.e1)])
+            )
+        ;
+      } else {
+        trs.push(Q("tr")
+          .add(Q("td")
+            .att("rowspan", "5")
+            .text("Without Data")))
+        ;
+      }
+
+      wg
+        .removeAll()
+        .add(Q("div")
+          .klass("head")
+          .text(_("Assets")))
+        .add(Q("table")
+          .att("align", "center")
+          .klass("white")
+          .add(Q("tr")
+            .add(Q("td")
+              .klass("fnumber")
+              .text(Cts.nformat(assets, 2)))))
+        .add(Q("div")
+          .klass("head")
+          .text(_("Orders")))
+        .add(Q("table")
+          .att("align", "center")
+          .klass("white")
+          .add(Q("tr")
+            .add(Q("td")
+              .klass("header")
+              .style("text-align:center")
+              .text(_("Date")))
+            .add(Q("td")
+              .klass("header")
+              .style("text-align:center")
+              .text(_("Buys")))
+            .add(Q("td")
+              .klass("header")
+              .style("text-align:center")
+              .text(_("Sells")))
+            .add(Q("td")
+              .klass("header")
+              .style("text-align:center")
+              .text(_("Portfolio")))
+            .add(Q("td")
+              .klass("header")
+              .style("text-align:center")
+              .text(_("Cash"))))
+          .adds(trs))
       ;
     });
   }

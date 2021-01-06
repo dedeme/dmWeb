@@ -17,7 +17,7 @@ class Msg {
     return box.wg;
   }
 
-  static function show (icon, msg: String, ?fn: () -> Void) {
+  static function show (icon: String, msg: String, ?fn: () -> Void) {
     iwg
       .removeAll()
       .add(Q("table")

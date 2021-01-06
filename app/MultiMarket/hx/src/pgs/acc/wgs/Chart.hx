@@ -187,9 +187,9 @@ class Chart {
         final v = quotes[j][i];
         final y = 145 - (v - base) * 140 / top;
         if (v > cs) {
-          ctx.fillStyle = "rgba(0, 129, 255)";
+          ctx.fillStyle = Cts.toSellColors[i - 1];
         } else if (v < cs) {
-          ctx.fillStyle = "rgba(255, 40, 0)";
+          ctx.fillStyle = Cts.toBuyColors[i - 1];
         }
 
         ctx.fillRect(x, y, 1, 1);
@@ -304,9 +304,11 @@ class Chart {
         final v = quotes[j][i];
         final y = 290.5 - (v - base) * 280 / top;
         if (v > cs) {
-          ctx.fillStyle = "rgba(0, 129, 255)";
+          if (i == 1) ctx.fillStyle = "rgba(0, 129, 255)";
+          else ctx.fillStyle = "rgba(0, 210, 255)";
         } else if (v < cs) {
-          ctx.fillStyle = "rgba(255, 40, 0)";
+          if (i == 1) ctx.fillStyle = "rgba(255, 40, 0)";
+          else ctx.fillStyle = "rgba(255, 129, 0)";
         }
 
         ctx.fillRect(x, y, 2, 2);

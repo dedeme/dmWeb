@@ -10,6 +10,7 @@ import (
 	"github.com/dedeme/MultiMarket/data/manager"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
+	"github.com/dedeme/MultiMarket/db/refsDb"
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/golib/file"
 	"github.com/dedeme/golib/json"
@@ -91,12 +92,17 @@ func Regularize(lk sync.T, man int) {
 			continue
 		}
 		if !nkCf.Eq(baseCf) {
+			dates := quotesDb.Dates(lk)
 			closes, ok := quotesDb.Closes(lk).NickValues(nk.Name())
 			if ok {
 				lastCl := closes[len(closes)-1][0]
-				refs := baseCf.Model().Refs(closes, baseCf.Params())
+				refs := refsDb.MkRefs(
+					lk, nk.Name(), dates, closes, baseCf.Model(), baseCf.Params(),
+				)
 				lastBaseRf := refs[len(refs)-1]
-				refs = nkCf.Model().Refs(closes, nkCf.Params())
+				refs = refsDb.MkRefs(
+					lk, nk.Name(), dates, closes, nkCf.Model(), nkCf.Params(),
+				)
 				lastNkRf := refs[len(refs)-1]
 				if (lastBaseRf > lastCl && lastNkRf > lastCl) ||
 					(lastBaseRf < lastCl && lastNkRf < lastCl) {
@@ -118,6 +124,8 @@ func Regularize(lk sync.T, man int) {
 			delete(mg.Nicks(), e)
 		}
 	}
+
+  refsDb.Purge(lk, mgs)
 
 	write(lk, mgs)
 }

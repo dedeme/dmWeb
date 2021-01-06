@@ -6,10 +6,12 @@ package mm
 
 import (
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
+	"github.com/dedeme/MultiMarket/data/flea/refPos"
 )
 
 func fn(
-	closes [][]float64, params []float64, action func([]float64, []float64),
+	closes [][]float64, params []float64, init *refPos.T,
+	action func([]float64, []float64),
 ) {
 	nDays := len(closes)
 	nCos := len(closes[0])
@@ -34,6 +36,10 @@ func fn(
 		}
 		mms[iCo] = closes[ixDay][iCo]
 		refs[iCo] = closes[ixDay][iCo] * (1.0 - stripToSell)
+	}
+
+	if init != nil {
+		panic("MM does not admint initialization")
 	}
 
 	for iDay := 0; iDay < nDays; iDay++ {
@@ -80,6 +86,7 @@ func Mk() *fmodel.T {
 		[]float64{0.00, 0.001, 0.00, 0.001},
 		[]float64{0.3, 0.15, 0.3, 0.15},
 		[]int{6, 6, 6, 6},
+		false,
 		fn,
 	)
 }

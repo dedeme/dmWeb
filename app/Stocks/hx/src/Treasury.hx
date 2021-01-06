@@ -15,20 +15,23 @@ import I18n._args;
 class Treasury {
   /// Constructor.
   ///   wg: Container.
-  public static function mk (wg:Domo) {
+  public static function mk (wg:Domo, year: Option<String>) {
     All.request(all -> {
-      final lastYear = all.lastYearId();
+      final lastYear = switch (year) {
+        case Some(y): y;
+        case None: all.lastYearId();
+      }
       final body = Q("div");
       final lopts = [];
       var first = true;
-      for (year in all.yearIds()) {
+      for (myear in all.yearIds()) {
         if (first) {
           first = false;
         } else {
           lopts.push(Menu.separator());
         }
         lopts.push(Menu.toption(
-          year, year, () -> show(body, lastYear, all)
+          myear, myear, () -> mk(wg, Some(myear))
         ));
       }
       final menu = new Menu(lopts, [], lastYear);
@@ -47,7 +50,7 @@ class Treasury {
     var y = all.data[year];
     if (y == null) {
       Ui.alert(_args(_("Year %0 not found"), [year]));
-      y = all.lastYear();
+      y = all.data[all.lastYearId()];
     }
 
     final d = y.treasury();

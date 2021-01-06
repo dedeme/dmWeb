@@ -24,6 +24,7 @@ import (
 	"github.com/dedeme/MultiMarket/db/managersTb"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
+	"github.com/dedeme/MultiMarket/db/refsDb"
 	"github.com/dedeme/MultiMarket/db/sboxTb"
 	"github.com/dedeme/MultiMarket/db/serversTb"
 	"github.com/dedeme/MultiMarket/global/fn"
@@ -44,7 +45,8 @@ type pfMgT struct {
 }
 
 func mkDailyChartInit(
-	closes *qtable.T, hour int, nkCl *nkClT, qs []*nick.QvalueT, pfMgs []*pfMgT,
+	lk sync.T, closes *qtable.T, hour int, nkCl *nkClT,
+	qs []*nick.QvalueT, pfMgs []*pfMgT,
 ) *dailyChart.T {
 	nk := nkCl.nk
 	nickName := nk.Name()
@@ -56,6 +58,7 @@ func mkDailyChartInit(
 	}
 	hours := []int{hour, hour}
 	quotes := []float64{nkCl.cl, q}
+	dates := quotesDb.Dates(lk)
 
 	var managersData []*dailyChart.DataT
 	for _, e := range pfMgs {
@@ -75,7 +78,9 @@ func mkDailyChartInit(
 		ref := nkCl.cl
 		cls, ok := closes.NickValues(nickName)
 		if ok {
-			refs := mdPars.Model().Refs(cls, mdPars.Params())
+			refs := refsDb.MkRefs(
+				lk, nickName, dates, cls, mdPars.Model(), mdPars.Params(),
+			)
 			ref = refs[len(refs)-1]
 		}
 
@@ -126,7 +131,7 @@ func activating() {
 				if cl >= 0 {
 					nkCls = append(nkCls, &nkClT{nk, cl})
 				} else {
-					log.Error(lk, "Every quotes of "+nk.Name()+" is not valid")
+					log.Error(lk, "Every quote of "+nk.Name()+" is not valid")
 				}
 			}
 
@@ -140,7 +145,9 @@ func activating() {
 
 			var entries []*dailyChart.T
 			for _, e := range nkCls {
-				entries = append(entries, mkDailyChartInit(closes, hour, e, qs, pfMgs))
+				entries = append(
+					entries, mkDailyChartInit(lk, closes, hour, e, qs, pfMgs),
+				)
 			}
 			dailyChartsTb.Write(lk, entries)
 		})
@@ -149,6 +156,7 @@ func activating() {
 
 func updateProfitsHistoric() {
 	sync.Run(func(lk sync.T) {
+		dates := append(quotesDb.Dates(lk), date.Now().String())[1:]
 		closes := quotesDb.Closes(lk)
 		qs := dailyTb.Read(lk)
 		mqs := map[string]float64{}
@@ -174,7 +182,9 @@ func updateProfitsHistoric() {
 					me := m.GetModel(e.Nick())
 					cs, ok := closes.NickValuesAdd(e.Nick(), lastQ)
 					if ok {
-						refs := me.Model().Refs(cs, me.Params())
+						refs := refsDb.MkRefs(
+							lk, e.Nick(), dates, cs, me.Model(), me.Params(),
+						)
 						ref := refs[len(refs)-1]
 						if ref > lastQ { // Ref exceed
 							ref = lastQ
@@ -348,7 +358,7 @@ func updateDaily(isFinal bool) {
 					pfMgs = append(pfMgs, &pfMgT{portfolio, e})
 				}
 				entries = append(
-					entries, mkDailyChartInit(closes, hour, nkCl, qs, pfMgs),
+					entries, mkDailyChartInit(lk, closes, hour, nkCl, qs, pfMgs),
 				)
 			}
 		}

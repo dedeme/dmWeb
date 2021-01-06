@@ -6,6 +6,7 @@ package jmp2
 
 import (
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
+	"github.com/dedeme/MultiMarket/data/flea/refPos"
 	"math"
 )
 
@@ -30,7 +31,8 @@ func upGap(q, ref, jmp float64) float64 {
 }
 
 func fn(
-	closes [][]float64, params []float64, action func([]float64, []float64),
+	closes [][]float64, params []float64, init *refPos.T,
+	action func([]float64, []float64),
 ) {
 	nDays := len(closes)
 	nCos := len(closes[0])
@@ -53,6 +55,14 @@ func fn(
 		q := closes[ixDay][iCo]
 		refs[iCo] = q / jmp / jmp
 		preqs[iCo] = q
+	}
+
+	if init != nil {
+		if len(closes[0]) > 1 {
+			panic("Closes is > 1")
+		}
+		refs[0] = init.Ref()
+		toBuys[0] = init.ToBuy()
 	}
 
 	for iDay := 0; iDay < nDays; iDay++ {
@@ -97,6 +107,7 @@ func Mk() *fmodel.T {
 		[]float64{0.01},
 		[]float64{0.25},
 		[]int{6},
+		true,
 		fn,
 	)
 }

@@ -14,8 +14,10 @@ import (
 	"github.com/dedeme/MultiMarket/db/managersTb"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
+	"github.com/dedeme/MultiMarket/db/refsDb"
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/golib/cgi"
+	"github.com/dedeme/golib/date"
 	"github.com/dedeme/golib/json"
 )
 
@@ -26,6 +28,8 @@ func Process(ck string, mrq map[string]json.T) string {
 		rp := map[string]json.T{}
 		sync.Run(func(lk sync.T) {
 			activity := conf.Activity(lk).Activity()
+			dates := quotesDb.Dates(lk)
+			dates2 := append(dates, date.Now().String())[1:]
 			closes := quotesDb.Closes(lk)
 			mans := managersTb.Read(lk)
 			qs := dailyTb.Read(lk)
@@ -48,12 +52,14 @@ func Process(ck string, mrq map[string]json.T) string {
 					nk := e.Nick()
 					quote := -1.0
 					ref := e.Price()
+					var dts = dates
 					var cs [][]float64
 					ok := false
 					if activity != cts.ActSleeping2 {
 						v, ok2 := mqs[nk]
 						if ok2 {
 							cs, ok = closes.NickValuesAdd(nk, v)
+							dts = dates2
 						} else {
 							cs, ok = closes.NickValues(nk)
 						}
@@ -63,7 +69,9 @@ func Process(ck string, mrq map[string]json.T) string {
 					if ok {
 						mdPars := man.GetModel(nk)
 						quote = cs[len(cs)-1][0]
-						refs := mdPars.Model().Refs(cs, mdPars.Params())
+						refs := refsDb.MkRefs(
+							lk, nk, dts, cs, mdPars.Model(), mdPars.Params(),
+						)
 						ref = refs[len(refs)-1]
 						if ref > quote { // Sell situation.
 							ref = quote

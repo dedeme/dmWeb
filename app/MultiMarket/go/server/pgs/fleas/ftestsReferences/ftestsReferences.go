@@ -55,7 +55,7 @@ func Process(ck string, mrq map[string]json.T) string {
 			rp["ok"] = json.Wb(false)
 			if ok1 && ok2 && ok3 {
 				dates := quotesDb.Dates(lk)
-				refs := md.Refs(nkCs, params)
+				refs := md.Refs(nkCs, params, nil)
 
 				var datesJs []json.T
 				for _, e := range dates {

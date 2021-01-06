@@ -40,11 +40,11 @@ Accounting profits = Accounting profits
 # src/pgs/settings/servers/Configuration.hx: 334
 Activate = Activate
 
-# src/pgs/daily/Daily.hx: 212
+# src/pgs/daily/Daily.hx: 232
 Activating = Activating
 
-# src/pgs/daily/Daily.hx: 173
-# src/pgs/daily/Daily.hx: 213
+# src/pgs/daily/Daily.hx: 188
+# src/pgs/daily/Daily.hx: 233
 # src/pgs/settings/servers/Configuration.hx: 164
 Active = Active
 
@@ -52,12 +52,12 @@ Active = Active
 # src/pgs/acc/Profits.hx: 38
 # src/pgs/acc/wgs/ProfitsWg.hx: 204
 # src/pgs/daily/Summary.hx: 45
-# src/pgs/settings/acc/Acc.hx: 44
+# src/pgs/settings/acc/Acc.hx: 45
 # src/wgs/Log.hx: 71
 # src/wgs/Log.hx: 93
 All = All
 
-# src/pgs/daily/Daily.hx: 85
+# src/pgs/daily/Daily.hx: 99
 All CO's = All CO's
 
 # src/pgs/acc/Companies.hx: 84
@@ -101,10 +101,11 @@ Annotations & Settings = Annotations & Settings
 Application exit? = Application exit?
 
 # src/pgs/acc/Balance.hx: 203
-# src/pgs/fleas/Fleas.hx: 317
-# src/pgs/fleas/charts/Charts.hx: 57
-# src/pgs/fleas/charts/Charts.hx: 80
-# src/pgs/fleas/charts/Charts.hx: 170
+# src/pgs/fleas/Fleas.hx: 316
+# src/pgs/fleas/charts/Charts.hx: 62
+# src/pgs/fleas/charts/Charts.hx: 87
+# src/pgs/fleas/charts/Charts.hx: 169
+# src/pgs/fleas/charts/Charts.hx: 276
 # src/pgs/ranking/Ranking.hx: 154
 Assets = Assets
 
@@ -133,8 +134,9 @@ Bet = Bet
 Buy = Buy
 
 # src/pgs/acc/Trading.hx: 130
-# src/pgs/fleas/Fleas.hx: 328
-# src/pgs/fleas/charts/Charts.hx: 84
+# src/pgs/fleas/Fleas.hx: 327
+# src/pgs/fleas/charts/Charts.hx: 91
+# src/pgs/fleas/charts/Charts.hx: 298
 # src/pgs/ranking/Ranking.hx: 165
 Buys = Buys
 
@@ -159,6 +161,7 @@ Cancel = Cancel
 Capital = Capital
 
 # src/pgs/acc/Balance.hx: 232
+# src/pgs/fleas/charts/Charts.hx: 310
 # src/pgs/fleas/ftests/wgs/OrdersWg.hx: 52
 Cash = Cash
 
@@ -193,6 +196,9 @@ Click %0 to continue. = Click %0 to continue.
 # src/wgs/Msg.hx: 100
 Close = Close
 
+# src/pgs/settings/acc/Acc.hx: 52
+Close Year = Close Year
+
 # src/pgs/settings/calendar/Calendar.hx: 74
 # src/pgs/settings/calendar/Calendar.hx: 220
 # src/pgs/settings/nicks/Editor.hx: 538
@@ -212,7 +218,7 @@ Code = Code
 Codes = Codes
 
 # src/pgs/acc/Acc.hx: 44
-# src/pgs/fleas/charts/Charts.hx: 59
+# src/pgs/fleas/charts/Charts.hx: 66
 # src/pgs/fleas/ftests/References.hx: 85
 Companies = Companies
 
@@ -250,6 +256,7 @@ Daily configuration selected = Daily configuration selected
 Daily configuration stopped = Daily configuration stopped
 
 # src/pgs/fleas/Fleas.hx: 196
+# src/pgs/fleas/charts/Charts.hx: 294
 # src/pgs/fleas/ftests/wgs/OrdersWg.hx: 50
 # src/pgs/fleas/wgs/Operations.hx: 63
 # src/pgs/settings/acc/Editor.hx: 80
@@ -281,10 +288,10 @@ Date separator = Date separator
 # src/pgs/settings/servers/Configuration.hx: 468
 Date separator is missing = Date separator is missing
 
-# src/pgs/daily/Cos.hx: 82
+# src/pgs/daily/Cos.hx: 85
 Day = Day
 
-# src/pgs/daily/Daily.hx: 214
+# src/pgs/daily/Daily.hx: 234
 Deactivating = Deactivating
 
 # src/pgs/settings/models/Models.hx: 97
@@ -357,8 +364,8 @@ Errors and warnings found. = Errors and warnings found.
 # src/pgs/settings/nicks/List.hx: 253
 Errors found. = Errors found.
 
-# src/pgs/fleas/Fleas.hx: 324
-# src/pgs/fleas/charts/Charts.hx: 83
+# src/pgs/fleas/Fleas.hx: 323
+# src/pgs/fleas/charts/Charts.hx: 90
 # src/pgs/ranking/Ranking.hx: 161
 Eval. = Eval.
 
@@ -381,7 +388,7 @@ General Time Table = General Time Table
 # src/pgs/settings/settings/ChangePass.hx: 61
 Grey squares checks are wrong = Grey squares checks are wrong
 
-# src/pgs/daily/Daily.hx: 210
+# src/pgs/daily/Daily.hx: 230
 # src/pgs/settings/servers/Servers.hx: 109
 Historic = Historic
 
@@ -403,8 +410,8 @@ Holidays = Holidays
 # src/wgs/Dmenu.hx: 51
 Home = Home
 
-# src/pgs/fleas/Fleas.hx: 316
-# src/pgs/fleas/charts/Charts.hx: 66
+# src/pgs/fleas/Fleas.hx: 315
+# src/pgs/fleas/charts/Charts.hx: 73
 # src/pgs/ranking/Ranking.hx: 153
 Id = Id
 
@@ -470,7 +477,7 @@ Max = Max
 # src/pgs/settings/servers/Configuration.hx: 590
 Min = Min
 
-# src/pgs/fleas/charts/Charts.hx: 65
+# src/pgs/fleas/charts/Charts.hx: 72
 # src/pgs/settings/models/Models.hx: 169
 # src/pgs/settings/models/Models.hx: 196
 # src/pgs/settings/nicks/wgs/Wnick.hx: 38
@@ -517,7 +524,7 @@ New password and confirm password do not match = New password and confirm passwo
 # src/pgs/settings/settings/ChangePass.hx: 48
 New password is missing = 'New password' is missing
 
-# src/pgs/daily/Cos.hx: 77
+# src/pgs/daily/Cos.hx: 80
 # src/pgs/fleas/ftests/wgs/OrdersWg.hx: 50
 # src/pgs/settings/acc/Editor.hx: 136
 # src/pgs/settings/acc/Editor.hx: 174
@@ -545,13 +552,13 @@ Nicks = Nicks
 # src/pgs/settings/nicks/Editor.hx: 446
 No modification was performed.<br>See Log. = No modification was performed.<br>See Log.
 
-# src/pgs/daily/Cos.hx: 102
+# src/pgs/daily/Cos.hx: 105
 No selected company = No selected company
 
 # src/pgs/settings/servers/Servers.hx: 97
 No server selected = No server selected
 
-# src/pgs/fleas/Fleas.hx: 315
+# src/pgs/fleas/Fleas.hx: 314
 # src/pgs/fleas/ftests/wgs/OrdersWg.hx: 49
 # src/pgs/ranking/Ranking.hx: 151
 Nº = Nº
@@ -568,9 +575,11 @@ Operation failed.\nSee log. = Operation failed.\nSee log.
 # src/data/Cts.hx: 57
 Operation successfully done. = Operation successfully done.
 
-# src/pgs/daily/Cos.hx: 74
+# src/pgs/daily/Cos.hx: 77
 Order by = Order by
 
+# src/pgs/fleas/charts/Charts.hx: 64
+# src/pgs/fleas/charts/Charts.hx: 286
 # src/pgs/fleas/ftests/Ftests.hx: 34
 Orders = Orders
 
@@ -590,13 +599,13 @@ Password is missing = Password is missing
 # src/pgs/settings/settings/ChangePass.hx: 77
 Password successfully changed = Password successfully changed
 
-# src/pgs/fleas/Fleas.hx: 318
-# src/pgs/fleas/charts/Charts.hx: 81
+# src/pgs/fleas/Fleas.hx: 317
+# src/pgs/fleas/charts/Charts.hx: 88
 # src/pgs/ranking/Ranking.hx: 155
 Pf. Avg = Pf. Avg
 
-# src/pgs/fleas/Fleas.hx: 320
-# src/pgs/fleas/charts/Charts.hx: 82
+# src/pgs/fleas/Fleas.hx: 319
+# src/pgs/fleas/charts/Charts.hx: 89
 # src/pgs/ranking/Ranking.hx: 157
 Pf. Var = Pf. Var
 
@@ -607,7 +616,8 @@ Play ground stoped.\nRestart doing click in 'Selection'. = Play ground stoped.\n
 Pool = Pool
 
 # src/pgs/acc/Companies.hx: 84
-# src/pgs/daily/Daily.hx: 83
+# src/pgs/daily/Daily.hx: 97
+# src/pgs/fleas/charts/Charts.hx: 306
 Portfolio = Portfolio
 
 # src/pgs/acc/Trading.hx: 105
@@ -674,7 +684,7 @@ Remove %0 configuration? = Remove %0 configuration?
 # src/pgs/settings/servers/Names.hx: 75
 Reset = Reset
 
-# src/pgs/daily/Cos.hx: 92
+# src/pgs/daily/Cos.hx: 95
 Reverse = Reverse
 
 # src/pgs/acc/Balance.hx: 349
@@ -702,7 +712,7 @@ See = See
 # src/pgs/settings/servers/Configuration.hx: 171
 Selected = Selected
 
-# src/pgs/daily/Daily.hx: 87
+# src/pgs/daily/Daily.hx: 101
 # src/pgs/fleas/ftests/Ftests.hx: 36
 # src/pgs/settings/nicks/wgs/Wnick.hx: 52
 # src/pgs/settings/nicks/wgs/Wnick.hx: 59
@@ -717,8 +727,9 @@ Sell = Sell
 
 # src/pgs/acc/Balance.hx: 241
 # src/pgs/acc/Trading.hx: 140
-# src/pgs/fleas/Fleas.hx: 332
-# src/pgs/fleas/charts/Charts.hx: 85
+# src/pgs/fleas/Fleas.hx: 331
+# src/pgs/fleas/charts/Charts.hx: 92
+# src/pgs/fleas/charts/Charts.hx: 302
 # src/pgs/ranking/Ranking.hx: 169
 Sells = Sells
 
@@ -750,13 +761,13 @@ Short Name is missing = Short Name is missing
 # src/pgs/fleas/ftests/References.hx: 109
 Show = Show
 
-# src/pgs/daily/Cos.hx: 87
+# src/pgs/daily/Cos.hx: 90
 Signal = Signal
 
-# src/pgs/daily/Daily.hx: 209
+# src/pgs/daily/Daily.hx: 229
 Sleeping (1) = Sleeping (1)
 
-# src/pgs/daily/Daily.hx: 211
+# src/pgs/daily/Daily.hx: 231
 Sleeping (2) = Sleeping (2)
 
 # src/pgs/settings/nicks/Editor.hx: 346
@@ -806,7 +817,7 @@ Stop process? = Stop process?
 # src/pgs/settings/servers/Configuration.hx: 157
 Stopped = Stopped
 
-# src/pgs/daily/Daily.hx: 81
+# src/pgs/daily/Daily.hx: 95
 # src/pgs/daily/Summary.hx: 105
 Summary = Summary
 

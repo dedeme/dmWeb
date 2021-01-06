@@ -57,6 +57,23 @@ class Cts {
   public static final okMsg = _("Operation successfully done.");
   /// Standar messsage for server fails.
   public static final failMsg = _("Operation failed.\nSee log.");
+  /// ToBuy references colors (one by manager)
+  public static final toBuyColors = [
+    "rgba(255, 40, 0)",
+    "rgba(255, 129, 0)"
+  ];
+  /// ToSell references colors (one by manager)
+  public static final toSellColors = [
+    "rgba(0, 129, 255)",
+    "rgba(0, 210, 255)"
+  ];
+
+  // For jump models -----------------------------------------------
+  public static final jumps = [
+    Math.pow(1.157211, 1.5),
+    Math.pow(1.143673, 1.5)
+  ];
+  // End for jump models -------------------------------------------
 
   /// Format for numeric flea parameters.
   ///   v: Value

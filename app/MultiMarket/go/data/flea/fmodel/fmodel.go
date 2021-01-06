@@ -7,6 +7,7 @@ package fmodel
 import (
 	broker "github.com/dedeme/MultiMarket/data/brokerF"
 	"github.com/dedeme/MultiMarket/data/cts"
+	"github.com/dedeme/MultiMarket/data/flea/refPos"
 	"github.com/dedeme/MultiMarket/data/qtable"
 	"github.com/dedeme/golib/json"
 	"math"
@@ -120,7 +121,8 @@ type T struct {
 	parMins  []float64
 	parMaxs  []float64
 	parDecs  []int
-	fcalc    func([][]float64, []float64, func([]float64, []float64))
+	withInit bool
+	fcalc    func([][]float64, []float64, *refPos.T, func([]float64, []float64))
 }
 
 // Constructor
@@ -133,24 +135,28 @@ type T struct {
 //              Expected values:
 //              4, 6 : Percentage format
 //              other: No meaning.
+//    withInit: "true" if fcalc admit a value not nil for 'init'
 //    fcalc   : Function with the following paramenters:
 //              closes ([][]float64): Closes of serveral companies from before
 //                                    to after.
 //                                    Its rows are 'days' and its columns
 //                                    'companies'.
 //              params ([]float64): Parameters to do calculations.
+//              init (*refPos.T): Intialization or nil. Only is not nil
+//                                when closes is [][1]float64.
 //              action (func): Function to be called after calculations. Its
 //                             parameters are:
 //                             -closes ([]float64): Day closes of every company.
-//                             -stops ([]float64): Day stops of every company.
+//                             -stops ([]float64): Day refs of every company.
 //                             This function is defined in 'Refs', 'Profits',
 //                               'Orders' and 'Assets'
 func New(
 	id, name string,
 	parNames []string, parMins, parMaxs []float64, parDecs []int,
-	fcalc func([][]float64, []float64, func([]float64, []float64)),
+	withInit bool,
+	fcalc func([][]float64, []float64, *refPos.T, func([]float64, []float64)),
 ) *T {
-	return &T{id, name, parNames, parMins, parMaxs, parDecs, fcalc}
+	return &T{id, name, parNames, parMins, parMaxs, parDecs, withInit, fcalc}
 }
 
 // Brief identifier. 4 characters maximum (e.g. APPR).
@@ -186,17 +192,25 @@ func (md *T) ParDecs() []int {
 	return md.parDecs
 }
 
+// "true" if function returned by Fcalc() admits a value not nil for 'init'
+func (md *T) WithInit() bool {
+  return md.withInit
+}
+
 // Function with the following paramenters:
 //    closes ([][]float64): Closes of serveral companies from before to after.
 //                          Its rows are 'days' and its columns 'companies'.
 //    params ([]float64): Parameters to do calculations.
+//    init (*refPos.T): Intialization or nil. Only is not nil
+//                      when closes is [][1]float64.
 //    action (func): Function to be called after calculations. Its
 //                   parameters are:
 //                     -closes ([]float64): Day closes of every company.
 //                     -stops ([]float64): Day stops of every company.
 //                   This function is defined in 'Refs', 'Profits', 'Orders'
 //                   and 'Assets'
-func (md *T) Fcalc() func([][]float64, []float64, func([]float64, []float64)) {
+func (md *T) Fcalc() func(
+	[][]float64, []float64, *refPos.T, func([]float64, []float64)) {
 	return md.fcalc
 }
 
@@ -317,7 +331,7 @@ func (md *T) Assets(opens, closes *qtable.T, params []float64) *AssetsRsT {
 
 	// Main function -------------------------------
 
-	md.fcalc(cls, params, fn)
+	md.fcalc(cls, params, nil, fn)
 
 	for i := 0; i < nCos; i++ {
 		stocks := stockss[i]
@@ -374,7 +388,7 @@ func (md *T) Profits(opens, closes [][]float64, params []float64) float64 {
 		}
 	}
 
-	md.fcalc(closes, params, fn)
+	md.fcalc(closes, params, nil, fn)
 
 	if stocks > 0 {
 		cash += broker.Sell(stocks, qtable.LastRowOk(closes, 0))
@@ -414,7 +428,10 @@ func (md *T) ProfitsAvgSd(
 //    closes: (double[days][1]) Close quotes of a company
 //            (from before to after).
 //    params: Parameters to calculate.
-func (md *T) Refs(closes [][]float64, params []float64) []float64 {
+//    init  : Initial reference or nil.
+func (md *T) Refs(
+	closes [][]float64, params []float64, init *refPos.T,
+) []float64 {
 	r := make([]float64, len(closes))
 	ix := 0
 
@@ -423,7 +440,7 @@ func (md *T) Refs(closes [][]float64, params []float64) []float64 {
 		ix++
 	}
 
-	md.fcalc(closes, params, fn)
+	md.fcalc(closes, params, init, fn)
 
 	return r
 }
@@ -532,7 +549,7 @@ func (md *T) HistoricAssets(
 
 	// Main function -------------------------------
 
-	md.fcalc(cls, params, fn)
+	md.fcalc(cls, params, nil, fn)
 
 	for i := 0; i < nCos; i++ {
 		stocks := stockss[i]
@@ -641,7 +658,7 @@ func (md *T) Orders(
 
 	// Main function -------------------------------
 
-	md.fcalc(cls, params, fn)
+	md.fcalc(cls, params, nil, fn)
 
 	return orders
 }

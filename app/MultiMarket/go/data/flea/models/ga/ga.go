@@ -6,10 +6,12 @@ package ga
 
 import (
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
+	"github.com/dedeme/MultiMarket/data/flea/refPos"
 )
 
 func fn(
-	closes [][]float64, params []float64, action func([]float64, []float64),
+	closes [][]float64, params []float64, init *refPos.T,
+	action func([]float64, []float64),
 ) {
 	nDays := len(closes)
 	nCos := len(closes[0])
@@ -35,6 +37,14 @@ func fn(
 		}
 		refs[iCo] = closes[ixDay][iCo]
 		refs2[iCo] = closes[ixDay][iCo] * (1.0 - stripToSell)
+	}
+
+	if init != nil {
+		if len(closes[0]) > 1 {
+			panic("Closes is > 1")
+		}
+		refs2[0] = init.Ref()
+		toBuys[0] = init.ToBuy()
 	}
 
 	for iDay := 0; iDay < nDays; iDay++ {
@@ -78,6 +88,7 @@ func Mk() *fmodel.T {
 		[]float64{30, 0.001, 0.001},
 		[]float64{120, 0.1, 0.1},
 		[]int{3, 6, 6},
+		true,
 		fn,
 	)
 }

@@ -16,9 +16,11 @@ import (
 	"github.com/dedeme/MultiMarket/db/managersTb"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
+	"github.com/dedeme/MultiMarket/db/refsDb"
 	"github.com/dedeme/MultiMarket/db/serversTb"
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/golib/cgi"
+	"github.com/dedeme/golib/date"
 	"github.com/dedeme/golib/json"
 	"strings"
 )
@@ -98,11 +100,6 @@ func Process(ck string, mrq map[string]json.T) string {
 			}
 			rp["price"] = json.Wd(price)
 			rp["profits"] = json.Wd(0)
-			var dates []json.T
-			for _, e := range quotesDb.Dates(lk) {
-				dates = append(dates, json.Ws(e))
-			}
-			rp["dates"] = json.Wa(dates)
 
 			var nk *nick.T
 			for _, e := range nicksTb.Nicks(lk) {
@@ -118,6 +115,7 @@ func Process(ck string, mrq map[string]json.T) string {
 
 			nickId := nk.Id()
 			activity := conf.Activity(lk).Activity()
+			dates := quotesDb.Dates(lk)
 			closes := quotesDb.Closes(lk)
 			var cls [][]float64
 			var ok bool
@@ -132,6 +130,7 @@ func Process(ck string, mrq map[string]json.T) string {
 					cls, ok = closes.NickValues(nkName)
 				} else {
 					cls, ok = closes.NickValuesAdd(nkName, qv.Value)
+					dates = append(dates, date.Now().String())[1:]
 				}
 			} else {
 				cls, ok = closes.NickValues(nkName)
@@ -139,8 +138,15 @@ func Process(ck string, mrq map[string]json.T) string {
 
 			if !ok {
 				rp["quotes"] = json.Wa([]json.T{})
+				rp["dates"] = json.Wa([]json.T{})
 				return
 			}
+
+			var datesJs []json.T
+			for _, e := range dates {
+				datesJs = append(datesJs, json.Ws(e))
+			}
+			rp["dates"] = json.Wa(datesJs)
 
 			var quotes [][]json.T
 			for _, ce := range cls {
@@ -152,7 +158,9 @@ func Process(ck string, mrq map[string]json.T) string {
 			}
 			for i, man := range managersTb.Read(lk) {
 				mdPars := man.GetModel(nkName)
-				refs := mdPars.Model().Refs(cls, mdPars.Params())
+				refs := refsDb.MkRefs(
+					lk, nkName, dates, cls, mdPars.Model(), mdPars.Params(),
+				)
 				for iq := range quotes {
 					quotes[iq][i+1] = json.Wd(refs[iq])
 				}

@@ -45,8 +45,8 @@ func Process(ck string, mrq map[string]json.T) string {
 			qs := quotesDb.Read(lk, nk.Name())
 			if len(qs) == 0 {
 				log.Error(lk, fmt.Sprintf(
-          "'%v'.tb not found, empty or in bad condition",
-          nk.Name()))
+					"'%v'.tb not found, empty or in bad condition",
+					nk.Name()))
 				rp["ok"] = json.Wb(false)
 				return
 			}
@@ -61,8 +61,8 @@ func Process(ck string, mrq map[string]json.T) string {
 			mqs := quotesDb.Read(lk, model.Name())
 			if len(mqs) == 0 {
 				log.Error(lk, fmt.Sprintf(
-          "'%v'.tb not found, empty or in bad condition",
-          model.Name()))
+					"'%v'.tb not found, empty or in bad condition",
+					model.Name()))
 				rp["ok"] = json.Wb(false)
 				return
 			}

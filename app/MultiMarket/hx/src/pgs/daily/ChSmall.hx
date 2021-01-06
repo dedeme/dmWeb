@@ -8,6 +8,7 @@ import dm.Ui;
 import dm.Ui.Q;
 import dm.Dec;
 import data.DailyChart;
+import data.Cts;
 
 /// Small chart
 class ChSmall {
@@ -28,12 +29,15 @@ class ChSmall {
     var dailyProfits = 0.0;
     var totalProfits = 0.0;
     var inPortfolio = false;
+
     // 0 = Not change, 1 = Sell, -1 = Buy
     var changeSellBuy = 0;
-    // Pairs<number, number>: [isBuy = -1|isSell = 1, ref]
-    final refs = [];
-    // Pairs<number, number>: [isBuy = -1|isSell = 1, ref-quote %]
-    final rs = d.managersData.map(e -> {
+    // Tuples<Int, Float, Int>: [isBuy = -1|isSell = 1, ref, manIx]
+    final refs: Array<Array<Dynamic>> = [];
+    // Pairs<Int, Float>: [isBuy = -1|isSell = 1, ref-quote %]
+    final rs = [];
+    for (manIx in 0...d.managersData.length) {
+      final e = d.managersData[manIx];
       var daily = 0.0;
       if (e.stocks > 0) {
         daily = e.stocks * (quote - close);
@@ -55,11 +59,23 @@ class ChSmall {
           : 1 - (e.ref - q) / e.ref
         ;
         if (dif >= 0.98) {
-          refs.push([isSold, e.ref]);
+          refs.push([isSold, e.ref, manIx]);
+        } else {
+          final ref2 = isSold == 1
+            ? e.ref * Cts.jumps[manIx]
+            : e.ref / Cts.jumps[manIx]
+          ;
+          final dif = isSold == -1
+            ? 1 - (q - ref2) / q
+            : 1 - (ref2 - q) / ref2
+          ;
+          if (dif >= 0.98) {
+            refs.push([isSold * -2, ref2, manIx]);
+          }
         }
       }
-      return [isSold, dif * 100];
-    });
+      rs.push([isSold, dif * 100]);
+    }
 
     function separator (): Domo {
       return Q("span")
@@ -185,11 +201,16 @@ class ChSmall {
       ctx.setLineDash([]);
 
       // Refs
-      for (rf in refs) {
-        ctx.strokeStyle = rf[0] == 1
-          ? "rgba(255, 129, 0)"
-          : "rgba(0, 170, 255)"
+      for (i in 0...refs.length) {
+        final rf = refs[i];
+        ctx.strokeStyle = rf[0] > 0
+          ? Cts.toBuyColors[rf[2]]
+          : Cts.toSellColors[rf[2]]
         ;
+        ctx.setLineDash([]);
+        if (Math.abs(rf[0]) > 1) {
+          ctx.setLineDash([5, 5]);
+        }
         ctx.beginPath();
         ctx.moveTo(grIncrX - grGapX, toGrY(rf[1]));
         ctx.lineTo(grWidth + grIncrX + grGapX, toGrY(rf[1]));
@@ -197,6 +218,7 @@ class ChSmall {
         ctx.closePath();
       }
       ctx.strokeStyle = "rgba(0, 0, 0)";
+      ctx.setLineDash([]);
 
       // Quotes
       for (i in 0...qs.length - 1) {

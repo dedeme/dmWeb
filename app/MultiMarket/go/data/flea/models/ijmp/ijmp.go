@@ -6,6 +6,7 @@ package ijmp
 
 import (
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
+	"github.com/dedeme/MultiMarket/data/flea/refPos"
 	"math"
 )
 
@@ -38,7 +39,8 @@ func upGap2(q, ref, jmp float64) float64 {
 }
 
 func fn(
-	closes [][]float64, params []float64, action func([]float64, []float64),
+	closes [][]float64, params []float64, init *refPos.T,
+	action func([]float64, []float64),
 ) {
 	nDays := len(closes)
 	nCos := len(closes[0])
@@ -63,6 +65,10 @@ func fn(
 		refs[iCo] = downGap(closes[ixDay][iCo], jmp, lgJump)
 	}
 
+	if init != nil {
+		panic("MM does not admint initialization")
+	}
+
 	for iDay := 0; iDay < nDays; iDay++ {
 		for iCo := 0; iCo < nCos; iCo++ {
 			if iDay < days {
@@ -83,7 +89,11 @@ func fn(
 						if oldq < 0 {
 							oldq = ref
 						}
+						maxRef := ref / jmp
 						ref = downGap(oldq, jmp, lgJump)
+						if ref > maxRef {
+							ref = maxRef
+						}
 						toBuys[iCo] = false
 					}
 				} else {
@@ -96,7 +106,11 @@ func fn(
 						if oldq < 0 {
 							oldq = ref
 						}
+						minRef := ref * jmp
 						ref = upGap(oldq, jmp, lgJump)
+						if ref < minRef {
+							ref = minRef
+						}
 						toBuys[iCo] = true
 					}
 				}
@@ -116,6 +130,7 @@ func Mk() *fmodel.T {
 		[]float64{20, 0.01},
 		[]float64{120, 0.25},
 		[]int{0, 6},
+		false,
 		fn,
 	)
 }

@@ -30,12 +30,16 @@ func Start(ch chan int) {
 		logError(fmt.Sprintf(
 			"Server listenning port %s failed (%s)", cts.Port, err,
 		))
+		fmt.Printf(
+			"Server listenning port %s failed (%s)", cts.Port, err,
+		)
 		os.Exit(1)
 	}
 	for !stopper.Stop {
 		client, err := sv.Accept()
 		if err != nil {
 			logError("Server accepting client failed")
+			fmt.Printf("Server accepting client failed")
 			continue
 		}
 
@@ -51,6 +55,9 @@ func Start(ch chan int) {
 						"Server reading client failed.\nError: %v\nCurrent input:\n%s",
 						err, rq.String(),
 					))
+					fmt.Printf(
+						"Server listenning port %s failed (%s)", cts.Port, err,
+					)
 				}
 				break
 			}

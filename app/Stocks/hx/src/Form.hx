@@ -21,16 +21,19 @@ class Form {
 
   /// Constructor.
   ///   wg: Container.
-  public static function mk (wg:Domo) {
+  ///   year: Year of report. If it is None, report is for all years.
+  public static function mk (wg:Domo, year: Option<String>) {
     All.request(all -> {
-      show(wg, Report.ALL, all);
+      show(wg, Report.ALL, all, year);
     });
   }
 
   // If isel == Report.ALL, data is from 'all'.
   // If isel == Report.WITH_FEES, data is from 'with'.
   // Otherwise is "Inv-" + isel
-  static function show (wg: Domo, isel: Int, all: All): Void {
+  static function show (
+    wg: Domo, isel: Int, all: All, year: Option<String>
+  ): Void {
     final sel = isel == Report.ALL
       ? "all"
       : isel == Report.WITH_FEES
@@ -38,26 +41,43 @@ class Form {
         : "Inv-" + Std.string(isel)
     ;
 
-    var lopts = [Menu.toption("all", _("All"), () -> show(wg, -1, all))];
+    final ylopts = [];
+    ylopts.push(Menu.toption(
+        "all", _("All"), () -> show(wg, isel, all, None)
+    ));
+    for (myear in all.yearIds()) {
+      ylopts.push(Menu.separator());
+      ylopts.push(Menu.toption(
+        myear, myear, () -> show(wg, isel, all, Some(myear))
+      ));
+    }
+    final yopsel = switch (year) {
+      case Some(y): y;
+      case None: "all";
+    }
+    final ymenu = new Menu(ylopts, [], yopsel);
+
+    var lopts = [Menu.toption("all", _("All"), () -> show(wg, -1, all, year))];
     for (i in 0...Cts.investors) {
       final ix = i;
       final name = "Inv-" + Std.string(i);
       lopts.push(Menu.separator());
-      lopts.push(Menu.toption(name, name, () -> show(wg, ix, all)));
+      lopts.push(Menu.toption(name, name, () -> show(wg, ix, all, year)));
     }
     var ropts = [
-      Menu.toption("with", _("With Fees"), () -> show(wg, -2, all))
+      Menu.toption("with", _("With Fees"), () -> show(wg, -2, all, year))
     ];
     final menu = new Menu(lopts, ropts, sel);
 
     final body = Q("div");
-    final nicks = all.nicks(isel);
+    final nicks = all.nicks(isel, year);
     var nickSel = Opt.get(Store.get(KEY));
-    if (nickSel == null) nickSel = "";
-    showNicks(body, isel, nicks, nickSel, all);
+    if (nickSel == null || !nicks.contains(nickSel)) nickSel = "";
+    showNicks(body, isel, nicks, nickSel, all, year);
 
     wg
       .removeAll()
+      .add(ymenu.wg)
       .add(menu.wg)
       .add(body)
     ;
@@ -125,7 +145,8 @@ class Form {
 
   // type can be: Report.ALL, Report.WITH_FEES or number of investor.
   static function showNicks(
-    wg: Domo, type: Int, nicks: Array<String>, nickSel: String, all: All
+    wg: Domo, type: Int, nicks: Array<String>, nickSel: String, all: All,
+    year: Option<String>
   ): Void {
     if (nicks.length == 0) {
       wg
@@ -147,12 +168,18 @@ class Form {
     for (e in nicks) {
       if (first) first = false;
       else lopts.push(Menu.separator());
-      lopts.push(Menu.toption(e, e, () -> showNicks(wg, type, nicks, e, all)));
+      lopts.push(Menu.toption(
+        e, e, () -> showNicks(wg, type, nicks, e, all, year)
+      ));
     }
-    final menu = new Menu(lopts, [], nickSel);
+    final menu = new Menu2(lopts, [], nickSel);
 
-    final entries = all.form(type, nickSel);
-    final le = entries[entries.length - 1];
+    final entries = all.form(type, nickSel, year);
+    final ole = entries.length > 0
+      ? Some(entries[entries.length - 1])
+      : None
+    ;
+
     final table = Q("table")
       .klass("border")
       .att("align", "center")
@@ -205,20 +232,31 @@ class Form {
         .add(Q("td")
           .att("colspan", "2")
           .add(Q("hr"))))
-      .add(Q("tr")
-        .add(Q("td")
-          .att("colspan", "14")
-          .style("text-align: right")
-          .text(_("Sum") + ":"))
-        .add(Q("td").text(" "))
-        .add(Q("td")
-          .klass("number")
-          .style("background:" + bk1)
-          .text(Dec.toIso(le.ttProfits, 2)))
-        .add(Q("td")
-          .klass("number")
-          .style("background:" + (le.ttFees > 0 ? bk1 : bk0))
-          .text(le.ttFees > 0 ? Dec.toIso(le.ttFees, 2) : "")))
+      .add(switch (ole) {
+        case Some(le):
+          Q("tr")
+            .add(Q("td")
+              .att("colspan", "14")
+              .style("text-align: right")
+              .text(_("Sum") + ":"))
+            .add(Q("td").text(" "))
+            .add(Q("td")
+              .klass("number")
+              .style("background:" + bk1)
+              .text(Dec.toIso(le.ttProfits, 2)))
+            .add(Q("td")
+              .klass("number")
+              .style("background:" + (le.ttFees > 0 ? bk1 : bk0))
+              .text(le.ttFees > 0 ? Dec.toIso(le.ttFees, 2) : ""))
+          ;
+        case None:
+          Q("tr")
+            .add(Q("td")
+              .att("colspan", "17")
+              .style("text-align: center")
+              .text(_("Without Data")))
+          ;
+        })
     ;
 
     wg

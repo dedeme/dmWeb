@@ -45,6 +45,8 @@ class Main {
       Menu.tlink("forms", _("Forms")),
     ];
     var ropts = [
+      Menu.tlink("help", _("Help")),
+      Menu.separator(),
       Menu.tlink("settings", _("Settings")),
       Menu.separator(),
       Menu.close(close)
@@ -73,13 +75,15 @@ class Main {
 
         switch (page) {
         case "treasury":
-          Treasury.mk(body);
+          Treasury.mk(body, None);
         case "forms":
-          Form.mk(body);
+          Form.mk(body, None);
+        case "help":
+          Help.mk(body);
         case "settings":
           SettingsPage.mk(body);
         default:
-          Annotations.mk(body);
+          Annotations.mk(body, None);
         }
 
         wg.removeAll()
