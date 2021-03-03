@@ -11,10 +11,10 @@ import (
 	"github.com/dedeme/golib/date"
 	"github.com/dedeme/golib/file"
 	"github.com/dedeme/golib/json"
+	"math"
 	"path"
 	"sort"
 	"strconv"
-  "math"
 )
 
 var basePath string
@@ -72,7 +72,7 @@ func Read(lk sync.T) json.T {
 					managerData = append(managerData, e)
 				}
 			}
-    }
+		}
 
 		all = append(all, json.Wa(managerData))
 	}
@@ -109,9 +109,9 @@ func Years(lk sync.T) (r []string) {
 //   acc    : Accounting profits.
 //   risk   : Risk profits.
 func Add(lk sync.T, manager int, total, acc, risk float64) {
-  rd := func (n float64) float64 {
-    return math.Round(n*100)/100
-  }
+	rd := func(n float64) float64 {
+		return math.Round(n*100) / 100
+	}
 	d := date.Now()
 	ds := d.String()
 	y := d.Format("%Y")

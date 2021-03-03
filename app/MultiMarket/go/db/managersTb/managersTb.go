@@ -125,7 +125,7 @@ func Regularize(lk sync.T, man int) {
 		}
 	}
 
-  refsDb.Purge(lk, mgs)
+	refsDb.Purge(lk, mgs)
 
 	write(lk, mgs)
 }

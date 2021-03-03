@@ -11,6 +11,7 @@ import (
 	"github.com/dedeme/MultiMarket/data/dailyChart"
 	"github.com/dedeme/MultiMarket/data/manager"
 	"github.com/dedeme/MultiMarket/data/nick"
+	"github.com/dedeme/MultiMarket/data/performance"
 	"github.com/dedeme/MultiMarket/data/qtable"
 	"github.com/dedeme/MultiMarket/data/server"
 	"github.com/dedeme/MultiMarket/data/stopper"
@@ -23,6 +24,7 @@ import (
 	"github.com/dedeme/MultiMarket/db/log"
 	"github.com/dedeme/MultiMarket/db/managersTb"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
+	"github.com/dedeme/MultiMarket/db/performanceTb"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
 	"github.com/dedeme/MultiMarket/db/refsDb"
 	"github.com/dedeme/MultiMarket/db/sboxTb"
@@ -399,6 +401,84 @@ func updateHistoric() {
 	}
 }
 
+func updatePerformance() {
+	sync.Run(func(lk sync.T) {
+
+		// -----
+		getOpen := func(
+			nick string, date string) (open float64, ok bool,
+		) {
+			for _, q := range quotesDb.Read(lk, nick) {
+				if q.Date() == date {
+					ok = true
+					open = q.Open()
+					return
+				}
+			}
+			return
+		}
+		// -----
+
+		years := diariesDb.Years(lk)
+		endYears := 1
+		if len(years) > 1 {
+			endYears = 2
+		}
+		perfData := performanceTb.Read(lk)
+		lastDate := "000000"
+		if len(perfData) == 0 {
+			for i := 0; i < endYears; i++ {
+				y := years[i]
+				allJs := diariesDb.ReadAllJs(lk, y)
+				for _, js := range allJs.Ra() {
+					ann := acc.AnnotationFromJs(js)
+					date := ann.Date()
+					_, _, _, ok1 := ann.Operation().Bu()
+					_, _, _, ok2 := ann.Operation().Se()
+					if (ok1 || ok2) && date > lastDate {
+						lastDate = date
+					}
+				}
+			}
+			lastDate = date.FromString(lastDate).Add(-1).String()
+		} else {
+			for _, rc := range perfData {
+				if rc.Date() > lastDate {
+					lastDate = rc.Date()
+				}
+			}
+		}
+
+		for i := 0; i < endYears; i++ {
+			y := years[i]
+			allJs := diariesDb.ReadAllJs(lk, y)
+			for _, js := range allJs.Ra() {
+				ann := acc.AnnotationFromJs(js)
+				date := ann.Date()
+				if date > lastDate {
+					op := ann.Operation()
+					if nick, stocks, price, ok := op.Bu(); ok {
+						if open, ok := getOpen(nick, date); ok {
+							perfData = append(perfData, performance.New(
+								nick, date, false, stocks, price, open,
+							))
+						}
+					}
+					if nick, stocks, price, ok := op.Se(); ok {
+						date := ann.Date()
+						if open, ok := getOpen(nick, date); ok {
+							perfData = append(perfData, performance.New(
+								nick, date, true, stocks, price, open,
+							))
+						}
+					}
+				}
+			}
+		}
+		performanceTb.Write(lk, perfData)
+	})
+}
+
 // Returns the initial state of activity depending on where was the last one.
 //    lastAct: Activity when server was stopped by last time.
 func InitialActivity(lastAct *activity.T) *activity.T {
@@ -512,6 +592,7 @@ func Start(ch chan int, act *activity.T) {
 			}
 		case cts.ActHistoric:
 			updateHistoric()
+			updatePerformance()
 			if !stopper.Stop {
 				go fleas.Evolution()
 				sync.Run(func(lk sync.T) {

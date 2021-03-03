@@ -18,6 +18,7 @@ import (
 	"github.com/dedeme/MultiMarket/db/log"
 	"github.com/dedeme/MultiMarket/db/managersTb"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
+	"github.com/dedeme/MultiMarket/db/performanceTb"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
 	"github.com/dedeme/MultiMarket/db/refsDb"
 	"github.com/dedeme/MultiMarket/db/sboxTb"
@@ -57,6 +58,7 @@ func Initialize(lk sync.T) {
 	refsDb.Initialize(lk, p)
 	serversTb.Initialize(lk, p)
 	managersTb.Initialize(lk, p)
+	performanceTb.Initialize(lk, p)
 	diariesDb.Initialize(lk, path.Join(p, "acc"))
 	profitsDb.Initialize(lk, path.Join(p, "acc"))
 	flog.Initialize(path.Join(p, "fleas"))

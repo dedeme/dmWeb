@@ -194,7 +194,7 @@ func (md *T) ParDecs() []int {
 
 // "true" if function returned by Fcalc() admits a value not nil for 'init'
 func (md *T) WithInit() bool {
-  return md.withInit
+	return md.withInit
 }
 
 // Function with the following paramenters:

@@ -128,7 +128,6 @@ func ReadJs(lk sync.T, investor int, year string) (data json.T, ok bool) {
 
 // Returns unsorted annotations of "year" of every investor.
 //    lk      : Synchronization lock.
-//    investor: Inversor number.
 //    year    : Year to search.
 func ReadAllJs(lk sync.T, year string) json.T {
 	var r []json.T
@@ -192,8 +191,7 @@ func Write(lk sync.T, investor int, year string, data *T) {
 	}).String())
 }
 
-// Returns al years with annotations of every investor, sorted from
-// after to before.
+// Returns all the years with annotations, sorted from after to before.
 //    lk      : Synchronization lock.
 func Years(lk sync.T) (r []string) {
 	rmap := map[string]bool{}

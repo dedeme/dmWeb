@@ -28,7 +28,8 @@ class BrokerA {
   /// Returns net cost of operation.
   public static function buy (stocks: Int, price: Float): Float {
     final amount = stocks * price;
-    return amount + BrokerA.fees(amount);
+    final tobin = amount * 0.002;
+    return amount + BrokerA.fees(amount) + tobin;
   }
 
   /// Returns net incomes of operation.

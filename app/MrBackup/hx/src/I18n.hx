@@ -94,7 +94,7 @@ class I18n {
     "Directories" => "Directorios",
     "Directories are no synchronized" => "Los directorios no están sincronizados",
     "Directories in bad condition" => "Directorios en mal estado",
-    "Directories out of data" => "Los directorios está obsoletos",
+    "Directories out of data" => "Directorios obsoletos",
     "Directory is duplicated" => "El directorio está repetido",
     "Directory is missing in some pool" => "Falta el directorio en algun depósito",
     "Directory is not in base" => "El directorio no está en base",

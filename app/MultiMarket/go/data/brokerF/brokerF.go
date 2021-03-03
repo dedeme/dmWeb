@@ -1,7 +1,7 @@
 // Copyright 04-Sep-2020 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-// Floeas data.
+// Fleas broker
 package brokerF
 
 // Returns tatal fees of a buy or sell operation.
@@ -25,9 +25,9 @@ func Fees(amount float64) float64 {
 	}
 	market += 0.11 // Execution fee
 
-	tobin := amount * 0.002
+	penalty := amount * 0.005
 
-	return brk + market + tobin
+	return brk + market + penalty
 }
 
 // Returns net cost of operation (cost + fees).
@@ -35,7 +35,8 @@ func Fees(amount float64) float64 {
 //    price  ; Stocks price.
 func Buy(stocks int, price float64) float64 {
 	amount := float64(stocks) * price
-	return amount + Fees(amount)
+	tobin := amount * 0.002
+	return amount + Fees(amount) + tobin
 }
 
 // Returns net incomes of operation (incomes - fees).

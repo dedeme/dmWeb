@@ -52,6 +52,8 @@ class Dmenu {
       Menu.separator2(),
       Menu.tlink("fleas", _("Fleas")),
       Menu.separator(),
+      Menu.tlink("performance", _("Performance")),
+      Menu.separator(),
       Menu.tlink("ranking", _("Ranking")),
       Menu.separator2(),
       Menu.tlink("acc", _("Accounting")),

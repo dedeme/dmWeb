@@ -81,6 +81,7 @@ func Process(ck string, mrq map[string]json.T) string {
 		nkName := cgi.RqString(mrq, "nick")
 		rp := map[string]json.T{}
 		sync.Run(func(lk sync.T) {
+      var mans []json.T
 			stocks := 0
 			value := 0.0
 			for i := 0; i < cts.Managers; i++ {
@@ -88,11 +89,14 @@ func Process(ck string, mrq map[string]json.T) string {
 				_, portfolio, _ := acc.Settlement(anns)
 				for _, e := range portfolio {
 					if e.Nick() == nkName {
+            mans = append(mans, json.Wi(i))
 						stocks += e.Stocks()
 						value += float64(e.Stocks()) * e.Price()
 					}
 				}
 			}
+
+      rp["managers"] = json.Wa(mans)
 
 			price := -1.0
 			if stocks > 0 {

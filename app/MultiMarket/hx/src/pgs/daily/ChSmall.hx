@@ -60,7 +60,7 @@ class ChSmall {
         ;
         if (dif >= 0.98) {
           refs.push([isSold, e.ref, manIx]);
-        } else {
+        } else if (e.stocks > 0) {
           final ref2 = isSold == 1
             ? e.ref * Cts.jumps[manIx]
             : e.ref / Cts.jumps[manIx]
@@ -229,7 +229,6 @@ class ChSmall {
         ctx.closePath();
       }
     }
-
 
     ctx.lineWidth = 1;
     ctx.strokeRect(grIncrX - grGapX, grIncrY, grWidth + grGapX * 2, grHeight);

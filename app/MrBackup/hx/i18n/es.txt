@@ -85,7 +85,7 @@ Directories are no synchronized = Los directorios no están sincronizados
 Directories in bad condition = Directorios en mal estado
 
 # src/Summary.hx: 161
-Directories out of data = Los directorios está obsoletos
+Directories out of data = Directorios obsoletos
 
 # src/Directories.hx: 125
 Directory is duplicated = El directorio está repetido

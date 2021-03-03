@@ -11,6 +11,7 @@ import wgs.Dmenu;
 import pgs.settings.Settings;
 import pgs.home.Home;
 import pgs.fleas.Fleas;
+import pgs.performance.Performance;
 import pgs.ranking.Ranking;
 import pgs.daily.Daily;
 import pgs.acc.Acc;
@@ -42,7 +43,8 @@ class Main {
 
           final target =
             switch (lcPath[0]) {
-              case "fleas" | "ranking" | "daily" | "acc" | "settings":
+              case "fleas" | "performance" |"ranking" | "daily" | "acc" |
+                   "settings":
                 lcPath[0];
               default:
                 "home";
@@ -58,6 +60,8 @@ class Main {
               Home.mk(bodyDiv);
             case "fleas":
               Fleas.mk(bodyDiv, menu, lcPath);
+            case "performance":
+              Performance.mk(bodyDiv);
             case "ranking":
               Ranking.mk(bodyDiv);
             case "acc":

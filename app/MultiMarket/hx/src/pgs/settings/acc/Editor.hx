@@ -189,8 +189,8 @@ class Editor {
     Ui.changePoint(amf);
     final f = e -> {
       var r = controlBase(_("Date"), v(dtf));
-      if (r == "") r = controlBase(_("Ammount"), v(amf));
-      if (r == "") r = controlDouble("es", _("Ammount"), v(amf));
+      if (r == "") r = controlBase(_("Amount"), v(amf));
+      if (r == "") r = controlDouble("es", _("Amount"), v(amf));
       if (r == "") {
         sendAnn("in", v(dtf), "", 0, Opt.get(Dec.fromIso(v(amf))));
       } else {
@@ -200,7 +200,7 @@ class Editor {
     final wg = () -> {
       return Q("table").klass("main")
         .add(typeDate(_("Income"), datePicker(dtf)))
-        .add(fields([new Field(_("Ammount"), amf, 75)]))
+        .add(fields([new Field(_("Amount"), amf, 75)]))
         .add(cancelAccept(f))
       ;
     };
@@ -215,8 +215,8 @@ class Editor {
     Ui.changePoint(amf);
     final f = e -> {
       var r = controlBase(_("Date"), v(dtf));
-      if (r == "") r = controlBase(_("Ammount"), v(amf));
-      if (r == "") r = controlDouble("es", _("Ammount"), v(amf));
+      if (r == "") r = controlBase(_("Amount"), v(amf));
+      if (r == "") r = controlDouble("es", _("Amount"), v(amf));
       if (r == "") {
         sendAnn(
           "wi", v(dtf), "", 0, Opt.get(Dec.fromIso(v(amf))));
@@ -227,7 +227,7 @@ class Editor {
     final wg = () -> {
       return Q("table").klass("main")
         .add(typeDate(_("Withdrawal"), datePicker(dtf)))
-        .add(fields([new Field(_("Ammount"), amf, 75)]))
+        .add(fields([new Field(_("Amount"), amf, 75)]))
         .add(cancelAccept(f))
       ;
     };
@@ -243,8 +243,8 @@ class Editor {
     final def = mkin();
     final f = e -> {
       var r = controlBase(_("Date"), v(dtf));
-      if (r == "") r = controlBase(_("Ammount"), v(amf));
-      if (r == "") r = controlDouble("es", _("Ammount"), v(amf));
+      if (r == "") r = controlBase(_("Amount"), v(amf));
+      if (r == "") r = controlDouble("es", _("Amount"), v(amf));
       if (r == "") r = controlBase(_("Description"), v(def));
       if (r == "") {
         sendAnn("pr", v(dtf), v(def), 0, Opt.get(Dec.fromIso(v(amf))));
@@ -256,7 +256,7 @@ class Editor {
       return Q("table").klass("main")
         .add(typeDate(_("Profits"), datePicker(dtf)))
         .add(fields([
-          new Field(_("Ammount"), amf, 75),
+          new Field(_("Amount"), amf, 75),
           new Field(_("Description"), def, 220)
         ]))
         .add(cancelAccept(f))
@@ -274,8 +274,8 @@ class Editor {
     final def = mkin();
     final f = e -> {
       var r = controlBase(_("Date"), v(dtf));
-      if (r == "") r = controlBase(_("Ammount"), v(amf));
-      if (r == "") r = controlDouble("es", _("Ammount"), v(amf));
+      if (r == "") r = controlBase(_("Amount"), v(amf));
+      if (r == "") r = controlDouble("es", _("Amount"), v(amf));
       if (r == "") r = controlBase(_("Description"), v(def));
       if (r == "") {
         sendAnn(
@@ -288,7 +288,7 @@ class Editor {
       return Q("table").klass("main")
         .add(typeDate(_("Fees"), datePicker(dtf)))
         .add(fields([
-          new Field(_("Ammount"), amf, 75),
+          new Field(_("Amount"), amf, 75),
           new Field(_("Description"), def, 220)
         ]))
         .add(cancelAccept(f))
@@ -306,8 +306,8 @@ class Editor {
     final def = mkin();
     final f = e -> {
       var r = controlBase(_("Date"), v(dtf));
-      if (r == "") r = controlBase(_("Ammount"), v(amf));
-      if (r == "") r = controlDouble("es", _("Ammount"), v(amf));
+      if (r == "") r = controlBase(_("Amount"), v(amf));
+      if (r == "") r = controlDouble("es", _("Amount"), v(amf));
       if (r == "") r = controlBase(_("Description"), v(def));
       if (r == "") {
         sendAnn(
@@ -320,7 +320,7 @@ class Editor {
       return Q("table").klass("main")
         .add(typeDate(_("Diff. +"), datePicker(dtf)))
         .add(fields([
-          new Field(_("Ammount"), amf, 75),
+          new Field(_("Amount"), amf, 75),
           new Field(_("Description"), def, 220)
         ]))
         .add(cancelAccept(f))
@@ -338,8 +338,8 @@ class Editor {
     final def = mkin();
     final f = e -> {
       var r = controlBase(_("Date"), v(dtf));
-      if (r == "") r = controlBase(_("Ammount"), v(amf));
-      if (r == "") r = controlDouble("es", _("Ammount"), v(amf));
+      if (r == "") r = controlBase(_("Amount"), v(amf));
+      if (r == "") r = controlDouble("es", _("Amount"), v(amf));
       if (r == "") r = controlBase(_("Description"), v(def));
       if (r == "") {
         sendAnn(
@@ -352,7 +352,7 @@ class Editor {
       return Q("table").klass("main")
         .add(typeDate(_("Diff. -"), datePicker(dtf)))
         .add(fields([
-          new Field(_("Ammount"), amf, 75),
+          new Field(_("Amount"), amf, 75),
           new Field(_("Description"), def, 220)
         ]))
         .add(cancelAccept(f))

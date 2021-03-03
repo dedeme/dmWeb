@@ -13,6 +13,7 @@ import (
 	"github.com/dedeme/MultiMarket/server/pgs/daily"
 	"github.com/dedeme/MultiMarket/server/pgs/fleas"
 	"github.com/dedeme/MultiMarket/server/pgs/home"
+	"github.com/dedeme/MultiMarket/server/pgs/performance"
 	"github.com/dedeme/MultiMarket/server/pgs/ranking"
 	"github.com/dedeme/MultiMarket/server/pgs/settings"
 	"github.com/dedeme/MultiMarket/server/pgs/wgs"
@@ -43,6 +44,8 @@ func hub(ck string, mrq map[string]json.T) string {
 		return home.Process(ck, mrq)
 	case "fleas":
 		return fleas.Process(ck, mrq)
+	case "performance":
+		return performance.Process(ck, mrq)
 	case "ranking":
 		return ranking.Process(ck, mrq)
 	case "daily":

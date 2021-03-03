@@ -22,15 +22,16 @@ class BrokerF {
     }
     bolsa += 0.11; // Execution fee.
 
-    final tobin = amount * 0.002;
+    final penalty = amount * 0.005;
 
-    return broker + bolsa + tobin;
+    return broker + bolsa + penalty;
   }
 
   /// Returns net cost of operation.
   public static function buy (stocks: Int, price: Float): Float {
     final amount = stocks * price;
-    return amount + BrokerF.fees(amount);
+    final tobin = amount * 0.002;
+    return amount + BrokerF.fees(amount) + tobin;
   }
 
   /// Returns net incomes of operation.

@@ -104,15 +104,15 @@ func report(efleas []*eval.T, logId string, cycle int) {
 
 func runCycle(
 	opens, closes *qtable.T, md *fmodel.T,
-	minSells, maxSells int, efleas []*eval.T,
+	/*minSells, maxSells int,*/ efleas []*eval.T,
 ) []*eval.T {
 	if len(efleas) < 25 {
 		panic(fmt.Sprintf("Ev.Fleas %v (<25) in model %v", len(efleas), md.Id()))
 	}
 
 	var newEfleas []*eval.T
-	mnSells := float64(minSells)
-	mxSells := float64(maxSells)
+	//mnSells := float64(minSells)
+	//mxSells := float64(maxSells)
 
 	for {
 		for _, e := range efleas {
@@ -120,12 +120,18 @@ func runCycle(
 			if e.Eval < 0 {
 				rs := md.Assets(opens, closes, e.Flea().Params())
 				sells := rs.Sells()
-				if sells >= int(mnSells) && sells <= int(mxSells) {
-					avg, va := md.ProfitsAvgSd(opens, closes, e.Flea().Params())
-					e.Update(rs.Buys(), sells, rs.Assets(), avg, va)
-				} else {
-					addEval = false
-				}
+
+				avg, va := md.ProfitsAvgSd(opens, closes, e.Flea().Params())
+				e.Update(rs.Buys(), sells, rs.Assets(), avg, va)
+				/*
+					if sells >= int(mnSells) && sells <= int(mxSells) {
+						avg, va := md.ProfitsAvgSd(opens, closes, e.Flea().Params())
+						e.Update(rs.Buys(), sells, rs.Assets(), avg, va)
+					} else {
+						addEval = false
+					}
+				*/
+
 			}
 			if addEval {
 				newEfleas = append(newEfleas, e)
@@ -136,8 +142,9 @@ func runCycle(
 			break
 		}
 
-		mxSells *= 1.1
-		mnSells /= 1.1
+		//mxSells *= 1.1
+		//mnSells /= 1.1
+
 		sync.Run(func(lk sync.T) {
 			log.Error(lk, "Less than 20 surviver fleas in model "+md.Id())
 		})
@@ -350,8 +357,8 @@ func Selection(
 		}
 	})
 
-	minSells := int(fn.Fix(cts.HistoricQuotes*cts.MinSells, 0))
-	maxSells := int(fn.Fix(cts.HistoricQuotes*cts.MaxSells, 0))
+	//minSells := int(fn.Fix(cts.HistoricQuotes*cts.MinSells, 0))
+	//maxSells := int(fn.Fix(cts.HistoricQuotes*cts.MaxSells, 0))
 	nParams := len(md.ParMins())
 	nCycles := cts.InsertionCycle + cts.Cycles*nParams + 1
 	for cycle := 0; cycle < nCycles; cycle++ {
@@ -384,7 +391,7 @@ func Selection(
 			}
 		}
 
-		efleas = runCycle(opens, closes, md, minSells, maxSells, efleas)
+		efleas = runCycle(opens, closes, md /*minSells, maxSells,*/, efleas)
 
 		if logId != "" {
 			report(efleas, logId, cycle)

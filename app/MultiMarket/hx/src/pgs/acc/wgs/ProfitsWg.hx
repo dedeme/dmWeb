@@ -263,7 +263,15 @@ class ProfitsWg {
       ;
       return;
     }
+    function mkTd () {
+      return Q("td").style("font-size:large;text-align:right");
+    }
+    function dfFormat (n: Float) {
+      final color = n < 0 ? "aa2800" : n > 0 ? "0041aa" : "000000";
+      return "<font color='" + color + "'>" + Dec.toIso(n, 2) + "</font>";
+    }
     final d = data[data.length -  1];
+    final d1 = data[data.length -  2];
     final aYearAgo = Dt.to(Dt.add(Date.now(), -365));
     final currentYear = DateTools.format(Date.now(), "%Y0101");
     wg
@@ -274,18 +282,49 @@ class ProfitsWg {
         .klass("frame")
         .add(Q("tr")
           .add(Q("td")
+            .att("rowspan", 2)
+            .style("font-size:large;vertical-align:top")
+            .text(Dt.toIso(Opt.eget(Dt.from(d.date))) + " :"))
+          .add(mkTd()
+            .text(" [ "))
+          .add(mkTd()
+            .html("<font color='0041aa'>" + Dec.toIso(d.total, 2) + "</font>"))
+          .add(mkTd()
+            .text(" | "))
+          .add(mkTd()
+            .html("<font color='000000'>" + Dec.toIso(d.acc, 2) + "</font>"))
+          .add(mkTd()
+            .text(" | "))
+          .add(mkTd()
+            .html("<font color='aa2800'>" + Dec.toIso(d.risk, 2) + "</font>"))
+          .add(mkTd()
+            .text(" | "))
+          .add(mkTd()
             .html(
-              "<big>" +
-              Dt.toIso(Opt.eget(Dt.from(d.date))) +
-              " : [<font color='0041aa'>" +
-              Dec.toIso(d.total, 2) +
-              "</font> | <font color='000000'>" +
-              Dec.toIso(d.acc, 2) +
-              "</font> | <font color='aa2800'>" +
-              Dec.toIso(d.risk, 2) +
-              "</font> | <font color='00aa41'>" +
+              "<font color='00aa41'>" +
               Dec.toIso(d.total - d.risk, 2) +
-              "</font>]</big>"))))
+              "</font>"))
+          .add(mkTd()
+            .text(" ]")))
+        .add(Q("tr")
+          .add(mkTd()
+            .text(" [ "))
+          .add(mkTd()
+            .html(dfFormat(d.total - d1.total)))
+          .add(mkTd()
+            .text(" | "))
+          .add(mkTd()
+            .html(dfFormat(d.acc - d1.acc)))
+          .add(mkTd()
+            .text(" | "))
+          .add(mkTd()
+            .html(dfFormat(d.risk - d1.risk)))
+          .add(mkTd()
+            .text(" | "))
+          .add(mkTd()
+            .html(dfFormat(d.total + d1.risk - d1.total - d.risk)))
+          .add(mkTd()
+            .text(" ]"))))
       .add(Q("div").klass("head").html(_("Last Month")))
       .add(lastMonthGr(data.slice(-30)))
       .add(Q("div").klass("head").html(_("Current Year")))

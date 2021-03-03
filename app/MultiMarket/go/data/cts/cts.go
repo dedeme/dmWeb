@@ -95,10 +95,10 @@ const (
 	MinToBet = 11000.0
 
 	// Minimum operations to survive (multiplicator: days * minSells)
-	MinSells = 0.08
+	MinSellsx = 0.08 // Canceled
 
 	// Maximun operations to survive (multiplicator: days * maxSells)
-	MaxSells = 0.16
+	MaxSellsx = 0.16 // Canceled
 
 	// Maximum of mutation
 	MutationMultiplier = 0.3
@@ -132,8 +132,7 @@ const (
 	AvgPenalize = 1
 
 	// Std profits limit to penalize (ratio)
-	// Limit is calculate StdPenaliza - len(flea.params) * 0.05
-	StdPenalize = 0.55
+	StdPenalize = 0.63
 
 	// Number of fleas in pool
 	PoolNumber = 1000

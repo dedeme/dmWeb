@@ -21,9 +21,12 @@ class Chart {
       @return !Domo
   **/
   /// Constructor:
-  ///   nick: Company nick.
-  ///   url : Company url to amplify information.
-  public static function mk (nick: String, url: String): Domo {
+  ///   onPorfolio: 'true' if only shows data of sold values.
+  ///   nick   : Company nick.
+  ///   url    : Company url to amplify information.
+  public static function mk (
+    onPortfolio: Bool, nick: String, url: String
+  ): Domo {
     final wg = Q("div");
     function fn (): Void {
       Cts.client.send([
@@ -33,13 +36,14 @@ class Chart {
         "nick" => Js.ws(nick)
       ], rp -> {
         final price = rp["price"].rf(); // -1 if nick is not in portfolio
+        final mans = rp["managers"].ra().map(e -> e.ri());
         final profits = rp["profits"].rf();
         final dates = rp["dates"].ra().map(e -> e.rs());
         final quotes = rp["quotes"].ra()
           .map(row -> row.ra().map(e -> e.rf()));
         regularize(dates, quotes);
 
-        mkGrs(wg, nick, url, price, profits, dates, quotes);
+        mkGrs(wg, onPortfolio, nick, url, price, mans, profits, dates, quotes);
       });
     }
 
@@ -102,7 +106,10 @@ class Chart {
     ;
   }
 
-  static function mkSmallGr (price: Float, quotes: Array<Array<Float>>): Domo {
+  static function mkSmallGr (
+    onPortfolio: Bool, price: Float, mans: Array<Int>,
+    quotes: Array<Array<Float>>
+  ): Domo {
     final len = quotes.length - 1;
     final backg = backColor(quotes[len - 1], quotes[len]);
 
@@ -181,6 +188,9 @@ class Chart {
     ctx.closePath();
 
     for (i in 1...quotes[0].length) {
+      if (onPortfolio && !mans.contains(i - 1)) {
+        continue;
+      }
       x = 45;
       for (j in 0...quotes.length) {
         final cs = closes[j];
@@ -205,8 +215,8 @@ class Chart {
   }
 
   static function mkBigGr (
-    nick: String, price: Float, dates: Array<String>,
-    quotes: Array<Array<Float>>
+    onPortfolio: Bool, nick: String, price: Float, mans: Array<Int>,
+    dates: Array<String>, quotes: Array<Array<Float>>
   ): Void {
     final len = quotes.length - 1;
     final backg = backColor(quotes[len - 1], quotes[len]);
@@ -298,6 +308,9 @@ class Chart {
     ctx.closePath();
 
     for (i in 1...quotes[0].length) {
+      if (onPortfolio && !mans.contains(i - 1)) {
+        continue;
+      }
       x = 90.5;
       for (j in 0...quotes.length) {
         final cs = closes[j];
@@ -357,17 +370,9 @@ class Chart {
     ;
   }
 
-  /**
-      @param {!Domo} wg
-      @param {string} nick
-      @param {string} url
-      @param {number} price
-      @param {number} profits
-      @param {!Array<string>} dates
-      @param {!Array<!Array<number>>} quotes
-  **/
   static function mkGrs (
-    wg: Domo, nick: String, url: String, price: Float, profits: Float,
+    wg: Domo, onPortfolio: Bool,
+    nick: String, url: String, price: Float, mans: Array<Int>, profits: Float,
     dates: Array<String>, quotes: Array<Array<Float>>
   ) {
     final lastQs = quotes[quotes.length - 1];
@@ -392,9 +397,11 @@ class Chart {
         .add(Q("tr")
           .add(Q("td")
             .att("colspan", 3)
-            .add(mkSmallGr(price, quotes)
+            .add(mkSmallGr(onPortfolio, price, mans, quotes)
               .setStyle("cursor", "pointer")
-              .on(CLICK, e -> mkBigGr(nick, price, dates, quotes))))))
+              .on(CLICK, e -> mkBigGr(
+                  onPortfolio, nick, price, mans, dates, quotes
+                ))))))
     ;
   }
 

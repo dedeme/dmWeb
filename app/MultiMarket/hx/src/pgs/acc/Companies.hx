@@ -50,7 +50,7 @@ class Companies {
     var tr = Q("tr");
     It.range(n).eachSync(
       (i, fn) -> {
-        fn({i: i, chart: Chart.mk(ls[i].nick, ls[i].url)});
+        fn({i: i, chart: Chart.mk(!showAll, ls[i].nick, ls[i].url)});
       },
       rp -> {
         final i = rp.i;

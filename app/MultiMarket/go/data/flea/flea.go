@@ -100,13 +100,14 @@ func (f *T) Evaluate(assets, profitsAvg, profitsSd float64) float64 {
 	if profitsAvg < cts.AvgPenalize {
 		pond = pond * 0.5
 	}
-	if profitsSd > cts.StdPenalize-float64(len(f.params))*0.05 {
+	if profitsSd > cts.StdPenalize {
 		pond = pond * 0.5
 	}
-	return assets*pond*float64(cts.AssetsRatio) +
-		profitsAvg*pond*float64(cts.ProfitsAvgRatio) +
-		(1-profitsSd)*pond*float64(cts.ProfitsSdRatio) +
-		age*pond*float64(cts.AgeRatio)
+	e := assets*float64(cts.AssetsRatio) +
+		profitsAvg*(float64(cts.ProfitsAvgRatio)+
+			(1-profitsSd)/float64(len(f.params))*float64(cts.ProfitsSdRatio)) +
+		age*float64(cts.AgeRatio)
+	return e * pond
 }
 
 // Returns a new muted flea.
