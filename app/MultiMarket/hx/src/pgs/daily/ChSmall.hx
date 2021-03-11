@@ -30,6 +30,9 @@ class ChSmall {
     var totalProfits = 0.0;
     var inPortfolio = false;
 
+    if (qs[0] <= 0)
+      throw new haxe.Exception('First quote of ${nick} is 0');
+
     // 0 = Not change, 1 = Sell, -1 = Buy
     var changeSellBuy = 0;
     // Tuples<Int, Float, Int>: [isBuy = -1|isSell = 1, ref, manIx]
@@ -53,7 +56,11 @@ class ChSmall {
       if (dif > 1) {
         changeSellBuy = isSold;
       }
-      for (q in qs) {
+      var prevQ = qs.length > 0 ? qs[0]: 0;
+      for (quote in qs) {
+        final q = quote <= 0 ? prevQ : quote;
+        prevQ = q;
+
         final dif = isSold == 1
           ? 1 - (q - e.ref) / q
           : 1 - (e.ref - q) / e.ref
@@ -137,6 +144,7 @@ class ChSmall {
         if (rf[1] < min) min = rf[1];
       }
       for (q in qs) {
+        if (q <= 0) continue;
         if (q > max) max = q;
         if (q < min) min = q;
       }
@@ -222,9 +230,23 @@ class ChSmall {
 
       // Quotes
       for (i in 0...qs.length - 1) {
+        var j = i;
+        var q = qs[j];
+        while (q <= 0) {
+          --j;
+          q = qs[j];
+        }
+
+        j = i + 1;
+        var q1 = qs[j];
+        while (q1 <= 0) {
+          --j;
+          q1 = qs[j];
+        }
+
         ctx.beginPath();
-        ctx.moveTo(toGrX(i), toGrY(qs[i]));
-        ctx.lineTo(toGrX(i + 1), toGrY(qs[i + 1]));
+        ctx.moveTo(toGrX(i), toGrY(q));
+        ctx.lineTo(toGrX(i + 1), toGrY(q1));
         ctx.stroke();
         ctx.closePath();
       }

@@ -33,7 +33,7 @@ func Fees(amount float64) float64 {
 //    price  ; Stocks price.
 func Buy(stocks int, price float64) float64 {
 	amount := float64(stocks) * price
-  tobin := amount * 0.002
+	tobin := amount * 0.002
 	return amount + Fees(amount) + tobin
 }
 

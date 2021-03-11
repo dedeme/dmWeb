@@ -196,6 +196,28 @@ VENTA
 </pre>
 " + footer;
 
+//******************
+static final gapDoc = "
+<pre>
+PARÁMETROS
+  hueco (%): Diferencia máxima entre q y rf
+
+INICIO
+  * Se fija una referencia de venta [rf = q * (1 + hueco)]
+
+COMPRA
+  * Si q > rf se compra y se fija rf = q * (1 - hueco)
+  * En otro caso se calcula rf' = q * (1 + hueco) y si rf' < rf se fija
+    rf = rf'.
+
+VENTA
+  * Si q < rf se vende y se fija rf = q * (1 + hueco)
+  * En otro caso se calcula rf' = q * (1 - hueco) y si rf' > rf se fija
+    rf = rf'.
+
+</pre>
+" + footer;
+
 // -------------------------------------------------------------------------- //
 
   /// Returns summary of a model.
@@ -209,6 +231,7 @@ VENTA
       case "DIF": return difDoc;
       case "JUMP": return jumpDoc;
       case "JMP2": return jmp2Doc;
+      case "GAP": return gapDoc;
     }
     return "<p>Sin documentación</p>";
   }

@@ -54,6 +54,7 @@ class ChBig {
       var max = -1000000.0;
       var min = 1000000.0;
       for (q in quotes) {
+        if (q <= 0) continue;
         if (q > max) max = q;
         if (q < min) min = q;
       }
@@ -119,9 +120,24 @@ class ChBig {
 
       // Quotes
       for (i in 0...quotes.length - 1) {
+        var j = i;
+        var q = quotes[j];
+        while (q <= 0) {
+          if (j == 0) throw new haxe.Exception("First quote is 0");
+          --j;
+          q = quotes[j];
+        }
+
+        j = i + 1;
+        var q1 = quotes[j];
+        while (q1 <= 0) {
+          --j;
+          q1 = quotes[j];
+        }
+
         ctx.beginPath();
-        ctx.moveTo(toGrX(i), toGrY(quotes[i]));
-        ctx.lineTo(toGrX(i + 1), toGrY(quotes[i + 1]));
+        ctx.moveTo(toGrX(i), toGrY(q));
+        ctx.lineTo(toGrX(i + 1), toGrY(q1));
         ctx.stroke();
         ctx.closePath();
       }
