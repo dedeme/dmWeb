@@ -90,10 +90,14 @@ class ChSmall {
       ;
     }
     function color (v: Float): String {
-      return "color:" + (v > 0 ? "#00aaff" : v < 0 ? "#ff8100" : "#c9c9c9");
+      return "color:" + (v > 0 ? "#00aaff" : v < 0 ? "#ff8100" : "#a9a9a9");
     }
     function colorStocks (v: Float, withStocks: Bool): String {
-      return withStocks ? color(v) : "#c9c9c9";
+      return "color:" + (
+        v > 0 ? "#00aaff"
+          : v < 0 && withStocks ? "#ff8100"
+            : "#a9a9a9"
+      );
     }
 
     final rsWgs = [];
