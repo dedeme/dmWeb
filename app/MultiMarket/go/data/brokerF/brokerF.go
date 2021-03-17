@@ -4,30 +4,15 @@
 // Fleas broker
 package brokerF
 
+import (
+	"github.com/dedeme/MultiMarket/data/brokerA"
+)
+
 // Returns tatal fees of a buy or sell operation.
 //    amount: Operation amount.
 func Fees(amount float64) float64 {
-	var brk, market float64
-	if amount > 25000 {
-		brk = amount * 0.001
-	} else {
-		brk = 9.75
-	}
-
-	if amount > 140000 {
-		market = 13.4
-	} else if amount > 70000 {
-		market = 9.2 + amount*0.00003
-	} else if amount > 35000 {
-		market = 6.4 + amount*0.00007
-	} else {
-		market = 4.65 + amount*0.00012
-	}
-	market += 0.11 // Execution fee
-
 	penalty := amount * 0.005
-
-	return brk + market + penalty
+	return brokerA.Fees("", amount) + penalty
 }
 
 // Returns net cost of operation (cost + fees).

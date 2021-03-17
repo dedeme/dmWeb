@@ -355,8 +355,8 @@ func readDaily(
 		if ok {
 			entries = append(entries, &dailyEntryT{row[ixC], close})
 		} else {
-      log.Info(lk, "Fail reading quote of '" + row[ixC] + "'. Quote sets to 0.")
-    }
+			log.Info(lk, "Fail reading quote of '"+row[ixC]+"'. Quote sets to 0.")
+		}
 	}
 
 	if len(table) > 0 {

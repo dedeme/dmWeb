@@ -92,6 +92,9 @@ class ChSmall {
     function color (v: Float): String {
       return "color:" + (v > 0 ? "#00aaff" : v < 0 ? "#ff8100" : "#c9c9c9");
     }
+    function colorStocks (v: Float, withStocks: Bool): String {
+      return withStocks ? color(v) : "#c9c9c9";
+    }
 
     final rsWgs = [];
     for (i in 0...rs.length) {
@@ -99,7 +102,7 @@ class ChSmall {
         rsWgs.push(Q("span").text(" | "));
       }
       rsWgs.push(Q("span")
-        .style(color(-rs[i][0]))
+        .style(colorStocks(-rs[i][0], d.managersData[i].stocks > 0))
         .text(Dec.toIso(rs[i][1], 2) + "%")
       );
     }

@@ -445,10 +445,12 @@ func (l *LedgerT) ToJs() json.T {
 	})
 }
 
-func ledgerSell(l *LedgerT, stocks int, buyPrice, sellPrice float64) *LedgerT {
+func ledgerSell(
+	l *LedgerT, nick string, stocks int, buyPrice, sellPrice float64,
+) *LedgerT {
 	cost := fn.Fix(float64(stocks)*buyPrice, 2)
 	incom := fn.Fix(float64(stocks)*sellPrice, 2)
-	fees := fn.Fix(broker.Fees(incom), 2)
+	fees := fn.Fix(broker.Fees(nick, incom), 2)
 	return NewLedger(
 		l.stocks-cost,
 		l.cash+incom-fees,
@@ -460,12 +462,12 @@ func ledgerSell(l *LedgerT, stocks int, buyPrice, sellPrice float64) *LedgerT {
 	)
 }
 
-func ledgerBuy(l *LedgerT, stocks int, price float64) *LedgerT {
+func ledgerBuy(l *LedgerT, nick string, stocks int, price float64) *LedgerT {
 	if price == 0 {
 		return l
 	}
 	cost := fn.Fix(float64(stocks)*price, 2)
-	fees := fn.Fix(broker.Fees(cost), 2)
+	fees := fn.Fix(broker.Fees(nick, cost), 2)
 	return NewLedger(
 		l.stocks+cost,
 		l.cash-cost-fees,
@@ -530,7 +532,7 @@ func Settlement(annotations []*AnnotationT) (
 						)
 					} else {
 						portfolio = pf
-						ledger = ledgerSell(ledger, s, pfe.price, p)
+						ledger = ledgerSell(ledger, n, s, pfe.price, p)
 					}
 				} else {
 					addErr("%v: Nick is missing in portfolio", n)
@@ -547,7 +549,7 @@ func Settlement(annotations []*AnnotationT) (
 				addErr("%v: Buing price %v (< 0)", n, p)
 			} else {
 				portfolio = pfAdd(portfolio, n, s, p)
-				ledger = ledgerBuy(ledger, s, p)
+				ledger = ledgerBuy(ledger, n, s, p)
 			}
 			continue
 		}
