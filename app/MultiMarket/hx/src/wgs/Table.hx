@@ -90,7 +90,7 @@ class Table {
           ? Q("td")
             .klass("header")
             .style("text-align:right")
-            .text(Dec.toIso(iRow, 0))
+            .text(Dec.toIso(iRow + 1, 0))
           : t == Col.ICON
             ? c.link
               ? Q("td")
