@@ -18,10 +18,12 @@ import I18n._;
 class Performance {
   var wg: Domo;
   var results: Array<Result>;
+  var diff: Float;
 
   // Operations are unsorted.
-  function new (wg: Domo, operations: Array<Operation>) {
+  function new (wg: Domo, operations: Array<Operation>, diff: Float) {
     this.wg = wg;
+    this.diff = diff;
 
     operations.sort((o1, o2) ->
       return o1.date > o2.date
@@ -110,7 +112,10 @@ class Performance {
           .add(Q("td")
             .att("colspan", "4")
             .att("rowspan", "2")
-            .text(""))
+            .style("text-align:center")
+            .add(Q("span")
+              .klass("frame")
+              .text(_("Diff/op") + " = " + Dec.toIso(diff, 2))))
           .add(Q("td")
             .klass("header")
             .att("colspan", "3")
@@ -213,8 +218,9 @@ class Performance {
       "rq" => Js.ws("idata")
     ], rp -> {
       final operations = rp["operations"].ra().map(e -> Operation.fromJs(e));
+      final diff = rp["diff"].rf() / operations.length;
 
-      new Performance(wg, operations);
+      new Performance(wg, operations, diff);
     });
   }
 

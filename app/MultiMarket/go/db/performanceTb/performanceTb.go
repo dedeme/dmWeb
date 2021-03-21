@@ -5,6 +5,7 @@
 package performanceTb
 
 import (
+	"github.com/dedeme/MultiMarket/data/cts"
 	"github.com/dedeme/MultiMarket/data/performance"
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/golib/file"
@@ -48,6 +49,10 @@ func Write(lk sync.T, data []*performance.T) {
 	var a []json.T
 	for _, rc := range data {
 		a = append(a, rc.ToJs())
+	}
+	toRemove := len(a) - cts.PerformanceMax
+	if toRemove < 0 {
+		a = a[toRemove:]
 	}
 	file.WriteAll(fpath, json.Wa(a).String())
 }

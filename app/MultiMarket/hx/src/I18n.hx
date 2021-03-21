@@ -4,6 +4,7 @@
 class I18n {
 
   static var enDic = [
+    "%" => "%",
     "%0 Model" => "%0 Model",
     "%0 is missing" => "%0 is missing",
     "'%0' is empty" => "'%0' is empty",
@@ -82,6 +83,7 @@ class I18n {
     "Description" => "Description",
     "Diff. +" => "Diff. +",
     "Diff. -" => "Diff. -",
+    "Diff/op" => "Diff/op",
     "Differences" => "Differences",
     "Download" => "Download",
     "Download ok." => "Download ok.",
@@ -206,6 +208,7 @@ class I18n {
     "Some quote was modified.<br>See Log." => "Some quote was modified.<br>See Log.",
     "Special days" => "Special days",
     "Split" => "Split",
+    "Spread" => "Spread",
     "Start" => "Start",
     "State" => "State",
     "Stocks" => "Stocks",
@@ -328,6 +331,7 @@ class I18n {
     "Description" => "Concepto",
     "Diff. +" => "Dif. +",
     "Diff. -" => "Dif. -",
+    "Diff/op" => "Dif/Op",
     "Differences" => "Diferencias",
     "Download" => "Descarga",
     "Download ok." => "Descarga correcta.",
@@ -452,6 +456,7 @@ class I18n {
     "Some quote was modified.<br>See Log." => "Se modificaron algunas cotizaciones.<br>Ver el registro.",
     "Special days" => "Días especiales",
     "Split" => "Split",
+    "Spread" => "Horquilla",
     "Start" => "Empezar",
     "State" => "Estado",
     "Stocks" => "Acciones",

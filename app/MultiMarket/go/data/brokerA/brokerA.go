@@ -52,7 +52,7 @@ func Fees(nick string, amount float64) float64 {
 			market = 1.1
 		}
 	}
-  market += 0.11
+	market += 0.11
 
 	return brk + market
 }

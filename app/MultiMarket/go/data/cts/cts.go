@@ -81,6 +81,9 @@ const (
 	// Number of investors
 	Managers = 2
 
+	// Maximum of register in Perfomance.tb
+	PerformanceMax = 100
+
 	// Fleas ---------------------------------------------------------------------
 	// Number of quotes in historic
 	HistoricQuotes = 610
