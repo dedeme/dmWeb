@@ -58,7 +58,7 @@ func fn(
 	}
 
 	if init != nil {
-		if len(closes[0]) > 1 {
+		if len(closes[0]) > 1 { // only one close is allowed
 			panic("Closes is > 1")
 		}
 		refs[0] = init.Ref()

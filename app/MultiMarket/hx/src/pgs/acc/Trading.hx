@@ -22,17 +22,61 @@ class Trading {
   var bentry: Domo;
   var pentry: Domo;
   var result: Domo;
+  var spreadWg: Domo;
+  var blankTd = Q("td");
+  var stPoss: Array<Domo> = [];
+  var prPoss: Array<Domo> = [];
+  var posTrs: Array<Domo> = [];
 
   function new (wg: Domo, bet: Float, operations: Array<Operation>) {
     this.wg = wg;
     this.bet = bet;
     this.operations = operations;
 
-    bentry = Ui.field("pentry").value(Dec.toIso(bet, 0));
+    bentry = Ui.field("pentry")
+      .style("width:80px")
+      .value(Dec.toIso(bet, 0));
     Ui.changePoint(bentry);
-    pentry = Ui.field("calcBt").att("id", "pentry");
+    pentry = Ui.field("calcBt")
+      .style("width:80px")
+      .att("id", "pentry");
     Ui.changePoint(pentry);
     result = Q("div").klass("frame").style("text-align:right");
+    spreadWg = Q("div").klass("frame").style("text-align:right");
+
+    prPoss.push(Q("div")
+      .klass("frame")
+      .style("text-align:right")
+    );
+    posTrs.push(Q("tr")
+      .add(blankTd)
+      .add(Q("td")
+        .att("rowspan", "3")
+        .add(prPoss[0]))
+    );
+    for (i in 0...11) {
+      var bold = i == 5 ? ";font-weight:bold" : "";
+      var stPos = Q("div").style("text-align:right" + bold);
+      stPoss.push(stPos);
+
+      if (i == 4) bold = ";font-weight:bold";
+      var prPos = Q("div").klass("frame").style("text-align:right" + bold);
+      prPoss.push(prPos);
+
+      posTrs.push(Q("tr").add(Q("td")));
+      posTrs.push(Q("tr")
+        .add(Q("td")
+          .att("rowspan", "2")
+          .add(stPos))
+      );
+      posTrs.push(Q("tr")
+        .add(Q("td")
+          .att("rowspan", "3")
+          .add(prPos))
+      );
+    }
+    posTrs.push(Q("tr").add(Q("td")));
+    posTrs.push(Q("tr").add(Q("td")));
 
     view();
   }
@@ -84,45 +128,67 @@ class Trading {
               .klass("frame4")
               .add(Q("tr")
                 .add(Q("td")
+                  .att("colspan", "2")
                   .add(Q("div")
                     .klass("head")
                     .text(_("Buy")))))
               .add(Q("tr")
                 .add(Q("td")
+                  .att("colspan", "2")
                   .add(Q("hr"))))
               .add(Q("tr")
                 .add(Q("td")
-                  .style("text-align:center")
+                  .style("text-align:right")
                   .add(Q("div")
-                    .html("<b>" + _("Invest") + "</b>"))))
-              .add(Q("tr")
+                    .html("<b>" + _("Invest") + ":</b>")))
                 .add(Q("td")
                   .add(bentry)))
               .add(Q("tr")
                 .add(Q("td")
-                  .style("text-align:center")
+                  .style("text-align:right")
                   .add(Q("div")
-                    .html("<b>" + _("Price") + "</b>"))))
-              .add(Q("tr")
+                    .html("<b>" + _("Price") + ":</b>")))
                 .add(Q("td")
                   .add(pentry)))
               .add(Q("tr")
                 .add(Q("td")
+                  .att("colspan", "2")
                   .style("text-align:center")
                   .add(Q("button")
                     .text(_("Calculate"))
                     .on(CLICK, e -> calculate()))))
               .add(Q("tr")
                 .add(Q("td")
+                  .att("colspan", "2")
                   .add(Q("hr"))))
               .add(Q("tr")
                 .add(Q("td")
-                  .style("text-align:center")
+                  .style("text-align:right")
                   .add(Q("div")
-                    .html("<b>" + _("Stocks") + "</b>"))))
+                    .html("<b>" + _("Stocks") + ":</b>")))
+                .add(Q("td")
+                  .add(result)))
               .add(Q("tr")
                 .add(Q("td")
-                  .add(result)))))
+                  .style("text-align:right")
+                  .add(Q("div")
+                    .html("<b>" + _("Spread") + ":</b>")))
+                .add(Q("td")
+                  .add(spreadWg)))
+              .add(Q("tr")
+                .add(Q("td")
+                  .att("colspan", "2")
+                  .add(Q("hr"))))
+              .add(Q("tr")
+                .add(Q("td")
+                  .style("text-align:right")
+                  .add(Q("div")
+                    .html("<b>" + _("Stocks") + "</b>")))
+                .add(Q("td")
+                  .style("text-align:right")
+                  .add(Q("div")
+                    .html("<b>" + _("Price") + "</b>"))))
+              .adds(posTrs)))
           .add(Q("td")
             .style("text-align:center")
             .add(Q("div")
@@ -159,6 +225,8 @@ class Trading {
       Ui.alert('${bs} is not a valid number.');
       return;
     }
+    final b2 = b + b - BrokerA.buy(1, b);
+
     final p = Opt.get(Dec.fromIso(ps));
     if (p == null) {
       Ui.alert('${ps} is not a valid number.');
@@ -168,10 +236,21 @@ class Trading {
       Ui.alert("Price is 0");
       return;
     }
-    var rs = Std.int(b / p);
-    while (rs > 0 && BrokerA.buy(rs, p) > b) --rs;
+
+    var rs = Std.int(b2 / p);
 
     result.text(Dec.toIso(rs, 0));
+    spreadWg.text(Dec.toIso(spreads(p), 4));
+
+    var b2 = b + b - BrokerA.buy(1, b);
+    for (i in 0...12) {
+      var st = rs + i - 5;
+      var pr = Std.int(b2 * 10000 / st) / 10000;
+      if (i < 11) stPoss[i].text(Dec.toIso(st, 0));
+      prPoss[i].text(Dec.toIso(pr, 4));
+    }
+
+    blankTd.html("&nbsp;");
   }
 
   // Static --------------------------------------------------------------------
@@ -202,14 +281,14 @@ class Trading {
     });
   }
 
-  function invTd (invs) {
+  function invTd (invs: Array<Int>): Domo {
     return Q("td")
       .klass("borderWhite")
       .text(invs.map(i -> Std.string(i)).join(" - "))
     ;
   }
 
-  function ciaTd (nick) {
+  function ciaTd (nick:String): Domo {
     return Q("td")
       .klass("borderWhite")
       .style("text-align:left")
@@ -217,11 +296,25 @@ class Trading {
     ;
   }
 
-  function stocksTd (stock) {
+  function stocksTd (stocks: Int): Domo {
     return Q("td")
       .klass("borderWhite")
       .style("text-align:right")
-      .text(Dec.toIso(stock, 0))
+      .text(Dec.toIso(stocks, 0))
+    ;
+  }
+
+  function spreads (price: Float): Float {
+    return price < 1 ? 0.0001
+      : price < 2 ? 0.0002
+      : price < 5 ? 0.0005
+      : price < 10 ? 0.001
+      : price < 20 ? 0.002
+      : price < 50 ? 0.005
+      : price < 100 ? 0.01
+      : price < 200 ? 0.02
+      : price < 500 ? 0.05
+      : 0.1
     ;
   }
 

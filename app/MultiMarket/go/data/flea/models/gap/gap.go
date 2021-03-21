@@ -31,7 +31,7 @@ func fn(
 			panic("iDay < 0")
 		}
 		q := closes[ixDay][iCo]
-		refs[iCo] = q * (1 + pgap)
+		refs[iCo] = q * (1 - pgap)
 	}
 
 	for iDay := 0; iDay < nDays; iDay++ {
