@@ -51,7 +51,7 @@ func Write(lk sync.T, data []*performance.T) {
 		a = append(a, rc.ToJs())
 	}
 	toRemove := len(a) - cts.PerformanceMax
-	if toRemove < 0 {
+	if toRemove > 0 {
 		a = a[toRemove:]
 	}
 	file.WriteAll(fpath, json.Wa(a).String())

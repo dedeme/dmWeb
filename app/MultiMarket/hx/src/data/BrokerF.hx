@@ -7,24 +7,8 @@ package data;
 class BrokerF {
   /// Calculate fees of Broker + Market.
   public static function fees (amount: Float): Float {
-    var broker = 9.75;
-    if (amount > 25000) {
-      broker = amount * 0.001;
-    }
-
-    var bolsa = 4.65 + amount * 0.00012;
-    if (amount > 140000) {
-      bolsa = 13.4;
-    } else if (amount > 70000) {
-      bolsa = 9.2 + amount * 0.00003;
-    } else if (amount > 35000) {
-      bolsa = 6.4 + amount * 0.00007;
-    }
-    bolsa += 0.11; // Execution fee.
-
-    final penalty = amount * 0.005;
-
-    return broker + bolsa + penalty;
+    var penalty = amount * 0.0017 + 9.53;
+    return BrokerA.fees("", amount) + penalty;
   }
 
   /// Returns net cost of operation.

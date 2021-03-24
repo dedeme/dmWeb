@@ -5,36 +5,57 @@ package data;
 
 /// Market broker.
 class BrokerA {
+  static function isBigCia (nick: String): Bool {
+    final bigCias = [
+      "AENA", "AMADEUS", "ARCELORMITTAL", "BBVA", "CAIXABANK", "CELLNEX",
+      "ENDESA", "FERROVIAL", "IBERDROLA", "INDITEX", "RED ELECTRICA", "REPSOL",
+      "SANTANDER", "TELEFÓNICA"
+    ];
+    return bigCias.contains(nick);
+  }
+
   /// Calculate fees of Broker + Market.
-  public static function fees (amount: Float): Float {
+  public static function fees (nick: String, amount: Float): Float {
     var broker = 9.75;
-    if (amount > 25000) {
+    if (amount > 50000) {
       broker = amount * 0.001;
     }
 
-    var bolsa = 4.65 + amount * 0.00012;
-    if (amount > 140000) {
-      bolsa = 13.4;
-    } else if (amount > 70000) {
-      bolsa = 9.2 + amount * 0.00003;
-    } else if (amount > 35000) {
-      bolsa = 6.4 + amount * 0.00007;
-    }
-    bolsa += 0.11; // Execution fee.
+    final isBig = (nick == "") ? false : isBigCia(nick);
 
-    return broker + bolsa;
+    var market: Float;
+
+    if (isBig) {
+      market = amount * 0.00003;
+    } else {
+      if (amount > 140000) {
+        market = 13.4;
+      } else if (amount > 70000) {
+        market = 9.2 + amount * 0.00003;
+      } else if (amount > 35000) {
+        market = 6.4 + amount * 0.00007;
+      } else if (amount > 300){
+        market = 4.65 + amount * 0.00012;
+      } else {
+        market = 1.1;
+      }
+    }
+    market += 0.11; // Execution fee.
+
+
+    return broker + market;
   }
 
   /// Returns net cost of operation.
-  public static function buy (stocks: Int, price: Float): Float {
+  public static function buy (nick: String, stocks: Int, price: Float): Float {
     final amount = stocks * price;
     final tobin = amount * 0.002;
-    return amount + BrokerA.fees(amount) + tobin;
+    return amount + BrokerA.fees(nick, amount) + tobin;
   }
 
   /// Returns net incomes of operation.
-  public static function sell (stocks: Int, price: Float): Float {
+  public static function sell (nick: String, stocks: Int, price: Float): Float {
     final amount = stocks * price;
-    return amount - BrokerA.fees(amount);
+    return amount - BrokerA.fees(nick, amount);
   }
 }

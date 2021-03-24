@@ -11,7 +11,7 @@ import (
 // Returns tatal fees of a buy or sell operation.
 //    amount: Operation amount.
 func Fees(amount float64) float64 {
-	penalty := amount*0.0017 + 9.65
+	penalty := amount*0.0017 + 9.53
 	return brokerA.Fees("", amount) + penalty
 }
 

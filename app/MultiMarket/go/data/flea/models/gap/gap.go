@@ -70,8 +70,8 @@ func Mk() *fmodel.T {
 	return fmodel.New(
 		"GAP",
 		"Gap",
-		[]string{"Hueco"},
-		[]float64{0.01},
+		[]string{"Horquilla"},
+		[]float64{0.05},
 		[]float64{0.25},
 		[]int{6},
 		true,

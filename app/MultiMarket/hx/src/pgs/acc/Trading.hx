@@ -225,7 +225,7 @@ class Trading {
       Ui.alert('${bs} is not a valid number.');
       return;
     }
-    final b2 = b + b - BrokerA.buy(1, b);
+    final b2 = b + b - BrokerA.buy("", 1, b);
 
     final p = Opt.get(Dec.fromIso(ps));
     if (p == null) {
@@ -242,7 +242,7 @@ class Trading {
     result.text(Dec.toIso(rs, 0));
     spreadWg.text(Dec.toIso(spreads(p), 4));
 
-    var b2 = b + b - BrokerA.buy(1, b);
+    var b2 = b + b - BrokerA.buy("", 1, b);
     for (i in 0...12) {
       var st = rs + i - 5;
       var pr = Std.int(b2 * 10000 / st) / 10000;
