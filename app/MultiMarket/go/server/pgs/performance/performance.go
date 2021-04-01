@@ -6,10 +6,10 @@ package performance
 
 import (
 	"fmt"
-	"github.com/dedeme/MultiMarket/data/performance"
 	"github.com/dedeme/MultiMarket/data/acc"
+	"github.com/dedeme/MultiMarket/data/performance"
+	"github.com/dedeme/MultiMarket/db/acc/diariesDb"
 	"github.com/dedeme/MultiMarket/db/performanceTb"
-  "github.com/dedeme/MultiMarket/db/acc/diariesDb"
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/json"
@@ -47,31 +47,31 @@ func Process(ck string, mrq map[string]json.T) string {
 			diff := float64(0)
 			if len(opJs) > 0 {
 				firstDate := performance.FromJs(opJs[0]).Date()
-        years := diariesDb.Years(lk)
-        endYears := 1
-        if len(years) > 1 {
-          endYears = 2
-        }
+				years := diariesDb.Years(lk)
+				endYears := 1
+				if len(years) > 1 {
+					endYears = 2
+				}
 
-        for i := 0; i < endYears; i++ {
-          y := years[i]
-          allJs := diariesDb.ReadAllJs(lk, y)
-          for _, js := range allJs.Ra() {
-            ann := acc.AnnotationFromJs(js)
-            date := ann.Date()
-            if date > firstDate {
-              if amount, _ , ok := ann.Operation().Nd(); ok {
-                diff -= amount
-              } else if amount, _ , ok := ann.Operation().Pd(); ok {
-                diff += amount
-              }
-            }
-          }
-        }
+				for i := 0; i < endYears; i++ {
+					y := years[i]
+					allJs := diariesDb.ReadAllJs(lk, y)
+					for _, js := range allJs.Ra() {
+						ann := acc.AnnotationFromJs(js)
+						date := ann.Date()
+						if date > firstDate {
+							if amount, _, ok := ann.Operation().Nd(); ok {
+								diff -= amount
+							} else if amount, _, ok := ann.Operation().Pd(); ok {
+								diff += amount
+							}
+						}
+					}
+				}
 			}
 
 			rp["operations"] = opsJs
-      rp["diff"] = json.Wd(diff)
+			rp["diff"] = json.Wd(diff)
 		})
 		return cgi.Rp(ck, rp)
 	default:

@@ -450,7 +450,7 @@ func ledgerSell(
 ) *LedgerT {
 	cost := fn.Fix(float64(stocks)*buyPrice, 2)
 	incom := fn.Fix(float64(stocks)*sellPrice, 2)
-	fees := fn.Fix(broker.Fees(nick, incom), 2)
+	fees := incom - fn.Fix(broker.Sell(nick, stocks, sellPrice), 2)
 	return NewLedger(
 		l.stocks-cost,
 		l.cash+incom-fees,
@@ -467,7 +467,7 @@ func ledgerBuy(l *LedgerT, nick string, stocks int, price float64) *LedgerT {
 		return l
 	}
 	cost := fn.Fix(float64(stocks)*price, 2)
-	fees := fn.Fix(broker.Fees(nick, cost), 2)
+	fees := fn.Fix(broker.Buy(nick, stocks, price), 2) - cost
 	return NewLedger(
 		l.stocks+cost,
 		l.cash-cost-fees,

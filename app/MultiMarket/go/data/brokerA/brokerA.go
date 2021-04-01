@@ -6,9 +6,8 @@ package brokerA
 
 func isBigCia(nick string) bool {
 	bigCias := []string{
-		"AENA", "AMADEUS", "ARCELORMITTAL", "BBVA", "CAIXABANK", "CELLNEX",
-		"ENDESA", "FERROVIAL", "IBERDROLA", "INDITEX", "RED ELECTRICA", "REPSOL",
-		"SANTANDER", "TELEFÓNICA",
+		"AENA", "AMS", "BBVA", "CABK", "CLNX", "ELE", "FER", "IBE", "ITX",
+		"MTS", "REE", "REP", "SAN", "TEF",
 	}
 
 	for _, n := range bigCias {
@@ -39,6 +38,9 @@ func Fees(nick string, amount float64) float64 {
 
 	if big {
 		market = amount * 0.00003
+		if market < 1 {
+			market = 1
+		}
 	} else {
 		if amount > 140000 {
 			market = 13.4
@@ -64,6 +66,7 @@ func Fees(nick string, amount float64) float64 {
 func Buy(nick string, stocks int, price float64) float64 {
 	amount := float64(stocks) * price
 	tobin := amount * 0.002
+
 	return amount + Fees(nick, amount) + tobin
 }
 

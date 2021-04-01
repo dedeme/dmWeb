@@ -49,6 +49,10 @@ class Module {
       var isStatic = false;
       while (true) {
         if (l.startsWith("private ")) break;
+        if (l.startsWith("macro ")) {
+          l = l.substring(6).ltrim();
+          continue;
+        }
         if (l.startsWith("public ")) {
           isPublic = true;
           l = l.substring(7).ltrim();

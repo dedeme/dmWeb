@@ -119,11 +119,24 @@ class Summary {
           .att("align", "center")
           .add(Q("tr")
             .add(Q("td")
+              .style("vertical-align:bottom")
               .add(new Clock().wg
                 .klass("frame")
                 .style(
                   "background:radial-gradient(#000333,#e6f6f6);" +
                   "margin-top: 8px;"
+                )))
+            .add(Q("td")
+              .style("vertical-align:bottom")
+              .add(Q("iframe")
+                .klass("frame")
+                .att("width", "450px")
+                .att("height", "133px")
+                .att(
+                  "src",
+                  "http://www.aemet.es/es/eltiempo/prediccion/" +
+                  "municipios/mostrarwidget/rivas-vaciamadrid-id28123?" +
+                  "w=g4p01110001ohmffffffw450z133x4f86d9t95b6e9r0s4n1"
                 ))))))
     ;
   }

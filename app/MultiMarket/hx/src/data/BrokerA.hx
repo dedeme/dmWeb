@@ -7,10 +7,10 @@ package data;
 class BrokerA {
   static function isBigCia (nick: String): Bool {
     final bigCias = [
-      "AENA", "AMADEUS", "ARCELORMITTAL", "BBVA", "CAIXABANK", "CELLNEX",
-      "ENDESA", "FERROVIAL", "IBERDROLA", "INDITEX", "RED ELECTRICA", "REPSOL",
-      "SANTANDER", "TELEFÓNICA"
+      "AENA", "AMS", "BBVA", "CABK", "CLNX", "ELE", "FER", "IBE", "ITX",
+		"MTS", "REE", "REP", "SAN", "TEF"
     ];
+
     return bigCias.contains(nick);
   }
 
@@ -27,6 +27,7 @@ class BrokerA {
 
     if (isBig) {
       market = amount * 0.00003;
+      if (market < 1) market = 1;
     } else {
       if (amount > 140000) {
         market = 13.4;

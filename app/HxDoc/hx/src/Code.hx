@@ -28,9 +28,9 @@ class Code {
 
   static var reserved = " break callback case cast catch class continue " +
     "default do dynamic else enum extends extern false final for function if " +
-    "implements import in inline interface never new null override package " +
-    "private public return static super switch this throw trace true try " +
-    "typedef untyped using var while "
+    "implements import in inline interface macro never new null override "+
+    "package private public return static super switch this throw trace true " +
+    "try typedef untyped using var while "
   ;
   static var state = InCode;
   static var skip = false;
