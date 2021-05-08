@@ -135,7 +135,7 @@ const (
 	AvgPenalize = 1
 
 	// Std profits limit to penalize (ratio)
-	StdPenalize = 0.63
+	StdPenalize = 0.8
 
 	// Number of fleas in pool
 	PoolNumber = 1000

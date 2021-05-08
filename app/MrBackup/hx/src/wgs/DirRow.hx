@@ -315,7 +315,10 @@ class DirRow {
   }
 
   function changePath (): Void {
-    final newPath = cast(pathIn.getValue(), String).trim();
+    var newPath = cast(pathIn.getValue(), String).trim();
+    while (newPath.endsWith("/")) {
+      newPath = newPath.substring(0, newPath.length - 1);
+    }
     if (test.withBackups) {
       if (!Ui.confirm(
         _("There are backups inside the directory.\nChange the path anyway?")

@@ -6,6 +6,7 @@ package eval
 
 import (
 	"github.com/dedeme/MultiMarket/data/cts"
+	"github.com/dedeme/MultiMarket/global/fn"
 	"github.com/dedeme/MultiMarket/data/flea"
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
 	"github.com/dedeme/MultiMarket/data/qtable"
@@ -59,11 +60,24 @@ func (e *T) ProfitsSd() float64 {
 	return e.profitsSd
 }
 
+// Two efleas are equals if they have same values buys, sells, assets,
+// profitsAvg and profitsStd.
+func (e *T) Eq(e2 *T) (ok bool) {
+  if e.buys == e2.buys &&
+  e.sells == e2.sells &&
+  fn.Eq(e.assets, e2.assets, 0.00000001) &&
+  fn.Eq(e.profitsAvg, e2.profitsAvg, 0.00000001) &&
+  fn.Eq(e.profitsSd, e2.profitsSd, 0.00000001) {
+    ok = true
+  }
+  return
+}
+
 // Returns true if "es" contains "e". Compare only 'e.flea' with 'flea.Eq'.
 //    es    : Evaluated fleas list.
 func (e *T) IsIn(es []*T) bool {
 	for _, e2 := range es {
-		if e.flea.Eq(e2.flea) {
+		if e.Eq(e2) {
 			return true
 		}
 	}

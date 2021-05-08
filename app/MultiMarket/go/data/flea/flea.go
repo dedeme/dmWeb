@@ -87,22 +87,41 @@ func (f *T) Eq(f2 *T) (ok bool) {
 //    profitsAvg: Ratio of profits average.
 //    profitsSd : Ratio of profits standard deviation (between 0 and 1).
 func (f *T) Evaluate(assets, profitsAvg, profitsSd float64) float64 {
+  normalize := func (n, min, maxSubMin float64) float64 {
+    n = (n-min)/maxSubMin
+    if n < 0 {
+      return 0.0
+    }
+    if n > 1  {
+      return 1.0
+    }
+    return n
+  }
+
 	age := float64(date.Now().Df(date.FromString(f.date)))
 	if age >= cts.HistoricQuotes {
 		age = float64(1)
 	} else {
 		age = age / float64(cts.HistoricQuotes)
 	}
+
 	pond := 1.0
+
 	if assets < cts.AssetPenalize {
 		pond = 0.5
 	}
+
 	if profitsAvg < cts.AvgPenalize {
 		pond = pond * 0.5
 	}
+
 	if profitsSd > cts.StdPenalize {
 		pond = pond * 0.5
 	}
+
+  assets = normalize(assets, 0.15, 2.35)
+  profitsAvg = normalize(profitsAvg, 0.33, 1.47)
+
 	e := assets*float64(cts.AssetsRatio) +
 		profitsAvg*(float64(cts.ProfitsAvgRatio)+
 			(1-profitsSd)/float64(len(f.params))*float64(cts.ProfitsSdRatio)) +

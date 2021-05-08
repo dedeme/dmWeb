@@ -27,7 +27,7 @@ func sourceProcess(ck string, mrq map[string]json.T) string {
 
 func main() {
 	if len(os.Args) != 2 {
-		fmt.Println("Hconta need one and only one argument.")
+		fmt.Println("Stocks need one and only one argument.")
 		return
 	}
 	rq := os.Args[1]
