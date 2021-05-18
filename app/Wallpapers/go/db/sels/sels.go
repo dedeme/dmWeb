@@ -18,16 +18,24 @@ func Initialize(parentDir string) {
 
 	if !file.Exists(fpath) {
 		selections := map[string]json.T{}
+		selections["group"] = json.Ws("0")
 		selections["pict"] = json.Ws("")
+		selections["pictsGroup"] = json.Ws("0")
 		selections["pictsPage"] = json.Wi(0)
-		selections["song"] = json.Ws("")
-		selections["lapse"] = json.Wd(0.0)
+    selections["danceManagementGroup"] = json.Ws("")
+    selections["danceSelectorGroup"] = json.Ws("")
 		file.WriteAll(fpath, json.Wo(selections).String())
 	}
 }
 
 func read() map[string]json.T {
 	return json.FromString(file.ReadAll(fpath)).Ro()
+}
+
+// Returns the selected group.
+// If returns is "", no picture has been selected.
+func GetGroup() string {
+	return read()["group"].Rs()
 }
 
 // Returns the selected picture.
@@ -39,6 +47,11 @@ func GetPict() string {
 // Returns the date of selected picture.
 func GetPictDate() string {
 	return read()["pictDate"].Rs()
+}
+
+// Returns the selected pictures group.
+func GetPictsGroup() string {
+	return read()["pictsGroup"].Rs()
 }
 
 // Returns the selected pictures page.
@@ -58,15 +71,33 @@ func GetTime() int64 {
 	return read()["time"].Rl()
 }
 
-// Returns the current time lapse of reproduction of selected song.
-func GetLapse() float64 {
-	return read()["lapse"].Rd()
+// Reuturns the dance management selected group
+func GetDanceManagementGroup (groups []string) string {
+  r := read()["danceManagementGroup"].Rs()
+  if r == "" {
+    r = groups[0]
+  }
+  return r
+}
+
+// Reuturns the dance selector selected group
+func GetDanceSelectorGroup (groups []string) string {
+  r := read()["danceSelectorGroup"].Rs()
+  if r == "" {
+    r = groups[0]
+  }
+  return r
 }
 
 func write(key string, value json.T) {
 	selections := read()
 	selections[key] = value
 	file.WriteAll(fpath, json.Wo(selections).String())
+}
+
+// Set the selected group.
+func SetGroup(group string) {
+	write("group", json.Ws(group))
 }
 
 // Set the selected picture.
@@ -79,6 +110,11 @@ func SetPictDate(date string) {
 	write("pictDate", json.Ws(date))
 }
 
+// Set the selected pictures group.
+func SetPictsGroup(group string) {
+	write("pictsGroup", json.Ws(group))
+}
+
 // Set the selected pictures page.
 func SetPictsPage(page int) {
 	write("pictsPage", json.Wi(page))
@@ -89,7 +125,13 @@ func SetSong(song string) {
 	write("song", json.Ws(song))
 }
 
-// Set the current time lapse of reproduction of selected song.
-func SetLapse(lapse float64) {
-	write("lapse", json.Wd(lapse))
+// Set the the dance management selected group
+func SetDanceManagementGroup(group string) {
+  write("danceManagementGroup", json.Ws(group))
 }
+
+// Set the the dance selector selected group
+func SetDanceSelectorGroup(group string) {
+  write("danceSelectorGroup", json.Ws(group))
+}
+

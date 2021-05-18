@@ -27,6 +27,10 @@ func sourceProcess(ck string, mrq map[string]json.T) string {
 		return pictsManagementProcess(ck, mrq) // pictsManagement.go
 	case "SongsManagement":
 		return songsManagementProcess(ck, mrq) // songsManagement.go
+	case "DanceManagement":
+		return danceManagementProcess(ck, mrq) // danceManagement.go
+	case "DanceSelector":
+		return danceSelectorProcess(ck, mrq) // danceSelector.go
 	case "ChangePass":
 		return changePassProcess(ck, mrq) // changePass.go
 	default:

@@ -6,16 +6,40 @@ package data;
 import dm.Mac;
 import dm.Js;
 
-/// Song data (Serializable)
-/// Records:
-///   level: Int        - Picture level (1, 2, o 3).
-///   sights: Int - Number of sights in normal mode.
-///   id: String        - Picture name.
-///   time: Int        - Duration in seconds.
-@:build(dm.Mac.record([
-  "level: Int",
-  "sights: Int",
-  "id: String",
-  "time: Int"
-  ], true))
-class Song {}
+class Song {
+  public final id: String;
+  public var level: Int;
+  public var sights: Int;
+  public var lapse: Float;
+
+
+  function new (id: String, level: Int, sights: Int, lapse: Float) {
+    this.id = id;
+    this.level = level;
+    this.sights = sights;
+    this.lapse = lapse;
+  }
+
+  public function toJs (): Js {
+    return Js.wa([
+      Js.ws(id),
+      Js.wi(level),
+      Js.wi(sights),
+      Js.wf(lapse)
+    ]);
+  }
+
+  public static function mk (id: String): Song {
+    return new Song(id, 1, 0, 0.0);
+  }
+
+  public static function fromJs (js: Js): Song {
+    final a = js.ra();
+    return new Song(
+      a[0].rs(),
+      a[1].ri(),
+      a[2].ri(),
+      a[3].rf()
+    );
+  }
+}

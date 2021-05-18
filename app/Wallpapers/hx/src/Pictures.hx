@@ -1,6 +1,7 @@
 // Copyright 02-May-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+import js.html.KeyboardEvent;
 import haxe.Timer;
 import dm.Domo;
 import dm.Ui;
@@ -17,32 +18,49 @@ class Pictures {
   final img = Q("img");
   final wg: Domo;
   final fnBack: Void -> Void;
+  final clocks: Clocks;
 
   var timer = new Timer(Cts.picturesTime);
-  var pict: String;
 
-  public function new (wg: Domo, pict: String, fnBack: Void -> Void) {
+  public function new (
+    wg: Domo, group: String, pict: String, fnBack: Void -> Void
+  ) {
     this.wg = wg;
-    this.pict = pict;
     this.fnBack = fnBack;
 
     img
-      .att("src", "img/fondosEscritorio/" + pict)
+      .att("src", "img/fondosEscritorio/" + group + "/" + pict)
       .style(
         "width:" + w +"px; height:" + h + "px;" +
-        "transition: opacity 5s;"
+        "z-index:1;" +
+        "transition: opacity 5s linear;"
       )
-      .on(CLICK, goBack)
     ;
+
+    final timeDiv = Q("div")
+      .style(
+        "z-index:2;" +
+        "position:relative;" +
+        "top:-250px;" +
+        "left:0px;"
+      )
+    ;
+    this.clocks = new Clocks(timeDiv);
 
     div
       .style(
         "width:" + w +"px; height:" + h + "px;" +
-        "background-image: " + "url(img/fondosEscritorio/" + pict + ");" +
+        "background-image: " +
+          "url(img/fondosEscritorio/" + group + "/" + pict + ");" +
         "background-size:" + w + "px " + h + "px;"
       )
       .add(img)
+      .add(timeDiv)
+      .on(CLICK, goBack)
     ;
+
+    Q("@body")
+      .on(KEYDOWN, e -> keyDown(e));
 
     view();
 
@@ -52,10 +70,12 @@ class Pictures {
         "source" => Js.ws("Pictures"),
         "rq" => Js.ws("idata")
       ], rp -> {
+        final newGroup = rp["group"].rs();
         final newPict = rp["pict"].rs();
-        if (newPict != pict) {
+        if (newGroup != group || newPict != pict) {
+          group = newGroup;
           pict = newPict;
-          showPict(pict);
+          showPict(group, pict);
         }
       });
     }
@@ -70,29 +90,51 @@ class Pictures {
     ;
   }
 
-  function showPict (p: String) {
+  function showPict (g: String, p: String): Void {
+    final url = "img/fondosEscritorio/" + g + "/" + p;
     div
       .setStyle(
         "background-image",
-        "url(img/fondosEscritorio/" + p +")"
+        "url(" + url +")"
       );
-    img
-      .setStyle("opacity", "0")
-    ;
     Timer.delay(() -> {
       img
-        .att("src", "img/fondosEscritorio/" + p)
-        .setStyle("opacity", "1")
+        .setStyle("opacity", "0")
       ;
-    }, 8000);
+      Timer.delay(() -> {
+        img
+          .att("src", url)
+          .setStyle("opacity", "1")
+        ;
+      }, 8000);
+    }, 2000);
   }
 
   // CONTROL
 
   function goBack (): Void {
     timer.stop();
-    js.Browser.document.exitFullscreen();
     fnBack();
+    js.Browser.document.exitFullscreen();
+  }
+
+  function keyDown (ev: KeyboardEvent): Void {
+    if (ev.keyCode == KeyboardEvent.DOM_VK_UP) {
+      goBack();
+      ev.preventDefault();
+      return;
+    }
+
+    if (ev.keyCode == KeyboardEvent.DOM_VK_LEFT) {
+      clocks.clockChangeOpacity();
+      ev.preventDefault();
+      return;
+    }
+    if (ev.keyCode == KeyboardEvent.DOM_VK_RIGHT) {
+      clocks.chronChangeOpacity();
+      ev.preventDefault();
+      return;
+    }
   }
 
   // STATIC
@@ -102,9 +144,10 @@ class Pictures {
       "source" => Js.ws("Pictures"),
       "rq" => Js.ws("idata")
     ], rp -> {
+      final group = rp["group"].rs();
       final pict = rp["pict"].rs();
 
-      new Pictures(wg, pict, fnBack);
+      new Pictures(wg, group, pict, fnBack);
     });
   }
 }

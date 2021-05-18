@@ -13,81 +13,92 @@ import (
 	"strings"
 )
 
-var fpath string
+var dir string
+
+func fpath(group string) string {
+	return path.Join(dir, "picts"+group+".db")
+}
 
 // Initialize data base
 func Initialize(parentDir string) {
-	fpath = path.Join(parentDir, "picts.db")
-
-	if !file.Exists(fpath) {
-		var pictures []json.T
-		file.WriteAll(fpath, json.Wa(pictures).String())
-	}
+	dir = parentDir
 }
 
-func update() {
-	original := readPictList()
-	var data []*pict.T
-	for _, e := range json.FromString(file.ReadAll(fpath)).Ra() {
-		data = append(data, pict.FromJs(e))
+func update(group string) {
+	p := fpath(group)
+	if !file.Exists(p) {
+		Write(group, []*pict.T{})
 	}
-	var newData []*pict.T
-	for _, o := range original {
+
+	var oldPictures []*pict.T
+	var newPictures []*pict.T
+	for _, pictureJs := range json.FromString(file.ReadAll(p)).Ra() {
+		oldPictures = append(oldPictures, pict.FromJs(pictureJs))
+	}
+	for _, pictureId := range readPictList(group) {
 		ok := false
-		for _, d := range data {
-			if d.Id() == o {
-				newData = append(newData, d)
+		for _, picture := range oldPictures {
+			if picture.Id() == pictureId {
+				newPictures = append(newPictures, picture)
 				ok = true
 				break
 			}
 		}
 		if !ok {
-			newData = append(newData, pict.New(o))
+			newPictures = append(newPictures, pict.New(pictureId))
 		}
 	}
-	Write(newData)
+
+	Write(group, newPictures)
 }
 
-func readPictList() []string {
-	var r []string
-	infs, err := ioutil.ReadDir("/dm/fondosEscritorio/jpg")
+func readPictList(group string) []string {
+	var pictures []string
+	infs, err := ioutil.ReadDir(path.Join("/dm/fondosEscritorio/jpg", group))
 	if err != nil {
 		panic(err)
 	}
 
 	for _, inf := range infs {
 		if strings.HasSuffix(inf.Name(), ".jpg") {
-			r = append(r, inf.Name())
+			pictures = append(pictures, inf.Name())
 		}
 	}
 
-	return r
-}
-
-// Returns picture list.
-func ReadJs() json.T {
-	update()
-	return json.FromString(file.ReadAll(fpath))
-}
-
-// Returns picture list.
-func Read() (r []*pict.T) {
-	for _, e := range ReadJs().Ra() {
-		r = append(r, pict.FromJs(e))
+	if len(pictures) == 0 {
+		panic("Pictures not found in group " + dir)
 	}
-	return
+
+	return pictures
 }
 
-// Write picture list
-func Write(pictures []*pict.T) {
-	var a []json.T
-	for _, e := range pictures {
-		a = append(a, e.ToJs())
+// Returns pictures of a group.
+func ReadJs(group string) json.T {
+	update(group)
+	return json.FromString(file.ReadAll(fpath(group)))
+}
+
+// Returns picture groups.
+func Read(group string) []*pict.T {
+	var pictures []*pict.T
+	for _, pictureJs := range ReadJs(group).Ra() {
+		pictures = append(pictures, pict.FromJs(pictureJs))
 	}
-	file.WriteAll(fpath, json.Wa(a).String())
+	return pictures
 }
 
-// Set level of picture 'id'.
-func SetLevel(id string, level int) {
-	Write(pict.SetLevel(Read(), id, level))
+// Write picture Groups
+func Write(group string, pictures []*pict.T) {
+	var picturesJs []json.T
+	for _, picture := range pictures {
+		picturesJs = append(picturesJs, picture.ToJs())
+	}
+
+	file.WriteAll(fpath(group), json.Wa(picturesJs).String())
+}
+
+// Set level of picture 'group'-'id'.
+func SetLevel(group string, id string, level int) {
+	pictures := pict.SetLevel(Read(group), id, level)
+	Write(group, pictures)
 }

@@ -5,6 +5,7 @@
 package db
 
 import (
+	"github.com/dedeme/Wallpapers/db/danceSongs"
 	"github.com/dedeme/Wallpapers/db/picts"
 	"github.com/dedeme/Wallpapers/db/sels"
 	"github.com/dedeme/Wallpapers/db/songs"
@@ -23,5 +24,6 @@ func Initialize() {
 
 	sels.Initialize(dpath)
 	picts.Initialize(dpath)
-	songs.Initialize(dpath)
+	songs.Initialize()
+	danceSongs.Initialize(dpath)
 }

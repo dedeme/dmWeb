@@ -1,6 +1,7 @@
 // Copyright 26-Apr-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+import js.html.KeyboardEvent;
 import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
@@ -12,7 +13,12 @@ import I18n._args;
 /// Applicatoin entry.
 class Main {
 
-  var allMenu = false;
+  final wallpapersBt = Q("button").text(_("Wallpapers"));
+  final songsBt = Q("button").text(_("Wallpapers with Music"));
+  final shortDanceBt = Q("button").text(_("Short Dance"));
+  final longDanceBt = Q("button").text(_("Long Dance"));
+
+  var allMenu = true;
   var wg: Domo;
 
   function new (wg: Domo) {
@@ -31,6 +37,23 @@ class Main {
     if (lang == "es") I18n.es();
     else I18n.en();
 
+    wallpapersBt
+      .on(KEYDOWN, e -> keyInButton(e, null, songsBt))
+      .on(CLICK, e -> Pictures.mk(wg, reload))
+    ;
+    songsBt
+      .on(KEYDOWN, e -> keyInButton(e, wallpapersBt, shortDanceBt))
+      .on(CLICK, e -> Songs.mk(wg, reload))
+    ;
+    shortDanceBt
+      .on(KEYDOWN, e -> keyInButton(e, songsBt, longDanceBt))
+      .on(CLICK, e -> DanceSelector.mk(wg, true, reload))
+    ;
+    longDanceBt
+      .on(KEYDOWN, e -> keyInButton(e, shortDanceBt, null))
+      .on(CLICK, e -> DanceSelector.mk(wg, false, reload))
+    ;
+
     wg
       .removeAll()
       .klass("margin")
@@ -43,15 +66,16 @@ class Main {
         .att("align", "center")
         .add(Q("tr")
           .add(Q("td")
-            .add(Q("button")
-            .att("id", "mainButton")
-            .text(_("Wallpapers"))
-            .on(CLICK, e -> Pictures.mk(wg, () -> view())))))
+            .add(wallpapersBt)))
         .add(Q("tr")
           .add(Q("td")
-            .add(Q("button")
-              .text(_("Wallpapers with Music"))
-              .on(CLICK, e -> Songs.mk(wg, () -> view())))))
+            .add(songsBt)))
+        .add(Q("tr")
+          .add(Q("td")
+            .add(shortDanceBt)))
+        .add(Q("tr")
+          .add(Q("td")
+            .add(longDanceBt)))
         .add(Q("tr")
           .add(Q("td")
             .add(Q("hr"))))
@@ -59,8 +83,10 @@ class Main {
       .add(Cts.foot)
     ;
 
-    final mainButton = Q("#mainButton").e;
-    if (mainButton != null) mainButton.focus();
+    haxe.Timer.delay(() -> {
+      final mainButton = wallpapersBt.e;
+      if (mainButton != null) mainButton.focus();
+    }, 100);
   }
 
   function moreRows (): Array<Domo> {
@@ -70,12 +96,17 @@ class Main {
             .add(Q("td")
               .add(Q("button")
                 .text(_("Pictures Management"))
-                .on(CLICK, e -> PictsManagement.mk(wg, () -> view())))),
+                .on(CLICK, e -> PictsManagement.mk(wg, reload)))),
           Q("tr")
             .add(Q("td")
               .add(Q("button")
                 .text(_("Songs Management"))
-                .on(CLICK, e -> SongsManagement.mk(wg, () -> view())))),
+                .on(CLICK, e -> SongsManagement.mk(wg, reload)))),
+          Q("tr")
+            .add(Q("td")
+              .add(Q("button")
+                .text(_("Dance Management"))
+                .on(CLICK, e -> DanceManagement.mk(wg, reload)))),
           Q("tr")
             .add(Q("td")
               .add(Q("hr"))),
@@ -88,7 +119,7 @@ class Main {
             .add(Q("td")
               .add(Q("button")
                 .text(_("Change Password"))
-                .on(CLICK, e -> ChangePass.mk(wg, Cts.app, () -> view())))),
+                .on(CLICK, e -> ChangePass.mk(wg, Cts.app, reload)))),
           Q("tr")
             .add(Q("td")
               .add(Q("button")
@@ -105,6 +136,24 @@ class Main {
   }
 
   // CONTROL
+
+  function reload (): Void {
+    js.Browser.location.assign("");
+  }
+
+  function keyInButton(ev: KeyboardEvent, up: Domo, down: Domo): Void {
+    if (ev.keyCode == KeyboardEvent.DOM_VK_UP && up != null) {
+      up.e.focus();
+      ev.preventDefault();
+      return;
+    }
+
+    if (ev.keyCode == KeyboardEvent.DOM_VK_DOWN && down != null) {
+      down.e.focus();
+      ev.preventDefault();
+      return;
+    }
+  }
 
   function showAllMenu () {
     allMenu = true;
@@ -141,10 +190,6 @@ class Main {
     view();
   }
 
-  function pending () {
-    Ui.alert("Without implementation");
-  }
-
   // STATIC
 
   static function mk (wg: Domo, fn: () -> Void) {
@@ -167,7 +212,6 @@ class Main {
         .removeAll()
         .add(wg)
       ;
-      Q("#mainButton").e.focus();
     });
   }
 }

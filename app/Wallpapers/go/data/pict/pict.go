@@ -52,22 +52,22 @@ func FromJs(js json.T) *T {
 	}
 }
 
-// Returns a new slice with the level of picture 'id' changed.
-func SetLevel(picts []*T, id string, level int) (r []*T) {
+// Returns a new slice with the level of picture id' changed.
+func SetLevel(picts []*T, id string, level int) (newPicts []*T) {
 	for _, e := range picts {
 		if e.id == id {
-			r = append(r, &T{level, e.sights, id})
+			newPicts = append(newPicts, &T{level, e.sights, id})
 		} else {
-			r = append(r, e)
+			newPicts = append(newPicts, e)
 		}
 	}
 	return
 }
 
 // Returns a new slice with sights set to 0
-func ResetSights(picts []*T) (r []*T) {
+func ResetSights(picts []*T) (newPicts []*T) {
 	for _, e := range picts {
-		r = append(r, &T{e.level, 0, e.id})
+		newPicts = append(newPicts, &T{e.level, 0, e.id})
 	}
 	return
 }
@@ -89,7 +89,7 @@ func Contains(picts []*T, id string) bool {
 //    - If every picture has been saw:
 //      * An empty array.
 //      * An empty string.
-func Next(picts []*T) (ps []*T, p string) {
+func Next(picts []*T) (newPicts []*T, p string) {
 	var selPicts []*T
 	for _, e := range picts {
 		if e.sights < e.level {
@@ -105,9 +105,9 @@ func Next(picts []*T) (ps []*T, p string) {
 	p = selPicts[rand.Intn(n)].id
 	for _, e := range picts {
 		if e.id == p {
-			ps = append(ps, &T{e.level, e.sights + 1, e.id})
+			newPicts = append(newPicts, &T{e.level, e.sights + 1, e.id})
 		} else {
-			ps = append(ps, e)
+			newPicts = append(newPicts, e)
 		}
 	}
 

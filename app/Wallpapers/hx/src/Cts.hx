@@ -46,14 +46,12 @@ class Cts {
 	public static final picturesTime = 15000;
   /// Time to access server in songs page (milliseconds)
 	public static final songsTime = 5000;
-  /// Picture removed state
-  public static final pictureRemoved = 0;
-  /// Picture normal state
-  public static final pictureNormal = 1;
-  /// Picture relax state
-  public static final pictureRelax = 2;
-  /// Picture type paths
-  public static final picturePaths = ["pictRemoved", "pictNormal", "pictRelax"];
+  /// Time of long dance (milliseconds)
+  public static final longDanceTime = 2700000.0; // 45'
+  /// Time of short dance (milliseconds)
+  public static final shortDanceTime = 60000.0;//900000.0; // 15'
+  /// Time of fade out in dance (milliseconds)
+  public static final fadeOutDanceTime = 30000.0;//300000.0; // 5'
 
   // FUNCTIONS
 

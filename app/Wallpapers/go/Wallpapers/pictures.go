@@ -12,26 +12,36 @@ import (
 	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/date"
 	"github.com/dedeme/golib/json"
+	"math/rand"
+	"strconv"
 )
 
-func nextPicture() string {
-	ps := picts.Read()
-	p := sels.GetPict()
+func getPicture() (group, picture string) {
+	group = sels.GetGroup()
+	picture = sels.GetPict()
+
+	pictures := picts.Read(group)
 	now := date.Now()
 	dt := now.String() +
 		fmt.Sprintf("%v:%v", now.Hour(), now.Minute()/PICTURES_TIME)
-	if p == "" || !pict.Contains(ps, p) || dt != sels.GetPictDate() {
-		newPs, newP := pict.Next(ps)
-		if newP == "" { // All the pictures has been sown
-			ps = pict.ResetSights(ps)
-			newPs, newP = pict.Next(ps)
+	if picture == "" ||
+		!pict.Contains(pictures, picture) ||
+		dt != sels.GetPictDate() {
+
+		group = strconv.Itoa(rand.Intn(PICTURE_GROUPS))
+		pictures = picts.Read(group)
+		pictures, picture = pict.Next(pictures)
+		if picture == "" { // All the pictures has been shown
+			pictures = pict.ResetSights(pictures)
+			pictures, picture = pict.Next(pictures)
 		}
-		picts.Write(newPs)
-		sels.SetPict(newP)
+		picts.Write(group, pictures)
+		sels.SetGroup(group)
+		sels.SetPict(picture)
 		sels.SetPictDate(dt)
-		p = newP
 	}
-	return p
+
+	return
 }
 
 func picturesProcess(ck string, mrq map[string]json.T) string {
@@ -39,7 +49,9 @@ func picturesProcess(ck string, mrq map[string]json.T) string {
 	switch rq {
 	case "idata":
 		rp := map[string]json.T{}
-		rp["pict"] = json.Ws(nextPicture())
+		group, pict := getPicture()
+		rp["group"] = json.Ws(group)
+		rp["pict"] = json.Ws(pict)
 		return cgi.Rp(ck, rp)
 	default:
 		panic(fmt.Sprintf("Value of source ('%v') is not valid", rq))
