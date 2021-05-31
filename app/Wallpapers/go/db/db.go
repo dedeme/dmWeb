@@ -24,6 +24,6 @@ func Initialize() {
 
 	sels.Initialize(dpath)
 	picts.Initialize(dpath)
-	songs.Initialize()
+	songs.Initialize(dpath)
 	danceSongs.Initialize(dpath)
 }

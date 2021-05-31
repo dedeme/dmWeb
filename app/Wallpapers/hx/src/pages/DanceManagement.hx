@@ -1,6 +1,8 @@
 // Copyright 17-May-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+package pages;
+
 import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
@@ -38,7 +40,9 @@ class DanceManagement {
   function view () {
     final lopts = [];
     var first = true;
-    groups.sort(dm.Str.compare);
+    groups.sort((e1, e2) ->
+      dm.Str.compare(e1.toUpperCase(), e2.toUpperCase())
+    );
     for (g in groups) {
       if (first) first = false;
       else lopts.push(Menu.separator());
@@ -67,7 +71,9 @@ class DanceManagement {
   }
 
   function entries (): Array<Domo> {
-    danceSongs.sort((s1, s2) -> dm.Str.compare(s1.id, s2.id));
+    danceSongs.sort((e1, e2) ->
+      dm.Str.compare(e1.id.toUpperCase(), e2.id.toUpperCase())
+    );
     return danceSongs.map(s ->
       Q("tr")
         .add(Q("td")

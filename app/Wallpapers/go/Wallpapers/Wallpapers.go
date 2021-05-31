@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/dedeme/Wallpapers/data/cts"
 	"github.com/dedeme/Wallpapers/db"
 	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/cryp"
@@ -23,6 +24,8 @@ func sourceProcess(ck string, mrq map[string]json.T) string {
 		return picturesProcess(ck, mrq) // pictures.go
 	case "Songs":
 		return songsProcess(ck, mrq) // songs.go
+	case "Dance":
+		return danceProcess(ck, mrq) // dance.go
 	case "PictsManagement":
 		return pictsManagementProcess(ck, mrq) // pictsManagement.go
 	case "SongsManagement":
@@ -31,6 +34,10 @@ func sourceProcess(ck string, mrq map[string]json.T) string {
 		return danceManagementProcess(ck, mrq) // danceManagement.go
 	case "DanceSelector":
 		return danceSelectorProcess(ck, mrq) // danceSelector.go
+	case "Times":
+		return timesProcess(ck, mrq) // times.go
+	case "PictTime":
+		return pictTimeProcess(ck, mrq) // pictTime.go
 	case "ChangePass":
 		return changePassProcess(ck, mrq) // changePass.go
 	default:
@@ -45,7 +52,7 @@ func main() {
 	}
 	rq := os.Args[1]
 
-	cgi.Initialize(HOME, 900)
+	cgi.Initialize(cts.HOME, 900)
 	db.Initialize()
 
 	ix := strings.IndexByte(rq, ':')
@@ -57,7 +64,7 @@ func main() {
 
 	//........................................................... AUTHENTICATION
 	if ix == 0 {
-		key := cryp.Key(APP, cgi.Klen)
+		key := cryp.Key(cts.APP, cgi.Klen)
 		data := cryp.Decryp(key, rq[1:])
 		ps := strings.Split(data, ":")
 		fmt.Print(cgi.Authentication(key, ps[0], ps[1], ps[2] == "1"))

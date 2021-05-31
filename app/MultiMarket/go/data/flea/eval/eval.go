@@ -6,10 +6,10 @@ package eval
 
 import (
 	"github.com/dedeme/MultiMarket/data/cts"
-	"github.com/dedeme/MultiMarket/global/fn"
 	"github.com/dedeme/MultiMarket/data/flea"
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
 	"github.com/dedeme/MultiMarket/data/qtable"
+	"github.com/dedeme/MultiMarket/global/fn"
 	"github.com/dedeme/golib/json"
 	"sort"
 )
@@ -63,14 +63,14 @@ func (e *T) ProfitsSd() float64 {
 // Two efleas are equals if they have same values buys, sells, assets,
 // profitsAvg and profitsStd.
 func (e *T) Eq(e2 *T) (ok bool) {
-  if e.buys == e2.buys &&
-  e.sells == e2.sells &&
-  fn.Eq(e.assets, e2.assets, 0.00000001) &&
-  fn.Eq(e.profitsAvg, e2.profitsAvg, 0.00000001) &&
-  fn.Eq(e.profitsSd, e2.profitsSd, 0.00000001) {
-    ok = true
-  }
-  return
+	if e.buys == e2.buys &&
+		e.sells == e2.sells &&
+		fn.Eq(e.assets, e2.assets, 0.00000001) &&
+		fn.Eq(e.profitsAvg, e2.profitsAvg, 0.00000001) &&
+		fn.Eq(e.profitsSd, e2.profitsSd, 0.00000001) {
+		ok = true
+	}
+	return
 }
 
 // Returns true if "es" contains "e". Compare only 'e.flea' with 'flea.Eq'.
@@ -143,7 +143,9 @@ func Evaluate(md *fmodel.T, opens, closes *qtable.T, es []*T) {
 	for _, e := range es {
 		e.Eval = e.flea.Evaluate(
 			e.assets/cts.InitialCapital,
-			e.profitsAvg+1, // (= cash / cts.InitialCapital)
+			e.profitsAvg+1,
+			// profitsAvs = Avg of [(cash - cts.InitialCapital) / cts.InitialCapital]
+			// e.profitsAvg+1 = Avg of [cash / cts.InitialCapital]
 			e.profitsSd,
 		)
 	}

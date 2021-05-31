@@ -89,7 +89,7 @@ const (
 	HistoricQuotes = 610
 
 	// Fleas initial capital for each cycle
-	InitialCapital = 110000.0
+	InitialCapital = 100000.0
 
 	// Bet
 	Bet = 10000.0

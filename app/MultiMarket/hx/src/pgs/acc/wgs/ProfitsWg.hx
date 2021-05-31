@@ -34,6 +34,39 @@ class ProfitsWg {
       return cv;
     }
 
+    if (type == ALL) {
+      final newData: Array<ProfitsEntry> = [];
+      var lastD = data[0].date.substring(0, 6);
+      var incr = 0.0;
+      newData.push(data[0]);
+      for (i in 1...data.length) {
+        final e = data[i];
+        final month = e.date.substring(4, 6);
+        if (e.date.substring(4, 6) == "01") {
+          final e1 = data[i - 1];
+          if (e1.date.substring(4, 6) == "12") {
+            incr += e1.acc;
+          }
+        }
+
+        final d = e.date.substring(0, 6);
+        if (d != lastD) {
+          newData.push(new ProfitsEntry(
+            e.date, e.total + incr, e.acc + incr, e.risk + incr
+          ));
+          lastD = d;
+        }
+      }
+      if (newData[newData.length - 1].date != data[data.length - 1].date) {
+        final e = data[data.length - 1];
+        newData.push(new ProfitsEntry(
+          e.date, e.total + incr, e.acc + incr, e.risk + incr
+        ));
+      }
+
+      data = newData;
+    }
+
     if (data[0].total < data[data.length - 1].total) {
       backg = "#e9e9f2";
     } else if (data[0].total > data[data.length - 1].total) {

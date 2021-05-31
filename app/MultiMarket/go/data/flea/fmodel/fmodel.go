@@ -241,6 +241,34 @@ func (md *T) ToJs() json.T {
 	})
 }
 
+func withdrawal(
+	cs []float64, nCos int, stockss []int, safe, cash float64,
+) (
+	newSafe, newCash float64,
+) {
+	tmpAssets := cash
+	for i := 0; i < nCos; i++ {
+		stocks := stockss[i]
+		if stocks > 0 {
+			q := cs[i]
+			if q >= 0 {
+				tmpAssets += broker.Sell(stocks, q)
+			}
+		}
+	}
+	if tmpAssets > cts.InitialCapital+cts.Bet+cts.Bet {
+		dif := tmpAssets - cts.InitialCapital - cts.Bet
+		if cash >= dif+1000 {
+			safe += dif
+			cash -= dif
+		} else if cash >= cts.Bet+1000 {
+			safe += cts.Bet
+			cash -= cts.Bet
+		}
+	}
+	return safe, cash
+}
+
 // Calculates assets of a investor.
 //    opens : Open quotes table.
 //    closes: Close quotes table.
@@ -251,6 +279,7 @@ func (md *T) Assets(opens, closes *qtable.T, params []float64) *AssetsRsT {
 	iops := 0
 	cls := closes.Values()
 
+	safe := float64(0)
 	cash := float64(cts.InitialCapital)
 	buys := 0
 	sells := 0
@@ -280,6 +309,7 @@ func (md *T) Assets(opens, closes *qtable.T, params []float64) *AssetsRsT {
 		})
 
 		var newDorders []*dailyOrderT
+		sold := false
 		for _, o := range dorders {
 			iCo := o.iCo
 			if o.isSell {
@@ -290,6 +320,7 @@ func (md *T) Assets(opens, closes *qtable.T, params []float64) *AssetsRsT {
 						cash += broker.Sell(stocks, q)
 						sells++
 						stockss[iCo] = 0
+						sold = true
 					} else {
 						newDorders = append(newDorders, o)
 					}
@@ -308,6 +339,11 @@ func (md *T) Assets(opens, closes *qtable.T, params []float64) *AssetsRsT {
 				}
 			}
 		}
+
+		if sold {
+			safe, cash = withdrawal(cs, nCos, stockss, safe, cash)
+		}
+
 		dorders = newDorders
 
 		// Calculate orders //
@@ -340,7 +376,7 @@ func (md *T) Assets(opens, closes *qtable.T, params []float64) *AssetsRsT {
 		}
 	}
 
-	return NewAssetsRs(cash, buys, sells)
+	return NewAssetsRs(safe+cash, buys, sells)
 }
 
 // Calculates profits ratio of one company (from -1 to ...).
@@ -457,6 +493,7 @@ func (md *T) HistoricAssets(
 	iops := 0
 	cls := closes.Values()
 
+	safe := float64(0)
 	cash := float64(cts.InitialCapital)
 	var assets []float64
 
@@ -486,6 +523,7 @@ func (md *T) HistoricAssets(
 		})
 
 		var newDorders []*dailyOrderT
+		sold := false
 		for _, o := range dorders {
 			iCo := o.iCo
 			if o.isSell {
@@ -495,6 +533,7 @@ func (md *T) HistoricAssets(
 					if q >= 0 {
 						cash += broker.Sell(stocks, q)
 						stockss[iCo] = 0
+						sold = true
 					} else {
 						newDorders = append(newDorders, o)
 					}
@@ -512,6 +551,11 @@ func (md *T) HistoricAssets(
 				}
 			}
 		}
+
+		if sold {
+			safe, cash = withdrawal(cs, nCos, stockss, safe, cash)
+		}
+
 		dorders = newDorders
 
 		newAssets := cash
@@ -526,7 +570,7 @@ func (md *T) HistoricAssets(
 				newAssets += broker.Sell(stocks, q)
 			}
 		}
-		assets = append(assets, newAssets)
+		assets = append(assets, safe+newAssets)
 
 		// Calculate orders //
 
@@ -558,7 +602,7 @@ func (md *T) HistoricAssets(
 		}
 	}
 
-	return append(assets, cash)
+	return append(assets, safe+cash)
 }
 
 // Returns orders of a model.
@@ -575,6 +619,7 @@ func (md *T) Orders(
 	ops := opens.Values()
 	cls := closes.Values()
 
+	safe := float64(0)
 	cash := cts.InitialCapital
 	stockss := make([]int, nCos)
 	toBuys := make([]bool, nCos)
@@ -603,6 +648,7 @@ func (md *T) Orders(
 		})
 
 		var newDorders []*dailyOrderT
+		sold := false
 		for _, o := range dorders {
 			iCo := o.iCo
 			if o.isSell {
@@ -615,6 +661,7 @@ func (md *T) Orders(
 						orders = append(orders, NewOrder(
 							dt, nicks[iCo], true, stocks, q,
 						))
+						sold = true
 					} else {
 						newDorders = append(newDorders, o)
 					}
@@ -635,6 +682,11 @@ func (md *T) Orders(
 				}
 			}
 		}
+
+		if sold {
+			safe, cash = withdrawal(cs, nCos, stockss, safe, cash)
+		}
+
 		dorders = newDorders
 
 		// Calculate orders //

@@ -244,6 +244,7 @@ func Evolution() {
 				if len(rank) > n {
 					rank = rank[:n]
 				}
+				eval.Evaluate(md, opens, closes, rank)
 				efs := eval.Complete(pool, rank, cts.RankingNumber)
 				eval.Evaluate(md, opens, closes, efs)
 				eval.Sort(efs)

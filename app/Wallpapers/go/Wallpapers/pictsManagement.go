@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/dedeme/Wallpapers/data/cts"
 	"github.com/dedeme/Wallpapers/db/picts"
 	"github.com/dedeme/Wallpapers/db/sels"
 	"github.com/dedeme/golib/cgi"
@@ -18,10 +19,13 @@ func pictsManagementProcess(ck string, mrq map[string]json.T) string {
 	case "idata":
 		rp := map[string]json.T{}
 		group := sels.GetPictsGroup()
-		rp["groups"] = json.Wi(PICTURE_GROUPS)
+		rp["groups"] = json.Wi(cts.PICTURE_GROUPS)
 		rp["group"] = json.Ws(group)
 		rp["picts"] = picts.ReadJs(group)
 		rp["page"] = json.Wi(sels.GetPictsPage())
+		totalSights, shownSights := picts.ShownSights()
+		rp["totalSights"] = json.Wi(totalSights)
+		rp["shownSights"] = json.Wi(shownSights)
 
 		return cgi.Rp(ck, rp)
 	case "setLevel":

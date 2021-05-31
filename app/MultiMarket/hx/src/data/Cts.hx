@@ -40,7 +40,7 @@ class Cts {
   /// Ammount to make a buy.
   public static final bet = 10000.0;
   /// Investor initial capital.
-  public static final initialCapital = 110000.0;
+  public static final initialCapital = 100000.0;
   /// Minimun cash to bet
 	public static final minToBet = 11000.0;
   /// Extern program name.
@@ -59,13 +59,15 @@ class Cts {
   public static final failMsg = _("Operation failed.\nSee log.");
   /// ToBuy references colors (one by manager)
   public static final toBuyColors = [
-    "rgba(255, 40, 0)",
-    "rgba(255, 129, 0)"
+    "rgba(160, 0, 0)",
+    "rgba(224, 160, 0)",
+    "rgba(240, 224, 0)",
   ];
   /// ToSell references colors (one by manager)
   public static final toSellColors = [
-    "rgba(0, 129, 255)",
-    "rgba(0, 210, 255)"
+    "rgba(0, 0, 160)",
+    "rgba(0, 160, 224)",
+    "rgba(0, 224, 0)",
   ];
 
   // For jump models -----------------------------------------------

@@ -1,6 +1,8 @@
 // Copyright 02-May-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+package pages;
+
 import js.html.KeyboardEvent;
 import haxe.Timer;
 import dm.Domo;
@@ -8,54 +10,47 @@ import dm.Ui;
 import dm.Ui.Q;
 import dm.Js;
 import data.Pict;
+import widgets.Clocks;
+import widgets.Info;
+import widgets.PictTime;
 import I18n._;
 
 /// Pictures show.
 class Pictures {
-  final w = Std.string(Cts.screenWidth);
-  final h = Std.string(Cts.screenHeight);
-  final div = Q("div");
-  final img = Q("img");
+  final div: Domo;
+  final img: Domo;
   final wg: Domo;
-  final fnBack: Void -> Void;
   final clocks: Clocks;
+  final info: Info;
+  final pictTime: PictTime;
+  final fnBack: Void -> Void;
 
-  var timer = new Timer(Cts.picturesTime);
+  var timer = new Timer(Media.picturesTime);
 
-  public function new (
-    wg: Domo, group: String, pict: String, fnBack: Void -> Void
+  function new (
+    wg: Domo, group: String, pict: Pict, fnBack: Void -> Void
   ) {
     this.wg = wg;
     this.fnBack = fnBack;
 
-    img
-      .att("src", "img/fondosEscritorio/" + group + "/" + pict)
-      .style(
-        "width:" + w +"px; height:" + h + "px;" +
-        "z-index:1;" +
-        "transition: opacity 5s linear;"
-      )
+    final visuals = Media.visuals();
+
+    img = visuals.img
+      .att("src", "img/fondosEscritorio/" + group + "/" + pict.id)
     ;
 
-    final timeDiv = Q("div")
-      .style(
-        "z-index:2;" +
-        "position:relative;" +
-        "top:-250px;" +
-        "left:0px;"
-      )
-    ;
-    this.clocks = new Clocks(timeDiv);
+    info = new Info(-350, Info.pictureWg(group, pict));
+    pictTime = new PictTime(-350);
 
-    div
-      .style(
-        "width:" + w +"px; height:" + h + "px;" +
-        "background-image: " +
-          "url(img/fondosEscritorio/" + group + "/" + pict + ");" +
-        "background-size:" + w + "px " + h + "px;"
+    this.clocks = new Clocks(visuals.time);
+
+    div = visuals.div
+      .setStyle(
+        "background-image",
+        "url('img/fondosEscritorio/" + group + "/" + pict.id + "')"
       )
-      .add(img)
-      .add(timeDiv)
+      .add(info.wg)
+      .add(pictTime.wg)
       .on(CLICK, goBack)
     ;
 
@@ -71,11 +66,11 @@ class Pictures {
         "rq" => Js.ws("idata")
       ], rp -> {
         final newGroup = rp["group"].rs();
-        final newPict = rp["pict"].rs();
-        if (newGroup != group || newPict != pict) {
+        final newPict = Pict.fromJs(rp["pict"]);
+        if (newGroup != group || newPict.id != pict.id) {
           group = newGroup;
           pict = newPict;
-          showPict(group, pict);
+          Media.changePict(div, img, info, group, pict);
         }
       });
     }
@@ -90,32 +85,11 @@ class Pictures {
     ;
   }
 
-  function showPict (g: String, p: String): Void {
-    final url = "img/fondosEscritorio/" + g + "/" + p;
-    div
-      .setStyle(
-        "background-image",
-        "url(" + url +")"
-      );
-    Timer.delay(() -> {
-      img
-        .setStyle("opacity", "0")
-      ;
-      Timer.delay(() -> {
-        img
-          .att("src", url)
-          .setStyle("opacity", "1")
-        ;
-      }, 8000);
-    }, 2000);
-  }
-
   // CONTROL
 
   function goBack (): Void {
     timer.stop();
     fnBack();
-    js.Browser.document.exitFullscreen();
   }
 
   function keyDown (ev: KeyboardEvent): Void {
@@ -125,16 +99,42 @@ class Pictures {
       return;
     }
 
+    if (ev.keyCode == KeyboardEvent.DOM_VK_DOWN) {
+      info.changeOpacity();
+      ev.preventDefault();
+      return;
+    }
+
     if (ev.keyCode == KeyboardEvent.DOM_VK_LEFT) {
       clocks.clockChangeOpacity();
       ev.preventDefault();
       return;
     }
+
     if (ev.keyCode == KeyboardEvent.DOM_VK_RIGHT) {
       clocks.chronChangeOpacity();
       ev.preventDefault();
       return;
     }
+
+    if (
+      ev.keyCode >= KeyboardEvent.DOM_VK_1 &&
+      ev.keyCode <= KeyboardEvent.DOM_VK_6
+    ) {
+      pictTime.show(ev.keyCode - KeyboardEvent.DOM_VK_0);
+      ev.preventDefault();
+      return;
+    }
+
+    if (
+      ev.keyCode >= KeyboardEvent.DOM_VK_NUMPAD1 &&
+      ev.keyCode <= KeyboardEvent.DOM_VK_NUMPAD6
+    ) {
+      pictTime.show(ev.keyCode - KeyboardEvent.DOM_VK_NUMPAD0);
+      ev.preventDefault();
+      return;
+    }
+
   }
 
   // STATIC
@@ -145,7 +145,7 @@ class Pictures {
       "rq" => Js.ws("idata")
     ], rp -> {
       final group = rp["group"].rs();
-      final pict = rp["pict"].rs();
+      final pict = Pict.fromJs(rp["pict"]);
 
       new Pictures(wg, group, pict, fnBack);
     });

@@ -5,11 +5,14 @@
 package picts
 
 import (
+	"github.com/dedeme/Wallpapers/data/cts"
 	"github.com/dedeme/Wallpapers/data/pict"
+	"github.com/dedeme/Wallpapers/data/sighter"
 	"github.com/dedeme/golib/file"
 	"github.com/dedeme/golib/json"
 	"io/ioutil"
 	"path"
+	"strconv"
 	"strings"
 )
 
@@ -22,6 +25,13 @@ func fpath(group string) string {
 // Initialize data base
 func Initialize(parentDir string) {
 	dir = parentDir
+}
+
+func GetGroups() (r []string) {
+	for i := 0; i < cts.PICTURE_GROUPS; i++ {
+		r = append(r, strconv.Itoa(i))
+	}
+	return
 }
 
 func update(group string) {
@@ -101,4 +111,31 @@ func Write(group string, pictures []*pict.T) {
 func SetLevel(group string, id string, level int) {
 	pictures := pict.SetLevel(Read(group), id, level)
 	Write(group, pictures)
+}
+
+// Returns the next picture
+func Next() (group string, picture *pict.T) {
+	gr, p := sighter.Next(
+		GetGroups,
+		func(group string) []sighter.T {
+			return pict.ToSighters(Read(group))
+		},
+		func(group string, ss []sighter.T) {
+			Write(group, pict.FromSighters(ss))
+		},
+	)
+	group = gr
+	picture = p.(*pict.T)
+	return
+}
+
+// Return total sights and shown sights.
+func ShownSights() (totalSights, shownSights int) {
+	for _, g := range GetGroups() {
+		for _, p := range Read(g) {
+			totalSights += p.Level()
+			shownSights += p.Sights()
+		}
+	}
+	return
 }

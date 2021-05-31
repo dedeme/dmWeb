@@ -5,39 +5,144 @@
 package songs
 
 import (
+	"github.com/dedeme/Wallpapers/data/sighter"
+	"github.com/dedeme/Wallpapers/data/song"
+	"github.com/dedeme/golib/file"
 	"github.com/dedeme/golib/json"
 	"io/ioutil"
+	"path"
 	"strings"
 )
 
-var path string // Path of original songs
+var dir string // Directory of original songs
 
-// Initialize data base
-func Initialize() {
-	path = "/dm/musica/relax"
+func fpath(group string) string {
+	return path.Join(dir, "songs_"+group+".db")
 }
 
-// Returns a  JSONized slice of strings.
-func Read() json.T {
-	var ss []string
-	infs, err := ioutil.ReadDir(path)
+// Initialize data base
+func Initialize(parentDir string) {
+	dir = parentDir
+}
+
+// Returns groups list
+func GetGroups() []string {
+	var groups []string
+	infs, err := ioutil.ReadDir("/dm/musica/relax")
+	if err != nil {
+		panic(err)
+	}
+
+	for _, inf := range infs {
+		if inf.IsDir() {
+			groups = append(groups, inf.Name())
+		}
+	}
+
+	if len(groups) == 0 {
+		panic("Song groups not found")
+	}
+
+	return groups
+}
+
+func update(group string) {
+	p := fpath(group)
+	if !file.Exists(p) {
+		Write(group, []*song.T{})
+	}
+
+	var oldSongs []*song.T
+	var newSongs []*song.T
+	for _, songJs := range json.FromString(file.ReadAll(p)).Ra() {
+		oldSongs = append(oldSongs, song.FromJs(songJs))
+	}
+	for _, songId := range readSongList(group) {
+		ok := false
+		for _, song := range oldSongs {
+			if song.Id() == songId {
+				newSongs = append(newSongs, song)
+				ok = true
+				break
+			}
+		}
+		if !ok {
+			newSongs = append(newSongs, song.New(songId))
+		}
+	}
+
+	Write(group, newSongs)
+}
+
+func readSongList(group string) []string {
+	var songs []string
+	infs, err := ioutil.ReadDir(path.Join("/dm/musica/relax", group))
 	if err != nil {
 		panic(err)
 	}
 
 	for _, inf := range infs {
 		if strings.HasSuffix(inf.Name(), ".mp3") {
-			ss = append(ss, inf.Name())
+			songs = append(songs, inf.Name())
 		}
 	}
 
-	if len(ss) == 0 {
-		panic("Songs not found")
+	if len(songs) == 0 {
+		panic("Songs not found in group " + dir)
 	}
 
-	var r []json.T
-	for _, s := range ss {
-		r = append(r, json.Ws(s))
+	return songs
+}
+
+// Returns songs of a group.
+func ReadJs(group string) json.T {
+	update(group)
+	return json.FromString(file.ReadAll(fpath(group)))
+}
+
+// Returns song groups.
+func Read(group string) []*song.T {
+	var songs []*song.T
+	for _, songJs := range ReadJs(group).Ra() {
+		songs = append(songs, song.FromJs(songJs))
 	}
-	return json.Wa(r)
+	return songs
+}
+
+// Write song Groups
+func Write(group string, songs []*song.T) {
+	var songsJs []json.T
+	for _, song := range songs {
+		songsJs = append(songsJs, song.ToJs())
+	}
+
+	file.WriteAll(fpath(group), json.Wa(songsJs).String())
+}
+
+// Set level of song 'group'-'id'.
+func SetLevel(group string, id string, level int) {
+	songs := song.SetLevel(Read(group), id, level)
+	Write(group, songs)
+}
+
+// Set level of song 'group'-'id'.
+func SetLapse(group string, id string, lapse float64) {
+	songs := song.SetLapse(Read(group), id, lapse)
+	Write(group, songs)
+}
+
+// Returns the next picture
+func Next() (group string, s *song.T) {
+	gr, sg := sighter.Next(
+		GetGroups,
+		func(group string) []sighter.T {
+			return song.ToSighters(Read(group))
+		},
+		func(group string, ss []sighter.T) {
+			Write(group, song.FromSighters(ss))
+		},
+	)
+	group = gr
+	s = sg.(*song.T)
+	return
 }

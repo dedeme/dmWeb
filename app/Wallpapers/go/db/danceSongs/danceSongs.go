@@ -16,7 +16,7 @@ import (
 var dir string
 
 func fpath(group string) string {
-	return path.Join(dir, "songs_"+group+".db")
+	return path.Join(dir, "dance_"+group+".db")
 }
 
 // Initialize data base

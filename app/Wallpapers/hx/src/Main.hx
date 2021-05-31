@@ -7,6 +7,17 @@ import dm.Ui;
 import dm.Ui.Q;
 import dm.Js;
 import dm.Store;
+import pages.Pictures;
+import pages.Songs;
+import pages.DanceSelector;
+import pages.PictsManagement;
+import pages.SongsManagement;
+import pages.DanceManagement;
+import pages.StandBy;
+import pages.Times;
+import pages.ChangePass;
+import pages.Authentication;
+import pages.MsgPage;
 import I18n._;
 import I18n._args;
 
@@ -17,8 +28,9 @@ class Main {
   final songsBt = Q("button").text(_("Wallpapers with Music"));
   final shortDanceBt = Q("button").text(_("Short Dance"));
   final longDanceBt = Q("button").text(_("Long Dance"));
+  final standByBt = Q("button").text(_("Stand By"));
 
-  var allMenu = true;
+  var allMenu = false;
   var wg: Domo;
 
   function new (wg: Domo) {
@@ -50,8 +62,12 @@ class Main {
       .on(CLICK, e -> DanceSelector.mk(wg, true, reload))
     ;
     longDanceBt
-      .on(KEYDOWN, e -> keyInButton(e, shortDanceBt, null))
+      .on(KEYDOWN, e -> keyInButton(e, shortDanceBt, standByBt))
       .on(CLICK, e -> DanceSelector.mk(wg, false, reload))
+    ;
+    standByBt
+      .on(KEYDOWN, e -> keyInButton(e, longDanceBt, null))
+      .on(CLICK, e -> new StandBy(wg, reload))
     ;
 
     wg
@@ -76,6 +92,9 @@ class Main {
         .add(Q("tr")
           .add(Q("td")
             .add(longDanceBt)))
+        .add(Q("tr")
+          .add(Q("td")
+            .add(standByBt)))
         .add(Q("tr")
           .add(Q("td")
             .add(Q("hr"))))
@@ -107,6 +126,11 @@ class Main {
               .add(Q("button")
                 .text(_("Dance Management"))
                 .on(CLICK, e -> DanceManagement.mk(wg, reload)))),
+          Q("tr")
+            .add(Q("td")
+              .add(Q("button")
+                .text(_("Times Management"))
+                .on(CLICK, e -> Times.mk(wg, reload)))),
           Q("tr")
             .add(Q("td")
               .add(Q("hr"))),

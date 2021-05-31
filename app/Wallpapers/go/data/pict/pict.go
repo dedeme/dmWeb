@@ -5,8 +5,8 @@
 package pict
 
 import (
+	"github.com/dedeme/Wallpapers/data/sighter"
 	"github.com/dedeme/golib/json"
-	"math/rand"
 )
 
 type T struct {
@@ -35,6 +35,16 @@ func (p *T) Id() string {
 	return p.id
 }
 
+// Returna a new song with sights incremented.
+func (p *T) Inc() sighter.T {
+	return &T{p.level, p.sights + 1, p.id}
+}
+
+// Returna a new song with sights reset.
+func (p *T) Reset() sighter.T {
+	return &T{p.level, 0, p.id}
+}
+
 func (p *T) ToJs() json.T {
 	return json.Wa([]json.T{
 		json.Wi(p.level),
@@ -52,11 +62,27 @@ func FromJs(js json.T) *T {
 	}
 }
 
-// Returns a new slice with the level of picture id' changed.
+// Returns a new slice with the level of picture 'id' changed.
 func SetLevel(picts []*T, id string, level int) (newPicts []*T) {
 	for _, e := range picts {
 		if e.id == id {
 			newPicts = append(newPicts, &T{level, e.sights, id})
+		} else {
+			newPicts = append(newPicts, e)
+		}
+	}
+	return
+}
+
+// Returns a new slice with the sights of 'picture' incremented if it is in
+// the array.
+func IncSights(picts []*T, picture *T) (newPicts []*T, newPicture *T) {
+	newPicture = picture
+	id := picture.id
+	for _, e := range picts {
+		if e.id == id {
+			newPicture = &T{e.level, e.sights + 1, id}
+			newPicts = append(newPicts, newPicture)
 		} else {
 			newPicts = append(newPicts, e)
 		}
@@ -72,44 +98,28 @@ func ResetSights(picts []*T) (newPicts []*T) {
 	return
 }
 
-// Returns true if 'picts' contains a picture with name 'id'
-func Contains(picts []*T, id string) bool {
+// Returns the picture with name 'id' or nil
+func Get(picts []*T, id string) *T {
 	for _, e := range picts {
 		if e.id == id {
-			return true
+			return e
 		}
 	}
-	return false
+	return nil
 }
 
-// Returns:
-//    - If there is a picture to see:
-//      * A new array of pictures with 'p'.sights incremented.
-//      * The next picture.
-//    - If every picture has been saw:
-//      * An empty array.
-//      * An empty string.
-func Next(picts []*T) (newPicts []*T, p string) {
-	var selPicts []*T
-	for _, e := range picts {
-		if e.sights < e.level {
-			selPicts = append(selPicts, e)
-		}
+// Returns the same array as []sighter.T
+func ToSighters(ss []*T) (r []sighter.T) {
+	for _, s := range ss {
+		r = append(r, s)
 	}
+	return
+}
 
-	n := len(selPicts)
-	if n == 0 {
-		return
+// Returns the same array as []*T
+func FromSighters(ss []sighter.T) (r []*T) {
+	for _, s := range ss {
+		r = append(r, s.(*T))
 	}
-
-	p = selPicts[rand.Intn(n)].id
-	for _, e := range picts {
-		if e.id == p {
-			newPicts = append(newPicts, &T{e.level, e.sights + 1, e.id})
-		} else {
-			newPicts = append(newPicts, e)
-		}
-	}
-
 	return
 }

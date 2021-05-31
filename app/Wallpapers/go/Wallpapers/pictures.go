@@ -12,32 +12,24 @@ import (
 	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/date"
 	"github.com/dedeme/golib/json"
-	"math/rand"
-	"strconv"
 )
 
-func getPicture() (group, picture string) {
+func getPicture() (group string, picture *pict.T) {
 	group = sels.GetGroup()
-	picture = sels.GetPict()
+	pictureId := sels.GetPict()
 
 	pictures := picts.Read(group)
+	if pictureId != "" {
+		picture = pict.Get(pictures, pictureId)
+	}
+
 	now := date.Now()
 	dt := now.String() +
-		fmt.Sprintf("%v:%v", now.Hour(), now.Minute()/PICTURES_TIME)
-	if picture == "" ||
-		!pict.Contains(pictures, picture) ||
-		dt != sels.GetPictDate() {
-
-		group = strconv.Itoa(rand.Intn(PICTURE_GROUPS))
-		pictures = picts.Read(group)
-		pictures, picture = pict.Next(pictures)
-		if picture == "" { // All the pictures has been shown
-			pictures = pict.ResetSights(pictures)
-			pictures, picture = pict.Next(pictures)
-		}
-		picts.Write(group, pictures)
+		fmt.Sprintf("%v:%v", now.Hour(), now.Minute()/sels.GetPictTime())
+	if picture == nil || dt != sels.GetPictDate() {
+		group, picture = picts.Next()
 		sels.SetGroup(group)
-		sels.SetPict(picture)
+		sels.SetPict(picture.Id())
 		sels.SetPictDate(dt)
 	}
 
@@ -51,7 +43,7 @@ func picturesProcess(ck string, mrq map[string]json.T) string {
 		rp := map[string]json.T{}
 		group, pict := getPicture()
 		rp["group"] = json.Ws(group)
-		rp["pict"] = json.Ws(pict)
+		rp["pict"] = pict.ToJs()
 		return cgi.Rp(ck, rp)
 	default:
 		panic(fmt.Sprintf("Value of source ('%v') is not valid", rq))

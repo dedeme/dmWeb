@@ -5,9 +5,31 @@
 package sels
 
 import (
+	"fmt"
+	"github.com/dedeme/golib/date"
 	"github.com/dedeme/golib/file"
 	"github.com/dedeme/golib/json"
 	"path"
+)
+
+const (
+	fGroup      = "group"
+	fPict       = "pict"
+	fPictDate   = "pictDate"
+	fPictsGroup = "pictsGroup"
+	fPictsPage  = "pictsPage"
+
+	fSongGroup  = "songGroup"
+	fSong       = "song"
+	fSongsGroup = "songsGroup"
+	fSongsSong  = "songsSong"
+
+	fDanceManagementGroup = "danceManagementGroup"
+	fDanceSelectorGroup   = "danceSelectorGroup"
+
+	pictTime       = "pictTime"
+	shortDanceTime = "shortDanceTime"
+	longDanceTime  = "longDanceTime"
 )
 
 var fpath string
@@ -18,14 +40,9 @@ func Initialize(parentDir string) {
 
 	if !file.Exists(fpath) {
 		selections := map[string]json.T{}
-		selections["group"] = json.Ws("0")
-		selections["pict"] = json.Ws("")
-		selections["pictsGroup"] = json.Ws("0")
-		selections["pictsPage"] = json.Wi(0)
-    selections["danceManagementGroup"] = json.Ws("")
-    selections["danceSelectorGroup"] = json.Ws("")
 		file.WriteAll(fpath, json.Wo(selections).String())
 	}
+
 }
 
 func read() map[string]json.T {
@@ -33,61 +50,135 @@ func read() map[string]json.T {
 }
 
 // Returns the selected group.
-// If returns is "", no picture has been selected.
+// Default "0"
 func GetGroup() string {
-	return read()["group"].Rs()
+	if groupJs, ok := read()[fGroup]; ok {
+		return groupJs.Rs()
+	}
+	return "0"
 }
 
 // Returns the selected picture.
-// If returns is "", no picture has been selected.
+// Default ""
 func GetPict() string {
-	return read()["pict"].Rs()
+	if pictJs, ok := read()[fPict]; ok {
+		return pictJs.Rs()
+	}
+	return ""
 }
 
 // Returns the date of selected picture.
+// Default current date-time.
 func GetPictDate() string {
-	return read()["pictDate"].Rs()
+	if pictDateJs, ok := read()[fPictDate]; ok {
+		return pictDateJs.Rs()
+	}
+	now := date.Now()
+	return now.String() +
+		fmt.Sprintf("%v:%v", now.Hour(), now.Minute()/GetPictTime())
 }
 
 // Returns the selected pictures group.
+// Default "0"
 func GetPictsGroup() string {
-	return read()["pictsGroup"].Rs()
+	if groupJs, ok := read()[fPictsGroup]; ok {
+		return groupJs.Rs()
+	}
+	return "0"
 }
 
 // Returns the selected pictures page.
-// Default 0.
+// Default 0
 func GetPictsPage() int {
-	return read()["pictsPage"].Ri()
+	if pageJs, ok := read()[fPictsPage]; ok {
+		return pageJs.Ri()
+	}
+	return 0
+}
+
+// Returns the songs selected group
+// Default ""
+func GetSongGroup() string {
+	if groupJs, ok := read()[fSongGroup]; ok {
+		return groupJs.Rs()
+	}
+	return ""
 }
 
 // Returns the selected song (for relaxing).
-// If returns is "", no song has been selected.
+// Default ""
 func GetSong() string {
-	return read()["song"].Rs()
+	if songJs, ok := read()[fSong]; ok {
+		return songJs.Rs()
+	}
+	return ""
 }
 
-// Returns the total time of selected song.
-func GetTime() int64 {
-	return read()["time"].Rl()
+// Returns the selected group in songs management.
+// Default ""
+func GetSongsGroup() string {
+	if groupJs, ok := read()[fSongsGroup]; ok {
+		return groupJs.Rs()
+	}
+	return ""
 }
 
-// Reuturns the dance management selected group
-func GetDanceManagementGroup (groups []string) string {
-  r := read()["danceManagementGroup"].Rs()
-  if r == "" {
-    r = groups[0]
-  }
-  return r
+// Returns the selected song for songs management.
+// Default ""
+func GetSongsSong() string {
+	if songJs, ok := read()[fSongsSong]; ok {
+		return songJs.Rs()
+	}
+	return ""
 }
 
-// Reuturns the dance selector selected group
-func GetDanceSelectorGroup (groups []string) string {
-  r := read()["danceSelectorGroup"].Rs()
-  if r == "" {
-    r = groups[0]
-  }
-  return r
+// Returns the dance management selected group
+// Default ""
+func GetDanceManagementGroup() string {
+	if groupJs, ok := read()[fDanceManagementGroup]; ok {
+		return groupJs.Rs()
+	}
+	return ""
 }
+
+// Returns the dance selector selected group
+// Default ""
+func GetDanceSelectorGroup() string {
+	if groupJs, ok := read()[fDanceSelectorGroup]; ok {
+		return groupJs.Rs()
+	}
+	return ""
+}
+
+// Returns time to show a picture (minutes).
+// Default 2
+func GetPictTime() int {
+	if valueJs, ok := read()[pictTime]; ok {
+		return valueJs.Ri()
+	}
+	return 2
+}
+
+// Returns duration time of short dance (minutes).
+// Default 15
+func GetShortDanceTime() int {
+	if valueJs, ok := read()[shortDanceTime]; ok {
+		return valueJs.Ri()
+	}
+	return 15
+}
+
+// Returns duration time of long dance (minutes).
+// Default 45
+func GetLongDanceTime() int {
+	if valueJs, ok := read()[longDanceTime]; ok {
+		return valueJs.Ri()
+	}
+	return 45
+}
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 func write(key string, value json.T) {
 	selections := read()
@@ -97,41 +188,70 @@ func write(key string, value json.T) {
 
 // Set the selected group.
 func SetGroup(group string) {
-	write("group", json.Ws(group))
+	write(fGroup, json.Ws(group))
 }
 
 // Set the selected picture.
 func SetPict(pict string) {
-	write("pict", json.Ws(pict))
+	write(fPict, json.Ws(pict))
 }
 
 // Set the date of selected picture.
 func SetPictDate(date string) {
-	write("pictDate", json.Ws(date))
+	write(fPictDate, json.Ws(date))
 }
 
 // Set the selected pictures group.
 func SetPictsGroup(group string) {
-	write("pictsGroup", json.Ws(group))
+	write(fPictsGroup, json.Ws(group))
 }
 
 // Set the selected pictures page.
 func SetPictsPage(page int) {
-	write("pictsPage", json.Wi(page))
+	write(fPictsPage, json.Wi(page))
+}
+
+// Set the selected song group (for relaxing).
+func SetSongGroup(group string) {
+	write(fSongGroup, json.Ws(group))
 }
 
 // Set the selected song (for relaxing).
 func SetSong(song string) {
-	write("song", json.Ws(song))
+	write(fSong, json.Ws(song))
 }
 
-// Set the the dance management selected group
+// Set the selected group for songs management.
+func SetSongsGroup(group string) {
+	write(fSongsGroup, json.Ws(group))
+}
+
+// Set the selected song for songs management.
+func SetSongsSong(song string) {
+	write(fSongsSong, json.Ws(song))
+}
+
+// Set the dance management selected group
 func SetDanceManagementGroup(group string) {
-  write("danceManagementGroup", json.Ws(group))
+	write(fDanceManagementGroup, json.Ws(group))
 }
 
-// Set the the dance selector selected group
+// Set the dance selector selected group
 func SetDanceSelectorGroup(group string) {
-  write("danceSelectorGroup", json.Ws(group))
+	write(fDanceSelectorGroup, json.Ws(group))
 }
 
+// Set the time to show a picture (minutes).
+func SetPictTime(value int) {
+	write(pictTime, json.Wi(value))
+}
+
+// Set the time to show a picture (minutes).
+func SetShortDanceTime(value int) {
+	write(shortDanceTime, json.Wi(value))
+}
+
+// Set the time to show a picture (minutes).
+func SetLongDanceTime(value int) {
+	write(longDanceTime, json.Wi(value))
+}

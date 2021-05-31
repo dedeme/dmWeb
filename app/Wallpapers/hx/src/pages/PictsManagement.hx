@@ -1,6 +1,8 @@
 // Copyright 26-Apr-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+package pages;
+
 import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
@@ -23,9 +25,14 @@ class PictsManagement {
   final group: String;
   final picts: Array<Pict>;
   final page: Int;
+  final totalSights: Int;
+  final shownSights: Int;
 
   function new (
-    wg: Domo, groups: Int, group: String, picts: Array<Pict>, page: Int,
+    wg: Domo,
+    groups: Int, group: String,
+    picts: Array<Pict>, page: Int,
+    totalSights: Int, shownSights: Int,
     fnBack: Void -> Void
   ) {
     this.wg = wg;
@@ -39,12 +46,14 @@ class PictsManagement {
     maxPage = Std.int((picts.length - 1) / ptds);
     if (page > maxPage) {
       setPage(maxPage);
-    } else {
-      this.page = page > maxPage ? maxPage : page;
-      this.fnBack = fnBack;
-
-      view();
+      return;
     }
+
+    this.page = page > maxPage ? maxPage : page;
+    this.totalSights = totalSights;
+    this.shownSights = shownSights;
+    this.fnBack = fnBack;
+    view();
   }
 
   // VIEW
@@ -54,7 +63,7 @@ class PictsManagement {
       .removeAll()
       .add(Q("div")
         .klass("head")
-        .text(_("Pictures Management")))
+        .text(_('Pictures Management [ $shownSights / $totalSights ]')))
       .add(Q("table")
         .att("align", "center")
         .add(Q("tr")
@@ -244,8 +253,16 @@ class PictsManagement {
       final group = rp["group"].rs();
       final picts = rp["picts"].ra().map(e -> Pict.fromJs(e));
       final page = rp["page"].ri();
+      final totalSights = rp["totalSights"].ri();
+      final shownSights = rp["shownSights"].ri();
 
-      new PictsManagement(wg, groups, group, picts, page, fnBack);
+      new PictsManagement(
+        wg,
+        groups, group,
+        picts, page,
+        totalSights, shownSights,
+        fnBack
+      );
     });
   }
 }
