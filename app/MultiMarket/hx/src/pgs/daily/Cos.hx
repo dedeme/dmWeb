@@ -51,9 +51,13 @@ class Cos {
             var max = -1.0;
             for (e in d.managersData) {
               final isSell = e.ref < d.close;
-              final dif = isSell
-                ? 1 - (quote - e.ref) / quote
-                : 1 - (e.ref - quote) / e.ref
+              final dif = type == "portfolio"
+                ? e.stocks > 0
+                  ? 1 - (quote - e.ref) / quote
+                  : -0.01
+                : isSell
+                  ? 1 - (quote - e.ref) / quote
+                  : 1 - (e.ref - quote) / e.ref
               ;
               final p = 100 * dif;
               if (p > max) max = p;

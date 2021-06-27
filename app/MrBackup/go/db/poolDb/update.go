@@ -54,11 +54,16 @@ func clean(dir string) {
 		all = append(all, e.Name())
 	}
 
+  isBig := false
 	var tgzs []string
 	for _, e := range all {
 		if e == "path.txt" {
 			continue
 		}
+    if e == "big" {
+      isBig = true
+      continue
+    }
 		if !strings.HasSuffix(e, ".tgz") {
 			f := path.Join(dir, e)
 			file.Remove(f)
@@ -85,28 +90,73 @@ func clean(dir string) {
 		return tgzs[i] > tgzs[j]
 	})
 
-	nowD := dnow.Add(-7).String()
-	lastM := now[:6]
-	nowY := now[:4]
-	lastY := nowY
-	for _, e := range tgzs {
-		if e >= nowD {
-			continue
-		}
-		eY := e[:4]
-		if eY == nowY {
-			eM := e[:6]
-			if eM != lastM {
-				lastM = eM
-				continue
-			}
-		} else if eY != lastY {
-			lastY = eY
-			continue
-		}
-		f := path.Join(dir, e+".tgz")
-		file.Remove(f)
-	}
+  if isBig {
+    if len(tgzs) > 3 {
+      nowM := now[:6]
+      nowY := now[:4]
+      var toDelete []string
+      day := true
+      month := true
+      year := true
+      saved := 0
+      for _, tgz := range tgzs {
+        if day {
+          day = false
+          saved++
+          continue
+        }
+        if month {
+          if tgz[:6] == nowM {
+            toDelete = append(toDelete, tgz)
+            continue
+          }
+          month = false
+          saved++
+          continue
+        }
+        if year {
+          if tgz[:4] == nowY {
+            toDelete = append(toDelete, tgz)
+            continue
+          }
+          year = false
+          saved++
+          continue
+        }
+        toDelete = append(toDelete, tgz)
+      }
+      if saved < 3 {
+        toDelete = toDelete[3 - saved:]
+      }
+      for _, tgz := range toDelete {
+        f := path.Join(dir, tgz+".tgz")
+        file.Remove(f)
+      }
+    }
+  } else {
+    nowD := dnow.Add(-7).String()
+    lastM := now[:6]
+    nowY := now[:4]
+    lastY := nowY
+    for _, e := range tgzs {
+      if e >= nowD {
+        continue
+      }
+      eY := e[:4]
+      if eY == nowY {
+        eM := e[:6]
+        if eM != lastM {
+          lastM = eM
+          continue
+        }
+      } else if eY != lastY {
+        lastY = eY
+        continue
+      }
+      f := path.Join(dir, e+".tgz")
+      file.Remove(f)
+    }
+  }
 }
 
 func backup(source, target string) (ok bool) {

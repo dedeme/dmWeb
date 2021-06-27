@@ -455,7 +455,7 @@ func updatePerformance() {
 			for _, js := range allJs.Ra() {
 				ann := acc.AnnotationFromJs(js)
 				date := ann.Date()
-				if date >= lastDate {
+				if date > lastDate {
 					op := ann.Operation()
 					if nick, stocks, price, ok := op.Bu(); ok {
 						if open, ok := getOpen(nick, date); ok {
@@ -531,6 +531,11 @@ func InitialActivity2(lastAct *activity.T, today date.T) *activity.T {
 	default:
 		panic("Activity '" + ac + "' is unknown")
 	}
+}
+
+func ForceDeactivating () {
+  updateDaily(true)
+  updateProfitsHistoric()
 }
 
 func Start(ch chan int, act *activity.T) {

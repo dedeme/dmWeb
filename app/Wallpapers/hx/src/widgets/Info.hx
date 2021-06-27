@@ -4,9 +4,11 @@
 package widgets;
 
 import js.html.Audio;
+import js.html.MouseEvent;
 import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
+import dm.Js;
 import data.Pict;
 import data.Song;
 import I18n._;
@@ -56,6 +58,32 @@ class Info {
 
   /// Returns picture information widget.
   public static function pictureWg(group: String, pict: Pict): Domo {
+    var level = pict.level;
+    final sightsWg = Q("div")
+      .style("cursor:pointer")
+      .text(pict.sights + " / " + level)
+    ;
+
+    function changeLevel (ev: MouseEvent) {
+      ++level;
+      if (level > Cts.maxPictLevel) level = Cts.minPictLevel;
+
+      Cts.client.ssend([
+        "source" => Js.ws("Info"),
+        "rq" => Js.ws("changePictLevel"),
+        "group" => Js.ws(group),
+        "id" => Js.ws(pict.id),
+        "level" => Js.wi(level)
+      ], rp -> {
+      });
+      sightsWg
+        .text(pict.sights + " / " + level);
+      ev.preventDefault();
+      ev.stopPropagation();
+    }
+
+    sightsWg.on(CLICK, changeLevel);
+
     return Q("table")
       .klass("frame3")
       .add(Q("tr")
@@ -84,7 +112,7 @@ class Info {
         .add(Q("td")
           .style("width:45px;white-space:nowrap;text-align:center")
           .klass("frame")
-          .text(pict.sights + " / " + pict.level)))
+          .add(sightsWg)))
     ;
   }
 
@@ -92,6 +120,32 @@ class Info {
   public static function songWg(
     songGroup: String, song: Song, audio: Audio
   ): Domo {
+    var level = song.level;
+    final sightsWg = Q("div")
+      .style("cursor:pointer")
+      .text(song.sights + " / " + level)
+    ;
+
+    function changeLevel (ev: MouseEvent) {
+      ++level;
+      if (level > Cts.maxPictLevel) level = Cts.minPictLevel;
+
+      Cts.client.ssend([
+        "source" => Js.ws("Info"),
+        "rq" => Js.ws("changeSongLevel"),
+        "group" => Js.ws(songGroup),
+        "id" => Js.ws(song.id),
+        "level" => Js.wi(level)
+      ], rp -> {
+      });
+      sightsWg
+        .text(song.sights + " / " + level);
+      ev.preventDefault();
+      ev.stopPropagation();
+    }
+
+    sightsWg.on(CLICK, changeLevel);
+
     return Q("table")
       .klass("frame3")
       .add(Q("tr")
@@ -120,7 +174,7 @@ class Info {
         .add(Q("td")
           .style("width:45px;white-space:nowrap;text-align:center")
           .klass("frame")
-          .text(song.sights + " / " + song.level)))
+          .add(sightsWg)))
       .add(Q("tr")
         .add(Q("td")
           .att("colspan", "3")

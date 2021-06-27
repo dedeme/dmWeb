@@ -61,6 +61,14 @@ func Process(ck string, mrq map[string]json.T) string {
 			globals.IsBusy = false
 		}
 		return cgi.RpEmpty(ck)
+  case "changeBig":
+		id := cgi.RqString(mrq, "id")
+		if !globals.IsBusy {
+			globals.IsBusy = true
+			poolDb.ChangeBig(id)
+			globals.IsBusy = false
+		}
+		return cgi.RpEmpty(ck)
 	case "update":
 		id := cgi.RqString(mrq, "id")
 		if !globals.IsBusy {

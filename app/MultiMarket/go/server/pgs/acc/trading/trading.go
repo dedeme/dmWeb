@@ -53,7 +53,7 @@ func addBuy(ops []*operationT, manager int, nick string) (r []*operationT) {
 	for _, e := range ops {
 		if e.nick == nick && e.toBuy {
 			e.managers = append(e.managers, manager)
-			r = append(r, e)
+			// r = append(r, e)
 			new = false
 		}
 	}
@@ -72,7 +72,7 @@ func addSell(
 		if e.nick == nick && e.toSell > 0 {
 			e.toSell += stocks
 			e.managers = append(e.managers, manager)
-			r = append(r, e)
+			// r = append(r, e)
 			new = false
 		}
 	}

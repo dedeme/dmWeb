@@ -139,6 +139,8 @@ class Diary {
     }
   }
 
+  // ---------------------------------
+
   static function goToAcc (subacc: String, diaryIx: Int) {
     js.Browser.location.assign('?accs&$subacc&$diaryIx');
   }
@@ -471,8 +473,8 @@ class Diary {
             .adds(It.range(n).map(i ->
               Q("tr")
                 .add(td().add(i < dlen
-                  ? Ui.link(e -> goToAcc(dkeys[i], lix))
-                    .klass("link")
+                  ? Q("a")
+                    .att("href", '?accs&${dkeys[i]}&$lix')
                     .att("title", data.acc.subaccounts.get(dkeys[i]))
                     .html(Cts.accFormat(dkeys[i]))
                   : Q("span")))
@@ -484,10 +486,10 @@ class Diary {
                   ? Q("span").html(e.credits.get(ckeys[i]).toString())
                   : Q("span")))
                 .add(td().add(i < clen
-                  ? Ui.link(ev -> goToAcc(ckeys[i], lix))
-                      .klass("link")
-                      .att("title", data.acc.subaccounts.get(ckeys[i]))
-                      .html(Cts.accFormat(ckeys[i]))
+                  ? Q("a")
+                    .att("href", '?accs&${ckeys[i]}&$lix')
+                    .att("title", data.acc.subaccounts.get(ckeys[i]))
+                    .html(Cts.accFormat(ckeys[i]))
                   : Q("span")))
             ).to());
           descDentry.e.style.display = "none";

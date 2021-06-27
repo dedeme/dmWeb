@@ -105,7 +105,8 @@ class Directories {
         .klass("white")
         .att("align", "center")
         .adds(It.fromMap(dirs)
-          .sort((tp1, tp2) -> tp1.e1 > tp2.e1 ? 1 : -1)
+          .sort((tp1, tp2) ->
+            tp1.e1.toUpperCase() > tp2.e1.toUpperCase() ? 1 : -1)
           .map(tp ->
             DirRow.mk(tp.e1, tp.e2, () -> mk(wg))
           ).to()))

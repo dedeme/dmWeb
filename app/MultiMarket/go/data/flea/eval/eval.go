@@ -63,12 +63,18 @@ func (e *T) ProfitsSd() float64 {
 // Two efleas are equals if they have same values buys, sells, assets,
 // profitsAvg and profitsStd.
 func (e *T) Eq(e2 *T) (ok bool) {
-	if e.buys == e2.buys &&
-		e.sells == e2.sells &&
-		fn.Eq(e.assets, e2.assets, 0.00000001) &&
-		fn.Eq(e.profitsAvg, e2.profitsAvg, 0.00000001) &&
-		fn.Eq(e.profitsSd, e2.profitsSd, 0.00000001) {
+	if e.flea.Eq(e2.flea) ||
+		(e.buys == e2.buys &&
+			e.sells == e2.sells &&
+			fn.Eq(e.assets, e2.assets, 0.00000001) &&
+			fn.Eq(e.profitsAvg, e2.profitsAvg, 0.00000001) &&
+			fn.Eq(e.profitsSd, e2.profitsSd, 0.00000001)) {
 		ok = true
+	}
+	if !ok && e.flea.Eq(e2.flea) {
+
+		panic("Eval: " + e.flea.ToJs() + "!=" + e2.flea.ToJs() + "\n" +
+			e.ToJs() + "\n" + e2.ToJs())
 	}
 	return
 }

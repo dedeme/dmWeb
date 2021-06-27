@@ -17,6 +17,7 @@ class DirRow {
   final execDiv = Q("div");
   final dirEditDiv = Q("div");
   final dirDelDiv = Q("div");
+  final dirBigDiv = Q("div");
   final dirInDiv = Q("div").style("width: 220px");
   final pathEditDiv = Q("div");
   final pathOkDiv = Q("div");
@@ -48,8 +49,10 @@ class DirRow {
 
   function view (): Void {
     mkGedit();
+    mkExecDiv();
     mkDirEdit();
     mkDirDel();
+    mkDirBig();
     mkDirIn();
     mkPathEdit();
     mkPathOk();
@@ -58,12 +61,11 @@ class DirRow {
     tr
       .removeAll()
       .add(Q("td").add(geditDiv))
-      .add(execDiv
-        .removeAll()
-        .add(exec()))
+      .add(Q("td").add(execDiv))
       .add(sep())
       .add(Q("td").add(dirEditDiv))
       .add(Q("td").add(dirDelDiv))
+      .add(Q("td").add(dirBigDiv))
       .add(Q("td").add(dirInDiv))
       .add(sep())
       .add(Q("td").add(pathEditDiv))
@@ -82,34 +84,6 @@ class DirRow {
         "border-right: 1px solid rgb(110,130,150);" +
         "border-left: 1px solid rgb(110,130,150);"
       )
-    ;
-  }
-
-  function exec (): Domo {
-    var tx = _("Update");
-    var fn = e -> execUpdate();
-
-    if (test.notInBase) {
-      tx = _("Copy directory to base");
-      fn = e -> copyToBase();
-    } else if (test.isMissing || !test.synchronized) {
-      tx = _("Copy directory base in the others");
-      fn = e -> copyFromBase();
-    } else if (!test.withPathTxt) {
-      tx = _("Create 'path.txt'");
-      fn = e -> createPathTxt();
-    } else if (test.path == "") {
-      tx = _("Put a directory in 'path.txt' manually");
-      fn = e -> Ui.alert(tx);
-    } else if (!test.pathOk) {
-      tx = _("Put a valid directory in 'path.txt' manually");
-      fn = e -> Ui.alert(tx);
-    }
-
-    return Q("td")
-      .add(Ui.link(fn)
-        .att("title", tx)
-        .add(Ui.img("run")))
     ;
   }
 
@@ -143,6 +117,35 @@ class DirRow {
     return Q("td")
       .add(Ui.link(e -> showDirs())
         .add(Ui.img("view")))
+    ;
+  }
+
+  function mkExecDiv (): Void {
+    var tx = _("Update");
+    var fn = e -> execUpdate();
+
+    if (test.notInBase) {
+      tx = _("Copy directory to base");
+      fn = e -> copyToBase();
+    } else if (test.isMissing || !test.synchronized) {
+      tx = _("Copy directory base in the others");
+      fn = e -> copyFromBase();
+    } else if (!test.withPathTxt) {
+      tx = _("Create 'path.txt'");
+      fn = e -> createPathTxt();
+    } else if (test.path == "") {
+      tx = _("Put a directory in 'path.txt' manually");
+      fn = e -> Ui.alert(tx);
+    } else if (!test.pathOk) {
+      tx = _("Put a valid directory in 'path.txt' manually");
+      fn = e -> Ui.alert(tx);
+    }
+
+    execDiv
+      .removeAll()
+      .add(Ui.link(fn)
+        .add(Ui.img("run"))
+        .att("title", tx))
     ;
   }
 
@@ -194,6 +197,22 @@ class DirRow {
       }
     } else {
       dirDelDiv.add(Ui.lightImg("delete"));
+    }
+  }
+
+  function mkDirBig (): Void {
+    final img = test.isBig ? "bigFolder" : "normalFolder";
+    dirBigDiv.removeAll();
+    if (isGedit) {
+      if (isDirEdit) {
+        dirBigDiv.add(Ui.img("blank"));
+      } else {
+        dirBigDiv.add(Ui.link(e -> changeBig())
+          .add(Ui.img(img)))
+        ;
+      }
+    } else {
+      dirBigDiv.add(Ui.lightImg(img));
     }
   }
 
@@ -304,6 +323,22 @@ class DirRow {
     });
   }
 
+  function changeBig (): Void {
+    final size = test.isBig ? _("normal") : _("big");
+    if (!Ui.confirm(_args(
+      _("Change size of '%0' to %1?"), [dirName, size]
+    ))) {
+      return;
+    }
+    Cts.client.ssend([
+      "page" => Js.ws("dirRow"),
+      "rq" => Js.ws("changeBig"),
+      "id" => Js.ws(dirName),
+    ], rp -> {
+      reload();
+    });
+  }
+
   function pathEditOff (): Void {
     isPathEdit = false;
     view();
@@ -388,10 +423,7 @@ class DirRow {
       "rq" => Js.ws("update"),
       "id" => Js.ws(dirName)
     ], rp -> {
-      execDiv
-        .removeAll()
-        .add(exec())
-      ;
+      mkExecDiv();
     });
   }
 

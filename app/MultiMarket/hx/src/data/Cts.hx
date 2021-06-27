@@ -53,6 +53,12 @@ class Cts {
   public static final serverActive = 1;
   /// Server state.
   public static final serverSelected = 2;
+  /// Months to change parameters for each investor.
+  public static final changeMonths = [
+    _("January"),
+    _("September"),
+    _("May")
+  ];
   /// Standar messsage for server fails.
   public static final okMsg = _("Operation successfully done.");
   /// Standar messsage for server fails.

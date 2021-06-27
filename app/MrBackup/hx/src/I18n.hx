@@ -15,6 +15,7 @@ class I18n {
     "Cancel" => "Cancel",
     "Change Language to %0" => "Change Language to %0",
     "Change Password" => "Change Password",
+    "Change size of '%0' to %1?" => "Change size of '%0' to %1?",
     "Character '%0' is not allowed" => "Character '%0' is not allowed",
     "Check gray squares" => "Check gray squares",
     "Click %0 to continue." => "Click %0 to continue.",
@@ -64,7 +65,9 @@ class I18n {
     "User" => "User",
     "User name is missing" => "User name is missing",
     "Wrong password" => "Wrong password",
-    "here" => "here"
+    "big" => "big",
+    "here" => "here",
+    "normal" => "normal"
   ];
 
   static var esDic = [
@@ -79,6 +82,7 @@ class I18n {
     "Cancel" => "Cancelar",
     "Change Language to %0" => "Cambiar el lenguage a %0",
     "Change Password" => "Cambiar la contraseña",
+    "Change size of '%0' to %1?" => "Cambiar el tamaño de '%0' a %1",
     "Character '%0' is not allowed" => "El carácter '%0' no está permitido",
     "Check gray squares" => "Marcar las casillas grises",
     "Click %0 to continue." => "Hacer click %0 para continuar.",
@@ -128,7 +132,9 @@ class I18n {
     "User" => "Usuario",
     "User name is missing" => "Falta el nombre del usuario",
     "Wrong password" => "Contraseña incorrecta",
-    "here" => "aquí"
+    "big" => "grande",
+    "here" => "aquí",
+    "normal" => "normal"
   ];
 
   public static var lang(default, null) = "es";

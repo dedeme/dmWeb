@@ -165,7 +165,7 @@ class PictsManagement {
 
   function tdPict(p: Pict): Domo {
     final sels: Array<Domo> = [];
-    for (i in 1...4) {
+    for (i in Cts.minPictLevel...(Cts.maxPictLevel + 1)) {
       sels.push(Q("td")
         .add(Q("table")
           .klass("main")

@@ -21,7 +21,7 @@ class Cts {
   /// Initial year.
   public static final initialYear = "2020";
   /// Number of investors (managers)
-  public static final investors = 2;
+  public static final investors = 3;
   /// Page foot.
   public static final foot = Q("table")
     .klass("main")

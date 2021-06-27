@@ -8,6 +8,7 @@ import (
 )
 
 type T struct {
+  IsBig bool
 	WithBackups  bool
 	WithPathTxt  bool
 	Path         string
@@ -20,6 +21,7 @@ type T struct {
 // Creates a *T
 func New() *T {
 	return &T{
+    IsBig: false,
 		WithBackups:  false,
 		WithPathTxt:  false,
 		Path:         "",
@@ -32,6 +34,7 @@ func New() *T {
 
 func (rs *T) ToJs() json.T {
 	return json.Wa([]json.T{
+		json.Wb(rs.IsBig),
 		json.Wb(rs.WithBackups),
 		json.Wb(rs.WithPathTxt),
 		json.Ws(rs.Path),

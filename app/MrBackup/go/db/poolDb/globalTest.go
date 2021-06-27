@@ -67,6 +67,11 @@ func globalTest() map[string]*testRs.T {
 			}
 		}
 
+    fbig := path.Join(dir, "big")
+    if (file.Exists(fbig)) {
+      t.IsBig = true
+    }
+
 		if len(file.List(dir)) > 1 {
 			t.WithBackups = true
 		}

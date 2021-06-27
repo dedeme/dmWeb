@@ -9,6 +9,7 @@ import dm.Js;
 
 // Result of directories test.
 class TestRs {
+  public var isBig(default, null): Bool;
   public var withBackups(default, null): Bool;
   public var withPathTxt(default, null): Bool;
   public var path(default, null): String;
@@ -22,13 +23,14 @@ class TestRs {
   public static function FromJs (js: Js): TestRs {
     final r = new TestRs();
     final a = js.ra();
-    r.withBackups = a[0].rb();
-    r.withPathTxt = a[1].rb();
-    r.path = a[2].rs();
-    r.pathOk = a[3].rb();
-    r.notInBase = a[4].rb();
-    r.isMissing = a[5].rb();
-    r.synchronized = a[6].rb();
+    r.isBig = a[0].rb();
+    r.withBackups = a[1].rb();
+    r.withPathTxt = a[2].rb();
+    r.path = a[3].rs();
+    r.pathOk = a[4].rb();
+    r.notInBase = a[5].rb();
+    r.isMissing = a[6].rb();
+    r.synchronized = a[7].rb();
     return r;
   }
 }

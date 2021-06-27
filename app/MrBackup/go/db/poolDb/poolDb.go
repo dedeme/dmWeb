@@ -186,6 +186,28 @@ func ChangeDir(oldId, newId string) {
 	}
 }
 
+// Changes directory calification of big.
+func ChangeBig(id string) {
+  f := path.Join(cts.MrBackupTargets[0], id, "big")
+  exists := false
+  if file.Exists(f) {
+    exists = true
+  }
+
+	for _, pool := range cts.MrBackupTargets {
+		f := path.Join(pool, id, "big")
+    if exists {
+      if file.Exists(f) {
+        file.Remove(f)
+      }
+    } else {
+      if !file.Exists(f) {
+        file.WriteAll(f, "")
+      }
+    }
+	}
+}
+
 // Changes path.txt
 func ChangePath(id, newPath string) {
 	for _, pool := range cts.MrBackupTargets {

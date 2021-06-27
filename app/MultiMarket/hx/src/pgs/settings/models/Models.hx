@@ -159,7 +159,11 @@ class Models {
       .add(editorDiv)
       .add(Q("div")
         .klass("head")
-        .html(_("Default Model")))
+        .html(
+            _("Default Model") + "<br><small>[" +
+            _("Update on first of") + " " + Cts.changeMonths[managerIx] +
+            "]</small>"
+          ))
       .add(Q("table")
         .klass("white")
         .att("align", "center")

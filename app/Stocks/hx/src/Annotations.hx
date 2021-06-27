@@ -195,7 +195,7 @@ class Annotations {
 
     final cashWg = Ui.field("accept")
       .att("id", "cash")
-      .style("width: 100px")
+      .style("width: 150px")
     ;
     Ui.changePoint(cashWg);
 
@@ -355,7 +355,7 @@ class Annotations {
         .add(Q("tr")
           .add(Q("td")
             .style("text-align: right; width: 80px")
-            .text(_("Cost" + ":")))
+            .text(_("Cost") + ":"))
           .add(Q("td")
             .klass("number")
             .text(Dec.toIso(report.cost, 2))))

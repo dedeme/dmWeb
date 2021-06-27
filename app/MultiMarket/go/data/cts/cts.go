@@ -79,7 +79,7 @@ const (
 
 	// Accounting ----------------------------------------------------------------
 	// Number of investors
-	Managers = 2
+	Managers = 3
 
 	// Maximum of register in Perfomance.tb
 	PerformanceMax = 100

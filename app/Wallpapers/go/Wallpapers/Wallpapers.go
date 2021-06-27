@@ -38,6 +38,8 @@ func sourceProcess(ck string, mrq map[string]json.T) string {
 		return timesProcess(ck, mrq) // times.go
 	case "PictTime":
 		return pictTimeProcess(ck, mrq) // pictTime.go
+	case "Info":
+		return infoProcess(ck, mrq) // info.go
 	case "ChangePass":
 		return changePassProcess(ck, mrq) // changePass.go
 	default:

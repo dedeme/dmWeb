@@ -20,7 +20,7 @@ class Balance {
   static final PROFITS_ORDER = 2;
   static final RISK_ORDER = 3;
   static final BET_ORDER = 4;
-  static final DAYS_ORDER = 5;
+  static final REF_ORDER = 5;
 
   var wg: Domo;
   var ledgers: Array<Ledger>; // One for each manager.
@@ -36,7 +36,7 @@ class Balance {
     this.portfolios = portfolios;
 
     mSel = -1;
-    order = DAYS_ORDER;
+    order = REF_ORDER;
 
     view();
   }
@@ -103,6 +103,19 @@ class Balance {
       return e;
     });
 
+    var withdraw = 0.0;
+    if (currentProfits != null) {
+      final assets = currentProfits + capital;
+      if (assets > Cts.initialCapital + Cts.bet + Cts.bet) {
+        final dif = assets - Cts.initialCapital - Cts.bet;
+        if (cash > dif + 1000) {
+          withdraw = dif;
+        } else if (cash > Cts.bet + 1000) {
+          withdraw = Std.int((cash - 1000) / Cts.bet) * Cts.bet;
+        }
+      }
+    }
+
     var sumValues = 0.0;
     var sumProfits = 0.0;
     var sumRisks = 0.0;
@@ -149,7 +162,8 @@ class Balance {
               .html(_("Accounting profits") + ":")))
           .add(Q("td")
             .klass("number")
-            .add(Q("span").html(formatN(accountProfits, 2)))))
+            .add(Q("span")
+              .html(formatN(accountProfits, 2)))))
         .add(Q("tr")
           .add(Q("td")
             .klass("rlabel")
@@ -174,6 +188,15 @@ class Balance {
                 "<font color='00aa41'>" +
                 (formatN(bet, 2)) +
                 "</font>"))))
+        .add(Q("tr")
+          .add(Q("td")
+            .klass("rlabel")
+            .add(Q("span")
+              .html(_("To withdraw") + ":")))
+          .add(Q("td")
+            .klass("number")
+            .add(Q("span")
+              .html(mSel == -1 ? "- - -" : formatN(withdraw, 2)))))
         .add(Q("tr")
           .add(Q("td")
             .klass("rlabel")
@@ -343,7 +366,7 @@ class Balance {
               (currentProfits == null
                 ? Q("span")
                 : Ui.link(e -> {
-                  order = DAYS_ORDER;
+                  order = REF_ORDER;
                   this.body(wg, ld, pf);
                 }).klass("linkBold")
               ).html(_("Rf. (‰)")))))

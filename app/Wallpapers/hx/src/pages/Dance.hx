@@ -13,6 +13,7 @@ import data.Pict;
 import data.Song;
 import widgets.Clocks;
 import widgets.Info;
+import widgets.PictTime;
 import I18n._;
 
 /// Dance play.
@@ -25,6 +26,7 @@ class Dance {
   final clocks: Clocks;
   final infoPicture: Info;
   final infoDance: Info;
+  final pictTime: PictTime;
 
   var timer = new Timer(Media.picturesTime);
 
@@ -66,6 +68,7 @@ class Dance {
     infoDance = new Info(
       -480, Info.danceWg(songGroup, song, Std.int(duration / 60000), audio)
     );
+    pictTime = new PictTime(-480);
 
     div = visuals.div
       .setStyle(
@@ -74,6 +77,7 @@ class Dance {
       )
       .add(infoPicture.wg)
       .add(infoDance.wg)
+      .add(pictTime.wg)
       .on(CLICK, goBack)
     ;
 
@@ -139,6 +143,25 @@ class Dance {
       ev.preventDefault();
       return;
     }
+
+    if (
+      ev.keyCode >= KeyboardEvent.DOM_VK_1 &&
+      ev.keyCode <= KeyboardEvent.DOM_VK_6
+    ) {
+      pictTime.show(ev.keyCode - KeyboardEvent.DOM_VK_0);
+      ev.preventDefault();
+      return;
+    }
+
+    if (
+      ev.keyCode >= KeyboardEvent.DOM_VK_NUMPAD1 &&
+      ev.keyCode <= KeyboardEvent.DOM_VK_NUMPAD6
+    ) {
+      pictTime.show(ev.keyCode - KeyboardEvent.DOM_VK_NUMPAD0);
+      ev.preventDefault();
+      return;
+    }
+
   }
 
   // STATIC

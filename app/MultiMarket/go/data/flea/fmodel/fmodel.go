@@ -262,8 +262,9 @@ func withdrawal(
 			safe += dif
 			cash -= dif
 		} else if cash >= cts.Bet+1000 {
-			safe += cts.Bet
-			cash -= cts.Bet
+      dif = float64(int((cash - 1000)/cts.Bet))*cts.Bet
+			safe += dif
+			cash -= dif
 		}
 	}
 	return safe, cash

@@ -17,7 +17,7 @@ func Start(ch chan int) {
 	count := 0
 	done := false
 	for {
-		if count > 5 { //cts.SchedulerTimes {
+		if count > cts.SchedulerTimes {
 			if done {
 				if date.Now().Hour() != 3 {
 					done = false

@@ -40,6 +40,14 @@ class Cts {
       .add(foot)
     ;
   });
+  /// Minimum level of picture.
+  public static final minPictLevel = 1;
+  /// Maximum level of picture.
+  public static final maxPictLevel = 3;
+  /// Minimum level of relax song.
+  public static final minSongLevel = 1;
+  /// Maximum level of relax song.
+  public static final maxSongLevel = 3;
 
   // FUNCTIONS
 

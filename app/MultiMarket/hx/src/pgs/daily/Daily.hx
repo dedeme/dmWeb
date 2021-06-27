@@ -101,7 +101,9 @@ class Daily {
       Menu.tlink("sel", _("Selection"), "daily")
     ];
     final ropts = [
-      new MenuEntry(None, activityWg),
+      activity == _("Sleeping (1)")
+        ? Menu.toption(activity, activity, sleepReload)
+        : new MenuEntry(None, activityWg),
       Menu.separator2(),
       new MenuEntry(
         None,
@@ -119,7 +121,7 @@ class Daily {
       Menu.separator2(),
       new MenuEntry(None, serverWg),
       Menu.separator(),
-      Menu.toption(">>", ">>", () -> newServer())
+      Menu.toption(">>", ">>", newServer)
     ];
     dmenu.setDownMenu(new Menu(lopts, ropts, mSel));
 
@@ -154,6 +156,20 @@ class Daily {
   }
 
   // Control -------------------------------------------------------------------
+
+  function sleepReload () {
+    serverWg
+      .removeAll()
+      .add(Ui.img("wait.gif")
+        .style("vertical-align:middle"))
+    ;
+    Cts.client.send([
+      "module" => Js.ws("daily"),
+      "source" => Js.ws("daily"),
+      "rq" => Js.ws("sleepReload")
+    ], rp -> {});
+    Daily.mk(wg, dmenu, lcPath, order, reverse);
+  }
 
   function newServer () {
     serverWg

@@ -207,7 +207,13 @@ func Evolution() {
 		}
 
 		sync.Run(func(lk sync.T) {
-			pool := fmodelsDb.ReadPool(lk, md.Id())
+			var pool []*eval.T
+      pool0 := fmodelsDb.ReadPool(lk, md.Id())
+      for _, e := range pool0 {
+        if !e.IsIn(pool) {
+          pool = append(pool, e)
+        }
+      }
 			pool = eval.Complete(efleas, pool, cts.PoolNumber+cts.PoolAddNumber)
 			eval.Evaluate(md, opens, closes, pool)
 			eval.Sort(pool)
@@ -350,6 +356,7 @@ func Selection(
 	var pool []*eval.T
 	sync.Run(func(lk sync.T) {
 		pool = fmodelsDb.ReadPool(lk, md.Id())
+
 		for _, e := range fmodelsDb.ReadBests(lk, md.Id()) {
 			f := e.Eflea()
 			if !f.IsIn(pool) {
