@@ -533,9 +533,9 @@ func InitialActivity2(lastAct *activity.T, today date.T) *activity.T {
 	}
 }
 
-func ForceDeactivating () {
-  updateDaily(true)
-  updateProfitsHistoric()
+func ForceDeactivating() {
+	updateDaily(true)
+	updateProfitsHistoric()
 }
 
 func Start(ch chan int, act *activity.T) {

@@ -208,12 +208,12 @@ func Evolution() {
 
 		sync.Run(func(lk sync.T) {
 			var pool []*eval.T
-      pool0 := fmodelsDb.ReadPool(lk, md.Id())
-      for _, e := range pool0 {
-        if !e.IsIn(pool) {
-          pool = append(pool, e)
-        }
-      }
+			pool0 := fmodelsDb.ReadPool(lk, md.Id())
+			for _, e := range pool0 {
+				if !e.IsIn(pool) {
+					pool = append(pool, e)
+				}
+			}
 			pool = eval.Complete(efleas, pool, cts.PoolNumber+cts.PoolAddNumber)
 			eval.Evaluate(md, opens, closes, pool)
 			eval.Sort(pool)

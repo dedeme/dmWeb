@@ -31,9 +31,9 @@ func Process(ck string, mrq map[string]json.T) string {
 			sboxTb.NextServer(lk)
 		})
 		return cgi.RpEmpty(ck)
-  case "sleepReload":
-    scheduler.ForceDeactivating()
-    return cgi.RpEmpty(ck)
+	case "sleepReload":
+		scheduler.ForceDeactivating()
+		return cgi.RpEmpty(ck)
 	default:
 		panic(fmt.Sprintf("Value of rq ('%v') is not valid", rq))
 	}

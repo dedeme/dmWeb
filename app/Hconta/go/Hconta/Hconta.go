@@ -9,6 +9,7 @@ import (
 	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/cryp"
 	"github.com/dedeme/golib/json"
+	"github.com/dedeme/Hconta/stocks"
 	"os"
 	"strings"
 )
@@ -20,6 +21,8 @@ func sourceProcess(ck string, mrq map[string]json.T) string {
 		return mainProcess(ck, mrq) // main.go
 	case "ChangePass":
 		return changePassProcess(ck, mrq) // changePass.go
+  case "Stocks":
+    return stocks.Process(ck, mrq)
 	default:
 		panic(fmt.Sprintf("Value of source ('%v') is not valid", source))
 	}

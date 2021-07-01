@@ -8,9 +8,11 @@ import dm.Ui;
 import dm.Ui.Q;
 import dm.It;
 import dm.Js;
+import dm.B64;
 import dm.Menu;
 import data.Cts;
 import data.flea.Fmodel;
+import data.flea.Eflea;
 import data.Manager;
 import wgs.Params;
 import I18n._;
@@ -24,6 +26,7 @@ class Models {
   var models: Array<Fmodel>;
   var manager: Manager;
   var smanager: String;
+  final eflea: Eflea;
 
   final editorDiv = Q("div");
   final paramsDiv = Q("div");
@@ -36,7 +39,7 @@ class Models {
   ///   manager: Current manager.
   function new (
     wg: Domo, managers: Int, managerIx: Int,
-    models: Array<Fmodel>, manager: Manager
+    models: Array<Fmodel>, manager: Manager, eflea: Eflea
   ) {
     this.wg = wg;
     this.managers = managers;
@@ -45,6 +48,7 @@ class Models {
     models.sort((m1, m2) -> m1.id > m2.id ? 1 : -1);
     this.models = models;
     this.manager = manager;
+    this.eflea = eflea;
 
     view();
   }
@@ -174,7 +178,9 @@ class Models {
           .adds(base.model.parNames.map(n ->
             Q("td")
               .klass("header")
-              .html(n))))
+              .html(n)))
+          .add(Q("td")
+            .klass("header")))
         .add(Q("tr")
           .add(Q("td")
             .klass("border")
@@ -184,7 +190,15 @@ class Models {
           .adds(It.range(base.params.length).to().map(ix ->
             Q("td")
               .klass("number")
-              .text(Cts.nformat(base.params[ix], base.model.parDecs[ix]))))))
+              .text(Cts.nformat(base.params[ix], base.model.parDecs[ix]))))
+          .add(Q("td")
+            .add(Q("a")
+              .att(
+                "href",
+                '?fleas&${base.model.id}&charts&true' +
+                  '&${B64.encode(eflea.toJs().to())}'
+              )
+              .html("&nbsp;" + _("Charts") + "&nbsp;")))))
       .add(Q("div")
         .klass("head")
         .html(_("Nick models")))
@@ -277,8 +291,9 @@ class Models {
       final models = rp["models"].rArray(e -> Fmodel.fromJs(e));
       final manager = Manager.fromJs(rp["manager"]);
       final managers = rp["managers"].ri();
+      final eflea = Eflea.fromJs(rp["eflea"]);
 
-      new Models(wg, managers, managerIx, models, manager);
+      new Models(wg, managers, managerIx, models, manager, eflea);
     });
   }
 

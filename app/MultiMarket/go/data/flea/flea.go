@@ -38,6 +38,22 @@ func New(md *fmodel.T, date string, cycle, id int) *T {
 	return &T{date, cycle, id, params}
 }
 
+// Constructor with parameters
+// Random constructor
+//    md: Flea model.
+//    date: Date of creation.
+//    cycle: Cycle of creation.
+//    id: Identifier inside date-cycle.
+//    params: Flea parameters.
+func NewWithParams(
+	md *fmodel.T, date string, cycle, id int, params []float64,
+) *T {
+	if len(md.ParMins()) != len(params) {
+		panic("Bad number of parameters")
+	}
+	return &T{date, cycle, id, params}
+}
+
 // Date of creation.
 func (f *T) Date() string {
 	return f.date

@@ -5,7 +5,7 @@
 # src/pgs/performance/Performance.hx: 204
 % = %
 
-# src/pgs/settings/models/Models.hx: 128
+# src/pgs/settings/models/Models.hx: 132
 %0 Model = %0 Model
 
 # src/pgs/settings/servers/Configuration.hx: 598
@@ -31,7 +31,7 @@
 
 # src/Authentication.hx: 79
 # src/pgs/settings/acc/Editor.hx: 94
-# src/pgs/settings/models/Models.hx: 112
+# src/pgs/settings/models/Models.hx: 116
 # src/pgs/settings/nicks/Editor.hx: 117
 # src/pgs/settings/settings/ChangePass.hx: 102
 Accept = Accept
@@ -166,7 +166,7 @@ Calculated by server:<br>Assets: %0. Buys: %1. Sells: %2 = Calculated by server:
 Calendar = Calendar
 
 # src/pgs/settings/acc/Editor.hx: 90
-# src/pgs/settings/models/Models.hx: 107
+# src/pgs/settings/models/Models.hx: 111
 # src/pgs/settings/nicks/Editor.hx: 89
 # src/pgs/settings/nicks/Editor.hx: 114
 # src/pgs/settings/settings/ChangePass.hx: 97
@@ -196,6 +196,7 @@ Change Language to %0 = Change Language to %0
 Change Password = Change Password
 
 # src/pgs/fleas/Fleas.hx: 100
+# src/pgs/settings/models/Models.hx: 201
 Charts = Charts
 
 # src/Authentication.hx: 154
@@ -310,9 +311,9 @@ Day = Day
 # src/pgs/daily/Daily.hx: 250
 Deactivating = Deactivating
 
-# src/pgs/settings/models/Models.hx: 97
-# src/pgs/settings/models/Models.hx: 128
-# src/pgs/settings/models/Models.hx: 163
+# src/pgs/settings/models/Models.hx: 101
+# src/pgs/settings/models/Models.hx: 132
+# src/pgs/settings/models/Models.hx: 167
 Default Model = Default Model
 
 # src/pgs/settings/nicks/wgs/Wnick.hx: 43
@@ -503,8 +504,8 @@ May = May
 Min = Min
 
 # src/pgs/fleas/charts/Charts.hx: 72
-# src/pgs/settings/models/Models.hx: 173
-# src/pgs/settings/models/Models.hx: 200
+# src/pgs/settings/models/Models.hx: 177
+# src/pgs/settings/models/Models.hx: 214
 # src/pgs/settings/nicks/wgs/Wnick.hx: 38
 # src/pgs/settings/nicks/wgs/Wnick.hx: 41
 Model = Model
@@ -554,7 +555,7 @@ New password is missing = 'New password' is missing
 # src/pgs/performance/Performance.hx: 157
 # src/pgs/settings/acc/Editor.hx: 136
 # src/pgs/settings/acc/Editor.hx: 174
-# src/pgs/settings/models/Models.hx: 197
+# src/pgs/settings/models/Models.hx: 211
 Nick = Nick
 
 # src/pgs/settings/nicks/Nicks.hx: 112
@@ -563,7 +564,7 @@ Nick '%0' is duplicated = Nick '%0' is duplicated
 # src/pgs/settings/nicks/Editor.hx: 381
 Nick code is missing = Nick code is missing
 
-# src/pgs/settings/models/Models.hx: 190
+# src/pgs/settings/models/Models.hx: 204
 Nick models = Nick models
 
 # src/pgs/settings/nicks/Editor.hx: 310
@@ -915,7 +916,7 @@ URL is missing = URL is missing
 # src/pgs/settings/acc/All.hx: 120
 Up to = Up to
 
-# src/pgs/settings/models/Models.hx: 164
+# src/pgs/settings/models/Models.hx: 168
 Update on first of = Update on first of
 
 # src/Authentication.hx: 85

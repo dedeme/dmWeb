@@ -51,6 +51,8 @@ class Main {
       Menu.tlink("summaries", _("Summaries")),
       Menu.separator(),
       Menu.tlink("plan", _("Plan")),
+      Menu.separator(),
+      Menu.tlink("stocks", _("Stocks"))
     ];
     var ropts = [
       Menu.tlink("settings", _("Settings")),
@@ -98,6 +100,8 @@ class Main {
           case "plan":
             final acc = url.exists("1") ? url.get("1") : "";
             PlanPage.mk(body, data, acc);
+          case "stocks":
+            StocksPage.mk(body);
           case "settings":
             SettingsPage.mk(body, data);
           default:

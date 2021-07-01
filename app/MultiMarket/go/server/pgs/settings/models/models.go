@@ -7,10 +7,14 @@ package models
 import (
 	"fmt"
 	"github.com/dedeme/MultiMarket/data/cts"
+	"github.com/dedeme/MultiMarket/data/flea"
+	"github.com/dedeme/MultiMarket/data/flea/eval"
 	"github.com/dedeme/MultiMarket/data/flea/fmodels"
 	"github.com/dedeme/MultiMarket/db/managersTb"
+	"github.com/dedeme/MultiMarket/db/quotesDb"
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/golib/cgi"
+	"github.com/dedeme/golib/date"
 	"github.com/dedeme/golib/json"
 )
 
@@ -27,7 +31,15 @@ func Process(ck string, mrq map[string]json.T) string {
 				mds = append(mds, e.ToJs())
 			}
 			rp["models"] = json.Wa(mds)
-			rp["manager"] = managersTb.Read(lk)[managerIx].ToJsClient()
+			man := managersTb.Read(lk)[managerIx]
+			rp["manager"] = man.ToJsClient()
+			closes := quotesDb.Closes(lk)
+			opens := quotesDb.Opens(lk)
+			eflea := eval.New(flea.NewWithParams(
+				man.Base.Model(), date.Now().String(), 0, 0, man.Base.Params(),
+			))
+			eval.Evaluate(man.Base.Model(), opens, closes, []*eval.T{eflea})
+			rp["eflea"] = eflea.ToJs()
 		})
 		return cgi.Rp(ck, rp)
 	case "update":
