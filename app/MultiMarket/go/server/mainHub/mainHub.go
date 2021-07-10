@@ -15,6 +15,7 @@ import (
 	"github.com/dedeme/MultiMarket/server/pgs/home"
 	"github.com/dedeme/MultiMarket/server/pgs/performance"
 	"github.com/dedeme/MultiMarket/server/pgs/ranking"
+	"github.com/dedeme/MultiMarket/server/pgs/rangesPlus"
 	"github.com/dedeme/MultiMarket/server/pgs/settings"
 	"github.com/dedeme/MultiMarket/server/pgs/wgs"
 	"github.com/dedeme/golib/cgi"
@@ -48,6 +49,8 @@ func hub(ck string, mrq map[string]json.T) string {
 		return performance.Process(ck, mrq)
 	case "ranking":
 		return ranking.Process(ck, mrq)
+	case "rangesPlus":
+		return rangesPlus.Process(ck, mrq)
 	case "daily":
 		return daily.Process(ck, mrq)
 	case "acc":

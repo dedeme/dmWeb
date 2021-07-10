@@ -11,6 +11,8 @@ import (
 	"github.com/dedeme/MultiMarket/server/pgs/fleas/ftestsOrders"
 	"github.com/dedeme/MultiMarket/server/pgs/fleas/ftestsReferences"
 	"github.com/dedeme/MultiMarket/server/pgs/fleas/ftestsSelection"
+	"github.com/dedeme/MultiMarket/server/pgs/fleas/ranges"
+	"github.com/dedeme/MultiMarket/server/pgs/fleas/ranges/rangesPlus"
 	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/json"
 )
@@ -28,6 +30,10 @@ func Process(ck string, mrq map[string]json.T) string {
 		return ftestsOrders.Process(ck, mrq)
 	case "charts":
 		return charts.Process(ck, mrq)
+	case "ranges":
+		return ranges.Process(ck, mrq)
+	case "ranges+":
+		return rangesPlus.Process(ck, mrq)
 	default:
 		panic(fmt.Sprintf("Value of rq ('%v') is not valid", rq))
 	}

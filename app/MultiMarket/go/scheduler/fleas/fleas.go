@@ -11,7 +11,7 @@ import (
 	"github.com/dedeme/MultiMarket/data/flea/eval"
 	"github.com/dedeme/MultiMarket/data/flea/evalDate"
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
-	fmodels "github.com/dedeme/MultiMarket/data/flea/fmodels"
+	"github.com/dedeme/MultiMarket/data/flea/fmodels"
 	"github.com/dedeme/MultiMarket/data/flea/frank"
 	"github.com/dedeme/MultiMarket/data/flea/investor"
 	"github.com/dedeme/MultiMarket/data/flea/irank"

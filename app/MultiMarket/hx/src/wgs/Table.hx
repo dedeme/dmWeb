@@ -29,7 +29,7 @@ class Table {
   ///   table   : Table data.
   ///   OrderCol: Number of main column for ordering or -1 if the table is not
   ///             reorderable.
-  ///   Link    : Link constructo from table element and column index.
+  ///   Link    : Link constructor from table element and column index.
   public function new (
     wg: Domo, cols: Array<Col>, table: Array<Array<Dynamic>>,
     orderCol: Int, link: (Dynamic, Int) -> String

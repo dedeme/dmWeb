@@ -23,6 +23,8 @@ import pgs.fleas.overview.Overview;
 import pgs.fleas.ftests.Ftests;
 import pgs.fleas.ranking.Ranking;
 import pgs.fleas.charts.Charts;
+import pgs.fleas.ranges.Ranges;
+import pgs.fleas.ranges.RangesPlus;
 import I18n._;
 
 /// Fleas main page.
@@ -59,7 +61,8 @@ class Fleas {
     this.lcPath = lcPath;
 
     switch (lcPath[1]) {
-    case "overview" | "ranking" | "bests" | "pool" | "charts" | "tests":
+    case "overview" | "ranking" | "bests" | "pool" | "charts" |
+      "ranges" | "ranges+" | "tests":
       target = lcPath[1];
     default:
       target = "overview";
@@ -99,6 +102,10 @@ class Fleas {
       Menu.separator(),
       Menu.tlink("charts", _("Charts"), link),
       Menu.separator2(),
+      Menu.tlink("ranges", _("Ranges"), link),
+      Menu.separator(),
+      Menu.tlink("ranges+", _("Ranges +"), link),
+      Menu.separator2(),
       Menu.tlink("tests", _("Tests"), link)
     ];
 
@@ -116,6 +123,10 @@ class Fleas {
       pool(wg);
     case "charts":
       charts(wg);
+    case "ranges":
+      Ranges.mk(wg, mSel);
+    case "ranges+":
+      RangesPlus.mk(wg, mSel, lcPath[0]);
     case "tests":
       new Ftests(wg, mSel);
     default:

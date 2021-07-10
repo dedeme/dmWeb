@@ -12,6 +12,7 @@ import (
 	"github.com/dedeme/golib/json"
 	"math/rand"
 	"strconv"
+  "math"
 )
 
 type T struct {
@@ -52,6 +53,16 @@ func NewWithParams(
 		panic("Bad number of parameters")
 	}
 	return &T{date, cycle, id, params}
+}
+
+// Changes name. Used for rangesPlus in 'scheduler.fleaResult'.
+//    modelId: Replacement for 'date'
+//    eval: Replacement for 'cycle' (int(math.Round(eval * 1000000)))
+//    sales: Replacement for 'id'.
+func (f *T) ChangeName (modelId string, eval float64, sales int) {
+  f.date = modelId
+  f.cycle = int(math.Round(eval * 1000000))
+  f.id = sales
 }
 
 // Date of creation.

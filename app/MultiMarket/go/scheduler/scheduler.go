@@ -32,6 +32,7 @@ import (
 	"github.com/dedeme/MultiMarket/global/fn"
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/MultiMarket/net"
+	"github.com/dedeme/MultiMarket/scheduler/fleaResults"
 	"github.com/dedeme/MultiMarket/scheduler/fleas"
 	"github.com/dedeme/golib/date"
 	"github.com/dedeme/golib/sys"
@@ -541,6 +542,7 @@ func ForceDeactivating() {
 func Start(ch chan int, act *activity.T) {
 	// To initialize a new flea model.
 	// fleas.Evolution()
+	// fleaResults.Calculate()
 
 	changeActivity := func(newAct string) {
 		act = activity.New(newAct)
@@ -600,6 +602,7 @@ func Start(ch chan int, act *activity.T) {
 			updatePerformance()
 			if !stopper.Stop {
 				go fleas.Evolution()
+				go fleaResults.Calculate()
 				sync.Run(func(lk sync.T) {
 					for i := 0; i < cts.Managers; i++ {
 						managersTb.Regularize(lk, i)

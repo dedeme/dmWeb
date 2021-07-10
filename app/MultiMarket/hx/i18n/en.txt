@@ -36,7 +36,7 @@
 # src/pgs/settings/settings/ChangePass.hx: 102
 Accept = Accept
 
-# src/wgs/Dmenu.hx: 59
+# src/wgs/Dmenu.hx: 61
 Accounting = Accounting
 
 # src/pgs/acc/Balance.hx: 162
@@ -100,18 +100,20 @@ Annotation con id '%0' not found = Annotation con id '%0' not found
 # src/pgs/settings/acc/Editor.hx: 415
 Annotations = Annotations
 
-# src/wgs/Dmenu.hx: 65
+# src/wgs/Dmenu.hx: 67
 Annotations & Settings = Annotations & Settings
 
-# src/wgs/Dmenu.hx: 85
+# src/wgs/Dmenu.hx: 87
 Application exit? = Application exit?
 
 # src/pgs/acc/Balance.hx: 226
-# src/pgs/fleas/Fleas.hx: 316
+# src/pgs/fleas/Fleas.hx: 327
 # src/pgs/fleas/charts/Charts.hx: 62
 # src/pgs/fleas/charts/Charts.hx: 87
 # src/pgs/fleas/charts/Charts.hx: 169
 # src/pgs/fleas/charts/Charts.hx: 276
+# src/pgs/fleas/ranges/RangesPlus.hx: 192
+# src/pgs/rangesPlus/RangesPlus.hx: 154
 # src/pgs/ranking/Ranking.hx: 154
 Assets = Assets
 
@@ -134,7 +136,7 @@ Balance = Balance
 # src/pgs/fleas/wgs/Operations.hx: 65
 Balance(Operations) = Balance
 
-# src/pgs/fleas/Fleas.hx: 96
+# src/pgs/fleas/Fleas.hx: 99
 Bests = Bests
 
 # src/pgs/acc/Balance.hx: 362
@@ -148,10 +150,12 @@ Bet = Bet
 Buy = Buy
 
 # src/pgs/acc/Trading.hx: 196
-# src/pgs/fleas/Fleas.hx: 327
+# src/pgs/fleas/Fleas.hx: 338
 # src/pgs/fleas/charts/Charts.hx: 91
 # src/pgs/fleas/charts/Charts.hx: 298
+# src/pgs/fleas/ranges/RangesPlus.hx: 203
 # src/pgs/performance/Performance.hx: 136
+# src/pgs/rangesPlus/RangesPlus.hx: 165
 # src/pgs/ranking/Ranking.hx: 165
 Buys = Buys
 
@@ -195,7 +199,7 @@ Change Language to %0 = Change Language to %0
 # src/pgs/settings/settings/Settings.hx: 46
 Change Password = Change Password
 
-# src/pgs/fleas/Fleas.hx: 100
+# src/pgs/fleas/Fleas.hx: 103
 # src/pgs/settings/models/Models.hx: 201
 Charts = Charts
 
@@ -256,7 +260,7 @@ Current profits = Current profits
 # src/pgs/settings/servers/Servers.hx: 106
 Daily = Daily
 
-# src/wgs/Dmenu.hx: 61
+# src/wgs/Dmenu.hx: 63
 Daily Quotes = Daily Quotes
 
 # src/pgs/settings/servers/wgs/Wserver.hx: 44
@@ -271,7 +275,7 @@ Daily configuration selected = Daily configuration selected
 # src/pgs/settings/servers/wgs/Wserver.hx: 45
 Daily configuration stopped = Daily configuration stopped
 
-# src/pgs/fleas/Fleas.hx: 196
+# src/pgs/fleas/Fleas.hx: 207
 # src/pgs/fleas/charts/Charts.hx: 294
 # src/pgs/fleas/ftests/wgs/OrdersWg.hx: 50
 # src/pgs/fleas/wgs/Operations.hx: 63
@@ -384,8 +388,10 @@ Errors and warnings found. = Errors and warnings found.
 # src/pgs/settings/nicks/List.hx: 253
 Errors found. = Errors found.
 
-# src/pgs/fleas/Fleas.hx: 323
+# src/pgs/fleas/Fleas.hx: 334
 # src/pgs/fleas/charts/Charts.hx: 90
+# src/pgs/fleas/ranges/RangesPlus.hx: 199
+# src/pgs/rangesPlus/RangesPlus.hx: 161
 # src/pgs/ranking/Ranking.hx: 161
 Eval. = Eval.
 
@@ -430,8 +436,10 @@ Holidays = Holidays
 # src/wgs/Dmenu.hx: 51
 Home = Home
 
-# src/pgs/fleas/Fleas.hx: 315
+# src/pgs/fleas/Fleas.hx: 326
 # src/pgs/fleas/charts/Charts.hx: 73
+# src/pgs/fleas/ranges/RangesPlus.hx: 191
+# src/pgs/rangesPlus/RangesPlus.hx: 153
 # src/pgs/ranking/Ranking.hx: 153
 Id = Id
 
@@ -489,7 +497,7 @@ Log = Log
 # src/pgs/settings/settings/ChangePass.hx: 199
 Login = Login
 
-# src/wgs/Dmenu.hx: 96
+# src/wgs/Dmenu.hx: 98
 Logout-message = <p>%0 has finished.</p><p><b>Good by!</b></p>
 
 # src/pgs/settings/nicks/Editor.hx: 539
@@ -510,7 +518,7 @@ Min = Min
 # src/pgs/settings/nicks/wgs/Wnick.hx: 41
 Model = Model
 
-# src/pgs/fleas/Fleas.hx: 85
+# src/pgs/fleas/Fleas.hx: 88
 # src/pgs/settings/Settings.hx: 51
 Models = Models
 
@@ -585,8 +593,10 @@ No selected company = No selected company
 # src/pgs/settings/servers/Servers.hx: 97
 No server selected = No server selected
 
-# src/pgs/fleas/Fleas.hx: 314
+# src/pgs/fleas/Fleas.hx: 325
 # src/pgs/fleas/ftests/wgs/OrdersWg.hx: 49
+# src/pgs/fleas/ranges/RangesPlus.hx: 190
+# src/pgs/rangesPlus/RangesPlus.hx: 151
 # src/pgs/ranking/Ranking.hx: 151
 Nº = Nº
 
@@ -605,6 +615,10 @@ Operation successfully done. = Operation successfully done.
 # src/pgs/performance/Performance.hx: 123
 Operations = Operations
 
+# src/pgs/fleas/ranges/Ranges.hx: 181
+# src/pgs/fleas/ranges/RangesPlus.hx: 133
+Option only available for models with only one parameter = Option only available for models with only one parameter
+
 # src/pgs/daily/Cos.hx: 81
 Order by = Order by
 
@@ -613,8 +627,11 @@ Order by = Order by
 # src/pgs/fleas/ftests/Ftests.hx: 34
 Orders = Orders
 
-# src/pgs/fleas/Fleas.hx: 92
+# src/pgs/fleas/Fleas.hx: 95
 Overview = Overview
+
+# src/pgs/rangesPlus/RangesPlus.hx: 172
+Param. = Param.
 
 # src/pgs/fleas/ftests/Orders.hx: 55
 # src/pgs/fleas/ftests/References.hx: 95
@@ -632,20 +649,24 @@ Password successfully changed = Password successfully changed
 # src/wgs/Dmenu.hx: 55
 Performance = Performance
 
-# src/pgs/fleas/Fleas.hx: 317
+# src/pgs/fleas/Fleas.hx: 328
 # src/pgs/fleas/charts/Charts.hx: 88
+# src/pgs/fleas/ranges/RangesPlus.hx: 193
+# src/pgs/rangesPlus/RangesPlus.hx: 155
 # src/pgs/ranking/Ranking.hx: 155
 Pf. Avg = Pf. Avg
 
-# src/pgs/fleas/Fleas.hx: 319
+# src/pgs/fleas/Fleas.hx: 330
 # src/pgs/fleas/charts/Charts.hx: 89
+# src/pgs/fleas/ranges/RangesPlus.hx: 195
+# src/pgs/rangesPlus/RangesPlus.hx: 157
 # src/pgs/ranking/Ranking.hx: 157
 Pf. Var = Pf. Var
 
 # src/pgs/fleas/ftests/Selection.hx: 99
 Play ground stoped.\nRestart doing click in 'Selection'. = Play ground stoped.\nRestart doing click in 'Selection'.
 
-# src/pgs/fleas/Fleas.hx: 98
+# src/pgs/fleas/Fleas.hx: 101
 Pool = Pool
 
 # src/pgs/acc/Companies.hx: 84
@@ -692,7 +713,14 @@ Quotes were modified with corrections.<br>See Log. = Quotes were modified with c
 # src/pgs/settings/nicks/Editor.hx: 452
 Quotes were successfully modified = Quotes were successfully modified
 
-# src/pgs/fleas/Fleas.hx: 94
+# src/pgs/fleas/Fleas.hx: 105
+Ranges = Ranges
+
+# src/pgs/fleas/Fleas.hx: 107
+# src/wgs/Dmenu.hx: 59
+Ranges + = Ranges +
+
+# src/pgs/fleas/Fleas.hx: 97
 # src/wgs/Dmenu.hx: 57
 Ranking = Ranking
 
@@ -768,9 +796,11 @@ Sell = Sell
 
 # src/pgs/acc/Balance.hx: 264
 # src/pgs/acc/Trading.hx: 206
-# src/pgs/fleas/Fleas.hx: 331
+# src/pgs/fleas/Fleas.hx: 342
 # src/pgs/fleas/charts/Charts.hx: 92
 # src/pgs/fleas/charts/Charts.hx: 302
+# src/pgs/fleas/ranges/RangesPlus.hx: 207
+# src/pgs/rangesPlus/RangesPlus.hx: 169
 # src/pgs/ranking/Ranking.hx: 169
 Sells = Sells
 
@@ -886,7 +916,7 @@ Test = Test
 # src/pgs/settings/nicks/List.hx: 258
 Test ok. = Test ok.
 
-# src/pgs/fleas/Fleas.hx: 102
+# src/pgs/fleas/Fleas.hx: 109
 Tests = Tests
 
 # src/pgs/acc/Balance.hx: 195
@@ -958,9 +988,11 @@ Without Nicks = Without Nicks
 # src/pgs/acc/wgs/Chart.hx: 233
 # src/pgs/acc/wgs/ProfitsWg.hx: 30
 # src/pgs/acc/wgs/ProfitsWg.hx: 295
-# src/pgs/fleas/Fleas.hx: 271
+# src/pgs/fleas/Fleas.hx: 282
+# src/pgs/fleas/ranges/RangesPlus.hx: 66
 # src/pgs/fleas/ranking/Ranking.hx: 57
 # src/pgs/fleas/wgs/HistoricChart.hx: 54
+# src/pgs/rangesPlus/RangesPlus.hx: 51
 # src/pgs/ranking/Ranking.hx: 51
 # src/wgs/Table.hx: 60
 Without data = Without data

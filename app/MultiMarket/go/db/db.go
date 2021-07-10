@@ -14,7 +14,9 @@ import (
 	"github.com/dedeme/MultiMarket/db/dailyTb"
 	"github.com/dedeme/MultiMarket/db/fleas/flog"
 	"github.com/dedeme/MultiMarket/db/fleas/fmodelsDb"
+	"github.com/dedeme/MultiMarket/db/fleas/rangesTb"
 	"github.com/dedeme/MultiMarket/db/fleas/rankingTb"
+	"github.com/dedeme/MultiMarket/db/fleas/resultsDb"
 	"github.com/dedeme/MultiMarket/db/log"
 	"github.com/dedeme/MultiMarket/db/managersTb"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
@@ -63,8 +65,11 @@ func Initialize(lk sync.T) {
 	profitsDb.Initialize(lk, path.Join(p, "acc"))
 	flog.Initialize(path.Join(p, "fleas"))
 	fmodelsDb.Initialize(lk, path.Join(p, "fleas"))
+	rangesTb.Initialize(lk, path.Join(p, "fleas"))
 	rankingTb.Initialize(lk, path.Join(p, "ranking"))
 	sboxTb.Initialize(lk, path.Join(p, "daily"))
 	dailyTb.Initialize(lk, path.Join(p, "daily"))
 	dailyChartsTb.Initialize(lk, path.Join(p, "daily"))
+
+	resultsDb.Initialize(lk)
 }

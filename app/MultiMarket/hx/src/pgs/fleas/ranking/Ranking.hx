@@ -26,7 +26,7 @@ class Ranking {
   ///   wg     : Container.
   ///   cols   : Tables header.
   ///   ranking: Tables data.
-  ///   Link   : Link constructo from table element and column index.
+  ///   Link   : Link constructor from table element and column index.
   public function new (wg, cols, ranking, link) {
     this.wg = wg;
     this.cols = cols;
@@ -110,23 +110,11 @@ class Ranking {
 
   // Static --------------------------------------------------------------------
 
-  /**
-      @private
-      @param {string} d Date in format YYYYMMDD
-      @return string Date in format DD/MM
-  **/
   /// Returns DD/MM from YYYYMMDD
   static function dateFormat (d: String): String {
     return d.substring(6) + "/" + d.substring(4, 6);
   }
 
-  /**
-      @private
-      @param {!Array<!Eflea>} prev
-      @param {!Eflea} e
-      @param {number} i
-      @return string The name of icon.
-  **/
   // Returns the name 'up-down' of an icon.
   //    prev: Previous ranking
   //    e   : Eflea to evaluate.

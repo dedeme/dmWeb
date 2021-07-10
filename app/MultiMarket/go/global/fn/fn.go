@@ -6,8 +6,17 @@ package fn
 
 import (
 	"fmt"
+	"github.com/dedeme/MultiMarket/data/cts"
+	"github.com/dedeme/golib/sys"
 	"math"
+	"path"
+	"strconv"
 )
+
+// Big data directory relative to sys_home()
+func BigDataPath() string {
+	return path.Join(path.Dir(path.Dir(sys.Home())), ".dmGoAppBig", cts.AppName)
+}
 
 // Returns true if abs(n1 - n2) < gap
 func Eq(n1, n2, gap float64) bool {
@@ -44,6 +53,46 @@ func Fix(n float64, d int) float64 {
 	default:
 		return math.Round(n)
 	}
+}
+
+// Transform a float64 to a parameter (array of int)
+func ToParam(n float64) []int {
+	atoi := func(s string) int {
+		if r, err := strconv.Atoi(s); err == nil {
+			return r
+		}
+		panic("'" + s + "' is not an integer")
+	}
+	i := strconv.Itoa(int(n * 10000.0))
+	if len(i) == 6 {
+		return []int{
+			atoi(i[0:2]), atoi(i[2:3]), atoi(i[3:4]), atoi(i[4:5]), atoi(i[5:6]),
+		}
+	} else if len(i) == 5 {
+		return []int{
+			atoi(i[0:1]), atoi(i[1:2]), atoi(i[2:3]), atoi(i[3:4]), atoi(i[4:5]),
+		}
+	}
+	panic("len(" + i + ") must be 5 or 6")
+}
+
+// Transform a parameter (array of int) in a float64
+func fromParam(p []int) float64 {
+	if len(p) == 6 {
+		return float64(p[0])*10.0 +
+			float64(p[1]) +
+			float64(p[2])*0.1 +
+			float64(p[3])*0.01 +
+			float64(p[4])*0.001 +
+			float64(p[5])*0.0001
+	} else if len(p) == 5 {
+		return float64(p[0])*1.0 +
+			float64(p[1])*0.1 +
+			float64(p[2])*0.01 +
+			float64(p[3])*0.001 +
+			float64(p[4])*0.0001
+	}
+	panic("len(" + strconv.Itoa(len(p)) + ") must be 5 or 6")
 }
 
 // Returns the most duplicated value of 'vs', rounding to 4 decimals.

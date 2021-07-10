@@ -33,6 +33,10 @@ func rankingPath(modelId string) string {
 	return path.Join(modelDir(modelId), "Ranking.tb")
 }
 
+func rangesPlusPath(modelId string) string {
+	return path.Join(modelDir(modelId), "RangesPlus.tb")
+}
+
 func Initialize(lk sync.T, parent string) {
 	parentDir = parent
 	for _, e := range fmodels.List() {
@@ -42,6 +46,9 @@ func Initialize(lk sync.T, parent string) {
 			WritePool(lk, id, []*eval.T{})
 			WriteBests(lk, id, []*evalDate.T{})
 			WriteRanking(lk, id, []*frank.T{})
+			if len(e.ParNames()) == 1 {
+				WriteRangesPlus(lk, id, []*frank.T{})
+			}
 		}
 	}
 }
@@ -110,6 +117,29 @@ func WriteRanking(lk sync.T, modelId string, ranks []*frank.T) {
 func ReadRanking(lk sync.T, modelId string) []*frank.T {
 	var a []*frank.T
 	for _, e := range json.FromString(file.ReadAll(rankingPath(modelId))).Ra() {
+		a = append(a, frank.FromJs(e))
+	}
+	return a
+}
+
+// Writes an evaluated fleas rangesPlus ranking.
+//   lk     : Synchronization lock.
+//   modelId: Model identifier.
+//   ranks  : Evaluated fleas rankings (sorted from after to before).
+func WriteRangesPlus(lk sync.T, modelId string, ranks []*frank.T) {
+	var a []json.T
+	for _, e := range ranks {
+		a = append(a, e.ToJs())
+	}
+	file.WriteAll(rangesPlusPath(modelId), json.Wa(a).String())
+}
+
+// Reads evaluated fleas rangesPlus rankings (sorted from after to before).
+//   lk     : Synchronization lock.
+//   modelId: Model identifier.
+func ReadRangesPlus(lk sync.T, modelId string) []*frank.T {
+	var a []*frank.T
+	for _, e := range json.FromString(file.ReadAll(rangesPlusPath(modelId))).Ra() {
 		a = append(a, frank.FromJs(e))
 	}
 	return a

@@ -151,4 +151,12 @@ const (
 
 	// Number of days of historic rankings.
 	RankingDays = 10
+
+	// Fleas ranges --------------------------------------------------------------
+	// Minimum value to analyze
+	RangesMin = float64(0.1)
+	// Maximum value to analyze (exclusive)
+	RangesMax = float64(0.2)
+	// Days movil average
+	RangesAvg = 250
 )
