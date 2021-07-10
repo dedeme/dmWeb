@@ -2,6 +2,7 @@
 tools
 lib
 *.geany
+*.gz
 gitk
 
 #c
