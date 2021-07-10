@@ -243,7 +243,10 @@ class Summary {
         }
         final sum = It.from(stats).reduce(0.0, (r, t) -> r + t.e1.cu.value);
         pls.push(new Tp(
-          {id: l, desc: Profits.groups().get(l), cu: new Cu(sum)},
+          { id: l,
+            desc: Profits.groups().get(l),
+            cu: l == "C" ? new Cu(sumT): new Cu(sum)
+          },
           stats
         ));
         sumT += sum;

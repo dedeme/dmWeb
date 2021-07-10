@@ -9,7 +9,6 @@ import (
 	"github.com/dedeme/MultiMarket/data/flea/paramEval"
 	"github.com/dedeme/MultiMarket/data/flea/result"
 	"github.com/dedeme/MultiMarket/db/log"
-	"github.com/dedeme/MultiMarket/global/fn"
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/golib/file"
 	"github.com/dedeme/golib/json"
@@ -32,8 +31,8 @@ func daysDatePath() string {
 	return path.Join(parentDir, "DaysDate.tb")
 }
 
-func Initialize(lk sync.T) {
-	parentDir = path.Join(fn.BigDataPath(), "results")
+func Initialize(lk sync.T, parent string) {
+  parentDir = parent
 	if !file.Exists(parentDir) {
 		file.Mkdirs(parentDir)
 		file.WriteAll(daysDatePath(), json.Wo(map[string]json.T{}).String())

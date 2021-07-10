@@ -70,6 +70,5 @@ func Initialize(lk sync.T) {
 	sboxTb.Initialize(lk, path.Join(p, "daily"))
 	dailyTb.Initialize(lk, path.Join(p, "daily"))
 	dailyChartsTb.Initialize(lk, path.Join(p, "daily"))
-
-	resultsDb.Initialize(lk)
+	resultsDb.Initialize(lk, path.Join(p, "results"))
 }

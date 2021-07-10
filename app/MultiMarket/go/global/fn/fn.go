@@ -6,17 +6,9 @@ package fn
 
 import (
 	"fmt"
-	"github.com/dedeme/MultiMarket/data/cts"
-	"github.com/dedeme/golib/sys"
 	"math"
-	"path"
 	"strconv"
 )
-
-// Big data directory relative to sys_home()
-func BigDataPath() string {
-	return path.Join(path.Dir(path.Dir(sys.Home())), ".dmGoAppBig", cts.AppName)
-}
 
 // Returns true if abs(n1 - n2) < gap
 func Eq(n1, n2, gap float64) bool {
