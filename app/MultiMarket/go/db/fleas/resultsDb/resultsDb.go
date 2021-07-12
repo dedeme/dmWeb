@@ -32,7 +32,7 @@ func daysDatePath() string {
 }
 
 func Initialize(lk sync.T, parent string) {
-  parentDir = parent
+	parentDir = parent
 	if !file.Exists(parentDir) {
 		file.Mkdirs(parentDir)
 		file.WriteAll(daysDatePath(), json.Wo(map[string]json.T{}).String())
@@ -151,7 +151,7 @@ func EachResult(
 func ReadResults(lk sync.T, modelId string) []*paramEval.T {
 	var r []*paramEval.T
 
-  fn := func(par, eval float64, sales int, _ float64, _ int) bool {
+	fn := func(par, eval float64, sales int, _ float64, _ int) bool {
 		r = append(r, paramEval.New(par, eval, sales))
 		return false
 	}

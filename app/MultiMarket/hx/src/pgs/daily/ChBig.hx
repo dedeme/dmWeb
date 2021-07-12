@@ -53,10 +53,19 @@ class ChBig {
 
       var max = -1000000.0;
       var min = 1000000.0;
+      final newHours: Array<Int> = [];
+      final newQuotes: Array<Float> = [];
+      var ix = -1;
       for (q in quotes) {
+        ++ix;
+        if (q <= 0) continue;
         if (q > max) max = q;
         if (q < min) min = q;
+        newHours.push(hours[ix]);
+        newQuotes.push(q);
       }
+      hours = newHours;
+      quotes = newQuotes;
 
       final incr = (max - min) * 0.04;
       max += incr;

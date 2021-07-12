@@ -17,6 +17,7 @@ import (
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/golib/file"
 	"github.com/dedeme/golib/sys"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -252,7 +253,6 @@ func goEnd(html string, marks []string) (text, rest string, ok bool) {
 func read(
 	lk sync.T, conf *server.ConfT, code string,
 ) (table [][]string, ok bool) {
-
 	getHtml := func() (html string, ok bool) {
 		url := conf.Url()
 		if code != "" {
@@ -263,6 +263,21 @@ func read(
 			log.Error(lk, fmt.Sprintf("Inet error reading '%v'", url))
 			return
 		}
+
+		if strings.TrimSpace(conf.Regex()) != "" {
+			exps := strings.Split(conf.Regex(), "\n")
+			for _, l := range exps {
+				ps := strings.Split(strings.TrimSpace(l), "|x|")
+				if len(ps) == 2 {
+					exp := strings.TrimSpace(ps[0])
+					if exp != "" {
+						re := regexp.MustCompile(exp)
+						html = re.ReplaceAllString(html, strings.TrimSpace(ps[1]))
+					}
+				}
+			}
+		}
+
 		html, ok = goStart(html, strings.Split(conf.TableStart(), "|"))
 		if !ok {
 			log.Error(lk, fmt.Sprintf("Start table not found reading '%v'", url))
@@ -562,6 +577,16 @@ func TestDailyConf(lk sync.T, id int) bool {
 		if sv.Id() == id {
 			nickCloses, ok := ServerReadDaily(lk, sv)
 			if ok && len(nickCloses) == len(sv.Codes()) {
+				// Show test result ----------------------------
+				/*
+					codes := sv.Codes()
+					for i := 0; i < len(nickCloses); i++ {
+						nick, _ := nicksTb.GetNick(lk, codes[i].NickId())
+						fmt.Println(nick, " = ", nickCloses[i])
+					}
+				*/
+				// ---------------------------------------------
+
 				return true
 			}
 			return false

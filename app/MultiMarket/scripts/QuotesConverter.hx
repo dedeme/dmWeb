@@ -16,14 +16,18 @@ USE:
 - Run from a console with:
     haxe -p /dm/dmHaxe/lib/cmhxlib/src -p /dm/dmHaxe/lib/svhxlib/src --run %f
       (%f is this script)
+
+NOTES:
+
+- Care about number of quotes (must be 610)
 */
 
 import dm.File;
 using StringTools;
 
 class QuotesConverter {
-  static final txt = File.ropen("EAT.txt");
-  static final tb = File.wopen("EAT.tb");
+  static final txt = File.ropen("LRE.txt");
+  static final tb = File.wopen("LRE.tb");
 
   public static function main () {
     File.readLines(txt, l -> {

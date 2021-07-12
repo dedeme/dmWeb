@@ -10,9 +10,9 @@ import (
 	"github.com/dedeme/MultiMarket/global/fn"
 	"github.com/dedeme/golib/date"
 	"github.com/dedeme/golib/json"
+	"math"
 	"math/rand"
 	"strconv"
-  "math"
 )
 
 type T struct {
@@ -59,10 +59,10 @@ func NewWithParams(
 //    modelId: Replacement for 'date'
 //    eval: Replacement for 'cycle' (int(math.Round(eval * 1000000)))
 //    sales: Replacement for 'id'.
-func (f *T) ChangeName (modelId string, eval float64, sales int) {
-  f.date = modelId
-  f.cycle = int(math.Round(eval * 1000000))
-  f.id = sales
+func (f *T) ChangeName(modelId string, eval float64, sales int) {
+	f.date = modelId
+	f.cycle = int(math.Round(eval * 1000000))
+	f.id = sales
 }
 
 // Date of creation.
