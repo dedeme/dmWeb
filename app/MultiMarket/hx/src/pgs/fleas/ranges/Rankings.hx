@@ -18,8 +18,8 @@ import data.flea.Eflea;
 import wgs.Table; // import Col
 import I18n._;
 
-/// Ranking of ranges of models with only one parameter.
-class RangesPlus {
+/// Rankings of model with only one parameter.
+class Rankings {
   var wg: Domo;
   var cols: Array<Col>;
   var rankings: Array<Frank>;
@@ -88,16 +88,16 @@ class RangesPlus {
 
     final table: Array<Array<Dynamic>> = [];
     It.from(efleas).eachIx((e, i) -> {
-      final name = e.flea.cycle + "-" + e.flea.id;
+      final name = e.flea.name;
       final r:Array<Dynamic> = [
         e, 0, icon(prev, e, i), name, e.assets, e.profitsAvg,
-        e.profitsVa, e.ev * 1000, e.buys, e.sells
+        e.profitsVa, e.eval * 1000, e.buys, e.sales, e.flea.param,
+        e.historicEval * 1000, e.historicSales
       ];
-      for (g in e.flea.params) r.push(g);
       table.push(r);
     });
 
-    new Table(wg, cols, table, 3, link);
+    new Table(wg, cols, table, -1, link);
 
     this.wg
       .removeAll()
@@ -121,37 +121,18 @@ class RangesPlus {
   // Static --------------------------------------------------------------------
 
   public static function mk (wg: Domo, md: Fmodel, lcPath0: String): Void {
-    if (md.parNames.length != 1) {
-      wg
-        .removeAll()
-        .add(Q("table")
-          .att("align", "center")
-          .add(Q("tr")
-            .add(Q("td")
-              .klass("frame")
-              .text(
-                  _("Option only available for models with only one parameter")
-                ))))
-      ;
-      return;
-    }
     Cts.client.send([
       "module" => Js.ws("fleas"),
-      "source" => Js.ws("ranges+"),
+      "source" => Js.ws("ranking"),
       "rq" => Js.ws("idata"),
       "modelId" => Js.ws(md.id)
     ], rp -> {
       final rankings = rp["rankings"].ra().map(e -> Frank.fromJs(e));
       final parName = rp["parName"].rs();
 
-      final cols = mkHeaderBase();
-      cols.insert(1, new Col(
-        "", Col.ICON, -1, true, false
-      ));
+      final cols = mkHeaderBase(parName);
 
-      cols.push(new Col(parName, Col.PARAM, 6, false, false));
-
-      new RangesPlus(wg, cols, rankings, (e, i) ->
+      new Rankings(wg, cols, rankings, (e, i) ->
         (i == 2) ? chart(lcPath0, false, e) : chart(lcPath0, true, e)
       );
     });
@@ -167,10 +148,10 @@ class RangesPlus {
   //    e   : Eflea to evaluate.
   //    i   : Index of 'e' in the current ranking.
   static function icon (prev: Array<Eflea>, e: Eflea, i: Int): String {
-    final name = Dec.toIso(e.flea.params[0] * 100, 4);
+    final name = e.flea.name;
     var pi = -1;
     for (j in 0...prev.length) {
-      if (Dec.toIso(prev[j].flea.params[0] * 100, 4) == name) {
+      if (prev[j].flea.name == name) {
         pi = j;
         break;
       }
@@ -185,28 +166,20 @@ class RangesPlus {
     return "rk-down";
   }
 
-  static function mkHeaderBase (): Array<Col> {
+  static function mkHeaderBase (parName: String): Array<Col> {
     return [
       new Col(_("Nº"), Col.COUNTER, 0, false, false),
+      new Col("", Col.ICON, -1, true, false),
       new Col(_("Id"), Col.STRING, -1, true, false),
       new Col(_("Assets"), Col.NUMBER, 2, false, false),
       new Col(_("Pf. Avg"), Col.NUMBER, 4, false, false),
-      new Col(
-        _("Pf. Var"), Col.NUMBER, 4,
-        false, false
-      ),
-      new Col(
-        _("Eval."), Col.NUMBER, 2,
-        false, false
-      ),
-      new Col(
-        _("Buys"), Col.NUMBER, 0,
-        false, false
-      ),
-      new Col(
-        _("Sells"), Col.NUMBER, 0,
-        false, false
-      )
+      new Col(_("Pf. Var"), Col.NUMBER, 4, false, false),
+      new Col(_("Eval."), Col.NUMBER, 2, false, false),
+      new Col(_("Buys"), Col.NUMBER, 0, false, false),
+      new Col(_("Sales"), Col.NUMBER, 0, false, false),
+      new Col(parName, Col.PARAM, 6, false, false),
+      new Col(_("H. Eval."), Col.NUMBER, 2, false, false),
+      new Col(_("H. Sales"), Col.NUMBER, 0, false, false)
     ];
   }
 

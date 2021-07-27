@@ -9,6 +9,7 @@ import (
 	"github.com/dedeme/MultiMarket/server/pgs/acc/balance"
 	"github.com/dedeme/MultiMarket/server/pgs/acc/companies"
 	"github.com/dedeme/MultiMarket/server/pgs/acc/profits"
+	"github.com/dedeme/MultiMarket/server/pgs/acc/speedometers"
 	"github.com/dedeme/MultiMarket/server/pgs/acc/trading"
 	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/json"
@@ -25,6 +26,8 @@ func Process(ck string, mrq map[string]json.T) string {
 		return trading.Process(ck, mrq)
 	case "profits":
 		return profits.Process(ck, mrq)
+	case "speedometers":
+		return speedometers.Process(ck, mrq)
 	default:
 		panic(fmt.Sprintf("Value of rq ('%v') is not valid", rq))
 	}

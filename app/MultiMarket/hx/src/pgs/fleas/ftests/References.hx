@@ -37,9 +37,7 @@ class References {
     nickList.sort((e1, e2) -> e1 > e2 ? 1 : -1);
     this.nickList = nickList;
     nickSel = 0;
-    wgParams = new Params(
-      model.parNames, model.parMins, model.parMaxs, "par", "showBt"
-    );
+    wgParams = new Params(model.parName, "par", "showBt");
 
     view();
   }
@@ -130,7 +128,7 @@ class References {
       "rq" => Js.ws("chartData"),
       "modelId" => Js.ws(model.id),
       "nickName" => Js.ws(nickList[nickSel]),
-      "params" => Js.wa(wgParams.value.map(e -> Js.wf(e)))
+      "param" => Js.wf(wgParams.value)
     ], rp -> {
       if (!rp["ok"].rb()) {
         Msg.error(Cts.failMsg);

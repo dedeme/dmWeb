@@ -79,7 +79,7 @@ const (
 
 	// Accounting ----------------------------------------------------------------
 	// Number of investors
-	Managers = 3
+	Investors = 3
 
 	// Maximum of register in Perfomance.tb
 	PerformanceMax = 100
@@ -97,24 +97,6 @@ const (
 	// Minimun cash to bet
 	MinToBet = 11000.0
 
-	// Minimum operations to survive (multiplicator: days * minSells)
-	MinSellsx = 0.08 // Canceled
-
-	// Maximun operations to survive (multiplicator: days * maxSells)
-	MaxSellsx = 0.16 // Canceled
-
-	// Maximum of mutation
-	MutationMultiplier = 0.3
-
-	// Number of cycle per parameter after insertion to finish a process
-	Cycles = 5
-
-	// Number of cycle to insert historic results
-	InsertionCycle = 9
-
-	// Number of fleas per model
-	FleasPerModel = 2000
-
 	// Fleas evaluation ----------------------------------------------------------
 	// Historic simulation ratio
 	AssetsRatio = 0.3
@@ -125,9 +107,6 @@ const (
 	// Standard deviation of profits ratio
 	ProfitsSdRatio = 0.2
 
-	// Flea age ratio
-	AgeRatio = 0.2
-
 	// Assets limit to penalize (ratio)
 	AssetPenalize = 1.1
 
@@ -137,18 +116,6 @@ const (
 	// Std profits limit to penalize (ratio)
 	StdPenalize = 0.8
 
-	// Number of fleas in pool
-	PoolNumber = 1000
-
-	// Number of new fleas for adding to pool.
-	PoolAddNumber = 10
-
-	// Number of fleas in ranking
-	RankingNumber = 40
-
-	// Number of fleas that changes per session
-	RankingChanges = 4
-
 	// Number of days of historic rankings.
 	RankingDays = 10
 
@@ -157,6 +124,8 @@ const (
 	RangesMin = float64(0.1)
 	// Maximum value to analyze (exclusive)
 	RangesMax = float64(0.2)
+	// Medium value to autamate fleas creation.
+	RangesMedium = float64(0.15)
 	// Days movil average
 	RangesAvg = 250
 )

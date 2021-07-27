@@ -1,13 +1,13 @@
 // Copyright 08-Sep-2020 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-// Managers table.
-package managersTb
+// Investors table.
+package investorsTb
 
 import (
 	"github.com/dedeme/MultiMarket/data/cts"
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
-	"github.com/dedeme/MultiMarket/data/manager"
+	"github.com/dedeme/MultiMarket/data/investor"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
 	"github.com/dedeme/MultiMarket/db/refsDb"
@@ -19,9 +19,9 @@ import (
 
 var fpath string
 
-func write(lk sync.T, managers []*manager.T) {
+func write(lk sync.T, investors []*investor.T) {
 	var a []json.T
-	for _, e := range managers {
+	for _, e := range investors {
 		a = append(a, e.ToJs())
 	}
 	file.WriteAll(fpath, json.Wa(a).String())
@@ -30,34 +30,34 @@ func write(lk sync.T, managers []*manager.T) {
 // Initializes calendar table.
 //    parent: Parent directory.
 func Initialize(lk sync.T, parent string) {
-	fpath = path.Join(parent, "Managers.tb")
+	fpath = path.Join(parent, "Investors.tb")
 	if !file.Exists(fpath) {
-		var mgs []*manager.T
-		for i := 0; i < cts.Managers; i++ {
-			mgs = append(mgs, manager.New())
+		var invs []*investor.T
+		for i := 0; i < cts.Investors; i++ {
+			invs = append(invs, investor.New())
 		}
-		write(lk, mgs)
+		write(lk, invs)
 	}
 }
 
 // Returns managers list.
 //    lk: Synchronization lock.
-func Read(lk sync.T) (r []*manager.T) {
+func Read(lk sync.T) (r []*investor.T) {
 	for _, e := range json.FromString(file.ReadAll(fpath)).Ra() {
-		r = append(r, manager.FromJs(e))
+		r = append(r, investor.FromJs(e))
 	}
 	return
 }
 
 // Sets the model base of a manager and regularize company models.
-//    lk    : Synchronization lock.
-//    man   : Manager id.
-//    model : Model to set.
-//    params: Model parameters.
-func SetBase(lk sync.T, man int, model *fmodel.T, params []float64) {
+//    lk   : Synchronization lock.
+//    man  : Manager id.
+//    model: Model to set.
+//    param: Model parameter.
+func SetBase(lk sync.T, man int, model *fmodel.T, param float64) {
 	mgs := Read(lk)
 	mg := mgs[man]
-	mg.Base = manager.NewEntryFrom(model, params)
+	mg.Base = investor.NewEntryFrom(model, param)
 	write(lk, mgs)
 	Regularize(lk, man)
 }
@@ -67,13 +67,13 @@ func SetBase(lk sync.T, man int, model *fmodel.T, params []float64) {
 //    man     : Manager id.
 //    nickName: Company nick.
 //    model   : Model to set.
-//    params  : Model parameters.
+//    param   : Model parameter.
 func SetNick(
-	lk sync.T, man int, nickName string, model *fmodel.T, params []float64,
+	lk sync.T, man int, nickName string, model *fmodel.T, param float64,
 ) {
 	mgs := Read(lk)
 	mg := mgs[man]
-	mg.Nicks()[nickName] = manager.NewEntryFrom(model, params)
+	mg.Nicks()[nickName] = investor.NewEntryFrom(model, param)
 	write(lk, mgs)
 }
 
@@ -97,11 +97,11 @@ func Regularize(lk sync.T, man int) {
 			if ok {
 				lastCl := closes[len(closes)-1][0]
 				refs := refsDb.MkRefs(
-					lk, nk.Name(), dates, closes, baseCf.Model(), baseCf.Params(),
+					lk, nk.Name(), dates, closes, baseCf.Model(), baseCf.Param(),
 				)
 				lastBaseRf := refs[len(refs)-1]
 				refs = refsDb.MkRefs(
-					lk, nk.Name(), dates, closes, nkCf.Model(), nkCf.Params(),
+					lk, nk.Name(), dates, closes, nkCf.Model(), nkCf.Param(),
 				)
 				lastNkRf := refs[len(refs)-1]
 				if (lastBaseRf > lastCl && lastNkRf > lastCl) ||

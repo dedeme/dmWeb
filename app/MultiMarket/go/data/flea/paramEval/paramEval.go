@@ -5,14 +5,14 @@
 package paramEval
 
 import (
-	"github.com/dedeme/MultiMarket/data/flea/eval"
+	"github.com/dedeme/MultiMarket/data/flea/eFlea"
 	"sort"
 )
 
 type T struct {
 	param float64
 	eval  float64
-	sales int
+	sales float64
 }
 
 type rangeMax struct {
@@ -20,13 +20,13 @@ type rangeMax struct {
 	max *T
 }
 
-func New(param, eval float64, sales int) *T {
+func New(param, eval, sales float64) *T {
 	return &T{param, eval, sales}
 }
 
-func max(pevals []*T) *T {
-	r := pevals[0]
-	for _, e := range pevals {
+func max(efleas []*T) *T {
+	r := efleas[0]
+	for _, e := range efleas {
 		if e.eval > r.eval {
 			r = e
 		}
@@ -34,23 +34,23 @@ func max(pevals []*T) *T {
 	return r
 }
 
-func maxAvg(pevals []*T) (max *T, avg float64) {
-	max = pevals[0]
+func maxAvg(efleas []*T) (max *T, avg float64) {
+	max = efleas[0]
 	sum := 0.0
-	for _, e := range pevals {
+	for _, e := range efleas {
 		if e.eval > max.eval {
 			max = e
 		}
 		sum += e.eval
 	}
-	avg = sum / float64(len(pevals))
+	avg = sum / float64(len(efleas))
 	return
 }
 
-func selection(parts int, pevals []*T) []*T {
-	ln := len(pevals)
+func selection(parts int, efleas []*T) []*T {
+	ln := len(efleas)
 	if ln < parts {
-		return []*T{max(pevals)}
+		return []*T{max(efleas)}
 	}
 
 	n := ln / parts
@@ -60,7 +60,7 @@ func selection(parts int, pevals []*T) []*T {
 	var groups []*rangeMax
 
 	for i := 0; i < parts-1; i++ {
-		rg := pevals[start : start+n]
+		rg := efleas[start : start+n]
 		start += n
 		mx, avg := maxAvg(rg)
 		if avg > mAvg {
@@ -69,7 +69,7 @@ func selection(parts int, pevals []*T) []*T {
 		}
 		groups = append(groups, &rangeMax{rg, mx})
 	}
-	rg := pevals[start:]
+	rg := efleas[start:]
 	mx, avg := maxAvg(rg)
 	if avg > mAvg {
 		ix = parts - 1
@@ -97,20 +97,22 @@ func paramEq(p1, p2 float64) bool {
 	return true
 }
 
-type evals []*eval.T
+type eFleas []*eFlea.T
 
-func (a evals) Len() int           { return len(a) }
-func (a evals) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a evals) Less(i, j int) bool { return a[i].Eval > a[j].Eval }
+func (a eFleas) Len() int      { return len(a) }
+func (a eFleas) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a eFleas) Less(i, j int) bool {
+	return a[i].HistoricEval > a[j].HistoricEval
+}
 
 func Ranking(
-	pevals []*T, mkEval func(float64, float64, int) *eval.T,
-) []*eval.T {
+	efleas []*T, mkEval func(float64, float64, float64) *eFlea.T,
+) []*eFlea.T {
 	aparts := []int{2, 3, 5, 7, 11}
 	var params []float64
-	var r []*eval.T
+	var r []*eFlea.T
 	for _, parts := range aparts {
-		for _, e := range selection(parts, pevals) {
+		for _, e := range selection(parts, efleas) {
 			param := e.param
 			add := true
 			for _, i := range params {
@@ -127,6 +129,6 @@ func Ranking(
 		}
 	}
 
-	sort.Sort(evals(r))
+	sort.Sort(eFleas(r))
 	return r
 }

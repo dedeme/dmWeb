@@ -11,7 +11,7 @@ import (
 	"github.com/dedeme/MultiMarket/db/acc/diariesDb"
 	"github.com/dedeme/MultiMarket/db/conf"
 	"github.com/dedeme/MultiMarket/db/dailyTb"
-	"github.com/dedeme/MultiMarket/db/managersTb"
+	"github.com/dedeme/MultiMarket/db/investorsTb"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
 	"github.com/dedeme/MultiMarket/db/refsDb"
@@ -31,7 +31,7 @@ func Process(ck string, mrq map[string]json.T) string {
 			dates := quotesDb.Dates(lk)
 			dates2 := append(dates, date.Now().String())[1:]
 			closes := quotesDb.Closes(lk)
-			mans := managersTb.Read(lk)
+			invs := investorsTb.Read(lk)
 			qs := dailyTb.Read(lk)
 			mqs := map[string]float64{}
 			for _, q := range qs {
@@ -43,7 +43,7 @@ func Process(ck string, mrq map[string]json.T) string {
 
 			var ledgers []json.T
 			var portfolios []json.T
-			for i, man := range mans {
+			for i, inv := range invs {
 				anns := diariesDb.ReadAnnotations(lk, i)
 				ledger, portfolio, _ := acc.Settlement(anns)
 				ledgers = append(ledgers, ledger.ToJs())
@@ -67,10 +67,10 @@ func Process(ck string, mrq map[string]json.T) string {
 						cs, ok = closes.NickValues(nk)
 					}
 					if ok {
-						mdPars := man.GetModel(nk)
+						mdPars := inv.GetModel(nk)
 						quote = cs[len(cs)-1][0]
 						refs := refsDb.MkRefs(
-							lk, nk, dts, cs, mdPars.Model(), mdPars.Params(),
+							lk, nk, dts, cs, mdPars.Model(), mdPars.Param(),
 						)
 						ref = refs[len(refs)-1]
 						if ref > quote { // Sell situation.

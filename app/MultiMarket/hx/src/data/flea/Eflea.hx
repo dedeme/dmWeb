@@ -7,36 +7,43 @@ import dm.Js;
 
 /// Evaluated flea record.
 class Eflea {
-  public var flea(default, null): Flea;
-  public var buys(default, null): Int;
-  public var sells(default, null): Int;
-  public var assets(default, null): Float;
-  public var profitsAvg(default, null): Float;
-  public var profitsVa(default, null): Float;
-  public var ev(default, null): Float;
+  public final flea: Flea;
+  public final buys: Int;
+  public final sales: Int;
+  public final assets: Float;
+  public final profitsAvg: Float;
+  public final profitsVa: Float;
+  public final eval: Float;
+  public final historicSales: Float;
+  public final historicEval: Float;
 
   function new (
-    flea: Flea, buys: Int, sells: Int,
-    assets: Float, profitsAvg: Float, profitsVa: Float, ev: Float
+    flea: Flea, buys: Int, sales: Int,
+    assets: Float, profitsAvg: Float, profitsVa: Float, eval: Float,
+    historicSales: Float, historicEval: Float
   ) {
     this.flea = flea;
     this.buys = buys;
-    this.sells = sells;
+    this.sales = sales;
     this.assets = assets;
     this.profitsAvg = profitsAvg;
     this.profitsVa = profitsVa;
-    this.ev = ev;
+    this.eval = eval;
+    this.historicSales = historicSales;
+    this.historicEval = historicEval;
   }
 
   public function toJs(): Js {
     return Js.wa([
       flea.toJs(),
       Js.wi(buys),
-      Js.wi(sells),
+      Js.wi(sales),
       Js.wf(assets),
       Js.wf(profitsAvg),
       Js.wf(profitsVa),
-      Js.wf(ev)
+      Js.wf(eval),
+      Js.wf(historicSales),
+      Js.wf(historicEval)
     ]);
   }
 
@@ -49,7 +56,9 @@ class Eflea {
       a[3].rf(),
       a[4].rf(),
       a[5].rf(),
-      a[6].rf()
+      a[6].rf(),
+      a[7].rf(),
+      a[8].rf()
     );
   }
 }

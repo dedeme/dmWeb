@@ -10,31 +10,22 @@ import dm.Ui.Q;
 /// Parameters widget
 class Params {
   public final wg = Q("div");
-  var ps: Array<Param>;
-  public var value(get, never): Array<Float>;
-  function get_value() return ps.map(p -> p.value);
+  var param: Param;
+  public var value(get, never): Float;
+  function get_value() return param.value;
 
   /// Constructor:
-  ///   names : Parameter names.
-  ///   mins  : Minimum values.
-  ///   maxs  : Maximum values.
+  ///   names : Parameter name.
   ///   id    : TextFields root id. Final id will be made with id + index.
   ///   nextId: Id of next widget to pass focus.
   ///   values: Defaul values.
   public function new (
-    names: Array<String>, mins: Array<Float>, maxs: Array<Float>,
-    id: String, nextId: String, ?values: Array<Float>
+    name: String, id: String, nextId: String, ?value: Float
   ) {
-    ps = [];
-    for (i in 0...mins.length) {
-      final nx = (i < mins.length - 1) ? id + Std.string(i + 1) : nextId;
-      ps.push(values == null
-        ? new Param(names[i], mins[i], maxs[i], id + Std.string(i), nx)
-        : new Param(
-            names[i], mins[i], maxs[i], id + Std.string(i), nx, values[i]
-          )
-      );
-    }
+    param = value == null
+      ? new Param(name, id, nextId)
+      : new Param(name, id, nextId, value)
+    ;
 
     view();
   }
@@ -46,7 +37,7 @@ class Params {
       .removeAll()
       .add(Q("table").klass("frame")
         .add(Q("tr")
-          .adds(ps.map(p -> Q("td").add(p.wg)))))
+          .add(Q("td").add(param.wg))))
     ;
   }
 }

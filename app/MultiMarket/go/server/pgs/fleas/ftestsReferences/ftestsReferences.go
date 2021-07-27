@@ -31,10 +31,7 @@ func Process(ck string, mrq map[string]json.T) string {
 	case "chartData":
 		modelId := cgi.RqString(mrq, "modelId")
 		nickName := cgi.RqString(mrq, "nickName")
-		var params []float64
-		for _, e := range mrq["params"].Ra() {
-			params = append(params, e.Rd())
-		}
+		param := mrq["param"].Rd()
 		rp := map[string]json.T{}
 		sync.Run(func(lk sync.T) {
 			opens := quotesDb.Opens(lk)
@@ -55,7 +52,7 @@ func Process(ck string, mrq map[string]json.T) string {
 			rp["ok"] = json.Wb(false)
 			if ok1 && ok2 && ok3 {
 				dates := quotesDb.Dates(lk)
-				refs := md.Refs(nkCs, params, nil)
+				refs := md.Refs(nkCs, param, nil)
 
 				var datesJs []json.T
 				for _, e := range dates {
@@ -77,7 +74,7 @@ func Process(ck string, mrq map[string]json.T) string {
 				rp["opens"] = json.Wa(opensJs)
 				rp["closes"] = json.Wa(closesJs)
 				rp["refs"] = json.Wa(refsJs)
-				rp["profits"] = json.Wd(md.Profits(nkOs, nkCs, params))
+				rp["profits"] = json.Wd(md.Profits(nkOs, nkCs, param))
 				rp["ok"] = json.Wb(true)
 			}
 		})

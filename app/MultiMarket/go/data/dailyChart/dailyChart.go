@@ -8,15 +8,21 @@ import (
 	"github.com/dedeme/golib/json"
 )
 
-// Stocks of a manager.
+// Parameter, stocks and reference of a manager-company.
 type DataT struct {
+	param  float64
 	stocks int
 	price  float64
 	ref    float64
 }
 
-func DataNew(stocks int, price, ref float64) *DataT {
-	return &DataT{stocks, price, ref}
+// Constructor
+//    param: manager-company parameter if its model is JUMP or JMP2. Oterwise -1.
+//    stocks: Stocks in portfolio.
+//    price : Price of stocks or 0.
+//    ref   : Stop reference.
+func DataNew(param float64, stocks int, price, ref float64) *DataT {
+	return &DataT{param, stocks, price, ref}
 }
 
 func (d *DataT) Stocks() int {
@@ -33,6 +39,7 @@ func (d *DataT) Ref() float64 {
 
 func (d *DataT) toJs() json.T {
 	return json.Wa([]json.T{
+		json.Wd(d.param),
 		json.Wi(d.stocks),
 		json.Wd(d.price),
 		json.Wd(d.ref),
@@ -41,10 +48,12 @@ func (d *DataT) toJs() json.T {
 
 func dailyChartDataFromJs(js json.T) *DataT {
 	a := js.Ra()
+
 	return &DataT{
-		a[0].Ri(),
-		a[1].Rd(),
+		a[0].Rd(),
+		a[1].Ri(),
 		a[2].Rd(),
+		a[3].Rd(),
 	}
 }
 

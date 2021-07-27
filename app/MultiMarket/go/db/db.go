@@ -12,13 +12,11 @@ import (
 	"github.com/dedeme/MultiMarket/db/conf"
 	"github.com/dedeme/MultiMarket/db/dailyChartsTb"
 	"github.com/dedeme/MultiMarket/db/dailyTb"
-	"github.com/dedeme/MultiMarket/db/fleas/flog"
 	"github.com/dedeme/MultiMarket/db/fleas/fmodelsDb"
 	"github.com/dedeme/MultiMarket/db/fleas/rangesTb"
-	"github.com/dedeme/MultiMarket/db/fleas/rankingTb"
 	"github.com/dedeme/MultiMarket/db/fleas/resultsDb"
+	"github.com/dedeme/MultiMarket/db/investorsTb"
 	"github.com/dedeme/MultiMarket/db/log"
-	"github.com/dedeme/MultiMarket/db/managersTb"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
 	"github.com/dedeme/MultiMarket/db/performanceTb"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
@@ -59,14 +57,12 @@ func Initialize(lk sync.T) {
 	quotesDb.Initialize(lk, p)
 	refsDb.Initialize(lk, p)
 	serversTb.Initialize(lk, p)
-	managersTb.Initialize(lk, p)
+	investorsTb.Initialize(lk, p)
 	performanceTb.Initialize(lk, p)
 	diariesDb.Initialize(lk, path.Join(p, "acc"))
 	profitsDb.Initialize(lk, path.Join(p, "acc"))
-	flog.Initialize(path.Join(p, "fleas"))
 	fmodelsDb.Initialize(lk, path.Join(p, "fleas"))
 	rangesTb.Initialize(lk, path.Join(p, "fleas"))
-	rankingTb.Initialize(lk, path.Join(p, "ranking"))
 	sboxTb.Initialize(lk, path.Join(p, "daily"))
 	dailyTb.Initialize(lk, path.Join(p, "daily"))
 	dailyChartsTb.Initialize(lk, path.Join(p, "daily"))

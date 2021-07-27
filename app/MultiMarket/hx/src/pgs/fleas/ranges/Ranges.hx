@@ -88,7 +88,7 @@ class Ranges {
     final trs: Array<Domo> = [];
     var n = 0;
     var evalSum = 0.0;
-    var salesSum = 0;
+    var salesSum = 0.0;
     var currentParam = formatParam1(values[0].param);
     for (v in values) {
       final newParam = formatParam1(v.param);
@@ -189,7 +189,7 @@ class Ranges {
     return Dec.toIso(n * 1000, 2);
   }
 
-  function formatSales (n: Int): String {
+  function formatSales (n: Float): String {
     return Dec.toIso(n, 0);
   }
 
@@ -232,20 +232,6 @@ class Ranges {
   // Static --------------------------------------------------------------------
 
   public static function mk (wg: Domo, md: Fmodel): Void {
-    if (md.parNames.length != 1) {
-      wg
-        .removeAll()
-        .add(Q("table")
-          .att("align", "center")
-          .add(Q("tr")
-            .add(Q("td")
-              .klass("frame")
-              .text(
-                  _("Option only available for models with only one parameter")
-                ))))
-      ;
-      return;
-    }
     Cts.client.send([
       "module" => Js.ws("fleas"),
       "source" => Js.ws("ranges"),
@@ -265,9 +251,9 @@ class Ranges {
 private class Entry {
   public final param: Float;
   public final eval: Float;
-  public final sales: Int;
+  public final sales: Float;
 
-  public function new (param: Float, eval: Float, sales: Int) {
+  public function new (param: Float, eval: Float, sales: Float) {
     this.param = param;
     this.eval = eval;
     this.sales = sales;
@@ -275,7 +261,7 @@ private class Entry {
 
   public static function fromJs (js: Js): Entry {
     final a = js.ra();
-    return new Entry(a[0].rf(), a[1].rf(), a[2].ri());
+    return new Entry(a[0].rf(), a[1].rf(), a[2].rf());
   }
 }
 

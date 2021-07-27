@@ -23,29 +23,23 @@ import I18n._;
 class Charts {
   var wg: Domo;
   var modelId: String;
-  var parNames: Array<String>;
-  var parFmts: Array<Int>;
+  var parName: String;
   var eflea: Eflea;
   var menuSel: String;
   /// Constructor.
   ///   wg      : Container.
   ///   modelId : Flea model identifier.
   ///   isAsset : Returns true if chart is of assets.
-  ///   parNames: Parameter names.
-  ///   parFmts : Parameter format. Each parameter is:
-  ///             0 - Integer
-  ///             4, 6 - Percentage.
-  ///             Other - Normal number with 'other' decimals positions.
+  ///   parName : Parameter name.
   ///   eflea   : Evaluated flea.
   public function new (
     wg: Domo, modelId: String, isAsset: Bool,
-    parNames: Array<String>, parFmts: Array<Int>, eflea: Eflea
+    parName: String, eflea: Eflea
   ) {
     this.wg = wg;
     this.modelId = modelId;
     menuSel = isAsset ? "assets" : "companies";
-    this.parNames = parNames;
-    this.parFmts = parFmts;
+    this.parName = parName;
     this.eflea = eflea;
 
     view();
@@ -70,18 +64,17 @@ class Charts {
 
     final paramsHead = [
       Q("td").klass("header").text(_("Model")),
-      Q("td").klass("header").text(_("Id"))
+      Q("td").klass("header").text(_("Id")),
+      Q("td").klass("header").text(parName)
     ];
-    for (e in parNames) paramsHead.push(Q("td").klass("header").text(e));
     final paramsBody = [
       Q("td").klass("menu").text(modelId),
       Q("td").klass("menu").text(flea.name)
     ];
-    for (i in 0...parFmts.length) {
-      paramsBody.push(Q("td").klass("fparam").text(Cts.nformat(
-        flea.params[i], parFmts[i]
-      )));
-    }
+    paramsBody.push(Q("td").klass("fparam").text(Cts.nformat(
+      flea.param, Cts.paramDecs
+    )));
+
 
     final rsHead = [
       Q("td").klass("header").text(_("Assets")),
@@ -95,9 +88,9 @@ class Charts {
       Q("td").klass("fnumber").text(Cts.nformat(eflea.assets, 2)),
       Q("td").klass("fnumber").text(Cts.nformat(eflea.profitsAvg, 4)),
       Q("td").klass("fnumber").text(Cts.nformat(eflea.profitsVa, 4)),
-      Q("td").klass("fnumber").text(Cts.nformat(eflea.ev * 1000, 2)),
+      Q("td").klass("fnumber").text(Cts.nformat(eflea.eval * 1000, 2)),
       Q("td").klass("fnumber").text(Cts.nformat(eflea.buys, 0)),
-      Q("td").klass("fnumber").text(Cts.nformat(eflea.sells, 0))
+      Q("td").klass("fnumber").text(Cts.nformat(eflea.sales, 0))
     ];
 
     final wg = Q("div");
@@ -106,7 +99,7 @@ class Charts {
     } else if (menuSel == "orders") {
       this.orders(wg);
     } else {
-      Companies.mk(wg, modelId, flea.params);
+      Companies.mk(wg, modelId, flea.param);
     }
 
     this.wg
@@ -150,7 +143,7 @@ class Charts {
       "source" => Js.ws("charts"),
       "rq" => Js.ws("assets"),
       "modelId" => Js.ws(modelId),
-      "params" => Js.wa(eflea.flea.params.map(e -> Js.wf(e)))
+      "param" => Js.wf(eflea.flea.param)
     ], rp -> {
       if (rp["ok"].rb()) {
         final dates = rp["dates"].ra().map(e -> e.rs());
@@ -183,7 +176,7 @@ class Charts {
       "source" => Js.ws("ftests/orders"), // Reused
       "rq" => Js.ws("ordersData"),        // Reused
       "modelId" => Js.ws(modelId),
-      "params" => Js.wa(eflea.flea.params.map(e -> Js.wf(e)))
+      "param" => Js.wf(eflea.flea.param)
     ], rp -> {
       function mkTr (
         date: String, buys: Array<String>, sells: Array<String>,

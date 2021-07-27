@@ -47,7 +47,9 @@ class Acc {
       Menu.separator(),
       Menu.tlink("trading", _("Trading"), "acc"),
       Menu.separator(),
-      Menu.tlink("profits", _("Profits"), "acc")
+      Menu.tlink("profits", _("Profits"), "acc"),
+      Menu.separator2(),
+      Menu.tlink("speedometers", _("Speedometers"), "acc")
     ];
     final ropts = [];
     dmenu.setDownMenu(new Menu(lopts, ropts, mSel));
@@ -57,6 +59,7 @@ class Acc {
       case "balance": Balance.mk(wg);
       case "trading": Trading.mk(wg);
       case "profits": Profits.mk(wg);
+      case "speedometers": Speedometers.mk(wg);
       default: Profits.mk(wg);
     }
 

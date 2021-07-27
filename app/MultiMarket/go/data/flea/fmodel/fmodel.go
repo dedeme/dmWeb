@@ -117,31 +117,24 @@ func newDailyOrder(isSell bool, iCo int, pond float64) *dailyOrderT {
 type T struct {
 	id       string
 	name     string
-	parNames []string
-	parMins  []float64
-	parMaxs  []float64
-	parDecs  []int
+	parName  string
+	isJump   bool
 	withInit bool
-	fcalc    func([][]float64, []float64, *refPos.T, func([]float64, []float64))
+	fcalc    func([][]float64, float64, *refPos.T, func([]float64, []float64))
 }
 
 // Constructor
 //    id: Brief identifier. 4 characters maximum (e.g. APPR).
-//    name: Model name.
-//    parNames: Parameter names.
-//    parMins: Minimum values for parameters.
-//    parMaxs: Maximum values for parameters.
-//    parDecs : Decimal number of parameters.
-//              Expected values:
-//              4, 6 : Percentage format
-//              other: No meaning.
+//    name    : Model name.
+//    parName : Parameter name.
+//    isJump  : "true" if references move by jump (Models JUMP and JMP2)
 //    withInit: "true" if fcalc admit a value not nil for 'init'
 //    fcalc   : Function with the following paramenters:
 //              closes ([][]float64): Closes of serveral companies from before
 //                                    to after.
 //                                    Its rows are 'days' and its columns
 //                                    'companies'.
-//              params ([]float64): Parameters to do calculations.
+//              param (float64): Parameter to do calculations.
 //              init (*refPos.T): Intialization or nil. Only is not nil
 //                                when closes is [][1]float64.
 //              action (func): Function to be called after calculations. Its
@@ -151,12 +144,10 @@ type T struct {
 //                             This function is defined in 'Refs', 'Profits',
 //                               'Orders' and 'Assets'
 func New(
-	id, name string,
-	parNames []string, parMins, parMaxs []float64, parDecs []int,
-	withInit bool,
-	fcalc func([][]float64, []float64, *refPos.T, func([]float64, []float64)),
+	id, name string, parName string, isJump bool, withInit bool,
+	fcalc func([][]float64, float64, *refPos.T, func([]float64, []float64)),
 ) *T {
-	return &T{id, name, parNames, parMins, parMaxs, parDecs, withInit, fcalc}
+	return &T{id, name, parName, isJump, withInit, fcalc}
 }
 
 // Brief identifier. 4 characters maximum (e.g. APPR).
@@ -170,26 +161,13 @@ func (md *T) Name() string {
 }
 
 // Parameter names.
-func (md *T) ParNames() []string {
-	return md.parNames
+func (md *T) ParName() string {
+	return md.parName
 }
 
-// Minimum values for parameters.
-func (md *T) ParMins() []float64 {
-	return md.parMins
-}
-
-// Maximum values for parameters.
-func (md *T) ParMaxs() []float64 {
-	return md.parMaxs
-}
-
-// Decimal number of parameters.
-//    Expected values:
-//      4, 6 : Percentage format
-//      other: No meaning.
-func (md *T) ParDecs() []int {
-	return md.parDecs
+// "true" if references move by jump (Models JUMP and JMP2)
+func (md *T) IsJump() bool {
+	return md.isJump
 }
 
 // "true" if function returned by Fcalc() admits a value not nil for 'init'
@@ -200,7 +178,7 @@ func (md *T) WithInit() bool {
 // Function with the following paramenters:
 //    closes ([][]float64): Closes of serveral companies from before to after.
 //                          Its rows are 'days' and its columns 'companies'.
-//    params ([]float64): Parameters to do calculations.
+//    param (float64): Parameter to do calculations.
 //    init (*refPos.T): Intialization or nil. Only is not nil
 //                      when closes is [][1]float64.
 //    action (func): Function to be called after calculations. Its
@@ -210,34 +188,15 @@ func (md *T) WithInit() bool {
 //                   This function is defined in 'Refs', 'Profits', 'Orders'
 //                   and 'Assets'
 func (md *T) Fcalc() func(
-	[][]float64, []float64, *refPos.T, func([]float64, []float64)) {
+	[][]float64, float64, *refPos.T, func([]float64, []float64)) {
 	return md.fcalc
 }
 
 func (md *T) ToJs() json.T {
-	var pnames []json.T
-	for _, e := range md.parNames {
-		pnames = append(pnames, json.Ws(e))
-	}
-	var pmins []json.T
-	for _, e := range md.parMins {
-		pmins = append(pmins, json.Wd(e))
-	}
-	var pmaxs []json.T
-	for _, e := range md.parMaxs {
-		pmaxs = append(pmaxs, json.Wd(e))
-	}
-	var pdecs []json.T
-	for _, e := range md.parDecs {
-		pdecs = append(pdecs, json.Wi(e))
-	}
 	return json.Wa([]json.T{
 		json.Ws(md.id),
 		json.Ws(md.name),
-		json.Wa(pnames),
-		json.Wa(pmins),
-		json.Wa(pmaxs),
-		json.Wa(pdecs),
+		json.Ws(md.parName),
 	})
 }
 
@@ -273,8 +232,8 @@ func withdrawal(
 // Calculates assets of a investor.
 //    opens : Open quotes table.
 //    closes: Close quotes table.
-//    params: Parameters to calculate.
-func (md *T) Assets(opens, closes *qtable.T, params []float64) *AssetsRsT {
+//    param : Parameter to calculate.
+func (md *T) Assets(opens, closes *qtable.T, param float64) *AssetsRsT {
 	nCos := len(opens.Nicks())
 	ops := opens.Values()
 	iops := 0
@@ -368,7 +327,7 @@ func (md *T) Assets(opens, closes *qtable.T, params []float64) *AssetsRsT {
 
 	// Main function -------------------------------
 
-	md.fcalc(cls, params, nil, fn)
+	md.fcalc(cls, param, nil, fn)
 
 	for i := 0; i < nCos; i++ {
 		stocks := stockss[i]
@@ -385,8 +344,8 @@ func (md *T) Assets(opens, closes *qtable.T, params []float64) *AssetsRsT {
 //            (from before to after).
 //    closes: (double[days][1]) Close quotes of a company
 //            (from before to after).
-//    params: Parameters to calculate.
-func (md *T) Profits(opens, closes [][]float64, params []float64) float64 {
+//    param : Parameter to calculate.
+func (md *T) Profits(opens, closes [][]float64, param float64) float64 {
 	stocks := 0
 	cash := float64(cts.InitialCapital)
 	toSell := true
@@ -425,7 +384,7 @@ func (md *T) Profits(opens, closes [][]float64, params []float64) float64 {
 		}
 	}
 
-	md.fcalc(closes, params, nil, fn)
+	md.fcalc(closes, param, nil, fn)
 
 	if stocks > 0 {
 		cash += broker.Sell(stocks, qtable.LastRowOk(closes, 0))
@@ -440,14 +399,14 @@ func (md *T) Profits(opens, closes [][]float64, params []float64) float64 {
 //    closes: Close quotes table.
 //    params: Parameters to calculate.
 func (md *T) ProfitsAvgSd(
-	opens, closes *qtable.T, params []float64,
+	opens, closes *qtable.T, param float64,
 ) (avg float64, sd float64) {
 	ops := opens.Values()
 	cls := closes.Values()
 	nCos := len(ops[0])
 	var prfs []float64
 	for i := 0; i < nCos; i++ {
-		prf := md.Profits(qtable.GetCol(ops, i), qtable.GetCol(cls, i), params)
+		prf := md.Profits(qtable.GetCol(ops, i), qtable.GetCol(cls, i), param)
 		prfs = append(prfs, prf)
 		avg += prf
 	}
@@ -464,10 +423,10 @@ func (md *T) ProfitsAvgSd(
 // Returns references of one company.
 //    closes: (double[days][1]) Close quotes of a company
 //            (from before to after).
-//    params: Parameters to calculate.
+//    param : Parameters to calculate.
 //    init  : Initial reference or nil.
 func (md *T) Refs(
-	closes [][]float64, params []float64, init *refPos.T,
+	closes [][]float64, param float64, init *refPos.T,
 ) []float64 {
 	r := make([]float64, len(closes))
 	ix := 0
@@ -477,7 +436,7 @@ func (md *T) Refs(
 		ix++
 	}
 
-	md.fcalc(closes, params, init, fn)
+	md.fcalc(closes, param, init, fn)
 
 	return r
 }
@@ -485,9 +444,9 @@ func (md *T) Refs(
 // Returns historic assets.
 //    opens : Open quotes table.
 //    closes: Close quotes table.
-//    params: Parameters to calculate.
+//    param : Parameter to calculate.
 func (md *T) HistoricAssets(
-	opens, closes *qtable.T, params []float64,
+	opens, closes *qtable.T, param float64,
 ) []float64 {
 	nCos := len(opens.Nicks())
 	ops := opens.Values()
@@ -594,7 +553,7 @@ func (md *T) HistoricAssets(
 
 	// Main function -------------------------------
 
-	md.fcalc(cls, params, nil, fn)
+	md.fcalc(cls, param, nil, fn)
 
 	for i := 0; i < nCos; i++ {
 		stocks := stockss[i]
@@ -610,9 +569,9 @@ func (md *T) HistoricAssets(
 //    dates : Dates of opens and closes.
 //    opens : Open quotes table.
 //    closes: Close quotes table.
-//    params: Parameters to calculate.
+//    param : Parameter to calculate.
 func (md *T) Orders(
-	dates []string, opens, closes *qtable.T, params []float64,
+	dates []string, opens, closes *qtable.T, param float64,
 ) []*OrderT {
 	var orders []*OrderT
 	nicks := opens.Nicks()
@@ -711,7 +670,7 @@ func (md *T) Orders(
 
 	// Main function -------------------------------
 
-	md.fcalc(cls, params, nil, fn)
+	md.fcalc(cls, param, nil, fn)
 
 	return orders
 }

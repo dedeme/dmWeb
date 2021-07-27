@@ -9,6 +9,8 @@ import dm.Ui.Q;
 import dm.Js;
 import dm.It;
 import dm.B64;
+import dm.Dec;
+import dm.Str;
 import dm.Menu;
 import data.Cts;
 import data.flea.Irank;
@@ -73,20 +75,14 @@ class Ranking {
 
     final table: Array<Array<Dynamic>> = [];
     It.from(invs).eachIx((inv, i) -> {
-      final parDecs = inv.model.parDecs;
       final e = inv.eflea;
-      final parValues = e.flea.params;
+      final model = Str.left(inv.name, inv.name.indexOf("-") + 1);
+      final name = inv.model.id + "-" + e.flea.name;
       final r: Array<Dynamic> = [
-        inv, 0, icon(prev, inv, i), inv.name, e.assets, e.profitsAvg,
-        e.profitsVa, e.ev * 1000, e.buys, e.sells
+        inv, 0, icon(prev, inv, i), name, e.assets, e.profitsAvg,
+        e.profitsVa, e.eval * 1000, e.buys, e.sales,
+        Cts.nformat(e.flea.param, Cts.paramDecs)
       ];
-      final len = r.length - 1;
-      for (i in 0...cols.length-len) {
-        r.push(i < parValues.length
-          ? Cts.nformat(parValues[i], parDecs[i])
-          : ""
-        );
-      }
       table.push(r);
     });
 
@@ -110,12 +106,6 @@ class Ranking {
     view();
   }
 
-  /**
-      @private
-      @param {!Investor} inv Investor
-      @param {number} i Column index.
-      @return string
-  **/
   function link (inv: Investor, i: Int) {
     return '?fleas&${inv.model.id}&charts&${i == 1}&' +
            '${B64.encode(inv.eflea.toJs().to())}'
@@ -132,20 +122,6 @@ class Ranking {
       "source" => Js.ws("ranking"),
     ], rp -> {
       final ranking = rp["ranking"].ra().map(e -> Irank.fromJs(e));
-
-      final nPar: Int = It.from(ranking).reduce(
-        0,
-        (r, irk) -> {
-          final n = It.from(irk.invs).reduce(
-            0,
-            (r, inv) -> {
-              final n = inv.eflea.flea.params.length;
-              return n > r ? n : r;
-            }
-          );
-          return n > r ? n : r;
-        }
-      );
 
       final cols = [
         new Col(_("Nº"), Col.COUNTER, 0, false, false),
@@ -168,11 +144,9 @@ class Ranking {
         new Col(
           _("Sells"), Col.NUMBER, 0,
           false, false
-        )
+        ),
+        new Col(_("Param."), Col.P_STRING, -1, false, false)
       ];
-      for (i in 0...nPar) {
-        cols.push(new Col('P. ${i + 1}', Col.P_STRING, -1, false, false));
-      }
 
       new Ranking(wg, cols, ranking);
     });
@@ -183,19 +157,13 @@ class Ranking {
     return d.substring(6) + "/" + d.substring(4, 6);
   }
 
-  /**
-      @private
-      @param {!Array<!Investor>} prev
-      @param {!Investor} inv
-      @param {number} i
-      @return string The name of icon.
-  **/
   // Return icon name.
   function icon (prev: Array<Investor>, inv: Investor, i: Int): String {
-    final name = inv.eflea.flea.name;
+    final name = inv.model.id + "-" + inv.eflea.flea.name;
     var pi = -1;
     for (j in 0...prev.length) {
-      if (prev[j].eflea.flea.name == name) {
+      final inv2 = prev[j];
+      if (inv2.model.id + "-" + inv2.eflea.flea.name == name) {
         pi = j;
         break;
       }
@@ -203,10 +171,10 @@ class Ranking {
 
     if (pi == -1) return "rk-new";
     final df = pi - i;
-    if (df > 2) return "rk-up2";
+    if (df > 5) return "rk-up2";
     if (df > 0) return "rk-up";
     if (df == 0) return "rk-eq";
-    if (df < -2) return "rk-down2";
+    if (df < -5) return "rk-down2";
     return "rk-down";
   }
 

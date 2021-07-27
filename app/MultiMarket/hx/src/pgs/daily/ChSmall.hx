@@ -35,7 +35,7 @@ class ChSmall {
 
     // 0 = Not change, 1 = Sell, -1 = Buy
     var changeSellBuy = 0;
-    // Tuples<Int, Float, Int>: [isBuy = -1|isSell = 1, ref, manIx]
+    // Tuples<Int, Float, Int>: [isBuy = (-1|-2)|isSell = (1|2), ref, manIx]
     final refs: Array<Array<Dynamic>> = [];
     // Pairs<Int, Float>: [isBuy = -1|isSell = 1, ref-quote %]
     final rs = [];
@@ -67,10 +67,10 @@ class ChSmall {
         ;
         if (dif >= 0.98) {
           refs.push([isSold, e.ref, manIx]);
-        } else if (e.stocks > 0) {
+        } else if (e.stocks > 0 && e.param > 0) {
           final ref2 = isSold == 1
-            ? e.ref * Cts.jumps[manIx]
-            : e.ref / Cts.jumps[manIx]
+            ? e.ref * Math.pow(1 + e.param, 1.5)
+            : e.ref / Math.pow(1 + e.param, 1.5)
           ;
           final dif = isSold == -1
             ? 1 - (q - ref2) / q

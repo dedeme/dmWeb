@@ -18,16 +18,16 @@ import I18n._;
 class Companies {
   var wg: Domo;
   var modelId: String;
-  var params: Array<Float>;
+  var param: Float;
   var nicks: Array<String>;
 
   function new (
-    wg: Domo, modelId: String, params: Array<Float>, nicks: Array<String>
+    wg: Domo, modelId: String, param: Float, nicks: Array<String>
   ) {
     nicks.sort((e1, e2) -> e1 > e2 ? 1 : -1);
     this.wg = wg;
     this.modelId = modelId;
-    this.params = params;
+    this.param = param;
     this.nicks = nicks;
 
     view();
@@ -63,7 +63,7 @@ class Companies {
     It.range(n).eachSync(
       (i, fn) -> {
         final nickName = nicks[i];
-        mkChart(i, modelId, params, nickName, fn);
+        mkChart(i, modelId, param, nickName, fn);
       },
       rs -> {
         final iNick: Int = rs.iNick;
@@ -113,7 +113,7 @@ class Companies {
   ///   wg     : Container.
   ///   modelId: Flea model identifier.
   ///   params : Flea parameters.
-  public static function mk (wg: Domo, modelId: String, params: Array<Float>) {
+  public static function mk (wg: Domo, modelId: String, param: Float) {
     Cts.client.send([
       "module" => Js.ws("fleas"),
       "source" => Js.ws("ftests/references"), // Reusing call
@@ -121,12 +121,12 @@ class Companies {
     ], rp -> {
       final nicks = rp["nickList"].ra().map(e -> e.rs());
 
-      new Companies(wg, modelId, params, nicks);
+      new Companies(wg, modelId, param, nicks);
     });
   }
 
   static function mkChart (
-    iNick: Int, modelId: String, params: Array<Float>, nickName: String,
+    iNick: Int, modelId: String, param: Float, nickName: String,
     fn: {iNick: Int, chart: Domo, profits: Float} -> Void
   ) {
     function mkCh (profits: Float, chart: Domo) {
@@ -157,7 +157,7 @@ class Companies {
                   "rq" => Js.ws("chartData"),
                   "modelId" => Js.ws(modelId),
                   "nickName" => Js.ws(nickName),
-                  "params" => Js.wa(params.map(e -> Js.wf(e)))
+                  "param" => Js.wf(param)
                 ], rp -> {
                 var chart = new HistoricChart(true, []).wg;
                   if (rp["ok"].rb()) {
@@ -206,7 +206,7 @@ class Companies {
       "rq" => Js.ws("chartData"),
       "modelId" => Js.ws(modelId),
       "nickName" => Js.ws(nickName),
-      "params" => Js.wa(params.map(e -> Js.wf(e)))
+      "param" => Js.wf(param)
     ], rp -> {
       if (!rp["ok"].rb()) {
         fn({

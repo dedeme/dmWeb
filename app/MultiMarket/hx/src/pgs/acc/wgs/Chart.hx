@@ -36,14 +36,14 @@ class Chart {
         "nick" => Js.ws(nick)
       ], rp -> {
         final price = rp["price"].rf(); // -1 if nick is not in portfolio
-        final mans = rp["managers"].ra().map(e -> e.ri());
+        final invs = rp["investors"].ra().map(e -> e.ri());
         final profits = rp["profits"].rf();
         final dates = rp["dates"].ra().map(e -> e.rs());
         final quotes = rp["quotes"].ra()
           .map(row -> row.ra().map(e -> e.rf()));
         regularize(dates, quotes);
 
-        mkGrs(wg, onPortfolio, nick, url, price, mans, profits, dates, quotes);
+        mkGrs(wg, onPortfolio, nick, url, price, invs, profits, dates, quotes);
       });
     }
 
@@ -107,7 +107,7 @@ class Chart {
   }
 
   static function mkSmallGr (
-    onPortfolio: Bool, price: Float, mans: Array<Int>,
+    onPortfolio: Bool, price: Float, invs: Array<Int>,
     quotes: Array<Array<Float>>
   ): Domo {
     final len = quotes.length - 1;
@@ -188,7 +188,7 @@ class Chart {
     ctx.closePath();
 
     for (i in 1...quotes[0].length) {
-      if (onPortfolio && !mans.contains(i - 1)) {
+      if (onPortfolio && !invs.contains(i - 1)) {
         continue;
       }
       x = 45;
@@ -215,7 +215,7 @@ class Chart {
   }
 
   static function mkBigGr (
-    onPortfolio: Bool, nick: String, price: Float, mans: Array<Int>,
+    onPortfolio: Bool, nick: String, price: Float, invs: Array<Int>,
     dates: Array<String>, quotes: Array<Array<Float>>
   ): Void {
     final len = quotes.length - 1;
@@ -308,7 +308,7 @@ class Chart {
     ctx.closePath();
 
     for (i in 1...quotes[0].length) {
-      if (onPortfolio && !mans.contains(i - 1)) {
+      if (onPortfolio && !invs.contains(i - 1)) {
         continue;
       }
       x = 90.5;
@@ -369,7 +369,7 @@ class Chart {
 
   static function mkGrs (
     wg: Domo, onPortfolio: Bool,
-    nick: String, url: String, price: Float, mans: Array<Int>, profits: Float,
+    nick: String, url: String, price: Float, invs: Array<Int>, profits: Float,
     dates: Array<String>, quotes: Array<Array<Float>>
   ) {
     final lastQs = quotes[quotes.length - 1];
@@ -394,10 +394,10 @@ class Chart {
         .add(Q("tr")
           .add(Q("td")
             .att("colspan", 3)
-            .add(mkSmallGr(onPortfolio, price, mans, quotes)
+            .add(mkSmallGr(onPortfolio, price, invs, quotes)
               .setStyle("cursor", "pointer")
               .on(CLICK, e -> mkBigGr(
-                  onPortfolio, nick, price, mans, dates, quotes
+                  onPortfolio, nick, price, invs, dates, quotes
                 ))))))
     ;
   }

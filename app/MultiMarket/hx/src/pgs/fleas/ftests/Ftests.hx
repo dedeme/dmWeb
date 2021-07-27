@@ -31,9 +31,7 @@ class Ftests {
         () -> show("references")
       ),
       Menu.separator(),
-      Menu.toption("orders", _("Orders"), () -> show("orders")),
-      Menu.separator(),
-      Menu.toption("selection", _("Selection"), () -> show("selection"))
+      Menu.toption("orders", _("Orders"), () -> show("orders"))
     ];
     final ropts = [];
     final submenu = new Menu(lopts, ropts, selSubmenu);
@@ -43,8 +41,6 @@ class Ftests {
       References.mk(wg, model);
     case "orders":
       new Orders(wg, model);
-    case "selection":
-      Selection.mk(wg, model);
     default:
       References.mk(wg, model);
     }

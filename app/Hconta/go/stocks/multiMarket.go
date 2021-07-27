@@ -70,7 +70,7 @@ func multiMarketData(lastDate string) (entries []json.T, cash float64) {
 					} else {
 						oldCost := oldV[1].Rd()
 						buyPrice := oldCost / float64(oldStocks)
-						cost := oldCost - buyPrice*float64(oldStocks)
+						cost := oldCost - buyPrice*float64(eStks)
 						pf[nick] = []json.T{json.Wi(stks), json.Wd(cost)}
 					}
 				}

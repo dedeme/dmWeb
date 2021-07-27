@@ -7,11 +7,11 @@ import dm.Js;
 
 /// Daily chart data
 class DailyChart {
-  public var nick(default, null): String;
-  public var close(default, null): Float;
-  public var hours(default, null): Array<Int>;
-  public var quotes(default, null): Array<Float>;
-  public var managersData(default, null): Array<DailyChartData>;
+  public final nick: String;
+  public final close: Float;
+  public final hours: Array<Int>;
+  public final quotes: Array<Float>;
+  public final managersData: Array<DailyChartData>;
 
   function new (
     nick: String,
@@ -41,11 +41,13 @@ class DailyChart {
 
 /// Manager data of DailyChart.
 class DailyChartData {
-    public var stocks(default, null): Int;
-    public var price(default, null): Float;
-    public var ref(default, null): Float;
+  public final param: Float;
+  public final stocks: Int;
+  public final price: Float;
+  public final ref: Float;
 
-  function new (stocks: Int, price: Float, ref: Float) {
+  function new (param: Float, stocks: Int, price: Float, ref: Float) {
+    this.param = param;
     this.stocks = stocks;
     this.price = price;
     this.ref = ref;
@@ -54,9 +56,10 @@ class DailyChartData {
   public static function fromJs(js: Js): DailyChartData {
     final a = js.ra();
     return new DailyChartData(
-      a[0].ri(),
-      a[1].rf(),
-      a[2].rf()
+      a[0].rf(),
+      a[1].ri(),
+      a[2].rf(),
+      a[3].rf()
     );
   }
 }

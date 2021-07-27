@@ -11,7 +11,7 @@ import (
 
 // Returns a buffer to read one record of results
 func MkBs() []byte {
-	return make([]byte, 28)
+	return make([]byte, 40)
 }
 
 func serializeInt(n int) []byte {
@@ -34,21 +34,22 @@ func restoreFloat(bs []byte) float64 {
 	return math.Float64frombits(binary.BigEndian.Uint64(bs[:]))
 }
 
-func FromBits(bs []byte) (param, value float64, sales int, lastValue float64, lastSales int) {
+// bs should be created with 'MkBs()'
+func FromBits(bs []byte) (param, eval, sales, historicEval, historicSales float64) {
 	param = restoreFloat(bs[0:8])
-	value = restoreFloat(bs[8:16])
-	sales = restoreInt(bs[16:18])
-	lastValue = restoreFloat(bs[18:26])
-	lastSales = restoreInt(bs[26:28])
+	eval = restoreFloat(bs[8:16])
+	sales = restoreFloat(bs[16:24])
+	historicEval = restoreFloat(bs[24:32])
+	historicSales = restoreFloat(bs[32:40])
 	return
 }
 
-func ToBits(param, value float64, sales int, lastValue float64, lastSales int) []byte {
+func ToBits(param, eval, sales, historicEval, historicSales float64) []byte {
 	r := MkBs()
 	copy(r[0:8], serializeFloat(param))
-	copy(r[8:16], serializeFloat(value))
-	copy(r[16:18], serializeInt(sales))
-	copy(r[18:26], serializeFloat(lastValue))
-	copy(r[26:28], serializeInt(lastSales))
+	copy(r[8:16], serializeFloat(eval))
+	copy(r[16:24], serializeFloat(sales))
+	copy(r[24:32], serializeFloat(historicEval))
+	copy(r[32:40], serializeFloat(historicSales))
 	return r
 }

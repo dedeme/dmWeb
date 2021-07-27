@@ -352,18 +352,18 @@ class StocksPage {
       final multiMarketStocks = rp["multiMarketStocks"].ra().map(rc -> {
           final f = rc.ra();
           return [
-            f[0].rs(),
-            Dec.toIso(f[1].ri(), 0),
-            Dec.toIso(f[2].rf(), 4)
+            f[0].rs(), // nick
+            Dec.toIso(f[1].ri(), 0), // stocks
+            Dec.toIso(f[2].rf(), 4)  // price
           ];
         });
       final stocksStocks = rp["stocksStocks"].ra().map(rc -> {
           final f = rc.ra();
           return [
-            f[0].rs(),
-            Dec.toIso(f[1].ri(), 0),
-            Dec.toIso(f[2].rf(), 4),
-            Dec.toIso(f[3].rf(), 2)
+            f[0].rs(), // nick
+            Dec.toIso(f[1].ri(), 0), // stocks
+            Dec.toIso(f[2].rf(), 4), // price
+            Dec.toIso(f[3].rf(), 2)  // cost
           ];
         });
 

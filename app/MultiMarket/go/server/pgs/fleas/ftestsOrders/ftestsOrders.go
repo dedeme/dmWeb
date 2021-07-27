@@ -20,10 +20,7 @@ func Process(ck string, mrq map[string]json.T) string {
 	switch rq {
 	case "ordersData":
 		modelId := cgi.RqString(mrq, "modelId")
-		var params []float64
-		for _, e := range mrq["params"].Ra() {
-			params = append(params, e.Rd())
-		}
+		param := mrq["param"].Rd()
 		rp := map[string]json.T{}
 		sync.Run(func(lk sync.T) {
 			dates := quotesDb.Dates(lk)
@@ -50,10 +47,10 @@ func Process(ck string, mrq map[string]json.T) string {
 			}
 			rp["lastCloses"] = json.Wa(lastCloses)
 
-			rp["assets"] = md.Assets(opens, closes, params).ToJs()
+			rp["assets"] = md.Assets(opens, closes, param).ToJs()
 
 			var orders []json.T
-			for _, e := range md.Orders(dates, opens, closes, params) {
+			for _, e := range md.Orders(dates, opens, closes, param) {
 				orders = append(orders, e.ToJs())
 			}
 			rp["orders"] = json.Wa(orders)

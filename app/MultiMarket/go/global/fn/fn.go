@@ -11,12 +11,12 @@ import (
 )
 
 // Returns true if abs(n1 - n2) < gap
-func Eq(n1, n2, gap float64) bool {
+func Eq(n1, n2, gap float64) (ok bool) {
 	df := n1 - n2
-	if df < 0 {
-		return -df < gap
+	if df >= -gap && df <= gap {
+		ok = true
 	}
-	return df < gap
+	return
 }
 
 // Returns n with d decimals.

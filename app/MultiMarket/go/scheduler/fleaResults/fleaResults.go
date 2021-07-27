@@ -7,7 +7,7 @@ package fleaResults
 import (
 	"github.com/dedeme/MultiMarket/data/cts"
 	"github.com/dedeme/MultiMarket/data/flea"
-	"github.com/dedeme/MultiMarket/data/flea/eval"
+	"github.com/dedeme/MultiMarket/data/flea/eFlea"
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
 	"github.com/dedeme/MultiMarket/data/flea/fmodels"
 	"github.com/dedeme/MultiMarket/data/flea/frank"
@@ -24,11 +24,11 @@ import (
 )
 
 func evaluate(md *fmodel.T, f *flea.T, opens, closes *qtable.T) (
-	value float64, sales int,
+	value, sales float64,
 ) {
-	rs := md.Assets(opens, closes, f.Params())
-	sales = rs.Sells()
-	avg, sd := md.ProfitsAvgSd(opens, closes, f.Params())
+	rs := md.Assets(opens, closes, f.Param())
+	sales = float64(rs.Sells())
+	avg, sd := md.ProfitsAvgSd(opens, closes, f.Param())
 	value = f.Evaluate(rs.Assets()/cts.InitialCapital, avg+1, sd)
 	return
 }
@@ -36,16 +36,17 @@ func evaluate(md *fmodel.T, f *flea.T, opens, closes *qtable.T) (
 func updateModelRangesPlus(lk sync.T, md *fmodel.T, opens, closes *qtable.T) {
 	now := date.Now().String()
 
-	mkEflea := func(param float64, value float64, sales int) *eval.T {
-		eflea := eval.New(flea.NewWithParams(md, now, 0, 0, []float64{param}))
-		eval.Evaluate(md, opens, closes, []*eval.T{eflea})
-		eflea.Flea().ChangeName(md.Id(), value, sales)
+	mkEflea := func(param float64, value float64, sales float64) *eFlea.T {
+		eflea := eFlea.New(flea.New(param))
+		eFlea.Evaluate(md, opens, closes, []*eFlea.T{eflea})
+		eflea.HistoricSales = sales
+		eflea.HistoricEval = value
 		return eflea
 	}
 	ranking := paramEval.Ranking(resultsDb.ReadResults(lk, md.Id()), mkEflea)
 
 	var ranks []*frank.T
-	olds := fmodelsDb.ReadRangesPlus(lk, md.Id())
+	olds := fmodelsDb.Read(lk, md.Id())
 	if len(olds) == 0 || olds[0].Date() < now {
 		ranks = append([]*frank.T{frank.New(now, ranking)}, olds...)
 	} else {
@@ -53,7 +54,7 @@ func updateModelRangesPlus(lk sync.T, md *fmodel.T, opens, closes *qtable.T) {
 		ranks = olds
 	}
 
-	fmodelsDb.WriteRangesPlus(lk, md.Id(), ranks)
+	fmodelsDb.Write(lk, md.Id(), ranks)
 }
 
 func calculateModel(lk sync.T, md *fmodel.T, opens, closes *qtable.T) {
@@ -70,7 +71,7 @@ func calculateModel(lk sync.T, md *fmodel.T, opens, closes *qtable.T) {
 				break
 			}
 
-			flea := flea.NewWithParams(md, now, 0, 0, []float64{param})
+			flea := flea.New(param)
 			value, sales := evaluate(md, flea, opens, closes)
 
 			file.WriteBin(tmpFile, result.ToBits(param, value, sales, value, sales))
@@ -83,22 +84,22 @@ func calculateModel(lk sync.T, md *fmodel.T, opens, closes *qtable.T) {
 	} else {
 
 		fn := func(
-			param, value float64, sales int, lastValue float64, lastSales int,
+			param, value, sales, lastValue, lastSales float64,
 		) bool {
 			if param < cts.RangesMin || param >= cts.RangesMax {
 				return false
 			}
 
-			flea := flea.NewWithParams(md, now, 0, 0, []float64{param})
-			newValue, newSales := evaluate(md, flea, opens, closes)
+			fl := flea.New(param)
+			newValue, newSales := evaluate(md, fl, opens, closes)
 
 			if dt == now {
 				value += (newValue - lastValue) / float64(days)
-				sales += (newSales - lastSales) / days
+				sales += (newSales - lastSales) / float64(days)
 			} else {
 				days1 := days + 1
 				value = (value*float64(days) + newValue) / float64(days1)
-				sales = (sales*days + newSales) / days1
+				sales = (sales*float64(days) + newSales) / float64(days1)
 			}
 
 			file.WriteBin(
@@ -138,10 +139,8 @@ func Calculate() {
 		var models []*fmodel.T
 		var modelIds []string
 		for _, md := range fmodels.List() {
-			if len(md.ParNames()) == 1 {
-				models = append(models, md)
-				modelIds = append(modelIds, md.Id())
-			}
+			models = append(models, md)
+			modelIds = append(modelIds, md.Id())
 		}
 		resultsDb.Clean(lk, modelIds)
 		opens = quotesDb.Opens(lk)

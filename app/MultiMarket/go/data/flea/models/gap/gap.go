@@ -10,12 +10,12 @@ import (
 )
 
 func fn(
-	closes [][]float64, params []float64, init *refPos.T,
+	closes [][]float64, param float64, init *refPos.T,
 	action func([]float64, []float64),
 ) {
 	nDays := len(closes)
 	nCos := len(closes[0])
-	pgap := params[0]
+	pgap := param
 
 	toBuys := make([]bool, nCos)
 	refs := make([]float64, nCos)
@@ -70,10 +70,8 @@ func Mk() *fmodel.T {
 	return fmodel.New(
 		"GAP",
 		"Gap",
-		[]string{"Horquilla"},
-		[]float64{0.05},
-		[]float64{0.25},
-		[]int{6},
+		"Horquilla",
+		false,
 		true,
 		fn,
 	)

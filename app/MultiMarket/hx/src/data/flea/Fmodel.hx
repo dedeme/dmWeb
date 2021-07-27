@@ -9,21 +9,12 @@ import dm.Js;
 class Fmodel {
   public var id(default, null): String;
   public var name(default, null): String;
-  public var parNames(default, null): Array<String>;
-  public var parMins(default, null): Array<Float>;
-  public var parMaxs(default, null): Array<Float>;
-  public var parDecs(default, null): Array<Int>;
+  public var parName(default, null): String;
 
-  function new (
-    id: String, name: String, parNames: Array<String>,
-    parMins: Array<Float>, parMaxs: Array<Float>, parDecs: Array<Int>
-  ) {
+  function new (id: String, name: String, parName: String) {
     this.id = id;
     this.name = name;
-    this.parNames = parNames;
-    this.parMins = parMins;
-    this.parMaxs = parMaxs;
-    this.parDecs = parDecs;
+    this.parName = parName;
   }
 
   public static function fromJs (js: Js): Fmodel {
@@ -31,10 +22,7 @@ class Fmodel {
     return new Fmodel(
       a[0].rs(),
       a[1].rs(),
-      a[2].ra().map(e -> e.rs()),
-      a[3].ra().map(e -> e.rf()),
-      a[4].ra().map(e -> e.rf()),
-      a[5].ra().map(e -> e.ri())
+      a[2].rs()
     );
   }
 }

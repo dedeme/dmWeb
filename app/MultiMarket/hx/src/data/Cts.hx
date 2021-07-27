@@ -37,12 +37,14 @@ class Cts {
       .add(foot)
     ;
   });
+  /// Decimals number of flea parameter.
+  public static final paramDecs = 6;
   /// Ammount to make a buy.
   public static final bet = 10000.0;
   /// Investor initial capital.
   public static final initialCapital = 100000.0;
   /// Minimun cash to bet
-	public static final minToBet = 11000.0;
+  public static final minToBet = 11000.0;
   /// Extern program name.
   public static final wget = "Wget";
   /// Extern program name.
@@ -53,6 +55,15 @@ class Cts {
   public static final serverActive = 1;
   /// Server state.
   public static final serverSelected = 2;
+  /// Minimum value to analyze
+  public static final rangesMin = 0.1;
+  /// Maximum value to analyze (exclusive)
+  public static final rangesMax = 0.2;
+  /// Medium value to autamate fleas creation.
+  public static final rangesMedium = 0.15;
+
+  /// Managers number
+  public static final managersNumber = 3;
   /// Months to change parameters for each investor.
   public static final changeMonths = [
     _("January"),
@@ -63,13 +74,13 @@ class Cts {
   public static final okMsg = _("Operation successfully done.");
   /// Standar messsage for server fails.
   public static final failMsg = _("Operation failed.\nSee log.");
-  /// ToBuy references colors (one by manager)
+  /// ToBuy references colors (one by investor)
   public static final toBuyColors = [
     "rgba(160, 0, 0)",
     "rgba(224, 160, 0)",
     "rgba(240, 224, 0)",
   ];
-  /// ToSell references colors (one by manager)
+  /// ToSell references colors (one by investor)
   public static final toSellColors = [
     "rgba(0, 0, 160)",
     "rgba(0, 160, 224)",
@@ -77,7 +88,7 @@ class Cts {
   ];
 
   // For jump models -----------------------------------------------
-  public static final jumps = [
+  public static final jumpsx = [
     Math.pow(1.157211, 1.5),
     Math.pow(1.143673, 1.5)
   ];

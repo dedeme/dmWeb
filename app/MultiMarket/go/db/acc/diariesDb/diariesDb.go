@@ -96,7 +96,7 @@ func newYearInit(lk sync.T, investor int, year string) {
 func Initialize(lk sync.T, parent string) {
 	basePath = parent
 	year := date.Now().Format("%Y")
-	for i := 0; i < cts.Managers; i++ {
+	for i := 0; i < cts.Investors; i++ {
 		if !file.Exists(dpath(i)) {
 			file.Mkdir(rpath(i))
 			file.Mkdir(dpath(i))
@@ -131,7 +131,7 @@ func ReadJs(lk sync.T, investor int, year string) (data json.T, ok bool) {
 //    year    : Year to search.
 func ReadAllJs(lk sync.T, year string) json.T {
 	var r []json.T
-	for i := 0; i < cts.Managers; i++ {
+	for i := 0; i < cts.Investors; i++ {
 		anns, ok := ReadJs(lk, i, year)
 		var annsJs []json.T
 		if ok {
@@ -195,7 +195,7 @@ func Write(lk sync.T, investor int, year string, data *T) {
 //    lk      : Synchronization lock.
 func Years(lk sync.T) (r []string) {
 	rmap := map[string]bool{}
-	for i := 0; i < cts.Managers; i++ {
+	for i := 0; i < cts.Investors; i++ {
 		for _, e := range file.List(dpath(i)) {
 			nm := e.Name()
 			if strings.HasSuffix(nm, ".tb") {
@@ -216,7 +216,7 @@ func Years(lk sync.T) (r []string) {
 //    lk  : Synchronization lock.
 //    year: Year to search.
 func CashAll(lk sync.T, year string) (r float64, serrors []string) {
-	for i := 0; i < cts.Managers; i++ {
+	for i := 0; i < cts.Investors; i++ {
 		data, ok := Read(lk, i, year)
 		if ok {
 			ledger, _, serrs := acc.Settlement(data.annotations)
@@ -231,7 +231,7 @@ func CashAll(lk sync.T, year string) (r float64, serrors []string) {
 //    lk: Synchronization lock.
 //    d : Final date inclusive.
 func CashAllUpTo(lk sync.T, d string) (r float64, serrors []string) {
-	for i := 0; i < cts.Managers; i++ {
+	for i := 0; i < cts.Investors; i++ {
 		data, ok := Read(lk, i, Years(lk)[0])
 		var anns []*acc.AnnotationT
 		for _, a := range data.annotations {

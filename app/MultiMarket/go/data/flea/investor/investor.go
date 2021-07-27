@@ -6,7 +6,7 @@ package investor
 
 import (
 	"github.com/dedeme/MultiMarket/data/cts"
-	"github.com/dedeme/MultiMarket/data/flea/eval"
+	"github.com/dedeme/MultiMarket/data/flea/eFlea"
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
 	"github.com/dedeme/MultiMarket/data/flea/fmodels"
 	"github.com/dedeme/MultiMarket/data/qtable"
@@ -16,10 +16,10 @@ import (
 
 type T struct {
 	model *fmodel.T
-	eflea *eval.T
+	eflea *eFlea.T
 }
 
-func New(model *fmodel.T, eflea *eval.T) *T {
+func New(model *fmodel.T, eflea *eFlea.T) *T {
 	return &T{model, eflea}
 }
 
@@ -27,7 +27,7 @@ func (i *T) Model() *fmodel.T {
 	return i.model
 }
 
-func (i *T) Eflea() *eval.T {
+func (i *T) Eflea() *eFlea.T {
 	return i.eflea
 }
 
@@ -66,7 +66,7 @@ func FromJs(js json.T) (inv *T, ok bool) {
 	if ok {
 		inv = &T{
 			md,
-			eval.FromJs(a[1]),
+			eFlea.FromJs(a[1]),
 		}
 	}
 	return
@@ -93,8 +93,8 @@ func Evaluate(opens, closes *qtable.T, invs []*T) {
 	for _, inv := range invs {
 		md := inv.model
 		e := inv.eflea
-		rs := md.Assets(opens, closes, e.Flea().Params())
-		avg, sd := md.ProfitsAvgSd(opens, closes, e.Flea().Params())
+		rs := md.Assets(opens, closes, e.Flea().Param())
+		avg, sd := md.ProfitsAvgSd(opens, closes, e.Flea().Param())
 		e.Update(rs.Buys(), rs.Sells(), rs.Assets(), avg, sd)
 	}
 

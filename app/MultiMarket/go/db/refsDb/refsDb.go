@@ -8,13 +8,12 @@ import (
 	"fmt"
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
 	"github.com/dedeme/MultiMarket/data/flea/refPos"
-	"github.com/dedeme/MultiMarket/data/manager"
+	"github.com/dedeme/MultiMarket/data/investor"
 	"github.com/dedeme/MultiMarket/db/log"
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/golib/file"
 	"github.com/dedeme/golib/json"
 	"path"
-	"strings"
 )
 
 var fpath string
@@ -29,12 +28,8 @@ func Initialize(lk sync.T, parent string) {
 }
 
 // Stringify params
-func toKey(model *fmodel.T, params []float64) string {
-	ss := []string{model.Id()}
-	for _, p := range params {
-		ss = append(ss, json.Wd(p).String())
-	}
-	return strings.Join(ss, "-")
+func toKey(model *fmodel.T, param float64) string {
+	return model.Id() + "-" + json.Wd(param).String()
 }
 
 func readNicks(lk sync.T) []string {
@@ -116,16 +111,16 @@ func write(
 //    dates : Closes dates from before to after.
 //    closes: [days][1]float64 with company closes from before to after.
 //    model : Model to calculate references.
-//    params: Model parameters.
+//    param : Model parameter.
 func MkRefs(
 	lk sync.T, nick string, dates []string, closes [][]float64,
-	model *fmodel.T, params []float64,
+	model *fmodel.T, param float64,
 ) (refs []float64) {
 
 	defer func() {
 		if r := recover(); r != nil {
 			log.Error(lk, fmt.Sprint(r))
-			refs = model.Refs(closes, params, nil)
+			refs = model.Refs(closes, param, nil)
 			return
 		}
 	}()
@@ -138,14 +133,14 @@ func MkRefs(
 	}
 
 	if !model.WithInit() {
-		return model.Refs(closes, params, nil)
+		return model.Refs(closes, param, nil)
 	}
 
-	ds, rs, ok := read(lk, nick, toKey(model, params))
+	ds, rs, ok := read(lk, nick, toKey(model, param))
 
 	if !ok {
-		refs = model.Refs(closes, params, nil)
-		write(lk, nick, toKey(model, params), dates, refs)
+		refs = model.Refs(closes, param, nil)
+		write(lk, nick, toKey(model, param), dates, refs)
 		return
 	}
 
@@ -170,28 +165,28 @@ func MkRefs(
 	}
 
 	if ix == -1 {
-		refs = model.Refs(closes, params, nil)
-		write(lk, nick, toKey(model, params), dates, refs)
+		refs = model.Refs(closes, param, nil)
+		write(lk, nick, toKey(model, param), dates, refs)
 		return
 	}
 
 	toBuy := ref > closes[ix][0]
-	refs2 := model.Refs(closes[ix+1:], params, refPos.New(ref, toBuy))
+	refs2 := model.Refs(closes[ix+1:], param, refPos.New(ref, toBuy))
 	refs = append(rs[:ix+1], refs2...)
-	write(lk, nick, toKey(model, params), dates, refs)
+	write(lk, nick, toKey(model, param), dates, refs)
 
 	return
 }
 
 // Removes references not used.
 //    lk: Synchronization lock.
-func Purge(lk sync.T, managers []*manager.T) {
+func Purge(lk sync.T, investors []*investor.T) {
 	used := map[string]bool{}
-	for _, man := range managers {
-		md := man.Base
-		used[toKey(md.Model(), md.Params())] = true
-		for _, v := range man.Nicks() {
-			used[toKey(v.Model(), v.Params())] = true
+	for _, inv := range investors {
+		md := inv.Base
+		used[toKey(md.Model(), md.Param())] = true
+		for _, v := range inv.Nicks() {
+			used[toKey(v.Model(), v.Param())] = true
 		}
 	}
 

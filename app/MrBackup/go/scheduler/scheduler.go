@@ -19,10 +19,10 @@ func Start(ch chan int) {
 	for {
 		if count > cts.SchedulerTimes {
 			if done {
-				if date.Now().Hour() != 3 {
+				if date.Now().Hour() != cts.SchedulerHour {
 					done = false
 				}
-			} else if date.Now().Hour() == 3 {
+			} else if date.Now().Hour() == cts.SchedulerHour {
 				for globals.IsBusy {
 					sys.Sleep(cts.SchedulerSleep)
 				}

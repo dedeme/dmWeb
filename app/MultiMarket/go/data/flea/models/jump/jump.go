@@ -68,12 +68,12 @@ func GapTests() {
 */
 
 func fn(
-	closes [][]float64, params []float64, init *refPos.T,
+	closes [][]float64, param float64, init *refPos.T,
 	action func([]float64, []float64),
 ) {
 	nDays := len(closes)
 	nCos := len(closes[0])
-	jmp := params[0] + 1.0
+	jmp := param + 1.0
 	lgJump := math.Log(jmp)
 
 	toBuys := make([]bool, nCos)
@@ -141,10 +141,8 @@ func Mk() *fmodel.T {
 	return fmodel.New(
 		"JUMP",
 		"Jump",
-		[]string{"Salto"},
-		[]float64{0.01},
-		[]float64{0.25},
-		[]int{6},
+		"Salto",
+		true,
 		true,
 		fn,
 	)

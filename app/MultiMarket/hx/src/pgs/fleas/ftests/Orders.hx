@@ -34,9 +34,7 @@ class Orders {
     this.wg = wg;
     this.model = model;
 
-    wgParams = new Params(
-      model.parNames, model.parMins, model.parMaxs, "par", "showBt"
-    );
+    wgParams = new Params(model.parName, "par", "showBt");
 
     view();
   }
@@ -83,7 +81,7 @@ class Orders {
       "source" => Js.ws("ftests/orders"),
       "rq" => Js.ws("ordersData"),
       "modelId" => Js.ws(model.id),
-      "params" => Js.wa(wgParams.value.map(e -> Js.wf(e)))
+      "param" => Js.wf(wgParams.value)
     ], rp -> {
       if (!rp["ok"].rb()) {
         Msg.error(Cts.failMsg);

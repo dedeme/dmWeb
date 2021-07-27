@@ -13,7 +13,7 @@ import (
 	"github.com/dedeme/MultiMarket/db/acc/diariesDb"
 	"github.com/dedeme/MultiMarket/db/conf"
 	"github.com/dedeme/MultiMarket/db/dailyTb"
-	"github.com/dedeme/MultiMarket/db/managersTb"
+	"github.com/dedeme/MultiMarket/db/investorsTb"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
 	"github.com/dedeme/MultiMarket/db/refsDb"
@@ -59,7 +59,7 @@ func Process(ck string, mrq map[string]json.T) string {
 				lsm[nk.Name()] = []json.T{json.Wb(false), json.Ws(url)}
 			}
 
-			for i := 0; i < cts.Managers; i++ {
+			for i := 0; i < cts.Investors; i++ {
 				anns := diariesDb.ReadAnnotations(lk, i)
 				_, portfolio, _ := acc.Settlement(anns)
 				for _, e := range portfolio {
@@ -81,22 +81,22 @@ func Process(ck string, mrq map[string]json.T) string {
 		nkName := cgi.RqString(mrq, "nick")
 		rp := map[string]json.T{}
 		sync.Run(func(lk sync.T) {
-			var mans []json.T
+			var invs []json.T
 			stocks := 0
 			value := 0.0
-			for i := 0; i < cts.Managers; i++ {
+			for i := 0; i < cts.Investors; i++ {
 				anns := diariesDb.ReadAnnotations(lk, i)
 				_, portfolio, _ := acc.Settlement(anns)
 				for _, e := range portfolio {
 					if e.Nick() == nkName {
-						mans = append(mans, json.Wi(i))
+						invs = append(invs, json.Wi(i))
 						stocks += e.Stocks()
 						value += float64(e.Stocks()) * e.Price()
 					}
 				}
 			}
 
-			rp["managers"] = json.Wa(mans)
+			rp["investors"] = json.Wa(invs)
 
 			price := -1.0
 			if stocks > 0 {
@@ -155,15 +155,15 @@ func Process(ck string, mrq map[string]json.T) string {
 			var quotes [][]json.T
 			for _, ce := range cls {
 				e := []json.T{json.Wd(ce[0])}
-				for i := 0; i < cts.Managers; i++ {
+				for i := 0; i < cts.Investors; i++ {
 					e = append(e, json.Wd(-1.0))
 				}
 				quotes = append(quotes, e)
 			}
-			for i, man := range managersTb.Read(lk) {
-				mdPars := man.GetModel(nkName)
+			for i, inv := range investorsTb.Read(lk) {
+				mdPars := inv.GetModel(nkName)
 				refs := refsDb.MkRefs(
-					lk, nkName, dates, cls, mdPars.Model(), mdPars.Params(),
+					lk, nkName, dates, cls, mdPars.Model(), mdPars.Param(),
 				)
 				for iq := range quotes {
 					quotes[iq][i+1] = json.Wd(refs[iq])

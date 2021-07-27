@@ -1,7 +1,8 @@
 #!/bin/bash
 
-GIT1="--branch v201908 https://github.com/dedeme/dmhxlib.git"
-GIT2="--branch v202006 https://github.com/dedeme/wghxlib.git"
+GIT1="--branch 202106 https://github.com/dedeme/cmhxlib.git"
+GIT2="--branch 202106 https://github.com/dedeme/jshxlib.git"
+GIT3="--branch v202006 https://github.com/dedeme/wghxlib.git"
 
 if [ ! -e lib ]
 then
@@ -17,13 +18,15 @@ mkdir tmp
 cd tmp
 git clone $GIT1
 git clone $GIT2
+git clone $GIT3
 cd ..
 
 if [ -e dm ]
 then
   rm -fR dm
 fi
-mv tmp/dmhxlib/src/dm dm
+mv tmp/cmhxlib/src/dm dm
+cp -r tmp/jshxlib/src/dm ./
 cp -r tmp/wghxlib/src/dm ./
 rm -fR tmp
 

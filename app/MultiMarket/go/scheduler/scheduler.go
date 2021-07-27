@@ -9,7 +9,7 @@ import (
 	"github.com/dedeme/MultiMarket/data/activity"
 	"github.com/dedeme/MultiMarket/data/cts"
 	"github.com/dedeme/MultiMarket/data/dailyChart"
-	"github.com/dedeme/MultiMarket/data/manager"
+	"github.com/dedeme/MultiMarket/data/investor"
 	"github.com/dedeme/MultiMarket/data/nick"
 	"github.com/dedeme/MultiMarket/data/performance"
 	"github.com/dedeme/MultiMarket/data/qtable"
@@ -21,8 +21,8 @@ import (
 	"github.com/dedeme/MultiMarket/db/conf"
 	"github.com/dedeme/MultiMarket/db/dailyChartsTb"
 	"github.com/dedeme/MultiMarket/db/dailyTb"
+	"github.com/dedeme/MultiMarket/db/investorsTb"
 	"github.com/dedeme/MultiMarket/db/log"
-	"github.com/dedeme/MultiMarket/db/managersTb"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
 	"github.com/dedeme/MultiMarket/db/performanceTb"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
@@ -33,7 +33,6 @@ import (
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/MultiMarket/net"
 	"github.com/dedeme/MultiMarket/scheduler/fleaResults"
-	"github.com/dedeme/MultiMarket/scheduler/fleas"
 	"github.com/dedeme/golib/date"
 	"github.com/dedeme/golib/sys"
 )
@@ -42,14 +41,14 @@ type nkClT struct {
 	nk *nick.T
 	cl float64
 }
-type pfMgT struct {
-	pf []*acc.PfEntryT
-	mg *manager.T
+type pfInvT struct {
+	pf  []*acc.PfEntryT
+	inv *investor.T
 }
 
 func mkDailyChartInit(
 	lk sync.T, closes *qtable.T, hour int, nkCl *nkClT,
-	qs []*nick.QvalueT, pfMgs []*pfMgT,
+	qs []*nick.QvalueT, pfInvs []*pfInvT,
 ) *dailyChart.T {
 	nk := nkCl.nk
 	nickName := nk.Name()
@@ -64,7 +63,7 @@ func mkDailyChartInit(
 	dates := quotesDb.Dates(lk)
 
 	var managersData []*dailyChart.DataT
-	for _, e := range pfMgs {
+	for _, e := range pfInvs {
 		stocks := 0
 		price := 0.0
 		for _, pfe := range e.pf {
@@ -73,22 +72,26 @@ func mkDailyChartInit(
 				price = pfe.Price()
 			}
 		}
-		man := e.mg
-		mdPars, ok := man.Nicks()[nickName]
+		inv := e.inv
+		mdPars, ok := inv.Nicks()[nickName]
 		if !ok {
-			mdPars = man.Base
+			mdPars = inv.Base
 		}
 		ref := nkCl.cl
 		cls, ok := closes.NickValues(nickName)
 		if ok {
 			refs := refsDb.MkRefs(
-				lk, nickName, dates, cls, mdPars.Model(), mdPars.Params(),
+				lk, nickName, dates, cls, mdPars.Model(), mdPars.Param(),
 			)
 			ref = refs[len(refs)-1]
 		}
 
+		param := float64(-1)
+		if mdPars.Model().IsJump() {
+			param = mdPars.Param()
+		}
 		managersData = append(
-			managersData, dailyChart.DataNew(stocks, price, ref),
+			managersData, dailyChart.DataNew(param, stocks, price, ref),
 		)
 	}
 	return dailyChart.New(nickName, nkCl.cl, hours, quotes, managersData)
@@ -138,18 +141,18 @@ func activating() {
 				}
 			}
 
-			managers := managersTb.Read(lk)
-			var pfMgs []*pfMgT
-			for i := 0; i < len(managers); i++ {
+			investors := investorsTb.Read(lk)
+			var pfInvs []*pfInvT
+			for i := 0; i < len(investors); i++ {
 				anns := diariesDb.ReadAnnotations(lk, i)
 				_, portfolio, _ := acc.Settlement(anns)
-				pfMgs = append(pfMgs, &pfMgT{portfolio, managers[i]})
+				pfInvs = append(pfInvs, &pfInvT{portfolio, investors[i]})
 			}
 
 			var entries []*dailyChart.T
 			for _, e := range nkCls {
 				entries = append(
-					entries, mkDailyChartInit(lk, closes, hour, e, qs, pfMgs),
+					entries, mkDailyChartInit(lk, closes, hour, e, qs, pfInvs),
 				)
 			}
 			dailyChartsTb.Write(lk, entries)
@@ -169,8 +172,8 @@ func updateProfitsHistoric() {
 				mqs[nk.Name()] = q.Value
 			}
 		}
-		mans := managersTb.Read(lk)
-		for i, m := range mans {
+		invs := investorsTb.Read(lk)
+		for i, inv := range invs {
 			anns := diariesDb.ReadAnnotations(lk, i)
 			ledger, portfolio, _ := acc.Settlement(anns)
 			base := ledger.Cash() + ledger.Capital()
@@ -182,11 +185,11 @@ func updateProfitsHistoric() {
 				if ok {
 					total += float64(e.Stocks()) * lastQ
 
-					me := m.GetModel(e.Nick())
+					me := inv.GetModel(e.Nick())
 					cs, ok := closes.NickValuesAdd(e.Nick(), lastQ)
 					if ok {
 						refs := refsDb.MkRefs(
-							lk, e.Nick(), dates, cs, me.Model(), me.Params(),
+							lk, e.Nick(), dates, cs, me.Model(), me.Param(),
 						)
 						ref := refs[len(refs)-1]
 						if ref > lastQ { // Ref exceed
@@ -353,15 +356,15 @@ func updateDaily(isFinal bool) {
 				}
 
 				nkCl := &nkClT{nk, cl}
-				managers := managersTb.Read(lk)
-				var pfMgs []*pfMgT
-				for i, e := range managers {
+				investors := investorsTb.Read(lk)
+				var pfInvs []*pfInvT
+				for i, e := range investors {
 					anns := diariesDb.ReadAnnotations(lk, i)
 					_, portfolio, _ := acc.Settlement(anns)
-					pfMgs = append(pfMgs, &pfMgT{portfolio, e})
+					pfInvs = append(pfInvs, &pfInvT{portfolio, e})
 				}
 				entries = append(
-					entries, mkDailyChartInit(lk, closes, hour, nkCl, qs, pfMgs),
+					entries, mkDailyChartInit(lk, closes, hour, nkCl, qs, pfInvs),
 				)
 			}
 		}
@@ -540,8 +543,6 @@ func ForceDeactivating() {
 }
 
 func Start(ch chan int, act *activity.T) {
-	// To initialize a new flea model.
-	// fleas.Evolution()
 	// fleaResults.Calculate()
 
 	changeActivity := func(newAct string) {
@@ -601,11 +602,10 @@ func Start(ch chan int, act *activity.T) {
 			updateHistoric()
 			updatePerformance()
 			if !stopper.Stop {
-				go fleas.Evolution()
 				go fleaResults.Calculate()
 				sync.Run(func(lk sync.T) {
-					for i := 0; i < cts.Managers; i++ {
-						managersTb.Regularize(lk, i)
+					for i := 0; i < cts.Investors; i++ {
+						investorsTb.Regularize(lk, i)
 					}
 				})
 				changeActivity(cts.ActSleeping2)

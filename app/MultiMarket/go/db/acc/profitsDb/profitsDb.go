@@ -35,7 +35,7 @@ func ypath(manager int, year string) string {
 func Initialize(lk sync.T, parent string) {
 	basePath = parent
 	year := date.Now().Format("%Y")
-	for i := 0; i < cts.Managers; i++ {
+	for i := 0; i < cts.Investors; i++ {
 		if !file.Exists(dpath(i)) {
 			file.Mkdir(rpath(i))
 			file.Mkdir(dpath(i))
@@ -63,7 +63,7 @@ func Read(lk sync.T) json.T {
 		return ys[i] < ys[j]
 	})
 	var all []json.T
-	for i := 0; i < cts.Managers; i++ {
+	for i := 0; i < cts.Investors; i++ {
 		var managerData []json.T
 		for _, y := range ys {
 			p := ypath(i, y)
@@ -83,7 +83,7 @@ func Read(lk sync.T) json.T {
 // unsorted.
 //   lk: Synchronization lock.
 func Years(lk sync.T) (r []string) {
-	for i := 0; i < cts.Managers; i++ {
+	for i := 0; i < cts.Investors; i++ {
 		for _, finfo := range file.List(dpath(i)) {
 			f := finfo.Name()
 			y := f[:len(f)-3]

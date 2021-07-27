@@ -2,80 +2,59 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 // Manager data.
-package manager
+package investor
 
 import (
+	"github.com/dedeme/MultiMarket/data/cts"
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
 	"github.com/dedeme/MultiMarket/data/flea/fmodels"
+	"github.com/dedeme/MultiMarket/global/fn"
 	"github.com/dedeme/golib/json"
 )
 
 type EntryT struct {
-	model  *fmodel.T
-	params []float64
+	model *fmodel.T
+	param float64
 }
 
 // Creates a default manager entry.
 func NewEntry() *EntryT {
 	md := fmodels.List()[0]
-	var params []float64
-	mins := md.ParMins()
-	maxs := md.ParMaxs()
-	for i := 0; i < len(maxs); i++ {
-		params = append(params, (mins[i]+maxs[i])/float64(2))
-	}
-	return &EntryT{md, params}
+	return &EntryT{md, cts.RangesMedium}
 }
 
 // Creates a manager entry from values.
-func NewEntryFrom(model *fmodel.T, params []float64) *EntryT {
-	return &EntryT{model, params}
+func NewEntryFrom(model *fmodel.T, param float64) *EntryT {
+	return &EntryT{model, param}
 }
 
 func (e *EntryT) Model() *fmodel.T {
 	return e.model
 }
 
-func (e *EntryT) Params() []float64 {
-	return e.params
+func (e *EntryT) Param() float64 {
+	return e.param
 }
 
-// Two entry are equals if they have equals 'model' and 'params'.
+// Two entry are equals if they have equals 'model' and 'param'.
 //    e2: Other entry
 func (e *EntryT) Eq(e2 *EntryT) bool {
-	if e.model.Id() == e2.model.Id() {
-		for i, p := range e.params {
-			df := p - e2.params[i]
-			if df > 0.000001 || df < -0.000001 {
-				return false
-			}
-		}
-		return true
-	}
-	return false
+	return e.model.Id() == e2.model.Id() && fn.Eq(e.param, e2.param, 0.0000001)
 }
 
 // Returns an entry JSONized to save in file system.
 func (e *EntryT) ToJs() json.T {
-	var paramsJs []json.T
-	for _, e := range e.params {
-		paramsJs = append(paramsJs, json.Wd(e))
-	}
 	return json.Wa([]json.T{
 		json.Ws(e.model.Id()),
-		json.Wa(paramsJs),
+		json.Wd(e.param),
 	})
 }
 
 // Returns an entry JSONized for sending to client (javascript).
 func (e *EntryT) ToJsClient() json.T {
-	var paramsJs []json.T
-	for _, e := range e.params {
-		paramsJs = append(paramsJs, json.Wd(e))
-	}
 	return json.Wa([]json.T{
 		e.model.ToJs(),
-		json.Wa(paramsJs),
+		json.Wd(e.param),
 	})
 }
 
@@ -87,11 +66,7 @@ func EntryFromJs(js json.T) *EntryT {
 	if !ok {
 		return NewEntry()
 	}
-	var params []float64
-	for _, e := range a[1].Ra() {
-		params = append(params, e.Rd())
-	}
-	return &EntryT{model, params}
+	return &EntryT{model, a[1].Rd()}
 }
 
 type T struct {

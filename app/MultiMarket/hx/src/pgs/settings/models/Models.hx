@@ -13,7 +13,7 @@ import dm.Menu;
 import data.Cts;
 import data.flea.Fmodel;
 import data.flea.Eflea;
-import data.Manager;
+import data.Investor;
 import wgs.Params;
 import I18n._;
 import I18n._args;
@@ -21,11 +21,11 @@ import I18n._args;
 /// Models management.
 class Models {
   var wg: Domo;
-  var managers: Int;
-  var managerIx: Int;
+  var investors: Int;
+  var investorIx: Int;
   var models: Array<Fmodel>;
-  var manager: Manager;
-  var smanager: String;
+  var investor: Investor;
+  var sinvestor: String;
   final eflea: Eflea;
 
   final editorDiv = Q("div");
@@ -33,21 +33,21 @@ class Models {
 
   /// Constructor.
   ///   wg: Container.
-  ///   managers: Total managders number.
-  ///   managerIx: Current index of manager.
+  ///   investors: Total managders number.
+  ///   investorIx: Current index of manager.
   ///   models: Flea models.
-  ///   manager: Current manager.
+  ///   investor: Current manager.
   function new (
-    wg: Domo, managers: Int, managerIx: Int,
-    models: Array<Fmodel>, manager: Manager, eflea: Eflea
+    wg: Domo, investors: Int, investorIx: Int,
+    models: Array<Fmodel>, investor: Investor, eflea: Eflea
   ) {
     this.wg = wg;
-    this.managers = managers;
-    this.managerIx = managerIx;
-    smanager = '${_("Inv")}-${managerIx}';
+    this.investors = investors;
+    this.investorIx = investorIx;
+    sinvestor = '${_("Inv")}-${investorIx}';
     models.sort((m1, m2) -> m1.id > m2.id ? 1 : -1);
     this.models = models;
-    this.manager = manager;
+    this.investor = investor;
     this.eflea = eflea;
 
     view();
@@ -56,7 +56,7 @@ class Models {
   // View ----------------------------------------------------------------------
 
   function paramsView (
-    nick: String, model: Fmodel, ?values: Array<Float>
+    nick: String, model: Fmodel, ?value: Float
   ): Void {
     final sel = Q("select");
     for (m in models) {
@@ -74,12 +74,12 @@ class Models {
     );
 
 
-    final params = values == null
+    final params = value == null
       ? new Params(
-        model.parNames, model.parMaxs, model.parMins, "ps", "accept"
+        model.parName, "ps", "accept"
       )
       : new Params(
-        model.parNames, model.parMaxs, model.parMins, "ps", "accept", values
+        model.parName, "ps", "accept", value
       )
     ;
 
@@ -94,8 +94,8 @@ class Models {
             .add(Ui.link(e -> {
               paramsView(
                 nick,
-                manager.base.model,
-                manager.base.params
+                investor.base.model,
+                investor.base.param
               );
             }).klass("link")
               .text(_("Default Model")))))
@@ -121,9 +121,9 @@ class Models {
   }
 
   function editorView (nick: String): Void {
-    final v = nick == "" ? manager.base : manager.nicks[nick];
+    final v = nick == "" ? investor.base : investor.nicks[nick];
 
-    this.paramsView(nick, v.model, v.params);
+    this.paramsView(nick, v.model, v.param);
 
     editorDiv
       .removeAll()
@@ -141,22 +141,19 @@ class Models {
   }
 
   function view () {
-    final base = manager.base;
-    final nicks = manager.nicks;
+    final base = investor.base;
+    final nicks = investor.nicks;
     final knicks = It.fromMap(nicks).map(tp -> tp.e1).to();
     knicks.sort((k1, k2) -> k1 > k2 ? 1 : -1);
 
     final lopts = [];
-    for (i in 0...managers) {
+    for (i in 0...investors) {
       final lb = '${_("Inv")}-${i}';
       if (i > 0) lopts.push(Menu.separator());
       lopts.push(Menu.toption(lb, lb, () -> selManager(i)));
     }
-    final menu = new Menu(lopts, [], smanager);
+    final menu = new Menu(lopts, [], sinvestor);
 
-    final nPar = It.fromMap(nicks).map(tp -> tp.e2).reduce(
-      0, (r, v) -> v.params.length > r ? v.params.length : r
-    );
     wg
       .removeAll()
       .add(menu.wg)
@@ -165,7 +162,7 @@ class Models {
         .klass("head")
         .html(
             _("Default Model") + "<br><small>[" +
-            _("Update on first of") + " " + Cts.changeMonths[managerIx] +
+            _("Update on first of") + " " + Cts.changeMonths[investorIx] +
             "]</small>"
           ))
       .add(Q("table")
@@ -175,10 +172,9 @@ class Models {
           .add(Q("td")
             .klass("header")
             .html(_("Model")))
-          .adds(base.model.parNames.map(n ->
-            Q("td")
-              .klass("header")
-              .html(n)))
+          .add(Q("td")
+            .klass("header")
+            .html(base.model.parName))
           .add(Q("td")
             .klass("header")))
         .add(Q("tr")
@@ -187,10 +183,9 @@ class Models {
             .add(Ui.link(e -> edit(""))
               .klass("link")
               .html(base.model.id)))
-          .adds(It.range(base.params.length).to().map(ix ->
-            Q("td")
-              .klass("number")
-              .text(Cts.nformat(base.params[ix], base.model.parDecs[ix]))))
+          .add(Q("td")
+            .klass("number")
+            .text(Cts.nformat(base.param, Cts.paramDecs)))
           .add(Q("td")
             .add(Q("a")
               .att(
@@ -212,10 +207,9 @@ class Models {
           .add(Q("td")
             .klass("header")
             .html(_("Model")))
-          .adds(It.range(nPar).to().map(n ->
-            Q("td")
-              .klass("header")
-              .html("P. " + Std.string(n + 1))))
+          .add(Q("td")
+            .klass("header")
+            .html("Par"))
           .add(Q("td")
             .klass("header")
             .text("·")))
@@ -230,17 +224,13 @@ class Models {
               .add(Ui.link(e -> edit(k))
                 .klass("link")
                 .text(v.model.id)))
-            .adds(It.range(nPar).to().map(ix ->
-              ix >= v.params.length
-                ? Q("td")
-                  .klass("border")
-                : Q("td")
-                  .klass("number")
-                  .text(Cts.nformat(v.params[ix], v.model.parDecs[ix]))
-            ))
+            .add(Q("td")
+              .klass("number")
+              .text(Cts.nformat(v.param, Cts.paramDecs))
+            )
             .add(Q("td")
               .klass("border")
-              .add(Ui.img(v.eqParams(base) ? "blank" : "warning")))
+              .add(Ui.img(v.eqParam(base) ? "blank" : "warning")))
           ;
         })))
 
@@ -262,17 +252,17 @@ class Models {
     editorDiv.removeAll();
   }
 
-  function accept (nick: String, model: Fmodel, params: Array<Float>): Void {
+  function accept (nick: String, model: Fmodel, param: Float): Void {
     Cts.client.ssend([
       "module" => Js.ws("settings"),
       "source" => Js.ws("models"),
       "rq" => Js.ws("update"),
-      "managerIx" => Js.wi(managerIx),
+      "investorIx" => Js.wi(investorIx),
       "nickName" => Js.ws(nick),
       "modelId" => Js.ws(model.id),
-      "params" => Js.wArray(params, e -> Js.wf(e))
+      "param" => Js.wf(param)
     ], rp -> {
-      Models.mk(wg, managerIx);
+      Models.mk(wg, investorIx);
     });
   }
 
@@ -281,19 +271,19 @@ class Models {
   /// Constructor.
   ///   wg       : Container.
   ///   managerIx: Manager index.
-  public static function mk (wg: Domo, managerIx: Int) {
+  public static function mk (wg: Domo, investorIx: Int) {
     Cts.client.ssend([
       "module" => Js.ws("settings"),
       "source" => Js.ws("models"),
       "rq" => Js.ws("idata"),
-      "managerIx" => Js.wi(managerIx)
+      "investorIx" => Js.wi(investorIx)
     ], rp -> {
       final models = rp["models"].rArray(e -> Fmodel.fromJs(e));
-      final manager = Manager.fromJs(rp["manager"]);
-      final managers = rp["managers"].ri();
+      final investor = Investor.fromJs(rp["investor"]);
+      final investors = rp["investors"].ri();
       final eflea = Eflea.fromJs(rp["eflea"]);
 
-      new Models(wg, managers, managerIx, models, manager, eflea);
+      new Models(wg, investors, investorIx, models, investor, eflea);
     });
   }
 

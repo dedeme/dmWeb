@@ -22,8 +22,8 @@ func values(lk sync.T, modelId string, start, end, step float64) []json.T {
 	subParam := float64(0)
 	n := 0
 	sumEval := float64(0)
-	sumSales := 0
-	fn := func(param, eval float64, sales int, lastE float64, lastS int) bool {
+	sumSales := float64(0)
+	fn := func(param, eval, sales, lastE, lastS float64) bool {
 		if param < start {
 			return false
 		}
@@ -46,7 +46,7 @@ func values(lk sync.T, modelId string, start, end, step float64) []json.T {
 			r = append(r, json.Wa([]json.T{
 				json.Wd(subParam),
 				json.Wd(sumEval / float64(n)),
-				json.Wi(sumSales / n),
+				json.Wd(sumSales / float64(n)),
 			}))
 			n = 1
 			subParam = param
@@ -68,7 +68,7 @@ func values(lk sync.T, modelId string, start, end, step float64) []json.T {
 		r = append(r, json.Wa([]json.T{
 			json.Wd(subParam),
 			json.Wd(sumEval / float64(n)),
-			json.Wi(sumSales / n),
+			json.Wd(sumSales / float64(n)),
 		}))
 	}
 

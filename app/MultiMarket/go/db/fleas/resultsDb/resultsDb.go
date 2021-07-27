@@ -38,11 +38,9 @@ func Initialize(lk sync.T, parent string) {
 		file.WriteAll(daysDatePath(), json.Wo(map[string]json.T{}).String())
 	}
 	for _, md := range fmodels.List() {
-		if len(md.ParNames()) == 1 {
-			if !file.Exists(filePath(md.Id())) {
-				file.OpenWrite(filePath(md.Id())).Close()
-				WriteDaysDate(lk, md.Id(), 0, "20010101")
-			}
+		if !file.Exists(filePath(md.Id())) {
+			file.OpenWrite(filePath(md.Id())).Close()
+			WriteDaysDate(lk, md.Id(), 0, "20010101")
 		}
 	}
 }
@@ -106,19 +104,20 @@ func OpenResults(lk sync.T, modelId string) *os.File {
 //    modelId: Model identifier.
 //    fn: Function to execute with each record.
 //        fn arguments are:
-//          param: Parameter to calculate values.
-//          eval : Average of evaluation values.
-//          sales: Average of sales number.
-//          lastEval: Las evaluation value.
-//          lastSale: Las sales number.
-//          RETURN: true if 'fn' must stop after execute it.
+//          param        : Parameter to calculate values.
+//          eval         : Average of evaluation values.
+//          sales        : Average of sales number.
+//          HistoricEval : Las evaluation value.
+//          HistoricSales: Las sales number.
+//          RETURN       : true if 'fn' must stop after execute it.
 func EachResult(
-	lk sync.T, modelId string, fn func(float64, float64, int, float64, int) bool,
+	lk sync.T, modelId string,
+	fn func(float64, float64, float64, float64, float64) bool,
 ) {
 	resultFile := OpenResults(lk, modelId)
 	defer resultFile.Close()
 
-	bs := make([]byte, 28)
+	bs := result.MkBs()
 	fail := ""
 
 	for {
@@ -134,9 +133,9 @@ func EachResult(
 			break
 		}
 
-		param, value, sales, lastValue, lastSales := result.FromBits(bs)
+		param, eval, sales, historicEval, historicSales := result.FromBits(bs)
 
-		if fn(param, value, sales, lastValue, lastSales) {
+		if fn(param, eval, sales, historicEval, historicSales) {
 			break
 		}
 	}
@@ -151,7 +150,7 @@ func EachResult(
 func ReadResults(lk sync.T, modelId string) []*paramEval.T {
 	var r []*paramEval.T
 
-	fn := func(par, eval float64, sales int, _ float64, _ int) bool {
+	fn := func(par, eval, sales, _, _ float64) bool {
 		r = append(r, paramEval.New(par, eval, sales))
 		return false
 	}

@@ -21,10 +21,9 @@ import data.flea.EfleaDate;
 import data.flea.Frank;
 import pgs.fleas.overview.Overview;
 import pgs.fleas.ftests.Ftests;
-import pgs.fleas.ranking.Ranking;
 import pgs.fleas.charts.Charts;
 import pgs.fleas.ranges.Ranges;
-import pgs.fleas.ranges.RangesPlus;
+import pgs.fleas.ranges.Rankings;
 import I18n._;
 
 /// Fleas main page.
@@ -61,8 +60,8 @@ class Fleas {
     this.lcPath = lcPath;
 
     switch (lcPath[1]) {
-    case "overview" | "ranking" | "bests" | "pool" | "charts" |
-      "ranges" | "ranges+" | "tests":
+    case "overview" | "charts" |
+      "ranges" | "ranking" | "tests":
       target = lcPath[1];
     default:
       target = "overview";
@@ -94,17 +93,11 @@ class Fleas {
       Menu.separator2(),
       Menu.tlink("overview", _("Overview"), link),
       Menu.separator2(),
-      Menu.tlink("ranking", _("Ranking"), link),
-      Menu.separator(),
-      Menu.tlink("bests", _("Bests"), link),
-      Menu.separator(),
-      Menu.tlink("pool", _("Pool"), link),
-      Menu.separator(),
       Menu.tlink("charts", _("Charts"), link),
       Menu.separator2(),
       Menu.tlink("ranges", _("Ranges"), link),
       Menu.separator(),
-      Menu.tlink("ranges+", _("Ranges +"), link),
+      Menu.tlink("ranking", _("Ranking"), link),
       Menu.separator2(),
       Menu.tlink("tests", _("Tests"), link)
     ];
@@ -115,18 +108,12 @@ class Fleas {
     switch (target) {
     case "overview":
       new Overview(wg, mSel);
-    case "ranking":
-      ranking(wg);
-    case "bests":
-      bests(wg);
-    case "pool":
-      pool(wg);
     case "charts":
       charts(wg);
     case "ranges":
       Ranges.mk(wg, mSel);
-    case "ranges+":
-      RangesPlus.mk(wg, mSel, lcPath[0]);
+    case "ranking":
+      Rankings.mk(wg, mSel, lcPath[0]);
     case "tests":
       new Ftests(wg, mSel);
     default:
@@ -155,123 +142,18 @@ class Fleas {
     js.Browser.location.assign("?fleas&" + mSel.id + "&" + lcPath[1]);
   }
 
-  function ranking (wg:Domo) {
-    wg
-      .removeAll()
-      .add(Q("div")
-        .add(Ui.img("wait.gif")));
-
-    Cts.client.send([
-      "module" => Js.ws("fleas"),
-      "source" => Js.ws("fleas"),
-      "rq" => Js.ws("ranking"),
-      "modelId" => Js.ws(mSel.id)
-    ], rp -> {
-      final ranking = rp["ranking"].ra().map(e -> Frank.fromJs(e));
-      final parNames = rp["parNames"].ra().map(e-> e.rs());
-      final parDecs = rp["parDecs"].ra().map(e-> e.ri());
-
-      final cols = mkHeaderBase();
-      cols.insert(1, new Col(
-        "", Col.ICON, -1, true, false
-      ));
-
-      for (i in 0...parNames.length) {
-        cols.push(new Col(parNames[i], Col.PARAM, parDecs[i], false, false));
-      }
-
-      new Ranking(wg, cols, ranking, (e, i) ->
-        (i == 2) ? chart(false, e) : chart(true, e)
-      );
-    });
-  }
-
-  function bests (wg: Domo) {
-    wg
-      .removeAll()
-      .add(Q("div")
-        .add(Ui.img("wait.gif")));
-
-    Cts.client.send([
-      "module" => Js.ws("fleas"),
-      "source" => Js.ws("fleas"),
-      "rq" => Js.ws("bests"),
-      "modelId" => Js.ws(mSel.id)
-    ], rp -> {
-      final bests = rp["bests"].ra().map(e -> EfleaDate.fromJs(e));
-      final parNames = rp["parNames"].ra().map(e-> e.rs());
-      final parDecs = rp["parDecs"].ra().map(e-> e.ri());
-
-      final cols = mkHeaderBase();
-      cols.insert(1, new Col(
-        _("Date"), Col.DATE, -1, false, false
-      ));
-
-      for (i in 0...parNames.length) {
-        cols.push(new Col(parNames[i], Col.PARAM, parDecs[i], false, false));
-      }
-
-      final table = bests.map(ed -> {
-        final dt = ed.date; //DateDm.fromStr(ed.date).toString();
-        final e = ed.eflea;
-        final r: Array<Dynamic> = [
-          e, 0, dt, e.flea.name, e.assets, e.profitsAvg, e.profitsVa,
-          e.ev * 1000, e.buys, e.sells
-        ];
-        for (g in e.flea.params) r.push(g);
-        return r;
-      });
-      new Table(wg, cols, table, 2, (e, i) -> chart(false, e));
-    });
-  }
-
-  function pool (wg: Domo) {
-    wg
-      .removeAll()
-      .add(Q("div")
-        .add(Ui.img("wait.gif")));
-
-    Cts.client.send([
-      "module" => Js.ws("fleas"),
-      "source" => Js.ws("fleas"),
-      "rq" => Js.ws("pool"),
-      "modelId" => Js.ws(mSel.id)
-    ], rp -> {
-      final pool = rp["pool"].ra().map(e -> Eflea.fromJs(e));
-      final parNames = rp["parNames"].ra().map(e-> e.rs());
-      final parDecs = rp["parDecs"].ra().map(e-> e.ri());
-
-      final cols = mkHeaderBase();
-
-      for (i in 0...parNames.length) {
-        cols.push(new Col(parNames[i], Col.PARAM, parDecs[i], false, false));
-      }
-
-      final table = pool.map(e -> {
-        final r: Array<Dynamic> = [
-          e, 0, e.flea.name, e.assets, e.profitsAvg, e.profitsVa,
-          e.ev * 1000, e.buys, e.sells
-        ];
-        for (g in e.flea.params) r.push(g);
-        return r;
-      });
-      new Table(wg, cols, table, 6, (e, i) -> chart(false, e));
-    });
-  }
-
   function charts (wg: Domo) {
     final modelId = lcPath[0];
     Cts.client.send([
       "module" => Js.ws("fleas"),
       "source" => Js.ws("fleas"),
-      "rq" => Js.ws("bests"),
+      "rq" => Js.ws("best"),
       "modelId" => Js.ws(mSel.id)
     ], rp -> {
-      final bests = rp["bests"].ra().map(e -> EfleaDate.fromJs(e));
-      final parNames = rp["parNames"].ra().map(e-> e.rs());
-      final parDecs = rp["parDecs"].ra().map(e-> e.ri());
+      final bestJs = rp["best"];
+      final parName = rp["parName"].rs();
 
-      if (bests.length == 0) {
+      if (bestJs.isNull()) {
         wg
           .removeAll()
           .add(Q("table")
@@ -284,7 +166,7 @@ class Fleas {
       }
 
       var isAssets = true;
-      var eflea = bests[0].eflea;
+      var eflea = Eflea.fromJs(bestJs);
 
       final args = It.from(lcPath).drop(2).to();
       if (args.length == 2) {
@@ -292,7 +174,7 @@ class Fleas {
         eflea = Eflea.fromJs(Js.from(B64.decode(args[1])));
       }
 
-      new Charts(wg, modelId, isAssets, parNames, parDecs, eflea);
+      new Charts(wg, modelId, isAssets, parName, eflea);
     });
   }
 

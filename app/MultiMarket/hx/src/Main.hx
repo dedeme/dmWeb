@@ -13,7 +13,6 @@ import pgs.home.Home;
 import pgs.fleas.Fleas;
 import pgs.performance.Performance;
 import pgs.ranking.Ranking;
-import pgs.rangesPlus.RangesPlus;
 import pgs.daily.Daily;
 import pgs.acc.Acc;
 
@@ -44,7 +43,7 @@ class Main {
 
           final target =
             switch (lcPath[0]) {
-              case "fleas" | "performance" |"ranking" | "ranges+" |
+              case "fleas" | "performance" | "ranking" |
                    "daily" | "acc" | "settings":
                 lcPath[0];
               default:
@@ -65,8 +64,6 @@ class Main {
               Performance.mk(bodyDiv);
             case "ranking":
               Ranking.mk(bodyDiv);
-            case "ranges+":
-              RangesPlus.mk(bodyDiv);
             case "acc":
               new Acc(bodyDiv, menu, lcPath);
             case "daily":

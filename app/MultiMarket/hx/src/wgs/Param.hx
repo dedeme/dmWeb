@@ -8,12 +8,12 @@ import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
 import dm.Dec;
+import data.Cts;
+import I18n._;
 
 /// Parameter widget.
 class Param {
   var name: String;
-  var min: Float;
-  var max: Float;
   var inp: Domo;
   public final wg = Q("div");
 
@@ -23,25 +23,22 @@ class Param {
       case Some(v): return v;
       case None:
         Ui.alert(cast(inp.getValue(), String) + " is not a valid number");
-        return min;
+        return Cts.rangesMedium;
     }
   }
 
   public function new (
-    name: String, min: Float, max: Float,
-    id: String, nextId: String, ?value: Float
+    name: String, id: String, nextId: String, ?value: Float
   ) {
     this.name = name;
-    this.min = Dec.round(min, 6);
-    this.max = Dec.round(max, 6);
 
     inp = Ui.field(nextId)
       .att("id", id)
-      .style("width:60px")
+      .style("width:80px")
       .on(CHANGE, e -> onChange())
       .value(value == null
-        ? Dec.toIso((min + max) / 2, 6)
-        : Dec.toIso(value, 6)
+        ? Dec.toIso(Cts.rangesMedium, Cts.paramDecs)
+        : Dec.toIso(value, Cts.paramDecs)
       )
     ;
     Ui.changePoint(inp);
@@ -60,9 +57,9 @@ class Param {
     wg
       .removeAll()
       .add(Q("div").style("text-align:center").text(name))
-      .add(label().text(Dec.toIso(min, 6)))
+      .add(label().text(">= " + Dec.toIso(Cts.rangesMin, Cts.paramDecs)))
       .add(inp)
-      .add(label().text(Dec.toIso(max, 6)))
+      .add(label().text("< " + Dec.toIso(Cts.rangesMax, Cts.paramDecs)))
     ;
   }
 
@@ -70,8 +67,16 @@ class Param {
 
   function onChange () {
     final v = get_value();
-    if (v < min) inp.value(Dec.toIso(min, 6));
-    if (v > max) inp.value(Dec.toIso(max, 6));
-    inp.value(Dec.toIso(v, 6));
+    if (v < Cts.rangesMin) {
+      Ui.alert(_("Value less than minimum"));
+      inp.value(Dec.toIso(Cts.rangesMedium, Cts.paramDecs));
+      return;
+    }
+    if (v >= Cts.rangesMax) {
+      Ui.alert(_("Value greater or equals to maximum"));
+      inp.value(Dec.toIso(Cts.rangesMedium, Cts.paramDecs));
+      return;
+    }
+    inp.value(Dec.toIso(v, Cts.paramDecs));
   }
 }

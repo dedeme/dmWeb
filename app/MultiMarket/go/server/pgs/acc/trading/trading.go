@@ -11,7 +11,7 @@ import (
 	"github.com/dedeme/MultiMarket/db/acc/diariesDb"
 	"github.com/dedeme/MultiMarket/db/conf"
 	"github.com/dedeme/MultiMarket/db/dailyTb"
-	"github.com/dedeme/MultiMarket/db/managersTb"
+	"github.com/dedeme/MultiMarket/db/investorsTb"
 	"github.com/dedeme/MultiMarket/db/nicksTb"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
 	"github.com/dedeme/MultiMarket/db/refsDb"
@@ -22,10 +22,10 @@ import (
 )
 
 type operationT struct {
-	toBuy    bool
-	toSell   int
-	managers []int
-	nick     string
+	toBuy     bool
+	toSell    int
+	investors []int
+	nick      string
 }
 
 func newOperation(
@@ -35,49 +35,49 @@ func newOperation(
 }
 
 func (o *operationT) toJs() json.T {
-	var managers []json.T
-	for _, e := range o.managers {
-		managers = append(managers, json.Wi(e))
+	var investors []json.T
+	for _, e := range o.investors {
+		investors = append(investors, json.Wi(e))
 	}
 	return json.Wa([]json.T{
 		json.Wb(o.toBuy),
 		json.Wi(o.toSell),
-		json.Wa(managers),
+		json.Wa(investors),
 		json.Ws(o.nick),
 	})
 }
 
-func addBuy(ops []*operationT, manager int, nick string) (r []*operationT) {
+func addBuy(ops []*operationT, investor int, nick string) (r []*operationT) {
 	r = ops
 	new := true
 	for _, e := range ops {
 		if e.nick == nick && e.toBuy {
-			e.managers = append(e.managers, manager)
+			e.investors = append(e.investors, investor)
 			// r = append(r, e)
 			new = false
 		}
 	}
 	if new {
-		r = append(r, newOperation(true, 0, []int{manager}, nick))
+		r = append(r, newOperation(true, 0, []int{investor}, nick))
 	}
 	return
 }
 
 func addSell(
-	ops []*operationT, stocks int, manager int, nick string,
+	ops []*operationT, stocks int, investor int, nick string,
 ) (r []*operationT) {
 	r = ops
 	new := true
 	for _, e := range ops {
 		if e.nick == nick && e.toSell > 0 {
 			e.toSell += stocks
-			e.managers = append(e.managers, manager)
+			e.investors = append(e.investors, investor)
 			// r = append(r, e)
 			new = false
 		}
 	}
 	if new {
-		r = append(r, newOperation(false, stocks, []int{manager}, nick))
+		r = append(r, newOperation(false, stocks, []int{investor}, nick))
 	}
 	return
 }
@@ -103,7 +103,7 @@ func Process(ck string, mrq map[string]json.T) string {
 				nkQ1[e] = values[lastV1][i]
 			}
 
-			mans := managersTb.Read(lk)
+			invs := investorsTb.Read(lk)
 			qs := dailyTb.Read(lk)
 			mqs := map[string]float64{}
 			for _, q := range qs {
@@ -114,7 +114,7 @@ func Process(ck string, mrq map[string]json.T) string {
 			}
 
 			var operations []*operationT
-			for i, man := range mans {
+			for i, inv := range invs {
 				anns := diariesDb.ReadAnnotations(lk, i)
 				_, portfolio, _ := acc.Settlement(anns)
 				for _, nk := range nicks {
@@ -127,22 +127,22 @@ func Process(ck string, mrq map[string]json.T) string {
 						if ok {
 							q1 = q
 							q = qnew
-							entry := man.GetModel(nk)
+							entry := inv.GetModel(nk)
 							cs, ok := closes.NickValuesAdd(nk, q)
 							if ok {
 								refs := refsDb.MkRefs(
-									lk, nk, dates2, cs, entry.Model(), entry.Params(),
+									lk, nk, dates2, cs, entry.Model(), entry.Param(),
 								)
 								ref1 = refs[len(refs)-2]
 								ref = refs[len(refs)-1]
 							}
 						}
 					} else {
-						entry := man.GetModel(nk)
+						entry := inv.GetModel(nk)
 						cs, ok := closes.NickValues(nk)
 						if ok {
 							refs := refsDb.MkRefs(
-								lk, nk, dates, cs, entry.Model(), entry.Params(),
+								lk, nk, dates, cs, entry.Model(), entry.Param(),
 							)
 							ref1 = refs[len(refs)-2]
 							ref = refs[len(refs)-1]

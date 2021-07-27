@@ -21,7 +21,7 @@ func Process(ck string, mrq map[string]json.T) string {
 	case "idata":
 		rp := map[string]json.T{}
 		sync.Run(func(lk sync.T) {
-			rp["investors"] = json.Wi(cts.Managers)
+			rp["investors"] = json.Wi(cts.Investors)
 
 			years := diariesDb.Years(lk)
 			var yearsJs []json.T

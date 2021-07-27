@@ -1,8 +1,8 @@
 // Copyright 15-Sep-2020 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-// 'Ranges +' page.
-package rangesPlus
+// 'fleas/ranking' page.
+package rankings
 
 import (
 	"fmt"
@@ -25,11 +25,11 @@ func Process(ck string, mrq map[string]json.T) string {
 		rp := map[string]json.T{}
 		sync.Run(func(lk sync.T) {
 			var rankings []json.T
-			for _, e := range fmodelsDb.ReadRangesPlus(lk, modelId) {
+			for _, e := range fmodelsDb.Read(lk, modelId) {
 				rankings = append(rankings, e.ToJs())
 			}
 			rp["rankings"] = json.Wa(rankings)
-			rp["parName"] = json.Ws(md.ParNames()[0])
+			rp["parName"] = json.Ws(md.ParName())
 		})
 		return cgi.Rp(ck, rp)
 	default:

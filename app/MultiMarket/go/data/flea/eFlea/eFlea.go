@@ -2,7 +2,7 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 // Evaluated flea data.
-package eval
+package eFlea
 
 import (
 	"github.com/dedeme/MultiMarket/data/cts"
@@ -23,11 +23,13 @@ type T struct {
 	profitsSd  float64
 	// Point results of evaluation. If its value is less than 0, the flea has not
 	// been evaluated.
-	Eval float64
+	Eval          float64
+	HistoricSales float64
+	HistoricEval  float64
 }
 
 func New(f *flea.T) *T {
-	return &T{f, 0, 0, 0.0, 0.0, 0.0, -1.0}
+	return &T{f, 0, 0, 0.0, 0.0, 0.0, -1.0, -1.0, -1.0}
 }
 
 // Evaluate flea
@@ -113,6 +115,8 @@ func (e *T) ToJs() json.T {
 		json.Wd(e.profitsAvg),
 		json.Wd(e.profitsSd),
 		json.Wd(e.Eval),
+		json.Wd(e.HistoricSales),
+		json.Wd(e.HistoricEval),
 	})
 }
 
@@ -126,6 +130,8 @@ func FromJs(js json.T) *T {
 		a[4].Rd(),
 		a[5].Rd(),
 		a[6].Rd(),
+		a[7].Rd(),
+		a[8].Rd(),
 	}
 }
 
@@ -136,12 +142,12 @@ func FromJs(js json.T) *T {
 //    es    : Evaluated fleas list.
 func Evaluate(md *fmodel.T, opens, closes *qtable.T, es []*T) {
 	for _, e := range es {
-		rs := md.Assets(opens, closes, e.flea.Params())
+		rs := md.Assets(opens, closes, e.flea.Param())
 		e.buys = rs.Buys()
 		e.sells = rs.Sells()
 		e.assets = rs.Assets()
 
-		avg, sd := md.ProfitsAvgSd(opens, closes, e.flea.Params())
+		avg, sd := md.ProfitsAvgSd(opens, closes, e.flea.Param())
 		e.profitsAvg = avg
 		e.profitsSd = sd
 	}

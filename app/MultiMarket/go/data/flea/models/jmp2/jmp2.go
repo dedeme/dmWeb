@@ -31,12 +31,12 @@ func upGap(q, ref, jmp float64) float64 {
 }
 
 func fn(
-	closes [][]float64, params []float64, init *refPos.T,
+	closes [][]float64, param float64, init *refPos.T,
 	action func([]float64, []float64),
 ) {
 	nDays := len(closes)
 	nCos := len(closes[0])
-	jmp := params[0] + 1.0
+	jmp := param + 1.0
 
 	toBuys := make([]bool, nCos)
 	refs := make([]float64, nCos)
@@ -103,10 +103,8 @@ func Mk() *fmodel.T {
 	return fmodel.New(
 		"JMP2",
 		"Jump2",
-		[]string{"Salto"},
-		[]float64{0.01},
-		[]float64{0.25},
-		[]int{6},
+		"Salto",
+		true,
 		true,
 		fn,
 	)
