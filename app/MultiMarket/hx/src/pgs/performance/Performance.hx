@@ -40,17 +40,17 @@ class Performance {
     var amountSells = 0.0;
     var profitsSells = 0.0;
     results = operations.map(o -> {
-      final amount = o.stocks * o.expectedPrice;
+      final amount = o.stocks * o.price;
       var profits: Float;
       if (o.isSell) {
         ++nSells;
         amountSells += amount;
-        profits = o.stocks * (o.actualPrice - o.expectedPrice);
+        profits = o.stocks * (o.price - o.open);
         profitsSells += profits;
       } else {
         ++nBuys;
         amountBuys += amount;
-        profits = o.stocks * (o.expectedPrice - o.actualPrice);
+        profits = o.stocks * (o.open - o.price);
         profitsBuys += profits;
       }
 
@@ -259,8 +259,8 @@ private class Operation {
   public var date(default, null): String;
   public var isSell(default, null): Bool;
   public var stocks(default, null): Int;
-  public var expectedPrice(default, null): Float;
-  public var actualPrice(default, null): Float;
+  public var price(default, null): Float;
+  public var open(default, null): Float;
 
   function new () {}
 
@@ -271,8 +271,8 @@ private class Operation {
     r.date = a[1].rs();
     r.isSell = a[2].rb();
     r.stocks = a[3].ri();
-    r.expectedPrice = a[4].rf();
-    r.actualPrice = a[5].rf();
+    r.price = a[4].rf();
+    r.open = a[5].rf();
     return r;
   }
 }

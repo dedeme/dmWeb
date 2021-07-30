@@ -16,12 +16,12 @@ import (
 )
 
 type operationT struct {
-	nick          string
-	date          string
-	isSell        bool
-	stocks        int
-	expectedPrice float64
-	actualPrice   float64
+	nick   string
+	date   string
+	isSell bool
+	stocks int
+	price  float64
+	open   float64
 }
 
 func (o *operationT) toJs() json.T {
@@ -30,8 +30,8 @@ func (o *operationT) toJs() json.T {
 		json.Ws(o.date),
 		json.Wb(o.isSell),
 		json.Wi(o.stocks),
-		json.Wd(o.expectedPrice),
-		json.Wd(o.actualPrice),
+		json.Wd(o.price),
+		json.Wd(o.open),
 	})
 }
 

@@ -5,6 +5,7 @@
 package fmodelsDb
 
 import (
+	"github.com/dedeme/MultiMarket/data/cts"
 	"github.com/dedeme/MultiMarket/data/flea/fmodels"
 	"github.com/dedeme/MultiMarket/data/flea/frank"
 	"github.com/dedeme/MultiMarket/global/sync"
@@ -35,8 +36,10 @@ func Initialize(lk sync.T, parent string) {
 //   ranks  : Evaluated fleas rankings (sorted from after to before).
 func Write(lk sync.T, modelId string, ranks []*frank.T) {
 	var a []json.T
-	for _, e := range ranks {
-		a = append(a, e.ToJs())
+	for i, e := range ranks {
+		if i < cts.RankingDays {
+			a = append(a, e.ToJs())
+		}
 	}
 	file.WriteAll(modelPath(modelId), json.Wa(a).String())
 }

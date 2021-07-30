@@ -491,7 +491,7 @@ func InitialActivity(lastAct *activity.T) *activity.T {
 
 // Equals than 'initialActivity' for debug.
 //    lastAct: Activity when server was stopped by last time.
-//    today  : current day.
+//    today  : Current day.
 func InitialActivity2(lastAct *activity.T, today date.T) *activity.T {
 	day := lastAct.Date()
 	ac := lastAct.Activity()
