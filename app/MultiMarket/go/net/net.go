@@ -53,7 +53,11 @@ func download(lk sync.T, cmd string, url string) string {
 		tm := 0
 		r := ""
 		go func() {
-			br, _ := sys.Cmd("wget", "-q", "--no-cache", "-O", "-", url)
+			br, _ := sys.Cmd(
+				"wget",
+				cts.WgetUA1, cts.WgetUA2, cts.WgetUA3,
+				"-q", "--no-cache", "-O", "-", url,
+			)
 			waiting = false
 			r = string(br)
 		}()
@@ -122,8 +126,8 @@ func toNumber(lk sync.T, isIso bool, n string) (nn float64, ok bool) {
 func mkDate(lk sync.T, d string, sep string, isIso bool) (dd string, ok bool) {
 	readYahoo := func() (yd string, yok bool) {
 		months := []string{
-			"ene.", "feb.", "mar.", "abr.", "may.", "jun.",
-			"jul.", "ago.", "sept.", "oct.", "nov.", "dic.",
+			"ene", "feb", "mar", "abr", "may", "jun",
+			"jul", "ago", "sept", "oct", "nov", "dic",
 		}
 		parts := strings.Split(d, " ")
 		if len(parts) != 3 {
@@ -259,6 +263,7 @@ func read(
 			url = strings.ReplaceAll(url, "${code}", code)
 		}
 		html = download(lk, conf.Cmd(), url)
+
 		if html == "" {
 			log.Error(lk, fmt.Sprintf("Inet error reading '%v'", url))
 			return

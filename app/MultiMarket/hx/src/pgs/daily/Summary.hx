@@ -11,6 +11,7 @@ import dm.Dec;
 import dm.Store;
 import dm.Menu;
 import dm.Clock;
+import data.Cts;
 import data.DailyChart;
 import I18n._;
 
@@ -68,9 +69,13 @@ class Summary {
             final iv = acc.stocks * acc.price;
             inv += iv;
             yprof += acc.stocks * co.close - iv;
-            prof += acc.stocks * co.quotes[co.quotes.length - 1] - iv;
+            final q = Cts.validQuote(
+              co.quotes, co.quotes.length - 1, acc.price
+            );
+            prof += acc.stocks * q - iv;
             for (i in 0...profits.length) {
-              profits[i] += acc.stocks * co.quotes[i] - iv;
+              final q = Cts.validQuote(co.quotes, i, acc.price);
+              profits[i] += acc.stocks * q - iv;
             }
           }
         }
@@ -80,9 +85,11 @@ class Summary {
           final iv = acc.stocks * acc.price;
           inv = iv;
           yprof = acc.stocks * co.close - iv;
-          prof = acc.stocks * co.quotes[co.quotes.length - 1] - iv;
+          final q = Cts.validQuote(co.quotes, co.quotes.length - 1, acc.price);
+          prof = acc.stocks * q - iv;
           for (i in 0...profits.length) {
-            profits[i] += acc.stocks * co.quotes[i] - iv;
+            final q = Cts.validQuote(co.quotes, i, acc.price);
+            profits[i] += acc.stocks * q - iv;
           }
         }
       }

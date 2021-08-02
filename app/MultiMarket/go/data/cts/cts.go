@@ -43,6 +43,15 @@ const (
 	// Server configuration selected
 	ServerSelected = 2
 
+	// Net -----------------------------------------------------------------------
+	/// Wget user agent configuration.
+	/// Necessary for YAHOO.
+	/// If it fails, every value can be replaced with ""
+	WgetUA1 = "--user-agent"
+	WgetUA2 = "Mozilla"
+	WgetUA3 = "--load-cookies=" +
+		"/home/deme/.mozilla/firefox/bfrqeymk.default/cookies.sqlite"
+
 	// Scheduler -----------------------------------------------------------------
 	// Time to scheduler sleep (milliseconds)
 	SchedulerSleep = 2000

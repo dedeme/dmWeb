@@ -81,7 +81,8 @@ class Ranking {
       final r: Array<Dynamic> = [
         inv, 0, icon(prev, inv, i), name, e.assets, e.profitsAvg,
         e.profitsVa, e.eval * 1000, e.buys, e.sales,
-        Cts.nformat(e.flea.param, Cts.paramDecs)
+        Cts.nformat(e.flea.param, Cts.paramDecs),
+        e.historicEval * 1000, e.historicSales
       ];
       table.push(r);
     });
@@ -129,23 +130,13 @@ class Ranking {
         new Col(_("Id"), Col.STRING, -1, true, false),
         new Col(_("Assets"), Col.NUMBER, 2, false, false),
         new Col(_("Pf. Avg"), Col.NUMBER, 4, false, false),
-        new Col(
-          _("Pf. Var"), Col.NUMBER, 4,
-          false, false
-        ),
-        new Col(
-          _("Eval."), Col.NUMBER, 2,
-          false, false
-        ),
-        new Col(
-          _("Buys"), Col.NUMBER, 0,
-          false, false
-        ),
-        new Col(
-          _("Sells"), Col.NUMBER, 0,
-          false, false
-        ),
-        new Col(_("Param."), Col.P_STRING, -1, false, false)
+        new Col(_("Pf. Var"), Col.NUMBER, 4, false, false),
+        new Col(_("Eval."), Col.NUMBER, 2, false, false),
+        new Col(_("Buys"), Col.NUMBER, 0, false, false),
+        new Col(_("Sells"), Col.NUMBER, 0, false, false),
+        new Col(_("Param."), Col.P_STRING, -1, false, false),
+        new Col(_("H. Eval."), Col.NUMBER, 2, false, false),
+        new Col(_("H. Sales"), Col.NUMBER, 0, false, false)
       ];
 
       new Ranking(wg, cols, ranking);

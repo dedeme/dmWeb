@@ -87,13 +87,6 @@ class Cts {
     "rgba(0, 224, 0)",
   ];
 
-  // For jump models -----------------------------------------------
-  public static final jumpsx = [
-    Math.pow(1.157211, 1.5),
-    Math.pow(1.143673, 1.5)
-  ];
-  // End for jump models -------------------------------------------
-
   /// Format for numeric flea parameters.
   ///   v: Value
   ///   f: Format. Expected:
@@ -112,5 +105,20 @@ class Cts {
   public static function format00(n: Int): String {
     if (n < 10) return "0" + Std.string(n);
     return Std.string(n);
+  }
+
+  /// Return qs['i'] if it is > 0.
+  /// Otherwise return the last previous valid quote or 'def' if every previous
+  /// quote is <= 0.
+  public static function validQuote(qs: Array<Float>, i: Int, def: Float) {
+    var q = qs[i];
+    if (q > 0) return q;
+    --i;
+    while (i >= 0) {
+      q = qs[i];
+      if (q > 0) return q;
+      --i;
+    }
+    return def;
   }
 }

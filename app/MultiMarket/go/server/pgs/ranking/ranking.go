@@ -21,7 +21,7 @@ type rankingSorter []*investor.T
 func (a rankingSorter) Len() int      { return len(a) }
 func (a rankingSorter) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
 func (a rankingSorter) Less(i, j int) bool {
-	return a[i].Eflea().Eval > a[j].Eflea().Eval
+	return a[i].Eflea().HistoricEval > a[j].Eflea().HistoricEval
 }
 
 func Process(ck string, mrq map[string]json.T) string {
