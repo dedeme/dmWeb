@@ -165,6 +165,76 @@ VENTA
 " + footer;
 
 //******************
+static final jumptDoc = "
+<pre>
+PARÁMETROS
+  salto (%): Incremento de stops de compras y ventas.
+
+INICIO
+  * Se calcula
+    - d = 1 + salto / 3
+    - jmp = 1 + salto
+    - lgJmp = Log(jmp)
+  * Se define:
+    - upGap(q) = jmp ^ (round(Log(q/d) / lgJmp) + 1) * d
+    - downGap2(q) = repeat
+                      ref2 = ref * jmp
+                      if ref2 * jmp ^ (1/2) >= q -> return ref
+                      else ref = ref2
+    -downGap(q) = jmp ^ (round(Log(q/d) / lgJmp) - 1) * d
+    -upGap2(q) = repeat
+                  ref2 = ref / jmp
+                  if ref2 / jmp ^ (1/2) <= q -> return ref
+                  else ref = ref2
+  * Se fija una referencia de venta (rf = downGap(q))
+
+COMPRA
+  * Si q > rf se compra y se fija rf = downGap(q) / jmp
+  * En otro caso se calcula rf' = downGap2(q) y si rf' < rf se fija rf = rf'.
+
+VENTA
+  * Si q < rf se vende y se fija rf = upGap(q) * jmp
+  * En otro caso se calcula rf' = upGap2(q) y si rf' > rf se fija rf = rf'.
+
+</pre>
+" + footer;
+
+//******************
+static final jumpttDoc = "
+<pre>
+PARÁMETROS
+  salto (%): Incremento de stops de compras y ventas.
+
+INICIO
+  * Se calcula
+    - d = 1 + salto * 2 / 3
+    - jmp = 1 + salto
+    - lgJmp = Log(jmp)
+  * Se define:
+    - upGap(q) = jmp ^ (round(Log(q/d) / lgJmp) + 1) * d
+    - downGap2(q) = repeat
+                      ref2 = ref * jmp
+                      if ref2 * jmp ^ (1/2) >= q -> return ref
+                      else ref = ref2
+    -downGap(q) = jmp ^ (round(Log(q/d) / lgJmp) - 1) * d
+    -upGap2(q) = repeat
+                  ref2 = ref / jmp
+                  if ref2 / jmp ^ (1/2) <= q -> return ref
+                  else ref = ref2
+  * Se fija una referencia de venta (rf = downGap(q))
+
+COMPRA
+  * Si q > rf se compra y se fija rf = downGap(q) / jmp
+  * En otro caso se calcula rf' = downGap2(q) y si rf' < rf se fija rf = rf'.
+
+VENTA
+  * Si q < rf se vende y se fija rf = upGap(q) * jmp
+  * En otro caso se calcula rf' = upGap2(q) y si rf' > rf se fija rf = rf'.
+
+</pre>
+" + footer;
+
+//******************
 static final jmp2Doc = "
 <pre>
 PARÁMETROS
@@ -230,6 +300,8 @@ VENTA
       case "GA": return gaDoc;
       case "DIF": return difDoc;
       case "JUMP": return jumpDoc;
+      case "JUMPT": return jumptDoc;
+      case "JUMPTT": return jumpttDoc;
       case "JMP2": return jmp2Doc;
       case "GAP": return gapDoc;
     }

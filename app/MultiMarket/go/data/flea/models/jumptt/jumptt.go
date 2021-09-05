@@ -1,8 +1,8 @@
-// Copyright 05-Dec-2020 ºDeme
+// Copyright 05-Sep-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-// Differencial investor model.
-package jump
+// Differencial investor model with increment of 1/3.
+package jumptt
 
 import (
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
@@ -10,12 +10,12 @@ import (
 	"math"
 )
 
-func downGap(q, jmp, lgJump float64) float64 {
-	return math.Pow(jmp, (math.Round(math.Log(q)/lgJump))-1.0)
+func downGap(q, d, jmp, lgJump float64) float64 {
+	return math.Pow(jmp, (math.Round(math.Log(q/d)/lgJump))-1.0) * d
 }
 
-func upGap(q, jmp, lgJump float64) float64 {
-	return math.Pow(jmp, math.Round(math.Log(q)/lgJump)+1.0)
+func upGap(q, d, jmp, lgJump float64) float64 {
+	return math.Pow(jmp, math.Round(math.Log(q/d)/lgJump)+1.0) * d
 }
 
 func downGap2(q, ref, jmp float64) float64 {
@@ -38,41 +38,13 @@ func upGap2(q, ref, jmp float64) float64 {
 	}
 }
 
-/*
-func GapTests() {
-	assert := func(msg string, val bool) {
-		if !val {
-			panic(msg)
-		}
-	}
-	assert("Up(0.5, 0.1) == 0.564",
-		fmt.Sprintf("%.3f", upGap(0.5, 1.1, math.Log(1.1))) == "0.564")
-	assert("Up(1, 0.1) == 1.1",
-		fmt.Sprintf("%.3f", upGap(1, 1.1, math.Log(1.1))) == "1.100")
-	assert("Up(50, 0.1) == 1.1",
-		fmt.Sprintf("%.3f", upGap(50, 1.1, math.Log(1.1))) == "54.764")
-	assert("Up(100, 0.1) == 1.1",
-		fmt.Sprintf("%.3f", upGap(100, 1.1, math.Log(1.1))) == "106.719")
-
-	assert("Down(0.5, 0.1) == 0.564",
-		fmt.Sprintf("%.3f", downGap(0.5, 1.1, math.Log(1.1))) == "0.467")
-	assert("Down(1, 0.1) == 1.1",
-		fmt.Sprintf("%.3f", downGap(1, 1.1, math.Log(1.1))) == "0.909")
-	assert("Down(50, 0.1) == 1.1",
-		fmt.Sprintf("%.3f", downGap(50, 1.1, math.Log(1.1))) == "45.259")
-	assert("Down(100, 0.1) == 1.1",
-		fmt.Sprintf("%.3f", downGap(100, 1.1, math.Log(1.1))) == "88.197")
-
-	fmt.Println ("Tests ok");
-}
-*/
-
 func fn(
 	closes [][]float64, param float64, init *refPos.T,
 	action func([]float64, []float64),
 ) {
 	nDays := len(closes)
 	nCos := len(closes[0])
+	d := 1 + (param * 2 / 3)
 	jmp := param + 1.0
 	lgJump := math.Log(jmp)
 
@@ -91,7 +63,7 @@ func fn(
 			panic("iDay < 0")
 		}
 		q := closes[ixDay][iCo]
-		refs[iCo] = downGap(q, jmp, lgJump)
+		refs[iCo] = downGap(q, d, jmp, lgJump)
 		preqs[iCo] = q
 	}
 
@@ -117,7 +89,7 @@ func fn(
 							refs[iCo] = newRef
 						}
 					} else if q > ref {
-						refs[iCo] = downGap(q, jmp, lgJump) / jmp
+						refs[iCo] = downGap(q, d, jmp, lgJump) / jmp
 						toBuys[iCo] = false
 					}
 				} else {
@@ -127,7 +99,7 @@ func fn(
 							refs[iCo] = newRef
 						}
 					} else if q < ref {
-						refs[iCo] = upGap(q, jmp, lgJump) * jmp
+						refs[iCo] = upGap(q, d, jmp, lgJump) * jmp
 						toBuys[iCo] = true
 					}
 				}
@@ -139,8 +111,8 @@ func fn(
 
 func Mk() *fmodel.T {
 	return fmodel.New(
-		"JUMP",
-		"Jump",
+		"JUMPTT",
+		"Jumptt",
 		"Salto",
 		true,
 		fn,

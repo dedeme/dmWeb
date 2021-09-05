@@ -15,6 +15,8 @@ import (
 	//"github.com/dedeme/MultiMarket/data/flea/models/incr"
 	"github.com/dedeme/MultiMarket/data/flea/models/jmp2"
 	"github.com/dedeme/MultiMarket/data/flea/models/jump"
+	"github.com/dedeme/MultiMarket/data/flea/models/jumpt"
+	"github.com/dedeme/MultiMarket/data/flea/models/jumptt"
 	//"github.com/dedeme/MultiMarket/data/flea/models/mm"
 )
 
@@ -27,6 +29,8 @@ func List() []*fmodel.T {
 		//mm.Mk(),
 		//dif.Mk(),
 		jump.Mk(),
+		jumpt.Mk(),
+		jumptt.Mk(),
 		jmp2.Mk(),
 		//ijmp.Mk(),
 		gap.Mk(),

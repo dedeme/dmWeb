@@ -42,10 +42,13 @@ func Process(ck string, mrq map[string]json.T) string {
 			}
 			for _, md := range fmodels.List() {
 				frks := fmodelsDb.Read(lk, md.Id())
-
 				for i, irk := range iranks {
+          i2 := i
+          if i2 >= len(frks) {
+            i2 = len(frks) - 1
+          }
 					newRank := irk.Ranking()
-					for j, eflea := range frks[i].Ranking() {
+					for j, eflea := range frks[i2].Ranking() {
 						if j == 15 {
 							break
 						}
