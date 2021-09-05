@@ -118,7 +118,6 @@ type T struct {
 	id       string
 	name     string
 	parName  string
-	isJump   bool
 	withInit bool
 	fcalc    func([][]float64, float64, *refPos.T, func([]float64, []float64))
 }
@@ -144,10 +143,10 @@ type T struct {
 //                             This function is defined in 'Refs', 'Profits',
 //                               'Orders' and 'Assets'
 func New(
-	id, name string, parName string, isJump bool, withInit bool,
+	id, name string, parName string, withInit bool,
 	fcalc func([][]float64, float64, *refPos.T, func([]float64, []float64)),
 ) *T {
-	return &T{id, name, parName, isJump, withInit, fcalc}
+	return &T{id, name, parName, withInit, fcalc}
 }
 
 // Brief identifier. 4 characters maximum (e.g. APPR).
@@ -163,11 +162,6 @@ func (md *T) Name() string {
 // Parameter names.
 func (md *T) ParName() string {
 	return md.parName
-}
-
-// "true" if references move by jump (Models JUMP and JMP2)
-func (md *T) IsJump() bool {
-	return md.isJump
 }
 
 // "true" if function returned by Fcalc() admits a value not nil for 'init'

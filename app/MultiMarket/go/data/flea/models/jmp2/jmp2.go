@@ -105,7 +105,6 @@ func Mk() *fmodel.T {
 		"Jump2",
 		"Salto",
 		true,
-		true,
 		fn,
 	)
 }

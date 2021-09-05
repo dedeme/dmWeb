@@ -71,7 +71,6 @@ func Mk() *fmodel.T {
 		"GAP",
 		"Gap",
 		"Horquilla",
-		false,
 		true,
 		fn,
 	)

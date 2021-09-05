@@ -67,15 +67,20 @@ class ChSmall {
         ;
         if (dif >= 0.98) {
           refs.push([isSold, e.ref, manIx]);
-        } else if (e.stocks > 0 && e.param > 0) {
-          final ref2 = isSold == 1
-            ? e.ref * Math.pow(1 + e.param, 1.5)
-            : e.ref / Math.pow(1 + e.param, 1.5)
+        } else if (e.stocks > 0) {
+          final ref2 = Cts.managerJumpers[manIx]
+            ? isSold == 1
+              ? e.ref * Math.pow(1 + e.param, 1.5)
+              : e.ref / Math.pow(1 + e.param, 1.5)
+            : isSold == 1
+              ? e.ref / (1 - e.param)
+              : e.ref * (1 + e.param)
           ;
           final dif = isSold == -1
             ? 1 - (q - ref2) / q
             : 1 - (ref2 - q) / ref2
           ;
+
           if (dif >= 0.98) {
             refs.push([isSold * -2, ref2, manIx]);
           }

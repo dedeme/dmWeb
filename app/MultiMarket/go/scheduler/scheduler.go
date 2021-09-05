@@ -86,10 +86,8 @@ func mkDailyChartInit(
 			ref = refs[len(refs)-1]
 		}
 
-		param := float64(-1)
-		if mdPars.Model().IsJump() {
-			param = mdPars.Param()
-		}
+		param := mdPars.Param()
+
 		managersData = append(
 			managersData, dailyChart.DataNew(param, stocks, price, ref),
 		)

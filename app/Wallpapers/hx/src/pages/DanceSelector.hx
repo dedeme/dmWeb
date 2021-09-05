@@ -100,7 +100,7 @@ class DanceSelector {
             .att("title", _("Speed"))
             .style("width:5px")
             .klass("frame")
-            .text(s.level == 0 ? _("Slow") : _("Fast")))
+            .text(s.level == 0 ? "???" : s.speed == 0 ? _("Slow") : _("Fast")))
           .add(Q("td")
             .add(Q("button")
               .att("id", "bt:" + i)
