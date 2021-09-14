@@ -31,7 +31,7 @@ class Log {
     Log.wg = wg;
     Log.load = load;
     Log.reset = reset;
-    is2Days = true;
+    is2Days = false;
     isErrors = true;
 
     load(rows -> {
