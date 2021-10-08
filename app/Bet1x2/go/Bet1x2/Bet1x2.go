@@ -7,9 +7,12 @@ package main
 import (
 	"fmt"
 	"github.com/dedeme/Bet1x2/data/cts"
-	"github.com/dedeme/Bet1x2/pgs/changePass"
-	"github.com/dedeme/Bet1x2/pgs/mainPg"
 	"github.com/dedeme/Bet1x2/db"
+	"github.com/dedeme/Bet1x2/pgs/betsPg"
+	"github.com/dedeme/Bet1x2/pgs/changePass"
+	"github.com/dedeme/Bet1x2/pgs/clubsPg"
+	"github.com/dedeme/Bet1x2/pgs/mainPg"
+	"github.com/dedeme/Bet1x2/pgs/yearPg"
 	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/cryp"
 	"github.com/dedeme/golib/json"
@@ -22,8 +25,12 @@ func sourceProcess(ck string, mrq map[string]json.T) string {
 	switch source {
 	case "Main":
 		return mainPg.Process(ck, mrq)
-//	case "Year":
-//		return year.Process(ck, mrq)
+	case "Year":
+		return yearPg.Process(ck, mrq)
+	case "Clubs":
+		return clubsPg.Process(ck, mrq)
+	case "Bets":
+		return betsPg.Process(ck, mrq)
 	case "ChangePass":
 		return changePass.Process(ck, mrq)
 	default:

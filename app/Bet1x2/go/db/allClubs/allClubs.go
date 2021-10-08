@@ -5,23 +5,26 @@
 package allClubs
 
 import (
+	"github.com/dedeme/Bet1x2/data/cts"
+	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/file"
 	"github.com/dedeme/golib/json"
 	"path"
 )
 
-// Create year clubs table. 'dpath' is the Data directory.
-func Mk(dpath string) {
-	Write(dpath, json.Wa([]json.T{}))
+func fpath() string {
+	return path.Join(cgi.Home(), cts.DataPath, "allClubs.tb")
 }
 
-// 'dpath' is for expample ".../2021".
-func Read(dpath string) json.T {
-	return json.FromString(file.ReadAll(path.Join(dpath, "allClubs.tb")))
+// Create year clubs table.
+func Mk() {
+	Write(json.Wa([]json.T{}))
 }
 
-// 'dpath' is for expample ".../2021".
-func Write(dpath string, entries json.T) {
-	file.WriteAll(path.Join(dpath, "allClubs.tb"), entries.String())
+func Read() json.T {
+	return json.FromString(file.ReadAll(fpath()))
 }
 
+func Write(entries json.T) {
+	file.WriteAll(fpath(), entries.String())
+}

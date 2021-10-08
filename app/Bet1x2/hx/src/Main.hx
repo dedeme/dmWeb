@@ -10,10 +10,14 @@ import dm.Menu;
 import I18n._;
 import I18n._args;
 import pgs.Authentication;
-import pgs.SettingsPage;
-import pgs.Year;
+import pgs.SettingsPg;
+import pgs.YearPg;
+import pgs.ResultsPg;
+import pgs.ClubsPg;
+import pgs.BetsPg;
+import data.Year;
 
-import data.Matchday;
+import data.Matchday; // Remove
 
 /// Applicatoin entry.
 class Main {
@@ -47,10 +51,12 @@ class Main {
     if (!isCurrentYear) myear.wg.setStyle("color", "#800000");
     var lopts = [
       myear,
+      Menu.separator2(),
+      Menu.tlink("results&" + year, _("Results")),
       Menu.separator(),
-      Menu.tlink("budget&" + year, _("Budget")),
+      Menu.tlink("clubs&" + year, _("Clubs")),
       Menu.separator(),
-      Menu.tlink("plan&" + year, _("Plan")),
+      Menu.tlink("bets&" + year, _("Bets")),
     ];
     var ropts = [
       Menu.tlink("settings&" + year, _("Settings")),
@@ -70,20 +76,22 @@ class Main {
         final now = Date.now();
 
         final urlPage = url["0"];
-        final page = urlPage == null ? "settings" : urlPage;
+        final page = urlPage == null ? "results" : urlPage;
 
-        final currentYear = Std.string(now.getFullYear());
+        final currentYear = Year.current();
         final urlSelectedYear = url["1"];
         final selectedYear = urlSelectedYear == null
           ? currentYear
-          : Cts.validateYear(urlSelectedYear)
+          : Year.validate(urlSelectedYear)
         ;
-
         final body = Q("div");
         switch (page) {
-          case "year": Year.mk(body, selectedYear);
-          case "settings": SettingsPage.mk(body);
-          default: SettingsPage.mk(body);
+          case "year": YearPg.mk(body, selectedYear);
+          case "results": ResultsPg.mk(body, selectedYear);
+          case "clubs": ClubsPg.mk(body, selectedYear);
+          case "bets": BetsPg.mk(body, selectedYear);
+          case "settings": SettingsPg.mk(body);
+          default: ResultsPg.mk(body, selectedYear);
         }
 
         wg

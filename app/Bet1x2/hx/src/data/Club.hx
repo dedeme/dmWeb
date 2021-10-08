@@ -4,6 +4,7 @@
 package data;
 
 import dm.Js;
+import dm.It;
 
 /// Club data
 class Club {
@@ -30,5 +31,13 @@ class Club {
       a[0].rs(),
       a[1].rs()
     );
+  }
+
+  /// Returns the name of 'id' or "" if 'id' is not found.
+  public static function getName (clubs: Array<Club>, id: String): String {
+    return switch (It.from(clubs).find(c -> c.id == id)) {
+      case None:  "";
+      case Some(n): n.name;
+    }
   }
 }

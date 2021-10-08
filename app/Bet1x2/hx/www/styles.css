@@ -30,10 +30,16 @@ TABLE.summary {
   border-collapse : collapse;
   border : 0px;
 }
-TABLE.border {border: 1px solid rgb(110,130,150);}
-TD {font-family: sans;font-size: 14px;
-  margin-right: 5px; margin-left: 5px;}
-TD.border {border: 1px solid rgb(110,130,150);}
+TABLE.border {
+  border: 1px solid rgb(110,130,150);
+}
+TD {
+  font-family: sans;font-size: 14px;
+  margin-right: 5px; margin-left: 5px;
+}
+TD.border {
+  border: 1px solid rgb(110,130,150);
+}
 TD.frameTx {
   border: 1px solid rgb(110,130,150);
   padding: 4px;
@@ -71,17 +77,6 @@ TD.frameNm {
   border: 1px solid rgb(110,130,150);
   padding: 4px;border-radius: 4px;
 }
-
-.docComment {color:#A9A9A9}
-.comment {color:#80A9A9}
-.reserved {color:#004471; font-weight: bold}
-.className{color:#b14B9D; font-weight: bold}
-.tgFunction{color:#C13B3B}
-.annotation{color:#484800; font-weight: bold}
-.number{color:#805280}
-.quote1{color:#61BED9}
-.quote2{color:#6189D9}
-.quote3{color:#61BED9}
 
 h1 {
     font-size:18px;

@@ -14,7 +14,7 @@ import I18n._args;
 /// Widget to enter currency amounts.
 class NumberField {
   public final wg: Domo;
-  public final value: Float;
+  public var value(default, null): Float;
   public final id: String;
   public final fn: (String, Float) -> Void;
 
@@ -47,6 +47,7 @@ class NumberField {
       wg.value(Dec.to(value, 2).replace(".", ","));
       wg.e.focus();
     } else {
+      value = newValue;
       fn(id, newValue);
     }
   }

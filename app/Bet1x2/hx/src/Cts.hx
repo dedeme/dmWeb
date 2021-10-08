@@ -6,6 +6,8 @@ using StringTools;
 import dm.Client;
 import dm.Ui.Q;
 import dm.Dec;
+import dm.Domo;
+import dm.Dt;
 import I18n._;
 import dm.Opt;
 
@@ -26,6 +28,8 @@ class Cts {
         .style("text-align: right;color:#808080;font-size:x-small;")
         .html('- © ºDeme. ${app} (${version}) -')))
   ;
+  /// Bet amount
+  public static final bet: Float = 20.0;
   /// Application client.
   public static final client = new Client(true, app, () -> {
     final wg = Q("div");
@@ -43,19 +47,12 @@ class Cts {
     final r = Std.parseFloat(n);
     return Math.isNaN(r) ? None : Some(Dec.round(r, 2));
   }
-  /// Validate a year. If the validation fails, it returns the current year,
-  /// otherwise return 'y'.
-  public static function validateYear (y: String): String {
-    try {
-      final yn = Std.parseInt(y);
-      final current = Date.now().getFullYear();
-      if (yn < current - 5 || yn > current + 1) {
-        return Std.string(Date.now().getFullYear());
-      }
-      return y;
-    } catch (e) {
-      return Std.string(Date.now().getFullYear());
-    }
+  /// Returns date with format matching selected language.
+  public static function dateToStr (d: Date): String {
+    return Storage.getLang() == "es"
+      ? Dt.toIso(d)
+      : Dt.toEn(d)
+    ;
   }
   /// Move focus to a widget with id "autofocus".
   public static function autofocus (): Void {
@@ -63,5 +60,9 @@ class Cts {
       var fc = Q("#autofocus");
       if (fc.e != null) fc.e.focus();
     }, 200);
+  }
+  /// Returns the selected index of a Domo type Select.
+  public static function selectedIndex (e: Domo): Int {
+    return cast(e.e, js.html.SelectElement).selectedIndex;
   }
 }

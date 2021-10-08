@@ -10,36 +10,28 @@ import dm.Opt;
 class Match {
   public final home: Club;
   public final away: Club;
-  public var bet (default, null): Option<Bet>;
+  public final bet: Bet;
 
-  public function new (home: Club, away: Club) {
+  public function new (home: Club, away: Club, ?bet) {
     this.home = home;
     this.away = away;
-    bet = None;
-  }
-
-  public function setBet (bet: Option<Bet>) {
-    this.bet = bet;
+    this.bet = bet == null ? new Bet() : bet;
   }
 
   public function toJs (): Js {
     return Js.wa([
       home.toJs(),
       away.toJs(),
-      switch (bet) {
-        case Some(b): b.toJs();
-        case None: Js.wn();
-      }
+      bet.toJs()
     ]);
   }
 
   public static function fromJs (js: Js): Match {
     final a = js.ra();
-    final r = new Match (
+    return new Match (
       Club.fromJs(a[0]),
-      Club.fromJs(a[1])
+      Club.fromJs(a[1]),
+      Bet.fromJs(a[2])
     );
-    if (!a[2].isNull()) r.setBet(Some(Bet.fromJs(a[2])));
-    return r;
   }
 }

@@ -33,7 +33,7 @@ const (
 	SchedulerSleep = 2000
 
 	// Tics of schedulerSleep
-	SchedulerTimes = 18000 // 1 hour
+	SchedulerTimes = 1800 // 1 hour
 
   // Hour to start backups
   SchedulerHour = 5

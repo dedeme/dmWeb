@@ -6,22 +6,23 @@ package db
 
 import (
 	"github.com/dedeme/Bet1x2/data/cts"
-	"github.com/dedeme/Bet1x2/db/year"
+	"github.com/dedeme/Bet1x2/data/year"
 	"github.com/dedeme/Bet1x2/db/allClubs"
+	"github.com/dedeme/Bet1x2/db/yearDb"
 	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/file"
-	"github.com/dedeme/golib/date"
 	"path"
 )
 
 // Initialize data base.
 func Initialize() {
 	p := path.Join(cgi.Home(), cts.DataPath)
+	currentYear := year.Current()
 	version := path.Join(p, "version.txt")
 	if !file.Exists(p) {
 		file.Mkdir(p)
-    allClubs.Mk(p)
-    year.Mk(path.Join(p, date.Now().Format("%Y")))
+		allClubs.Mk()
+		yearDb.Mk(currentYear)
 		file.WriteAll(version, cts.DataVersion)
 	}
 	dbVersion := file.ReadAll(version)
@@ -32,4 +33,5 @@ func Initialize() {
 			"\nBut found:\n" +
 			dbVersion)
 	}
+	yearDb.MkIfNot(currentYear)
 }
