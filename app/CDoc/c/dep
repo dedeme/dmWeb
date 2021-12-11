@@ -35,7 +35,7 @@ clone() {
   mkdir lib/$LIB
   mv tmp/$LIB/include lib/$LIB
   mv tmp/$LIB/lib/$LIB.a lib/$LIB
- # rm -fR tmp
+  rm -fR tmp
 }
 
 if [ ! -e bin ]
