@@ -1,5 +1,11 @@
 #!/bin/bash
 
-cd hx
+cd common
+./dep
+cd ..
+cd client
+./dep
+cd ..
+cd server
 ./dep
 cd ..

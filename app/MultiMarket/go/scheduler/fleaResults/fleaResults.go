@@ -11,16 +11,20 @@ import (
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
 	"github.com/dedeme/MultiMarket/data/flea/fmodels"
 	"github.com/dedeme/MultiMarket/data/flea/frank"
+	"github.com/dedeme/MultiMarket/data/flea/investor"
+	"github.com/dedeme/MultiMarket/data/flea/jumpRanking"
+	"github.com/dedeme/MultiMarket/data/flea/jumpResult"
 	"github.com/dedeme/MultiMarket/data/flea/paramEval"
 	"github.com/dedeme/MultiMarket/data/flea/result"
 	"github.com/dedeme/MultiMarket/data/qtable"
 	"github.com/dedeme/MultiMarket/db/fleas/fmodelsDb"
 	"github.com/dedeme/MultiMarket/db/fleas/resultsDb"
-	"github.com/dedeme/MultiMarket/db/log"
 	"github.com/dedeme/MultiMarket/db/quotesDb"
+	"github.com/dedeme/MultiMarket/global/fn"
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/golib/date"
 	"github.com/dedeme/golib/file"
+	"strings"
 )
 
 func evaluate(md *fmodel.T, f *flea.T, opens, closes *qtable.T) (
@@ -28,12 +32,12 @@ func evaluate(md *fmodel.T, f *flea.T, opens, closes *qtable.T) (
 ) {
 	rs := md.Assets(opens, closes, f.Param())
 	sales = float64(rs.Sells())
-	avg, sd := md.ProfitsAvgSd(opens, closes, f.Param())
-	value = f.Evaluate(rs.Assets()/cts.InitialCapital, avg+1, sd)
+	avg, _ := md.ProfitsAvgSd(opens, closes, f.Param())
+	value = f.Evaluate(rs.Assets(), avg)
 	return
 }
 
-func updateModelRangesPlus(lk sync.T, md *fmodel.T, opens, closes *qtable.T) {
+func updateModelRanges(lk sync.T, md *fmodel.T, opens, closes *qtable.T) {
 	now := date.Now().String()
 
 	mkEflea := func(param float64, value float64, sales float64) *eFlea.T {
@@ -60,7 +64,6 @@ func updateModelRangesPlus(lk sync.T, md *fmodel.T, opens, closes *qtable.T) {
 func calculateModel(lk sync.T, md *fmodel.T, opens, closes *qtable.T) {
 	days, dt := resultsDb.ReadDaysDateModel(lk, md.Id())
 
-	fail := ""
 	now := date.Now().String()
 	tmpFile := resultsDb.OpenTmp(lk)
 	if days == 0 {
@@ -83,7 +86,7 @@ func calculateModel(lk sync.T, md *fmodel.T, opens, closes *qtable.T) {
 
 	} else {
 
-		fn := func(
+		fun := func(
 			param, value, sales, lastValue, lastSales float64,
 		) bool {
 			if param < cts.RangesMin || param >= cts.RangesMax {
@@ -110,7 +113,7 @@ func calculateModel(lk sync.T, md *fmodel.T, opens, closes *qtable.T) {
 			return false
 		}
 
-		resultsDb.EachResult(lk, md.Id(), fn)
+		resultsDb.EachResult(lk, md.Id(), fun)
 
 		if dt != now && days < cts.RangesAvg {
 			days++
@@ -118,17 +121,82 @@ func calculateModel(lk sync.T, md *fmodel.T, opens, closes *qtable.T) {
 
 	}
 
-	if fail != "" {
-		log.Error(lk, fail)
-		return
-	}
-
 	tmpFile.Close()
 
 	resultsDb.UpdateResults(lk, md.Id())
 	resultsDb.WriteDaysDate(lk, md.Id(), days, now)
 
-	updateModelRangesPlus(lk, md, opens, closes)
+	updateModelRanges(lk, md, opens, closes)
+}
+
+// Update the ranking of jumps to operate.
+func calculateJumps(lk sync.T, modelIds []string, opens, closes *qtable.T) {
+	var maxParams []*paramEval.T
+
+	resultsDb.EachResults(lk, modelIds, func(param, eval, sales float64) bool {
+		var tmpMaxParams []*paramEval.T
+		i := 0
+		notAdded := true
+		for _, pe := range maxParams {
+			if i >= cts.JumpsMaxRanking {
+				break
+			}
+			if notAdded {
+				if eval > pe.Eval() {
+					tmpMaxParams = append(tmpMaxParams, paramEval.New(param, eval, sales))
+					notAdded = false
+					i++
+					if i >= cts.JumpsMaxRanking {
+						break
+					}
+				}
+			}
+			tmpMaxParams = append(tmpMaxParams, pe)
+			i++
+		}
+
+		if i < cts.JumpsMaxRanking {
+			maxParams = append(maxParams, paramEval.New(param, eval, sales))
+		} else {
+			maxParams = tmpMaxParams
+		}
+
+		return false
+	})
+
+	var jumpResults []*jumpResult.T
+	for _, mp := range maxParams {
+		param := mp.Param()
+		var invs []*investor.T
+		for _, id := range modelIds {
+			md, _ := fmodels.GetModel(id)
+			ef := eFlea.New(flea.New(param))
+			eFlea.Evaluate(md, opens, closes, []*eFlea.T{ef})
+			ef.HistoricEval = ef.Eval
+			ef.HistoricSales = float64(ef.Sells())
+			resultsDb.EachResult(lk, id, func(p, eval, sales, _, _ float64) bool {
+				if fn.Eq(p, param, 0.0000001) {
+					ef.HistoricEval = eval
+					ef.HistoricSales = sales
+					return true
+				}
+				return false
+			})
+			invs = append(invs, investor.New(md, ef))
+		}
+
+		jumpResults = append(jumpResults, jumpResult.New(
+			mp.Param(),
+			mp.Eval(),
+			mp.Sales(),
+			invs,
+		))
+	}
+
+	resultsDb.WriteJumpRanks(lk, jumpRanking.Add(
+		resultsDb.ReadJumpRanks(lk),
+		jumpRanking.New(date.Now().String(), jumpResults),
+	))
 }
 
 // Calculate and save results of flea models with only one parameter.
@@ -148,5 +216,7 @@ func Calculate() {
 		for _, md := range models {
 			calculateModel(lk, md, opens, closes)
 		}
+
+		calculateJumps(lk, strings.Split(cts.Jumps, ","), opens, closes)
 	})
 }

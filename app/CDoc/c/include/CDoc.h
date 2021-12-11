@@ -1,14 +1,11 @@
-// Copyright 18-Aug-2019 ºDeme
+// Copyright 05-Dic-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-/// Program entry point.
+/// Application entry.
 
 #ifndef CDOC_H
   #define CDOC_H
 
-#include "dmc/std.h"
-
-///
-int main (int arc, char *argv[]);
+int main(int argc, char *argv[]);
 
 #endif

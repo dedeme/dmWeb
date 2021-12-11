@@ -1,23 +1,10 @@
-// Copyright 18-Aug-2019 ºDeme
+// Copyright 08-Dic-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "data/Conf.h"
-
-/* .
-# Configuration data.
-Conf: serial
-  path: char *
-  lang: char *
-  show_all: bool
-*/
-
-/*--*/
-
-struct Conf_Conf {
-  char *path;
-  char *lang;
-  int show_all;
-};
+#include "dmc/DEFS.h"
+#include "dmc/Js.h"
+#include "dmc/char/Achar.h"
 
 Conf *conf_new (char *path, char *lang, int show_all) {
   Conf *this = MALLOC(Conf);
@@ -27,36 +14,20 @@ Conf *conf_new (char *path, char *lang, int show_all) {
   return this;
 }
 
-char *conf_path (Conf *this) {
-  return this->path;
+char *conf_to_js (Conf *this) {
+  return js_wa(achar_new_from(
+    js_ws(this->path),
+    js_ws(this->lang),
+    js_wb(this->show_all),
+    NULL
+  ));
 }
 
-char *conf_lang (Conf *this) {
-  return this->lang;
-}
-
-int conf_show_all (Conf *this) {
-  return this->show_all;
-}
-
-Js *conf_to_js (Conf *this) {
-  // Arr[Js]
-  Arr *js = arr_new();
-  arr_push(js, js_ws(this->path));
-  arr_push(js, js_ws(this->lang));
-  arr_push(js, js_wb(this->show_all));
-  return js_wa(js);
-}
-
-Conf *conf_from_js (Js *js) {
-  // Arr[Js]
-  Arr *a = js_ra(js);
-  Js **p = (Js **)arr_start(a);
+Conf *conf_from_js (char *js) {
+  char **p = js_ra(js)->es;
   Conf *this = MALLOC(Conf);
   this->path = js_rs(*p++);
   this->lang = js_rs(*p++);
   this->show_all = js_rb(*p++);
   return this;
 }
-
-/*--*/

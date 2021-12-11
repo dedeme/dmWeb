@@ -132,7 +132,8 @@ class Table {
 
     wg
       .removeAll()
-      .add(Q("table").klass("white")
+      .add(Q("table")
+        .klass("white")
         .add(Q("tr")
           .adds(header))
         .adds(rows))

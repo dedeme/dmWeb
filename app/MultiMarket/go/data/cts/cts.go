@@ -108,22 +108,16 @@ const (
 
 	// Fleas evaluation ----------------------------------------------------------
 	// Historic simulation ratio
-	AssetsRatio = 0.3
+	AssetsRatio = 0.35
 
-	// Average of profits ratio
-	ProfitsAvgRatio = 0.3
+	// Maximum historic simulation ratio
+	AssetsMax = InitialCapital * 3
 
-	// Standard deviation of profits ratio
-	ProfitsSdRatio = 0.2
+	// Average of simulation profits ratio
+	ProfitsAvgRatio = 0.65
 
-	// Assets limit to penalize (ratio)
-	AssetPenalize = 1.1
-
-	// Avg profits limit to penalize (ratio)
-	AvgPenalize = 1
-
-	// Std profits limit to penalize (ratio)
-	StdPenalize = 0.8
+	// Maximum average of simulation profits ratio
+	ProfitsAvgMax = 3
 
 	// Number of days of historic rankings.
 	RankingDays = 10
@@ -137,4 +131,9 @@ const (
 	RangesMedium = float64(0.15)
 	// Days movil average
 	RangesAvg = 250
+
+	// Fleas jump ----------------------------------------------------------------
+	// Fleas id to operate separeted by ","
+	Jumps           = "JUMP,JUMPT,JUMPTT"
+	JumpsMaxRanking = 10
 )

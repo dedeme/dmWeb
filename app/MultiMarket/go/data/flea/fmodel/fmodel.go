@@ -123,7 +123,7 @@ type T struct {
 }
 
 // Constructor
-//    id: Brief identifier. 4 characters maximum (e.g. APPR).
+//    id: Brief identifier. 6 characters maximum (e.g. APPR).
 //    name    : Model name.
 //    parName : Parameter name.
 //    isJump  : "true" if references move by jump (Models JUMP and JMP2)

@@ -1,48 +1,33 @@
-// Copyright 20-Aug-2019 ºDeme
+// Copyright 08-Dic-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-/// Documentation path index tree.
+/// Entry of index.
+/// It can be a file path or a directory path.
 
 #ifndef DATA_INDEXTREE_H
   #define DATA_INDEXTREE_H
 
-#include "dmc/std.h"
+#include "dmc/char/Ochar.h"
 
-/*--*/
-
-/// Dpath index tree.
-///   Arguments:
-///     id: char*
-///     is_path: bool
-///     doc: char*
-///     trees: Arr-IndexTree
+/// Entry of index.
 typedef struct IndexTree_IndexTree IndexTree;
 
-///
-IndexTree *indexTree_new (
-  char *id,
-  int is_path,
-  char *doc,
-  Arr *trees
-);
+/// Arr[IndexTree *].
+typedef struct aIndexTree_AIndexTree AIndexTree;
+
+/// Entry of index.
+/// It can be a file path or a directory path.
+struct IndexTree_IndexTree {
+  char *id; // Index entry identifier.
+  Ochar *doc; // Documentation, if the entry is a file path.
+              // Otherwise its value is none.
+  AIndexTree *trees;
+};
 
 ///
-char *indexTree_id (IndexTree *this);
+IndexTree *indexTree_new (char *id, Ochar *doc, AIndexTree *trees);
 
 ///
-int indexTree_is_path (IndexTree *this);
-
-/// If is_path is 0, 'doc' is an empty string.
-char *indexTree_doc (IndexTree *this);
-
-/// Opt[IndexTree] If is_path is 'true', 'tree' is 'null'.
-Arr *indexTree_trees (IndexTree *this);
-
-///
-Js *indexTree_to_js (IndexTree *this);
-
-/*--*/
-
-IndexTree *indexTree_empty (void);
+char *indexTree_to_js (IndexTree *this);
 
 #endif

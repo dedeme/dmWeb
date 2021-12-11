@@ -5,7 +5,6 @@
 package investor
 
 import (
-	"github.com/dedeme/MultiMarket/data/cts"
 	"github.com/dedeme/MultiMarket/data/flea/eFlea"
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
 	"github.com/dedeme/MultiMarket/data/flea/fmodels"
@@ -100,11 +99,7 @@ func Evaluate(opens, closes *qtable.T, invs []*T) {
 
 	for _, inv := range invs {
 		e := inv.eflea
-		e.Eval = e.Flea().Evaluate(
-			e.Assets()/cts.InitialCapital,
-			e.ProfitsAvg()+1,
-			e.ProfitsSd(),
-		)
+		e.Eval = e.Flea().Evaluate(e.Assets(), e.ProfitsAvg())
 	}
 }
 

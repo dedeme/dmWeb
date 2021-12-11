@@ -96,7 +96,7 @@ class I18n {
     "Application exit?" => "¿Terminar la aplicación?",
     "Balance" => "Balance",
     "Cancel" => "Cancelar",
-    "Cash" => "Bankia",
+    "Cash" => "Caixabank",
     "Change" => "Cambiar",
     "Change Language to %0" => "Cambiar el lenguage a %0",
     "Change Password" => "Cambiar la contraseña",

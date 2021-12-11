@@ -1,107 +1,104 @@
-// Copyright 18-Aug-2019 ºDeme
+// Copyright 05-Dic-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "CDoc.h"
-#include "dmc/cgi.h"
-#include "dmc/cryp.h"
-#include "pages/main.h"
-#include "pages/paths.h"
-#include "pages/chpass.h"
-#include "pages/index.h"
-#include "pages/module.h"
-#include "pages/code.h"
+#include "dmc/std.h"
+#include "cts.h"
+#include "data/Dpath/ADpath.h"
+#include "db.h"
+#include "db/conftb.h"
+#include "db/dpaths.h"
+#include "pgs/changePass.h"
+#include "pgs/pathsPg.h"
+#include "pgs/indexPg.h"
+#include "pgs/modulePg.h"
+#include "pgs/codePg.h"
 
-static char *app_name = "CDoc";
-static char *app_dir = "dmcgi/CDoc";
-static time_t expiration = 3600;
-
-// mrq is Map[Js]
-static char *process (Map *mrq) {
-  CGI_GET_STR(page, mrq)
-
-  if (str_eq(page, "Main")) return main_process(mrq);
-  if (str_eq(page, "Paths")) return paths_process(mrq);
-  if (str_eq(page, "Chpass")) return chpass_process(mrq);
-  if (str_eq(page, "Index")) return index_process(mrq);
-  if (str_eq(page, "Module")) return module_process(mrq);
-  if (str_eq(page, "Code")) return code_process(mrq);
-
-  EXC_ILLEGAL_ARGUMENT(
-    "page", "Main | Paths | Chpass | Index | Module | Code", page
-  )
-  return NULL;  // Unreachable
+static char *cDoc_main_process (Mchar *mrq) {
+  char *rq = cgi_rq_string(mrq, "rq");
+  if (str_eq(rq, "idata")) {
+    Mchar *rp = mchar_new();
+    mchar_put(rp, "conf", conftb_read_js());
+    mchar_put(rp, "paths", js_wa((Achar *)aDpath_map(
+      dpaths_read(),
+      (void *(*)(Dpath *))dpath_to_js
+    )));
+    return cgi_rp(rp);
+  } else if (str_eq(rq, "close")) {
+    char *sessionId = cgi_rq_string(mrq, "sessionId");
+    cgi_remove_session(sessionId);
+    return cgi_rp_empty();
+  } else if (str_eq(rq, "savePath")) {
+    char *path = cgi_rq_string(mrq, "path");
+    Conf *cf = conftb_read();
+    conftb_write(conf_new(
+      path,
+      cf->lang,
+      cf->show_all
+    ));
+    return cgi_rp_empty();
+  } else {
+    return FAIL(str_f("Unexpected value for 'rq': %s", rq));
+  }
 }
 
-int main (int argc, char *argv[]) {
-  cgi_init(app_dir, expiration);
-  exc_init();
+static char *cDoc_process (Mchar *mrq) {
+  char *source = cgi_rq_string(mrq, "source");
+  if (str_eq(source, "Main")) return cDoc_main_process(mrq);
+  else if (str_eq(source, "ChangePass")) return changePass_process(mrq);
+  else if (str_eq(source, "PathsPg")) return pathsPg_process(mrq);
+  else if (str_eq(source, "IndexPg")) return indexPg_process(mrq);
+  else if (str_eq(source, "ModulePg")) return modulePg_process(mrq);
+  else if (str_eq(source, "CodePg")) return codePg_process(mrq);
+  else return FAIL(str_f("Unexpected value for 'source': %s", source));
+}
 
-  if (argc != 2)
-    EXC_ILLEGAL_ARGUMENT("argc", "2", str_f("%d", argc))
+int main(int argc, char *argv[]) {
+  if (argc != 2)  FAIL("CDoc need tow and only tow argument.");
 
   char *rq = argv[1];
 
+  cgi_init(cts_app_dir(), cts_expiration());
+  db_init(cgi_home());
+
   int ix = str_cindex(rq, ':');
+
   //............................................................. CONNECTION
   if (ix == -1) {
-    cgi_set_key(rq);
     puts(cgi_connect(rq));
     return 0;
   }
 
   //......................................................... AUTHENTICATION
   if (ix == 0) {
-    char *key = cryp_key(app_name, cgi_klen());
-    cgi_set_key(key);
-    char *data = cryp_decryp(rq + 1, key);
-    // Arr[char]
-    Arr *parts = str_csplit(data, ':');
+    char *key = cryp_key(cts_app_name(), cgi_klen());
+    char *data = cryp_decryp(key, rq + 1);
+    Achar *parts = str_csplit(data, ':');
     puts(cgi_authentication(
-      arr_get(parts, 0),
-      arr_get(parts, 1),
-      *((char *)arr_get(parts, 2)) == '1'
+      key,
+      achar_get(parts, 0),
+      achar_get(parts, 1),
+      *(achar_get(parts, 2)) == '1'
     ));
     return 0;
   }
 
   //............................................................ NORMAL DATA
-  char *session_id = str_left(rq, ix);
-  // Opt [CgiSession]
-  Opt *ossdata = cgi_get_session(session_id);
+  Achar *parts = str_csplit(rq, ':');
+  char *session_id = achar_get(parts, 0);
+  char *data = achar_get(parts, 1);
+  char *con_key = "";
+  if (achar_size(parts) > 2) {
+    con_key = data;
+    data = achar_get(parts, 2);
+  }
 
-  if (opt_is_empty(ossdata)) {
-    cgi_set_key("nosession");
-    puts(cgi_expired());
+  char *key = ochar_nsome(cgi_set_key(session_id, con_key));
+  if (key) {
+    puts(cDoc_process(js_ro(cryp_decryp(key, data))));
     return 0;
   }
 
-  CgiSession *ssdata = opt_get(ossdata);
-
-  char *key = cgiSession_key(ssdata);
-  cgi_set_key(key);
-  char *data = cryp_decryp(str_right(rq, ix + 1), key);
-
-  // Map[Js]
-  Map *m = js_ro((Js *)data);
-  // Opt[Js]
-  Opt *conn_id_js = map_get(m, "connectionId");
-  if (opt_is_full(conn_id_js)) {
-    char *conn_id = js_rs(opt_get(conn_id_js));
-    if (!str_eq(conn_id, cgiSession_id(ssdata))) {
-      cgi_set_key("nosession");
-      puts(cgi_expired());
-      return 0;
-    }
-  }
-
-  //..................................... logout
-  CGI_GET_STR(page, m);
-
-  if (str_eq(page, "logout")) {
-    puts(cgi_del_session(session_id));
-    return 0;
-  }
-
-  puts(process(m));
+  puts(cgi_rp_expired());
   return 0;
 }

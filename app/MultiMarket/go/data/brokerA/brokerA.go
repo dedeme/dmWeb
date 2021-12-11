@@ -4,26 +4,11 @@
 // Accounting broker.
 package brokerA
 
-func isBigCia(nick string) bool {
-	bigCias := []string{
-		"AENA", "AMS", "BBVA", "CABK", "CLNX", "ELE", "FER", "IBE", "ITX",
-		"MTS", "REE", "REP", "SAN", "TEF",
-	}
-
-	for _, n := range bigCias {
-		if n == nick {
-			return true
-		}
-	}
-	return false
-}
-
 // Returns total fees of a buy or sell operation.
 //    nick  : Company nick. If nick is blank, it will be processed as a not
 //            big company.
 //    amount: Operation amount.
 func Fees(nick string, amount float64) float64 {
-
 	var brk, market float64
 	if amount > 50000 {
 		brk = amount * 0.001
@@ -31,30 +16,8 @@ func Fees(nick string, amount float64) float64 {
 		brk = 9.75
 	}
 
-	big := false
-	if nick != "" {
-		big = isBigCia(nick)
-	}
-
-	if big {
-		market = amount * 0.00003
-		if market < 1 {
-			market = 1
-		}
-	} else {
-		if amount > 140000 {
-			market = 13.4
-		} else if amount > 70000 {
-			market = 9.2 + amount*0.00003
-		} else if amount > 35000 {
-			market = 6.4 + amount*0.00007
-		} else if amount > 300 {
-			market = 4.65 + amount*0.00012
-		} else {
-			market = 1.1
-		}
-	}
-	market += 0.11
+  market = amount * 0.00003
+	market += 0.11 // Execution fee
 
 	return brk + market
 }

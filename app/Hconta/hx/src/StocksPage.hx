@@ -57,7 +57,7 @@ class StocksPage {
   }
 
   // stocksEntry = Nick, stocks, price, cost
-  static function missingMultiMarket(stocksEntry: Array<String>): Domo {
+  static function missingQMarket(stocksEntry: Array<String>): Domo {
     return mkStocksEntry([
       "error", stocksEntry[0],
       "- - -", "- - -",
@@ -67,34 +67,34 @@ class StocksPage {
   }
 
   // stocksEntry = Nick, stocks, price
-  static function missingStocks(multiMarketEntry: Array<String>): Domo {
+  static function missingStocks(qMarketEntry: Array<String>): Domo {
     return mkStocksEntry([
-      "error", multiMarketEntry[0],
-      multiMarketEntry[1], multiMarketEntry[2],
+      "error", qMarketEntry[0],
+      qMarketEntry[1], qMarketEntry[2],
       "- - -", "- - -", "- - -",
       ""
     ]);
   }
 
   static function nickEntry(
-    multiMarketEntry: Array<String>, stocksEntry: Array<String>
+    qMarketEntry: Array<String>, stocksEntry: Array<String>
   ): Domo {
-    final ok = multiMarketEntry[1] == stocksEntry[1] &&
-      multiMarketEntry[2] == stocksEntry[2]
+    final ok = qMarketEntry[1] == stocksEntry[1] &&
+      qMarketEntry[2] == stocksEntry[2]
     ;
 
     return mkStocksEntry([
       ok ? "well" : "error", stocksEntry[0],
-      multiMarketEntry[1], multiMarketEntry[2],
+      qMarketEntry[1], qMarketEntry[2],
       stocksEntry[1], stocksEntry[2], stocksEntry[3],
       ""
     ]);
   }
 
   static function mkCash (
-    div: Domo, multiMarket: String, hconta: String
+    div: Domo, qMarket: String, hconta: String
   ): Void {
-    final icon = multiMarket == hconta ? "well" : "error";
+    final icon = qMarket == hconta ? "well" : "error";
     div
       .removeAll()
       .add(Q("table")
@@ -116,7 +116,7 @@ class StocksPage {
           .add(Q("td")
             .klass("border")
             .style("width:100px;text-align:right")
-            .text("MultiMarket"))
+            .text("QMarket"))
           .add(Q("td")
             .klass("border")
             .style("width:100px;text-align:right")
@@ -128,7 +128,7 @@ class StocksPage {
           .add(Q("td")
             .klass("border")
             .style("width:100px;text-align:right")
-            .text(multiMarket))
+            .text(qMarket))
           .add(Q("td")
             .klass("border")
             .style("width:100px;text-align:right")
@@ -139,7 +139,7 @@ class StocksPage {
 
   static function mkStocks (
     div: Domo,
-    multiMarketStocks: Array<Array<String>>,
+    qMarketStocks: Array<Array<String>>,
     stocksStocks: Array<Array<String>>,
     stocksSum: String,
     hcontaSum: String
@@ -150,29 +150,29 @@ class StocksPage {
       var mmIx = 0;
       var stIx = 0;
       while (true) {
-        if (mmIx >= multiMarketStocks.length && stIx >= stocksStocks.length) {
+        if (mmIx >= qMarketStocks.length && stIx >= stocksStocks.length) {
           break;
         }
 
-        if (mmIx >= multiMarketStocks.length) {
-          r.push(missingMultiMarket(stocksStocks[stIx++]));
+        if (mmIx >= qMarketStocks.length) {
+          r.push(missingQMarket(stocksStocks[stIx++]));
           continue;
         }
 
         if (stIx >= stocksStocks.length) {
-          r.push(missingStocks(multiMarketStocks[mmIx++]));
+          r.push(missingStocks(qMarketStocks[mmIx++]));
           continue;
         }
 
-        final mmNick = multiMarketStocks[mmIx][0];
+        final mmNick = qMarketStocks[mmIx][0];
         final stNick = stocksStocks[stIx][0];
 
         if (mmNick == stNick) {
-          r.push(nickEntry(multiMarketStocks[mmIx++], stocksStocks[stIx++]));
+          r.push(nickEntry(qMarketStocks[mmIx++], stocksStocks[stIx++]));
         } else if (mmNick < stNick) {
-          r.push(missingStocks(multiMarketStocks[mmIx++]));
+          r.push(missingStocks(qMarketStocks[mmIx++]));
         } else {
-          r.push(missingMultiMarket(stocksStocks[stIx++]));
+          r.push(missingQMarket(stocksStocks[stIx++]));
         }
       }
 
@@ -220,7 +220,7 @@ class StocksPage {
             .klass("border")
             .att("colspan", "2")
             .style("text-align:center")
-            .text("MultiMarket"))
+            .text("QMarket"))
 
           .add(Q("td"))
 
@@ -346,10 +346,10 @@ class StocksPage {
       "lastDate" => Js.ws(Dt.to(StocksPage.date))
     ], rp -> {
 
-      final multiMarketCash = Dec.toIso(rp["multiMarketCash"].rf(), 2);
+      final qMarketCash = Dec.toIso(rp["qMarketCash"].rf(), 2);
       final hcontaCash = Dec.toIso(rp["hcontaCash"].rf(), 2);
 
-      final multiMarketStocks = rp["multiMarketStocks"].ra().map(rc -> {
+      final qMarketStocks = rp["qMarketStocks"].ra().map(rc -> {
           final f = rc.ra();
           return [
             f[0].rs(), // nick
@@ -370,7 +370,7 @@ class StocksPage {
       final stocksSum = Dec.toIso(rp["stocksSum"].rf(), 2);
       final hcontaSum = Dec.toIso(rp["hcontaSum"].rf(), 2);
 
-      multiMarketStocks.sort((e1, e2) -> {
+      qMarketStocks.sort((e1, e2) -> {
         final s1 = e1[0].toUpperCase();
         final s2 = e2[0].toUpperCase();
         return s1 < s2 ? -1 : s1 > s2 ? 1 : 0;
@@ -386,9 +386,9 @@ class StocksPage {
       final stocksDiv = Q("div");
       final sumDiv = Q("div");
 
-      mkCash(cashDiv, multiMarketCash, hcontaCash);
+      mkCash(cashDiv, qMarketCash, hcontaCash);
       mkStocks(
-        stocksDiv, multiMarketStocks, stocksStocks, stocksSum, hcontaSum
+        stocksDiv, qMarketStocks, stocksStocks, stocksSum, hcontaSum
       );
 
       wg

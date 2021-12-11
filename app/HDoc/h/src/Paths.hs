@@ -10,11 +10,12 @@ import qualified Dm.Js as Js
 import qualified Dm.Map as Map
 import qualified Db
 
-process :: Cgi.T -> Map.T Js.T -> IO ()
+process :: Cgi.T -> Map.T Js.T -> IO String
 process cgi rq = do
   let home = Cgi.home cgi
-  let rrq = Cgi.rrq "Paths.process" rq
-  case rrq "rq" Js.rs of
+  r <- Cgi.rrq (Cgi.err "") rq "rq" Js.rs
+  case r of
+  {-
     "changeLang" -> Db.setLang home (rrq "lang" Js.rs) >>
                       Cgi.emptyRp cgi
     "changeShowAll" -> Db.setShowAll home (rrq "value" Js.rb) >>
@@ -30,5 +31,5 @@ process cgi rq = do
       isErr <- Db.modifyPath home (rrq "oldName" Js.rs) (rrq "newName" Js.rs)
                                   (rrq "path" Js.rs)
       let err = if isErr then "" else "New name is duplicate"
-      Cgi.rp cgi [("error", Js.ws err)]
-    v -> putStrLn $ "Unexpected value for Paths.process:rq: " ++ v
+      Cgi.rp cgi [("error", Js.ws err)] -}
+    v -> return $ "Unexpected value for Paths.process:rq: " ++ v

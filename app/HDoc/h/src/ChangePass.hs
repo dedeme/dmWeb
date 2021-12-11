@@ -9,10 +9,9 @@ import qualified Dm.Cgi as Cgi
 import qualified Dm.Js as Js
 import qualified Dm.Map as Map
 
-process :: Cgi.T -> Map.T Js.T -> IO ()
+process :: Cgi.T -> Map.T Js.T -> IO (String)
 process cgi rq = do
-  let rrq = Cgi.rrq "Paths.process" rq
-  let user = rrq "user" Js.rs
-  let old = rrq "old" Js.rs
-  let new = rrq "new" Js.rs
+  user <- Cgi.rrq (Cgi.err "") rq "user" Js.rs
+  old <- Cgi.rrq (Cgi.err "") rq "old" Js.rs
+  new <- Cgi.rrq (Cgi.err "") rq "new" Js.rs
   Cgi.changePass cgi user old new

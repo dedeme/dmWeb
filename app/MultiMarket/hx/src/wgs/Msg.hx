@@ -107,5 +107,4 @@ class Msg {
     ;
     box.show(true);
   }
-
 }

@@ -196,8 +196,8 @@ Session is expired. = Session is expired.
 Settings = Settings
 
 # src/Summary.hx: 58
-# src/Summary.hx: 416
-# src/Summary.hx: 515
+# src/Summary.hx: 419
+# src/Summary.hx: 518
 Statements = Statements
 
 # src/StocksPage.hx: 255
@@ -232,12 +232,12 @@ Subgroups = Subgroups
 Sum = Sum
 
 # src/Main.hx: 51
-# src/Summary.hx: 571
+# src/Summary.hx: 574
 Summaries = Summaries
 
 # src/Summary.hx: 68
-# src/Summary.hx: 416
-# src/Summary.hx: 515
+# src/Summary.hx: 419
+# src/Summary.hx: 518
 Summary = Summary
 
 # src/Diary.hx: 242

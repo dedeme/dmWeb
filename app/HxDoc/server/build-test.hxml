@@ -1,0 +1,11 @@
+--class-path src
+--class-path lib
+
+--class-path /dm/dmWeb/app/HxDoc/common/lib
+--class-path /dm/dmWeb/app/HxDoc/common/src
+
+
+--dce full
+--hl bin/Main.hl
+--main Main
+

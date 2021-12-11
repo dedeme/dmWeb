@@ -119,7 +119,14 @@ func Regularize(lk sync.T, man int) {
 		keys = append(keys, k)
 	}
 	for _, e := range keys {
-		_, ok := mg.Nicks()[e]
+		ok := false
+		for _, nk := range nicks {
+			if e == nk.Name() {
+				ok = true
+				break
+			}
+		}
+
 		if !ok {
 			delete(mg.Nicks(), e)
 		}

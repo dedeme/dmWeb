@@ -10,6 +10,7 @@ import (
 	"github.com/dedeme/MultiMarket/data/flea/investor"
 	"github.com/dedeme/MultiMarket/data/flea/irank"
 	"github.com/dedeme/MultiMarket/db/fleas/fmodelsDb"
+	"github.com/dedeme/MultiMarket/db/fleas/resultsDb"
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/json"
@@ -43,10 +44,10 @@ func Process(ck string, mrq map[string]json.T) string {
 			for _, md := range fmodels.List() {
 				frks := fmodelsDb.Read(lk, md.Id())
 				for i, irk := range iranks {
-          i2 := i
-          if i2 >= len(frks) {
-            i2 = len(frks) - 1
-          }
+					i2 := i
+					if i2 >= len(frks) {
+						i2 = len(frks) - 1
+					}
 					newRank := irk.Ranking()
 					for j, eflea := range frks[i2].Ranking() {
 						if j == 15 {
@@ -67,6 +68,7 @@ func Process(ck string, mrq map[string]json.T) string {
 				rk = append(rk, e.ToJsClient())
 			}
 			rp["ranking"] = json.Wa(rk)
+			rp["jranking"] = resultsDb.ReadJumpRanksJsClient(lk)
 		})
 		return cgi.Rp(ck, rp)
 	default:

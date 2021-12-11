@@ -6,6 +6,7 @@ package paramEval
 
 import (
 	"github.com/dedeme/MultiMarket/data/flea/eFlea"
+	"github.com/dedeme/golib/json"
 	"sort"
 )
 
@@ -22,6 +23,35 @@ type rangeMax struct {
 
 func New(param, eval, sales float64) *T {
 	return &T{param, eval, sales}
+}
+
+func (pe *T) Param() float64 {
+	return pe.param
+}
+
+func (pe *T) Eval() float64 {
+	return pe.eval
+}
+
+func (pe *T) Sales() float64 {
+	return pe.sales
+}
+
+func (pe *T) ToJs() json.T {
+	return json.Wa([]json.T{
+		json.Wd(pe.param),
+		json.Wd(pe.eval),
+		json.Wd(pe.sales),
+	})
+}
+
+func FromJs(js json.T) *T {
+	a := js.Ra()
+	return &T{
+		a[0].Rd(),
+		a[1].Rd(),
+		a[2].Rd(),
+	}
 }
 
 func max(efleas []*T) *T {

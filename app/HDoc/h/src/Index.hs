@@ -12,15 +12,16 @@ import qualified Dm.File as File
 import qualified Dm.Str as Str
 import qualified Com.STree as STree
 
-process :: Cgi.T -> Map.T Js.T -> IO ()
+process :: Cgi.T -> Map.T Js.T -> IO String
 process cgi rq = do
   let home = Cgi.home cgi
-  let rrq = Cgi.rrq "Index.process" rq
-  case rrq "rq" Js.rs of
+  r <- Cgi.rrq (Cgi.err "") rq "rq" Js.rs
+  case r of
     "tree" -> do
-      t <- mkTree $ rrq "path" Js.rs
+      path <- Cgi.rrq (Cgi.err "") rq  "path" Js.rs
+      t <- mkTree $ path
       Cgi.rp cgi [("tree", Js.wMaybe STree.toJs t)]
-    v -> putStrLn $ "Unexpected value for Index.process:rq: " ++ v
+    v -> return $ "Unexpected value for Index.process:rq: " ++ v
 
 mkTree :: String -> IO (Maybe STree.T)
 mkTree root = File.isDirectory root >>=

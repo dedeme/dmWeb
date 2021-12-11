@@ -1,122 +1,74 @@
-LIB_PATH_dmc = lib/libdmc
-LIB_INCLUDE_dmc = $(LIB_PATH_dmc)/include
-
-LIB_PATH_tx = lib/libtx
-LIB_INCLUDE_tx = $(LIB_PATH_tx)/include
 
 CFLAGS = -Wall -rdynamic
-bin/CDoc : src/CDoc.c include/CDoc.h lib/liblocalcompilation/liblocalcompilation.a
+OBJECTS = $(subst src,lib/obj,$(patsubst %.c,%.o,$(wildcard src/*.c)))
+
+DIRS = data data/DocEntry data/Dpath data/IndexTree data/Doc data/DocRs \
+			 db pgs readers
+OBJECTS2 = $(foreach DIR, $(DIRS),\
+  $(subst src/$(DIR)/,lib/obj/$(subst /,_,$(DIR)_),\
+	$(patsubst %.c,%.o,$(wildcard src/$(DIR)/*.c))))
+
+bin/CDoc : lib/libCDoc.a
 	gcc $(CFLAGS) src/CDoc.c -o bin/CDoc \
 		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx) \
-		-Llib/liblocalcompilation -llocalcompilation \
-		-L$(LIB_PATH_dmc) -ldmc \
-		-L$(LIB_PATH_tx) -ltx \
+		-Ilib/libdmc/include \
+		-Ilib/libtx/include \
+		-Llib -lCDoc \
+		-Llib/libdmc -ldmc \
+		-Llib/libtx -ltx \
 		-lgc -lpthread -lm
 
-lib/liblocalcompilation/liblocalcompilation.a : lib/liblocalcompilation/obj/CDoc.o lib/liblocalcompilation/obj/pages/main.o lib/liblocalcompilation/obj/io/confdb.o lib/liblocalcompilation/obj/data/Conf.o lib/liblocalcompilation/obj/io/dpathsdb.o lib/liblocalcompilation/obj/data/Dpath.o lib/liblocalcompilation/obj/pages/paths.o lib/liblocalcompilation/obj/pages/chpass.o lib/liblocalcompilation/obj/pages/index.o lib/liblocalcompilation/obj/io/io.o lib/liblocalcompilation/obj/io/indexrd.o lib/liblocalcompilation/obj/io/modulerd.o lib/liblocalcompilation/obj/utx.o lib/liblocalcompilation/obj/data/Doc.o lib/liblocalcompilation/obj/data/IndexTree.o lib/liblocalcompilation/obj/pages/module.o lib/liblocalcompilation/obj/pages/code.o
-	ar rcs lib/liblocalcompilation/liblocalcompilation.a lib/liblocalcompilation/obj/CDoc.o lib/liblocalcompilation/obj/pages/main.o lib/liblocalcompilation/obj/io/confdb.o lib/liblocalcompilation/obj/data/Conf.o lib/liblocalcompilation/obj/io/dpathsdb.o lib/liblocalcompilation/obj/data/Dpath.o lib/liblocalcompilation/obj/pages/paths.o lib/liblocalcompilation/obj/pages/chpass.o lib/liblocalcompilation/obj/pages/index.o lib/liblocalcompilation/obj/io/io.o lib/liblocalcompilation/obj/io/indexrd.o lib/liblocalcompilation/obj/io/modulerd.o lib/liblocalcompilation/obj/utx.o lib/liblocalcompilation/obj/data/Doc.o lib/liblocalcompilation/obj/data/IndexTree.o lib/liblocalcompilation/obj/pages/module.o lib/liblocalcompilation/obj/pages/code.o
+lib/libCDoc.a : $(OBJECTS) $(OBJECTS2)
+	ar rcs lib/libCDoc.a $(OBJECTS) $(OBJECTS2)
 
-lib/liblocalcompilation/obj/CDoc.o : include/CDoc.h src/CDoc.c include/pages/main.h src/pages/main.c include/pages/paths.h src/pages/paths.c include/pages/chpass.h src/pages/chpass.c include/pages/index.h src/pages/index.c include/pages/module.h src/pages/module.c include/pages/code.h src/pages/code.c
-	gcc $(CFLAGS) -c src/CDoc.c -o lib/liblocalcompilation/obj/CDoc.o \
+lib/obj/%.o : src/%.c include/%.h
+	gcc $(CFLAGS) -c $< -o $@ \
 		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
+		-Ilib/libdmc/include
 
-lib/liblocalcompilation/obj/pages/main.o : include/pages/main.h src/pages/main.c include/io/confdb.h src/io/confdb.c include/io/dpathsdb.h src/io/dpathsdb.c
-	gcc $(CFLAGS) -c src/pages/main.c -o lib/liblocalcompilation/obj/pages/main.o \
+lib/obj/data_%.o : src/data/%.c include/data/%.h
+	gcc $(CFLAGS) -c $< -o $@ \
 		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
+		-Ilib/libdmc/include
 
-lib/liblocalcompilation/obj/io/confdb.o : include/io/confdb.h src/io/confdb.c include/data/Conf.h src/data/Conf.c
-	gcc $(CFLAGS) -c src/io/confdb.c -o lib/liblocalcompilation/obj/io/confdb.o \
+lib/obj/data_DocEntry_%.o : src/data/DocEntry/%.c include/data/DocEntry/%.h
+	gcc $(CFLAGS) -c $< -o $@ \
 		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
+		-Ilib/libdmc/include
 
-lib/liblocalcompilation/obj/data/Conf.o : include/data/Conf.h src/data/Conf.c
-	gcc $(CFLAGS) -c src/data/Conf.c -o lib/liblocalcompilation/obj/data/Conf.o \
+lib/obj/data_Dpath_%.o : src/data/Dpath/%.c include/data/Dpath/%.h
+	gcc $(CFLAGS) -c $< -o $@ \
 		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
+		-Ilib/libdmc/include
 
-lib/liblocalcompilation/obj/io/dpathsdb.o : include/io/dpathsdb.h src/io/dpathsdb.c include/data/Dpath.h src/data/Dpath.c
-	gcc $(CFLAGS) -c src/io/dpathsdb.c -o lib/liblocalcompilation/obj/io/dpathsdb.o \
+lib/obj/data_IndexTree_%.o : src/data/IndexTree/%.c include/data/IndexTree/%.h
+	gcc $(CFLAGS) -c $< -o $@ \
 		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
+		-Ilib/libdmc/include
 
-lib/liblocalcompilation/obj/data/Dpath.o : include/data/Dpath.h src/data/Dpath.c
-	gcc $(CFLAGS) -c src/data/Dpath.c -o lib/liblocalcompilation/obj/data/Dpath.o \
+lib/obj/data_Doc_%.o : src/data/Doc/%.c include/data/Doc/%.h
+	gcc $(CFLAGS) -c $< -o $@ \
 		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
+		-Ilib/libdmc/include
 
-lib/liblocalcompilation/obj/pages/paths.o : include/pages/paths.h src/pages/paths.c include/io/confdb.h src/io/confdb.c include/io/dpathsdb.h src/io/dpathsdb.c
-	gcc $(CFLAGS) -c src/pages/paths.c -o lib/liblocalcompilation/obj/pages/paths.o \
+lib/obj/data_DocRs_%.o : src/data/DocRs/%.c include/data/DocRs/%.h
+	gcc $(CFLAGS) -c $< -o $@ \
 		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
+		-Ilib/libdmc/include
 
-lib/liblocalcompilation/obj/pages/chpass.o : include/pages/chpass.h src/pages/chpass.c
-	gcc $(CFLAGS) -c src/pages/chpass.c -o lib/liblocalcompilation/obj/pages/chpass.o \
+lib/obj/db_%.o : src/db/%.c include/db/%.h
+	gcc $(CFLAGS) -c $< -o $@ \
 		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
+		-Ilib/libdmc/include
 
-lib/liblocalcompilation/obj/pages/index.o : include/pages/index.h src/pages/index.c include/io/dpathsdb.h src/io/dpathsdb.c include/io/io.h src/io/io.c
-	gcc $(CFLAGS) -c src/pages/index.c -o lib/liblocalcompilation/obj/pages/index.o \
+lib/obj/pgs_%.o : src/pgs/%.c include/pgs/%.h
+	gcc $(CFLAGS) -c $< -o $@ \
 		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
+		-Ilib/libdmc/include
 
-lib/liblocalcompilation/obj/io/io.o : include/io/io.h src/io/io.c include/io/indexrd.h src/io/indexrd.c include/io/modulerd.h src/io/modulerd.c include/data/IndexTree.h src/data/IndexTree.c include/data/Doc.h src/data/Doc.c
-	gcc $(CFLAGS) -c src/io/io.c -o lib/liblocalcompilation/obj/io/io.o \
+lib/obj/readers_%.o : src/readers/%.c include/readers/%.h
+	gcc $(CFLAGS) -c $< -o $@ \
 		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
-
-lib/liblocalcompilation/obj/io/indexrd.o : include/io/indexrd.h src/io/indexrd.c
-	gcc $(CFLAGS) -c src/io/indexrd.c -o lib/liblocalcompilation/obj/io/indexrd.o \
-		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
-
-lib/liblocalcompilation/obj/io/modulerd.o : include/io/modulerd.h src/io/modulerd.c include/utx.h src/utx.c include/data/Doc.h src/data/Doc.c
-	gcc $(CFLAGS) -c src/io/modulerd.c -o lib/liblocalcompilation/obj/io/modulerd.o \
-		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
-
-lib/liblocalcompilation/obj/utx.o : include/utx.h src/utx.c
-	gcc $(CFLAGS) -c src/utx.c -o lib/liblocalcompilation/obj/utx.o \
-		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
-
-lib/liblocalcompilation/obj/data/Doc.o : include/data/Doc.h src/data/Doc.c
-	gcc $(CFLAGS) -c src/data/Doc.c -o lib/liblocalcompilation/obj/data/Doc.o \
-		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
-
-lib/liblocalcompilation/obj/data/IndexTree.o : include/data/IndexTree.h src/data/IndexTree.c
-	gcc $(CFLAGS) -c src/data/IndexTree.c -o lib/liblocalcompilation/obj/data/IndexTree.o \
-		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
-
-lib/liblocalcompilation/obj/pages/module.o : include/pages/module.h src/pages/module.c include/io/dpathsdb.h src/io/dpathsdb.c include/io/io.h src/io/io.c
-	gcc $(CFLAGS) -c src/pages/module.c -o lib/liblocalcompilation/obj/pages/module.o \
-		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
-
-lib/liblocalcompilation/obj/pages/code.o : include/pages/code.h src/pages/code.c include/io/dpathsdb.h src/io/dpathsdb.c include/io/io.h src/io/io.c
-	gcc $(CFLAGS) -c src/pages/code.c -o lib/liblocalcompilation/obj/pages/code.o \
-		-Iinclude \
-		-I$(LIB_INCLUDE_dmc) \
-		-I$(LIB_INCLUDE_tx)
+		-Ilib/libdmc/include \
+		-Ilib/libtx/include
 

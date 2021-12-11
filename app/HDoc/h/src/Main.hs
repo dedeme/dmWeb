@@ -5,6 +5,7 @@
 
 module Main where
 
+import Control.Exception as Exc
 import System.Environment (getArgs)
 import qualified Dm.Cryp as Cryp
 import Dm.Result
@@ -44,21 +45,22 @@ main = do
 authentication :: Result String -> IO ()
 authentication (Right rq) = do
   cgi <- Cgi.new home (Just $ Cryp.key appName Cgi.klen) expiration
-  case break (':'==) rq of
+  msg <- case break (':'==) rq of
     (user, ':':rest) ->
       case break (':'==) rest of
         (pass, ":0") -> Cgi.authentication cgi user pass Cgi.NotExpire
         (pass, ":1") -> Cgi.authentication cgi user pass Cgi.Expire
         _ -> ffail
     _ -> ffail
+  putStrLn msg
   where
-    ffail = putStrLn "Syntax Error in authentication request"
+    ffail = Cgi.err "Syntax Error in authentication request" >>= Cgi.err
 authentication (Left e) = fail e
 
 connect :: String -> IO ()
 connect ssId = do
   cgi <- Cgi.new home (Just ssId) expiration
-  Cgi.connect cgi ssId
+  Cgi.connect cgi ssId >>= putStrLn
 
 request :: String -> IO ()
 request rq =
@@ -69,20 +71,21 @@ request rq =
       case cKey of
         Nothing -> do
           cgi' <- Cgi.new home (Just "__expired") expiration
-          Cgi.rp cgi' [("__expired", Js.wb True)]
+          Cgi.rp cgi' [("__expired", Js.wb True)] >>= putStrLn
         Just key -> do
           cgi' <- Cgi.new home cKey expiration
           case Cryp.decryp r key >>= Js.fromStr >>= Js.ro of
-            Right r -> hub cgi' r
-            Left e -> putStrLn "Main.request: Fail in communication key or \
-                               \in B64 code"
-    _ -> putStrLn "Main.request: Syntax Error in normal request"
+            Right r -> hub cgi' r >>= putStrLn
+            Left e -> Cgi.err "Fail in communication key or in B64 code" >>=
+                        putStrLn
+    _ -> Cgi.err "Syntax Error in normal request" >>= putStrLn
 
 -- MODIFY FOR EACH APPLICATION
 
-process :: Cgi.T -> Map.T Js.T -> IO ()
+process :: Cgi.T -> Map.T Js.T -> IO String
 process cgi rq = do
-  case Cgi.rrq "Main.process" rq "rq" Js.rs of
+  r <- Cgi.rrq (Cgi.err "") rq "rq" Js.rs
+  case r of
     "idata" -> do
       let home = Cgi.home cgi
       lcPath <- Db.getLpath home
@@ -95,19 +98,22 @@ process cgi rq = do
                  , ("paths", Js.wList PathEntry.toJs paths)
                  ]
     "setLcPath" -> do
-      Db.setLpath home $ Cgi.rrq "Main.process" rq "path" (Js.rList Js.rs)
+      path <- Cgi.rrq (Cgi.err "") rq "path" (Js.rList Js.rs)
+      Db.setLpath home $ path
       Cgi.emptyRp cgi
     "bye" -> do
-      Cgi.endSession cgi $ Cgi.rrq "Main.process" rq "sessionId" Js.rs
-    v -> putStrLn $ "Unexpected value for Main.process:rq: " ++ v
+      sessionId <- Cgi.rrq (Cgi.err "") rq "sessionId" Js.rs
+      Cgi.endSession cgi sessionId
+    v -> Cgi.err $ "Unexpected value for Main.process:rq: " ++ v
 
-hub :: Cgi.T -> Map.T Js.T -> IO ()
+hub :: Cgi.T -> Map.T Js.T -> IO String
 hub cgi rq = do
-  case Cgi.rrq "Main.hub" rq "source" Js.rs of
+  source <- Cgi.rrq (Cgi.err "") rq "source" Js.rs
+  case source of
     "Main" -> process cgi rq
     "ChangePass" -> ChangePass.process cgi rq
     "Paths" -> Paths.process cgi rq
     "Index" -> Index.process cgi rq
     "Code" -> Code.process cgi rq
-    v -> putStrLn $ "Unexpected value for Main.hub:source: " ++ v
+    v -> Cgi.err $ "Unexpected value for Main.hub:source: " ++ v
 

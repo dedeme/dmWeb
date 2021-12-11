@@ -14,18 +14,13 @@ type T struct {
 	param float64
 }
 
-// Constructor with parameters
-// Random constructor
-//    md: Flea model.
-//    date: Date of creation.
-//    cycle: Cycle of creation.
-//    id: Identifier inside date-cycle.
-//    params: Flea parameters.
+// Constructor with parameter.
+//    param: Flea parameter.
 func New(param float64) *T {
 	return &T{param}
 }
 
-// Model parameters.
+// Model parameter.
 func (f *T) Param() float64 {
 	return f.param
 }
@@ -39,42 +34,17 @@ func (f *T) Eq(f2 *T) (ok bool) {
 //
 // Ratios of assets and profitsAvg are 0 -> -100%, 1 -> 0%, 2 -> 100%,
 // 3 -> 200%...
-//    assets    : Ratio of assets
-//    profitsAvg: Ratio of profits average.
-//    profitsSd : Ratio of profits standard deviation (between 0 and 1).
-func (f *T) Evaluate(assets, profitsAvg, profitsSd float64) float64 {
-	normalize := func(n, min, maxSubMin float64) float64 {
-		n = (n - min) / maxSubMin
-		if n < 0 {
-			return 0.0
-		}
-		if n > 1 {
-			return 1.0
-		}
-		return n
+//    assets    : Totas assets (amount from 0 to ...)
+//    profitsAvg: Ratio of profits average (-1 to ...).
+func (f *T) Evaluate(assets, profitsAvg float64) float64 {
+	if assets > cts.AssetsMax {
+		assets = cts.AssetsMax
 	}
-
-	pond := 1.0
-
-	if assets < cts.AssetPenalize {
-		pond = 0.5
+	if profitsAvg > cts.ProfitsAvgMax {
+		profitsAvg = cts.ProfitsAvgMax
 	}
-
-	if profitsAvg < cts.AvgPenalize {
-		pond = pond * 0.5
-	}
-
-	if profitsSd > cts.StdPenalize {
-		pond = pond * 0.5
-	}
-
-	assets = normalize(assets, 0.15, 2.35)
-	profitsAvg = normalize(profitsAvg, 0.33, 1.47)
-
-	e := assets*float64(cts.AssetsRatio) +
-		profitsAvg*(float64(cts.ProfitsAvgRatio)+
-			(1-profitsSd)*float64(cts.ProfitsSdRatio))
-	return e * pond
+	return (assets*cts.AssetsRatio/cts.AssetsMax +
+		(1+profitsAvg)*cts.ProfitsAvgRatio/(1+cts.ProfitsAvgMax)) / 2
 }
 
 func (f *T) ToJs() json.T {

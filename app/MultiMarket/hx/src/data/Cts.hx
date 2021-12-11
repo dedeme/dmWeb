@@ -67,7 +67,7 @@ class Cts {
   /// Values of "jumper" from each investor. Used in daily charts of Companies.
   /// 'true': The investor is type Jump
   /// 'false: The investor is not type Jump.
-  public static final managerJumpers = [true, true, false];
+  public static final managerJumpers = [true, true, true];
   /// Months to change parameters for each investor.
   public static final changeMonths = [
     _("January"),

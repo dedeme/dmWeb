@@ -5,10 +5,13 @@
 package resultsDb
 
 import (
+	"fmt"
 	"github.com/dedeme/MultiMarket/data/flea/fmodels"
+	"github.com/dedeme/MultiMarket/data/flea/jumpRanking"
 	"github.com/dedeme/MultiMarket/data/flea/paramEval"
 	"github.com/dedeme/MultiMarket/data/flea/result"
 	"github.com/dedeme/MultiMarket/db/log"
+	"github.com/dedeme/MultiMarket/global/fn"
 	"github.com/dedeme/MultiMarket/global/sync"
 	"github.com/dedeme/golib/file"
 	"github.com/dedeme/golib/json"
@@ -31,11 +34,16 @@ func daysDatePath() string {
 	return path.Join(parentDir, "DaysDate.tb")
 }
 
+func jumpRanksPath() string {
+	return path.Join(parentDir, "jumpRanks.tb")
+}
+
 func Initialize(lk sync.T, parent string) {
 	parentDir = parent
 	if !file.Exists(parentDir) {
 		file.Mkdirs(parentDir)
 		file.WriteAll(daysDatePath(), json.Wo(map[string]json.T{}).String())
+		file.WriteAll(jumpRanksPath(), json.Wa([]json.T{}).String())
 	}
 	for _, md := range fmodels.List() {
 		if !file.Exists(filePath(md.Id())) {
@@ -89,6 +97,30 @@ func ReadDaysDateModel(lk sync.T, modelId string) (days int, date string) {
 	return
 }
 
+func WriteJumpRanks(lk sync.T, ranks []*jumpRanking.T) {
+	var jss []json.T
+	for _, r := range ranks {
+		jss = append(jss, r.ToJs())
+	}
+	file.WriteAll(jumpRanksPath(), json.Wa(jss).String())
+}
+
+func ReadJumpRanks(lk sync.T) []*jumpRanking.T {
+	var r []*jumpRanking.T
+	for _, js := range json.FromString(file.ReadAll(jumpRanksPath())).Ra() {
+		r = append(r, jumpRanking.FromJs(js))
+	}
+	return r
+}
+
+func ReadJumpRanksJsClient(lk sync.T) json.T {
+	var rs []json.T
+	for _, r := range ReadJumpRanks(lk) {
+		rs = append(rs, r.ToJsClient())
+	}
+	return json.Wa(rs)
+}
+
 // Open a temporay file to write new results.
 func OpenTmp(lk sync.T) *os.File {
 	return file.OpenWrite(tmpFilePath())
@@ -105,10 +137,10 @@ func OpenResults(lk sync.T, modelId string) *os.File {
 //    fn: Function to execute with each record.
 //        fn arguments are:
 //          param        : Parameter to calculate values.
-//          eval         : Average of evaluation values.
-//          sales        : Average of sales number.
-//          HistoricEval : Las evaluation value.
-//          HistoricSales: Las sales number.
+//          eval         : Evaluation values.
+//          sales        : Sales number.
+//          lastEval     : Last evaluation value.
+//          lastSales    : Last sales number.
 //          RETURN       : true if 'fn' must stop after execute it.
 func EachResult(
 	lk sync.T, modelId string,
@@ -133,9 +165,85 @@ func EachResult(
 			break
 		}
 
-		param, eval, sales, historicEval, historicSales := result.FromBits(bs)
+		param, eval, sales, lastEval, lastSales := result.FromBits(bs)
 
-		if fn(param, eval, sales, historicEval, historicSales) {
+		if fn(param, eval, sales, lastEval, lastSales) {
+			break
+		}
+	}
+
+	if fail != "" {
+		log.Error(lk, fail)
+		return
+	}
+}
+
+// Do a function with each element of several model results files.
+//    lk: Synchronization lock.
+//    modelIds: Model identifiers.
+//    fn: Function to execute with each record.
+//        fn arguments are:
+//          param        : Parameter to calculate values.
+//          eval         : 'modelIds' average of evaluation value.
+//          sales        : 'modelIds' average of sales number.
+//          RETURN       : true if 'fn' must stop after execute it.
+func EachResults(
+	lk sync.T, modelIds []string,
+	fun func(float64, float64, float64) bool,
+) {
+	var resultFiles []*os.File
+	for i := range modelIds {
+		resultFiles = append(resultFiles, OpenResults(lk, modelIds[i]))
+	}
+	defer func() {
+		for i := range resultFiles {
+			resultFiles[i].Close()
+		}
+	}()
+
+	bs := result.MkBs()
+	fail := ""
+
+	for {
+		evalFinal := 0.0
+		salesFinal := 0.0
+		paramFinal := -1.0
+		end := false
+		for i := range resultFiles {
+			n, err := resultFiles[i].Read(bs)
+			if err != nil {
+				if err != io.EOF {
+					fail = "'" + err.Error() + "' reading " + modelIds[i]
+				}
+				end = true
+				break
+			}
+			if n < 0 {
+				fail = "Bad bytes number read from " + modelIds[i]
+				break
+			}
+
+			param, eval, sales, _, _ := result.FromBits(bs)
+			if i == 0 {
+				paramFinal = param
+			} else {
+				if !fn.Eq(param, paramFinal, 0.0000001) {
+					fail = fmt.Sprintf("Bad parameter value in %v (%v -> %v)",
+						modelIds[i], paramFinal, param,
+					)
+					break
+				}
+			}
+			evalFinal += eval
+			salesFinal += sales
+		}
+
+		if fail != "" || end {
+			break
+		}
+
+		n := float64(len(resultFiles))
+		if fun(paramFinal, evalFinal/n, salesFinal/n) {
 			break
 		}
 	}
@@ -195,7 +303,7 @@ func Clean(lk sync.T, modelIds []string) {
 
 	for _, info := range file.List(path.Dir(daysDatePath())) {
 		name := info.Name()
-		if name == path.Base(daysDatePath()) {
+		if name == path.Base(daysDatePath()) || name == path.Base(jumpRanksPath()) {
 			continue
 		}
 

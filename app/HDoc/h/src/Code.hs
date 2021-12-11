@@ -12,11 +12,10 @@ import qualified Dm.File as File
 import qualified Dm.Str as Str
 import qualified Com.STree as STree
 
-process :: Cgi.T -> Map.T Js.T -> IO ()
+process :: Cgi.T -> Map.T Js.T -> IO String
 process cgi rq = do
   let home = Cgi.home cgi
-  let rrq = Cgi.rrq "Code.process" rq
-  let file = rrq "path" Js.rs
+  file <- Cgi.rrq (Cgi.err "") rq "path" Js.rs
   ex <- File.exists file
   tx <- if ex then File.read file >>= (return . Just) else return Nothing
   Cgi.rp cgi [("code", Js.wMaybe Js.ws tx)]

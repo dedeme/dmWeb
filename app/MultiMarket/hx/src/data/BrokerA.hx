@@ -5,15 +5,6 @@ package data;
 
 /// Market broker.
 class BrokerA {
-  static function isBigCia (nick: String): Bool {
-    final bigCias = [
-      "AENA", "AMS", "BBVA", "CABK", "CLNX", "ELE", "FER", "IBE", "ITX",
-		"MTS", "REE", "REP", "SAN", "TEF"
-    ];
-
-    return bigCias.contains(nick);
-  }
-
   /// Calculate fees of Broker + Market.
   public static function fees (nick: String, amount: Float): Float {
     var broker = 9.75;
@@ -21,26 +12,7 @@ class BrokerA {
       broker = amount * 0.001;
     }
 
-    final isBig = (nick == "") ? false : isBigCia(nick);
-
-    var market: Float;
-
-    if (isBig) {
-      market = amount * 0.00003;
-      if (market < 1) market = 1;
-    } else {
-      if (amount > 140000) {
-        market = 13.4;
-      } else if (amount > 70000) {
-        market = 9.2 + amount * 0.00003;
-      } else if (amount > 35000) {
-        market = 6.4 + amount * 0.00007;
-      } else if (amount > 300){
-        market = 4.65 + amount * 0.00012;
-      } else {
-        market = 1.1;
-      }
-    }
+    var market = amount * 0.00003;
     market += 0.11; // Execution fee.
 
 

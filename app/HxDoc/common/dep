@@ -1,0 +1,27 @@
+#!/bin/bash
+
+GIT1="--branch 202106 https://github.com/dedeme/cmhxlib.git"
+
+if [ ! -e lib ]
+then
+  mkdir lib
+fi
+cd lib
+
+if [ -e tmp ]
+then
+  rm -fR tmp
+fi
+mkdir tmp
+cd tmp
+git clone $GIT1
+cd ..
+
+if [ -e dm ]
+then
+  rm -fR dm
+fi
+mv tmp/cmhxlib/src/dm dm
+rm -fR tmp
+
+

@@ -5,7 +5,6 @@
 package eFlea
 
 import (
-	"github.com/dedeme/MultiMarket/data/cts"
 	"github.com/dedeme/MultiMarket/data/flea"
 	"github.com/dedeme/MultiMarket/data/flea/fmodel"
 	"github.com/dedeme/MultiMarket/data/qtable"
@@ -153,13 +152,7 @@ func Evaluate(md *fmodel.T, opens, closes *qtable.T, es []*T) {
 	}
 
 	for _, e := range es {
-		e.Eval = e.flea.Evaluate(
-			e.assets/cts.InitialCapital,
-			e.profitsAvg+1,
-			// profitsAvs = Avg of [(cash - cts.InitialCapital) / cts.InitialCapital]
-			// e.profitsAvg+1 = Avg of [cash / cts.InitialCapital]
-			e.profitsSd,
-		)
+		e.Eval = e.flea.Evaluate(e.assets, e.profitsAvg)
 	}
 }
 

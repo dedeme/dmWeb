@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LIBS="libdmc https://github.com/dedeme/libdmc.git 201909"
+LIBS="libdmc https://github.com/dedeme/libdmc.git 202111"
 LIBS=$LIBS" libtx https://github.com/dedeme/libtx.git 201909"
 
 
@@ -35,7 +35,7 @@ clone() {
   mkdir lib/$LIB
   mv tmp/$LIB/include lib/$LIB
   mv tmp/$LIB/lib/$LIB.a lib/$LIB
-  rm -fR tmp
+ # rm -fR tmp
 }
 
 if [ ! -e bin ]

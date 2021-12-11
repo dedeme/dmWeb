@@ -1,0 +1,12 @@
+--class-path src
+--class-path lib
+
+--class-path /dm/dmWeb/app/HxDoc/common/lib
+--class-path /dm/dmWeb/app/HxDoc/common/src
+
+--dce full
+--js www/index.js
+-D js-es=6
+-D js-source-map
+--main Main
+
