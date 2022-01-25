@@ -1,8 +1,14 @@
 // Copyright 05-Dic-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
+#include <stdio.h>
+#include "dmc/cgi.h"
+#include "dmc/char/Mchar.h"
+#include "dmc/str.h"
+#include "dmc/js.h"
+#include "dmc/err.h"
+#include "dmc/cryp.h"
 #include "CDoc.h"
-#include "dmc/std.h"
 #include "cts.h"
 #include "data/Dpath/ADpath.h"
 #include "db.h"
@@ -54,7 +60,7 @@ static char *cDoc_process (Mchar *mrq) {
 }
 
 int main(int argc, char *argv[]) {
-  if (argc != 2)  FAIL("CDoc need tow and only tow argument.");
+  if (argc != 2)  FAIL("CDoc need one and only one argument.");
 
   char *rq = argv[1];
 

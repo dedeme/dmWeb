@@ -191,8 +191,8 @@ class List {
         }
     }
 
-    It.from(nicks).eachSync(
-      (nk, fn) -> {
+    It.from(nicks).eachSyn (
+      (nk, frec) -> {
         setWait(nk.name);
         Cts.client.ssend([
           "module" => Js.ws("settings"),
@@ -200,16 +200,14 @@ class List {
           "rq" => Js.ws("download"),
           "nickId" => Js.wi(nk.id)
         ], rp -> {
-          fn(rp);
+          final rps = rp["result"].rs();
+          if (rps == "error") {
+            error = true;
+          } else if (rps == "warnings") {
+            warning = true;
+          }
+          frec();
         });
-      },
-      rp -> {
-        final rps = rp["result"].rs();
-        if (rps == "error") {
-          error = true;
-        } else if (rps == "warnings") {
-          warning = true;
-        }
       },
       () -> {
         setWait("");
@@ -231,8 +229,8 @@ class List {
   function test () {
     var error = false;
     var warnings = false;
-    It.from(nicks).eachSync(
-      (nk, fn) -> {
+    It.from(nicks).eachSyn(
+      (nk, frec) -> {
         setWait(nk.name);
         Cts.client.ssend([
           "module" => Js.ws("settings"),
@@ -240,16 +238,44 @@ class List {
           "rq" => Js.ws("test"),
           "nickName" => Js.ws(nk.name)
         ], rp -> {
-          fn(rp);
+          final rps = rp["result"].rs();
+          if (rps == "error") {
+            error = true;
+          } else if (rps == "warnings") {
+            warnings = true;
+          }
+          frec();
         });
       },
-      rp -> {
-        final rps = rp["result"].rs();
-        if (rps == "error") {
-          error = true;
-        } else if (rps == "warnings") {
-          warnings = true;
+      () -> {
+        setWait("");
+        if (error) {
+          Msg.error(_("An error was found.<br>See Log."));
+        } else if (warnings) {
+          Msg.info(_("Some warnings were found.<br>See Log."));
+        } else {
+          Msg.ok(_("Test ok."));
         }
+      }
+    );
+
+    It.from(nicks).eachSyn(
+      (nk, frec) -> {
+        setWait(nk.name);
+        Cts.client.ssend([
+          "module" => Js.ws("settings"),
+          "source" => Js.ws("nicks/list"),
+          "rq" => Js.ws("test"),
+          "nickName" => Js.ws(nk.name)
+        ], rp -> {
+          final rps = rp["result"].rs();
+          if (rps == "error") {
+            error = true;
+          } else if (rps == "warnings") {
+            warnings = true;
+          }
+          frec();
+        });
       },
       () -> {
         setWait("");
@@ -263,5 +289,4 @@ class List {
       }
     );
   }
-
 }

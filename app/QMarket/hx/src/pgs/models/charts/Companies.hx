@@ -58,31 +58,30 @@ class Companies {
     var sumWins = 0;
     var sumLosses = 0;
     var tr = Q("tr");
-    It.range(n).eachSync(
-      (i, fn) -> {
+    It.range(n).eachSyn(
+      (i, frec) -> {
         final nickName = nicks[i];
-        mkChart(i, model, nickName, fn);
-      },
-      rs -> {
-        final iNick: Int = rs.iNick;
-        final chart: Domo = rs.chart;
-        final profits: Float = rs.profits;
-        sumProfs += profits;
-        if (profits < 0) ++sumLosses;
-        else ++sumWins;
+        mkChart(i, model, nickName, rs -> {
+          final iNick: Int = rs.iNick;
+          final chart: Domo = rs.chart;
+          final profits: Float = rs.profits;
+          sumProfs += profits;
+          if (profits < 0) ++sumLosses;
+          else ++sumWins;
 
-        switch (iNick % 3) {
-        case 0:
-          addSeparator();
-          tr = Q("tr");
-          tr.add(Q("td").add(chart));
-        case 2:
-          tr.add(Q("td").add(chart));
-          chs.add(tr);
-        default:
-          tr.add(Q("td").add(chart));
-        }
-        return;
+          switch (iNick % 3) {
+          case 0:
+            addSeparator();
+            tr = Q("tr");
+            tr.add(Q("td").add(chart));
+          case 2:
+            tr.add(Q("td").add(chart));
+            chs.add(tr);
+          default:
+            tr.add(Q("td").add(chart));
+          }
+          frec();
+        });
       },
       () -> {
         switch (n % 3) {

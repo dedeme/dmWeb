@@ -6,10 +6,10 @@ package companies
 
 import (
 	"fmt"
+	"github.com/dedeme/QMarket/data/model"
+	"github.com/dedeme/QMarket/db/logTb"
 	"github.com/dedeme/QMarket/db/nicksTb"
 	"github.com/dedeme/QMarket/db/quotesDb"
-	"github.com/dedeme/QMarket/db/logTb"
-	"github.com/dedeme/QMarket/data/model"
 	"github.com/dedeme/QMarket/lock"
 	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/json"
@@ -37,12 +37,12 @@ func Process(ck string, mrq map[string]json.T) string {
 			opens := quotesDb.Opens()
 			nkOs, ok1 := opens.NickValues(nickName)
 			if !ok1 {
-				logTb.Error("Opens of "+nickName+" not found")
+				logTb.Error("Opens of " + nickName + " not found")
 			}
 			closes := quotesDb.Closes()
 			nkCs, ok2 := closes.NickValues(nickName)
 			if !ok2 {
-				logTb.Error("Opens of "+nickName+" not found")
+				logTb.Error("Opens of " + nickName + " not found")
 			}
 
 			md := model.New(qlevel, id)

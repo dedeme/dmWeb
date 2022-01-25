@@ -120,8 +120,8 @@ func Process(ck string, mrq map[string]json.T) string {
 					ref1 := -1.0
 					ref := -1.0
 					if activity == cts.ActSleeping1 ||
-            activity == cts.ActSleeping3 ||
-            activity == cts.ActHistoric {
+						activity == cts.ActSleeping3 ||
+						activity == cts.ActHistoric {
 						qnew, ok := mqs[nk]
 						if ok {
 							q1 = q

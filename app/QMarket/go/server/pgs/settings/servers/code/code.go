@@ -25,7 +25,7 @@ func Process(ck string, mrq map[string]json.T) string {
 			rp["withWarnings"] = json.Wb(false)
 			defer func() {
 				if err := recover(); err != nil {
-					rp["error"] = json.Wb(true)
+					rp["withError"] = json.Wb(true)
 				}
 			}()
 

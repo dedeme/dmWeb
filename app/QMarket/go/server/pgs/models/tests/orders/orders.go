@@ -42,7 +42,7 @@ func Process(ck string, mrq map[string]json.T) string {
 
 			md := model.New(qlevel, paramId)
 			md.FirstEvaluation(opens, closes)
-      _, ev := md.Evaluation()
+			_, ev := md.Evaluation()
 			rp["eval"] = ev.ToJs()
 
 			var orders []json.T

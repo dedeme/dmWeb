@@ -28,4 +28,7 @@ DocEntry *docEntry_new (
 ///
 char *docEntry_to_js (DocEntry *this);
 
+///
+DocEntry *docEntry_from_js (char *js);
+
 #endif

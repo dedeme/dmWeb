@@ -1,4 +1,4 @@
-// Copyright 11-Dec-2021 ºDeme
+// Copyright 25-Dec-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 /// Opt[DocRs*].
@@ -34,13 +34,11 @@ DocRs *oDocRs_nsome (ODocRs *opt);
 
 /// Returns this JSONized.
 ///   this: Container.
-///   to  : Converter of container element to JSON.
-char *oDocRs_to_js (ODocRs *this, char *(*to)(DocRs *e));
+char *oDocRs_to_js (ODocRs *this);
 
 /// Returns the container from its JSON representation.
 ///   js  : Container JSONized.
-///   from: Converter from JSON to container element.
-ODocRs *oDocRs_from_js (char *js, DocRs *(*from)(char *ejs));
+ODocRs *oDocRs_from_js (char *js);
 
 
 //--// Not remove

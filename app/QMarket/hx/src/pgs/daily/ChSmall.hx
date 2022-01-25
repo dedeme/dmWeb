@@ -39,8 +39,8 @@ class ChSmall {
     final refs: Array<Array<Dynamic>> = [];
     // Pairs<Int, Float>: [isBuy = -1|isSell = 1, ref-quote %]
     final rs = [];
-    for (manIx in 0...d.managersData.length) {
-      final e = d.managersData[manIx];
+    for (manIx in 0...d.investorsData.length) {
+      final e = d.investorsData[manIx];
       var daily = 0.0;
       if (e.stocks > 0) {
         daily = e.stocks * (quote - close);
@@ -107,7 +107,7 @@ class ChSmall {
         rsWgs.push(Q("span").text(" | "));
       }
       rsWgs.push(Q("span")
-        .style(colorStocks(-rs[i][0], d.managersData[i].stocks > 0))
+        .style(colorStocks(-rs[i][0], d.investorsData[i].stocks > 0))
         .text(Dec.toIso(rs[i][1], 2) + "%")
       );
     }

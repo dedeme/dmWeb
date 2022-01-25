@@ -1,4 +1,4 @@
-// Copyright 08-Dec-2021 ºDeme
+// Copyright 25-Dec-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 /// Arr[DocEntry *].
@@ -152,13 +152,11 @@ ADocEntry *aDocEntry_duplicates (ADocEntry *this, int (feq)(DocEntry *e1, DocEnt
 
 /// Returns this JSONized.
 ///   this: Container.
-///   to  : Converter of container element to JSON.
-char *aDocEntry_to_js (ADocEntry *this, char *(*to)(DocEntry *e));
+char *aDocEntry_to_js (ADocEntry *this);
 
 /// Returns the container from its JSON representation.
 ///   js  : Container JSONized.
-///   from: Converter from JSON to container element.
-ADocEntry *aDocEntry_from_js (char *js, DocEntry *(*from)(char *ejs));
+ADocEntry *aDocEntry_from_js (char *js);
 
 
 //--// Not remove

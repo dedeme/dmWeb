@@ -1,9 +1,10 @@
-// Copyright 08-Dec-2021 ºDeme
+// Copyright 25-Dec-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "data/IndexTree/AIndexTree.h"
 #include <string.h>
 #include <stdarg.h>
+#include "dmc/js.h"
 
 AIndexTree *aIndexTree_new (void) {
   return (AIndexTree *)arr_new();
@@ -179,12 +180,12 @@ AIndexTree *aIndexTree_duplicates (
   return (AIndexTree *)arr_duplicates((Arr *)this, (int(*)(void *, void *))feq);
 }
 
-char *aIndexTree_to_js (AIndexTree *this, char *(*to)(IndexTree *e)) {
-  return arr_to_js((Arr *)this, (char *(*)(void *))to);
+char *aIndexTree_to_js (AIndexTree *this) {
+  return arr_to_js((Arr *)this, (char *(*)(void *))indexTree_to_js);
 }
 
-AIndexTree *aIndexTree_from_js (char *js, IndexTree *(*from)(char *ejs)) {
-  return (AIndexTree *)arr_from_js(js, (void *(*)(char *))from);
+AIndexTree *aIndexTree_from_js (char *js) {
+  return (AIndexTree *)arr_from_js(js, (void *(*)(char *))indexTree_from_js);
 }
 
 

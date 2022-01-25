@@ -22,8 +22,8 @@ func Process(ck string, mrq map[string]json.T) string {
 	case "idata":
 		year := cgi.RqString(mrq, "year")
 		path := years.YearPath(year)
-		previousYear, _ := strconv.Atoi(year)
-		previousPath := years.YearPath(strconv.Itoa(previousYear))
+		nYear, _ := strconv.Atoi(year)
+		previousPath := years.YearPath(strconv.Itoa(nYear - 1))
 		hcBalance, hcDiary := hconta.Read(year)
 		rp := map[string]json.T{}
 		rp["plan"] = plan.Read(path)

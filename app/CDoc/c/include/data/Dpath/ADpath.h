@@ -1,4 +1,4 @@
-// Copyright 08-Dec-2021 ºDeme
+// Copyright 25-Dec-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 /// Arr[Dpath *].
@@ -152,13 +152,11 @@ ADpath *aDpath_duplicates (ADpath *this, int (feq)(Dpath *e1, Dpath *e2));
 
 /// Returns this JSONized.
 ///   this: Container.
-///   to  : Converter of container element to JSON.
-char *aDpath_to_js (ADpath *this, char *(*to)(Dpath *e));
+char *aDpath_to_js (ADpath *this);
 
 /// Returns the container from its JSON representation.
 ///   js  : Container JSONized.
-///   from: Converter from JSON to container element.
-ADpath *aDpath_from_js (char *js, Dpath *(*from)(char *ejs));
+ADpath *aDpath_from_js (char *js);
 
 
 //--// Not remove

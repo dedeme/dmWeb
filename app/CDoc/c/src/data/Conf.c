@@ -3,7 +3,7 @@
 
 #include "data/Conf.h"
 #include "dmc/DEFS.h"
-#include "dmc/Js.h"
+#include "dmc/js.h"
 #include "dmc/char/Achar.h"
 
 Conf *conf_new (char *path, char *lang, int show_all) {

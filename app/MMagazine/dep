@@ -1,0 +1,11 @@
+#!/bin/bash
+
+cd common
+./dep
+cd ..
+cd client
+./dep
+cd ..
+cd server
+./dep
+cd ..

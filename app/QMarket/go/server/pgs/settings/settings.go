@@ -16,7 +16,7 @@ import (
 	"github.com/dedeme/QMarket/server/pgs/settings/nicks/nicks"
 	"github.com/dedeme/QMarket/server/pgs/settings/servers/code"
 	"github.com/dedeme/QMarket/server/pgs/settings/servers/servers"
-	//"github.com/dedeme/MultiMarket/server/pgs/settings/serversConfiguration"
+	"github.com/dedeme/QMarket/server/pgs/settings/servers/configuration"
 	"github.com/dedeme/QMarket/server/pgs/settings/settings"
 	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/json"
@@ -35,8 +35,8 @@ func Process(ck string, mrq map[string]json.T) string {
 		return servers.Process(ck, mrq)
 	case "investors":
 		return investorsPg.Process(ck, mrq)
-	//	case "servers/configuration":
-	//		return serversConfiguration.Process(ck, mrq)
+	case "servers/configuration":
+		return configuration.Process(ck, mrq)
 	case "servers/code":
 		return serversCode.Process(ck, mrq)
 	case "calendar":

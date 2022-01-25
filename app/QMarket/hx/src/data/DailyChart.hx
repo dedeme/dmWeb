@@ -7,24 +7,30 @@ import dm.Js;
 
 /// Daily chart data
 class DailyChart {
+  /// Company nick.
   public final nick: String;
+  /// Previous market day close. For each investor data (d), if d.ref > close,
+  /// its position is to buy.
   public final close: Float;
+  /// Hours of each daily quote.
   public final hours: Array<Int>;
+  /// Daily quotes.
   public final quotes: Array<Float>;
-  public final managersData: Array<DailyChartData>;
+  /// Dates of each investor (0...).
+  public final investorsData: Array<DailyChartData>;
 
   function new (
     nick: String,
     close: Float,
     hours: Array<Int>,
     quotes: Array<Float>,
-    managersData: Array<DailyChartData>
+    investorsData: Array<DailyChartData>
   ) {
     this.nick = nick;
     this.close = close;
     this.hours = hours;
     this.quotes = quotes;
-    this.managersData = managersData;
+    this.investorsData = investorsData;
   }
 
   public static function fromJs(js: Js): DailyChart {
@@ -39,11 +45,15 @@ class DailyChart {
   }
 }
 
-/// Manager data of DailyChart.
+/// Investor data for DailyChart.
 class DailyChartData {
+  /// Investor parameter.
   public final param: Float;
+  /// Stocks number in portfolio. 0 if the company is not en portfolio.
   public final stocks: Int;
+  /// Stock value.
   public final price: Float;
+  /// Reference of buy-sell
   public final ref: Float;
 
   function new (param: Float, stocks: Int, price: Float, ref: Float) {

@@ -37,19 +37,18 @@ func Process(ck string, mrq map[string]json.T) string {
 			opens := quotesDb.Opens()
 			nkOs, ok1 := opens.NickValues(nickName)
 			if !ok1 {
-				logTb.Error("Opens of "+nickName+" not found")
+				logTb.Error("Opens of " + nickName + " not found")
 			}
 			closes := quotesDb.Closes()
 			nkCs, ok2 := closes.NickValues(nickName)
 			if !ok2 {
-				logTb.Error("Opens of "+nickName+" not found")
+				logTb.Error("Opens of " + nickName + " not found")
 			}
-
 
 			rp["ok"] = json.Wb(false)
 			if ok1 && ok2 {
 				dates := quotesDb.Dates()
-        md := model.New(qlevel, paramId)
+				md := model.New(qlevel, paramId)
 				refs := md.Refs(nkCs)
 
 				var datesJs []json.T

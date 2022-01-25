@@ -1,4 +1,4 @@
-// Copyright 11-Dec-2021 ºDeme
+// Copyright 25-Dec-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "data/Doc/ODoc.h"
@@ -6,6 +6,7 @@
 #include "dmc/DEFS.h"
 #include "dmc/err.h"
 #include "dmc/Opt.h"
+#include "dmc/js.h"
 
 struct oDoc_ODoc {
   Doc *value;
@@ -43,12 +44,12 @@ Doc *oDoc_nsome (ODoc *opt) {
   return opt->value;
 }
 
-char *oDoc_to_js (ODoc *opt, char *(*to)(Doc *e)) {
-  return opt->value ? to(opt->value) : "null";
+char *oDoc_to_js (ODoc *opt) {
+  return opt_to_js((Opt *)opt, (char *(*)(void *))doc_to_js);
 }
 
-ODoc *oDoc_from_js (char *js, Doc *(*from)(char *jse)) {
-  return strcmp(js, "null") ? oDoc_mk_some(from(js)) : oDoc_mk_none();
+ODoc *oDoc_from_js (char *js) {
+  return (ODoc *)opt_from_js(js, (void *(*)(char *))doc_from_js);
 }
 
 //--// Not remove

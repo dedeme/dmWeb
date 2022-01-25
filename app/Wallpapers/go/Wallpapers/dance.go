@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/dedeme/Wallpapers/db/danceSongs"
 	"github.com/dedeme/Wallpapers/db/sels"
 	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/json"
@@ -16,6 +17,9 @@ func danceProcess(ck string, mrq map[string]json.T) string {
 	switch rq {
 	case "idata":
 		isShort := cgi.RqBool(mrq, "isShort")
+		songGroup := cgi.RqString(mrq, "songGroup")
+		song := cgi.RqString(mrq, "song")
+		danceSongs.IncrementPlays(songGroup, song, isShort)
 		rp := map[string]json.T{}
 		group, pict := getPicture() // in pictures.go
 		rp["group"] = json.Ws(group)

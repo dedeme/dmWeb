@@ -363,8 +363,8 @@ class Editor {
 
   function serverTests () {
     var result = "";
-    It.from(sIdNameCodes).eachSync(
-      (e, fn) -> {
+    It.from(sIdNameCodes).eachSyn(
+      (e, frec) -> {
         setWait(e.code);
         Cts.client.ssend([
           "module" => Js.ws("settings"),
@@ -373,17 +373,15 @@ class Editor {
           "serverId" => Js.wi(e.id),
           "nickId" => Js.wi(nick.id)
         ], rp -> {
-          fn(rp);
+          if (result == "") {
+            result = rp["result"].rs();
+          } else if (result == "warnings") {
+            result = rp["result"].rs() == "error" ? "error" : "warnings";
+          } else {
+            result = "error";
+          }
+          frec();
         });
-      },
-      rp -> {
-        if (result == "") {
-          result = rp["result"].rs();
-        } else if (result == "warnings") {
-          result = rp["result"].rs() == "error" ? "error" : "warnings";
-        } else {
-          result = "error";
-        }
       },
       () -> {
         setWait("");

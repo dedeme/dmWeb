@@ -15,6 +15,7 @@ import wgs.Dmenu;
 import data.Cts;
 import data.DailyChart;
 import pgs.daily.Cos; // CosOrder
+import pgs.daily.Invs; // InvsOrder
 import I18n._;
 
 /// Daily charts, main page.
@@ -29,6 +30,7 @@ class Daily {
   var chartsData: Array<DailyChart>;
   var mSel: String;
   public var order(default, null): CosOrder;
+  public var iorder(default, null): InvsOrder;
   public var reverse(default, null): Bool;
 
   final serverWg = Q("span");
@@ -37,7 +39,7 @@ class Daily {
   function new (
     wg:Domo, dmenu: Dmenu, lcPath: Array<String>,
     server: String, activity: String, chartsData: Array<DailyChart>,
-    order: CosOrder, reverse: Bool
+    order: CosOrder, iorder: InvsOrder, reverse: Bool
   ) {
     if (lcPath.length == 0) lcPath.push("summary");
     this.wg = wg;
@@ -47,20 +49,13 @@ class Daily {
     this.chartsData = chartsData;
     this.mSel = lcPath[0];
     this.order = order;
+    this.iorder = iorder;
     this.reverse = reverse;
 
     serverWg.text(server);
 
     view();
     timer();
-  }
-
-  public function setOrder (o: CosOrder): Void {
-    order = o;
-  }
-
-  public function setReverse (isReverse: Bool): Void {
-    reverse = isReverse;
   }
 
   // View ----------------------------------------------------------------------
@@ -80,7 +75,7 @@ class Daily {
     var assetsYesterday = 0.0;
     var assets = 0.0;
     for (d in chartsData) {
-      for (e in d.managersData) {
+      for (e in d.investorsData) {
         investing += e.stocks * e.price;
         assetsYesterday += e.stocks * d.close;
         assets += e.stocks * d.quotes[d.quotes.length - 1];
@@ -97,12 +92,18 @@ class Daily {
       dmenu.hiddingButton(),
       Menu.separator2(),
       Menu.tlink("summary", _("Summary"), "daily"),
-      Menu.separator(),
+      Menu.separator2(),
       Menu.tlink("portfolio", _("Portfolio"), "daily"),
       Menu.separator(),
       Menu.tlink("all", _("All CO's"), "daily"),
       Menu.separator(),
-      Menu.tlink("sel", _("Selection"), "daily")
+      Menu.tlink("sel", _("Selection"), "daily"),
+      Menu.separator2(),
+      Menu.tlink("inv0", _("Inv-0"), "daily"),
+      Menu.separator(),
+      Menu.tlink("inv1", _("Inv-1"), "daily"),
+      Menu.separator(),
+      Menu.tlink("inv2", _("Inv-2"), "daily")
     ];
     final ropts = [
       activity == _("Active")
@@ -135,8 +136,10 @@ class Daily {
     dmenu.setDownMenu(new Menu(lopts, ropts, mSel));
 
     switch (mSel) {
-      case "portfolio" | "all" | "sel":
-        Cos.mk(wg, this, mSel, chartsData);
+      case "portfolio" | "all" | "sel": Cos.mk(wg, this, mSel, chartsData);
+      case "inv0": Invs.mk(wg, this, 0, chartsData);
+      case "inv1": Invs.mk(wg, this, 1, chartsData);
+      case "inv2": Invs.mk(wg, this, 2, chartsData);
       default: new Summary(wg, chartsData);
     }
 
@@ -167,6 +170,18 @@ class Daily {
 
   // Control -------------------------------------------------------------------
 
+  public function setOrder (o: CosOrder): Void {
+    order = o;
+  }
+
+  public function setIorder (o: InvsOrder): Void {
+    iorder = o;
+  }
+
+  public function setReverse (isReverse: Bool): Void {
+    reverse = isReverse;
+  }
+
   function reactivate () {
     if (!Ui.confirm(_("Reactivate daily charts?"))) {
       return;
@@ -182,7 +197,7 @@ class Daily {
       "source" => Js.ws("daily"),
       "rq" => Js.ws("reactivate")
     ], rp -> {
-      Daily.mk(wg, dmenu, lcPath, order, reverse);
+      Daily.mk(wg, dmenu, lcPath, order, iorder, reverse);
     });
   }
 
@@ -197,7 +212,7 @@ class Daily {
       "source" => Js.ws("daily"),
       "rq" => Js.ws("newServer")
     ], rp -> {});
-    Daily.mk(wg, dmenu, lcPath, order, reverse);
+    Daily.mk(wg, dmenu, lcPath, order, iorder, reverse);
   }
 
   function timer () {
@@ -219,7 +234,7 @@ class Daily {
       } else {
         Store.put(ticKey, "0");
         if (tm != null) tm.stop();
-        Daily.mk(wg, dmenu, lcPath, order, reverse);
+        Daily.mk(wg, dmenu, lcPath, order, iorder, reverse);
       }
     }
 
@@ -237,7 +252,7 @@ class Daily {
   ///   reverse: 'true' if 'order' must be reversed.
   public static function mk (
     wg:Domo, dmenu: Dmenu, lcPath: Array<String>,
-    order: CosOrder, reverse: Bool
+    order: CosOrder, iorder: InvsOrder, reverse: Bool
   ) {
     Cts.client.send([
       "module" => Js.ws("daily"),
@@ -258,7 +273,7 @@ class Daily {
         default: activity = _("Sleeping (3)");
       }
       new Daily(
-        wg, dmenu, lcPath, server, activity, chartsData, order, reverse
+        wg, dmenu, lcPath, server, activity, chartsData, order, iorder, reverse
       );
     });
   }

@@ -404,7 +404,8 @@ func processSleeping2() {
 				processEnd = true
 				return
 			}
-			if activity.Current(calendarTb.Read()).Activity() != cts.ActSleeping2 {
+			current := activity.Current(calendarTb.Read()).Activity()
+			if current != cts.ActSleeping2 && current != cts.ActSleeping1 {
 				act = activity.NewNow(cts.ActActivating)
 				confTb.SetActivity(act)
 				processEnd = true

@@ -1,4 +1,4 @@
-// Copyright 08-Dec-2021 ºDeme
+// Copyright 25-Dec-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "data/IndexTree/OIndexTree.h"
@@ -6,6 +6,7 @@
 #include "dmc/DEFS.h"
 #include "dmc/err.h"
 #include "dmc/Opt.h"
+#include "dmc/js.h"
 
 struct oIndexTree_OIndexTree {
   IndexTree *value;
@@ -43,12 +44,12 @@ IndexTree *oIndexTree_nsome (OIndexTree *opt) {
   return opt->value;
 }
 
-char *oIndexTree_to_js (OIndexTree *opt, char *(*to)(IndexTree *e)) {
-  return opt->value ? to(opt->value) : "null";
+char *oIndexTree_to_js (OIndexTree *opt) {
+  return opt_to_js((Opt *)opt, (char *(*)(void *))indexTree_to_js);
 }
 
-OIndexTree *oIndexTree_from_js (char *js, IndexTree *(*from)(char *jse)) {
-  return strcmp(js, "null") ? oIndexTree_mk_some(from(js)) : oIndexTree_mk_none();
+OIndexTree *oIndexTree_from_js (char *js) {
+  return (OIndexTree *)opt_from_js(js, (void *(*)(char *))indexTree_from_js);
 }
 
 //--// Not remove

@@ -4,7 +4,7 @@
 #include "db/dpaths.h"
 #include "dmc/path.h"
 #include "dmc/file.h"
-#include "dmc/Js.h"
+#include "dmc/js.h"
 
 static char *dpaths_path = NULL;
 

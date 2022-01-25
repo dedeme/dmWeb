@@ -444,7 +444,6 @@ class Configuration {
   }
 
   function reset () {
-    //eslint-disable-next-line
     new Configuration(
       wg, serversPg, isHistoric, server
     );
@@ -503,7 +502,7 @@ class Configuration {
     ;
 
     switch (ocf) {
-      case None: throw("Configuratio is None");
+      case None: throw("Configuration is None");
       case Some(cf):
         cf.cmd = cmd;
         cf.url = url;
@@ -527,8 +526,8 @@ class Configuration {
   function test () {
     if (isHistoric) {
       var ok = true;
-      It.from(server.codes).eachSync(
-        (nkCode, fn) -> {
+      It.from(server.codes).eachSyn(
+        (nkCode, frec) -> {
           switch (nkCode.code) {
             case None: setWait("???");
             case Some(code): setWait(code);
@@ -540,11 +539,9 @@ class Configuration {
             "serverId" => Js.wi(server.id),
             "nickId" => Js.wi(nkCode.nickId)
           ], rp -> {
-            fn(rp);
+            if (!rp["ok"].rb()) ok = false;
+            frec();
           });
-        },
-        rp -> {
-          if (!rp["ok"].rb()) ok = false;
         },
         () -> {
           setWait("");

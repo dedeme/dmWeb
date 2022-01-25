@@ -3,7 +3,8 @@
 
 #include "data/DocEntry.h"
 #include "dmc/DEFS.h"
-#include "dmc/Js.h"
+#include "dmc/js.h"
+#include "dmc/err.h"
 #include "dmc/char/Achar.h"
 
 DocEntry *docEntry_new (
@@ -28,4 +29,8 @@ char *docEntry_to_js (DocEntry *this) {
     js_ws(this->link),
     NULL
   ));
+}
+
+DocEntry *docEntry_from_js (char *js) {
+  return FAIL("Unimplemented function");
 }

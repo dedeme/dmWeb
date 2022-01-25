@@ -1,4 +1,4 @@
-// Copyright 08-Dec-2021 ºDeme
+// Copyright 25-Dec-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "data/Dpath/ODpath.h"
@@ -6,6 +6,7 @@
 #include "dmc/DEFS.h"
 #include "dmc/err.h"
 #include "dmc/Opt.h"
+#include "dmc/js.h"
 
 struct oDpath_ODpath {
   Dpath *value;
@@ -43,12 +44,12 @@ Dpath *oDpath_nsome (ODpath *opt) {
   return opt->value;
 }
 
-char *oDpath_to_js (ODpath *opt, char *(*to)(Dpath *e)) {
-  return opt->value ? to(opt->value) : "null";
+char *oDpath_to_js (ODpath *opt) {
+  return opt_to_js((Opt *)opt, (char *(*)(void *))dpath_to_js);
 }
 
-ODpath *oDpath_from_js (char *js, Dpath *(*from)(char *jse)) {
-  return strcmp(js, "null") ? oDpath_mk_some(from(js)) : oDpath_mk_none();
+ODpath *oDpath_from_js (char *js) {
+  return (ODpath *)opt_from_js(js, (void *(*)(char *))dpath_from_js);
 }
 
 //--// Not remove

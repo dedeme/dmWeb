@@ -1,4 +1,4 @@
-// Copyright 11-Dec-2021 ºDeme
+// Copyright 25-Dec-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "data/DocRs/ODocRs.h"
@@ -6,6 +6,7 @@
 #include "dmc/DEFS.h"
 #include "dmc/err.h"
 #include "dmc/Opt.h"
+#include "dmc/js.h"
 
 struct oDocRs_ODocRs {
   DocRs *value;
@@ -43,12 +44,12 @@ DocRs *oDocRs_nsome (ODocRs *opt) {
   return opt->value;
 }
 
-char *oDocRs_to_js (ODocRs *opt, char *(*to)(DocRs *e)) {
-  return opt->value ? to(opt->value) : "null";
+char *oDocRs_to_js (ODocRs *opt) {
+  return opt_to_js((Opt *)opt, (char *(*)(void *))docRs_to_js);
 }
 
-ODocRs *oDocRs_from_js (char *js, DocRs *(*from)(char *jse)) {
-  return strcmp(js, "null") ? oDocRs_mk_some(from(js)) : oDocRs_mk_none();
+ODocRs *oDocRs_from_js (char *js) {
+  return (ODocRs *)opt_from_js(js, (void *(*)(char *))docRs_from_js);
 }
 
 //--// Not remove

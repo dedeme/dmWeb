@@ -48,44 +48,36 @@ class Companies {
 
     final n = ls.length;
     var tr = Q("tr");
-    It.range(n).eachSync(
-      (i, fn) -> {
-        fn({i: i, chart: Chart.mk(!showAll, ls[i].nick, ls[i].url)});
-      },
-      rp -> {
-        final i = rp.i;
-        final chart = rp.chart;
-        switch (i % 3) {
-        case 0:
-          chs.add(separator());
-          tr = Q("tr");
-          tr.add(Q("td").add(chart));
-        case 2:
-          tr.add(Q("td").add(chart));
-          chs.add(tr);
-        default:
-          tr.add(Q("td").add(chart));
-        }
-        return;
-      },
-      () -> {
-        switch (n % 3) {
-          case 1: chs.add(tr.add(Q("td")).add(Q("td")));
-          case 2: chs.add(tr.add(Q("td")));
-        }
+    for (i in 0...n) {
+      final chart = Chart.mk(!showAll, ls[i].nick, ls[i].url);
+      switch (i % 3) {
+      case 0:
         chs.add(separator());
-
-        wg
-          .removeAll()
-          .add(Q("div")
-            .style("text-align:center")
-            .add(Ui.link(e -> changeShowAll())
-              .klass("link")
-              .html(showAll ? _("Portfolio") : _("All Companies"))))
-          .add(chs)
-        ;
+        tr = Q("tr");
+        tr.add(Q("td").add(chart));
+      case 2:
+        tr.add(Q("td").add(chart));
+        chs.add(tr);
+      default:
+        tr.add(Q("td").add(chart));
       }
-    );
+    }
+
+    switch (n % 3) {
+      case 1: chs.add(tr.add(Q("td")).add(Q("td")));
+      case 2: chs.add(tr.add(Q("td")));
+    }
+    chs.add(separator());
+
+    wg
+      .removeAll()
+      .add(Q("div")
+        .style("text-align:center")
+        .add(Ui.link(e -> changeShowAll())
+          .klass("link")
+          .html(showAll ? _("Portfolio") : _("All Companies"))))
+      .add(chs)
+    ;
   }
 
   // Control -------------------------------------------------------------------

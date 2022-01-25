@@ -1,107 +1,139 @@
-// Copyright 14-Sep-2021 ºDeme
+// Copyright 12-Dic-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
 import dm.Js;
-import dm.Dt;
+import dm.Opt;
+import dm.Store;
 import dm.Menu;
+import data.Result;
+import data.Bet;
+import pgs.MsgPg;
+import pgs.Authentication;
+import pgs.Home;
+import pgs.Standings;
+import pgs.PointsPg;
+import pgs.BetsPg;
+import pgs.DocPg;
+import pgs.Settings;
 import I18n._;
 import I18n._args;
-import pgs.Authentication;
-import pgs.SettingsPg;
-import pgs.YearPg;
-import pgs.ResultsPg;
-import pgs.ClubsPg;
-import pgs.BetsPg;
-import data.Year;
-
-import data.Matchday; // Remove
 
 /// Applicatoin entry.
 class Main {
+  static final HOME = "home";
+  static final STANDINGS = "standings";
+  static final POINTS = "points";
+  static final BETS = "bets";
+  static final DOC = "doc";
+  static final SETTINGS = "settings";
+
+  static var lang: String;
+
+  final wg: Domo;
+  final body = Q("div");
+
+  var menuSel = HOME;
+
+
+  function new (wg: Domo) {
+    this.wg = wg;
+  }
+
+  // View ----------------------------------------------------------------------
+
+  function show () {
+    final menu = new Menu(
+      [ Menu.toption(HOME, _("Home"), home),
+        Menu.separator2(),
+        Menu.toption(STANDINGS, _("Standings"), standings),
+        Menu.separator(),
+        Menu.toption(POINTS, _("Points"), pointsPg),
+        Menu.separator(),
+        Menu.toption(BETS, _("Bets"), betsPg),
+        Menu.separator2(),
+        Menu.toption(DOC, _("Documentation"), docPg)
+      ],
+      [ Menu.toption(SETTINGS, _("Settings"), settings),
+        Menu.separator(),
+        Menu.close(close)
+      ],
+      menuSel
+    );
+
+    wg
+      .removeAll()
+      .add(menu.wg)
+      .add(body)
+    ;
+
+    switch (menuSel) {
+      case HOME: Home.mk(body);
+      case STANDINGS: Standings.mk(body);
+      case POINTS: PointsPg.mk(body);
+      case BETS: BetsPg.mk(body);
+      case DOC: DocPg.mk(body);
+      case SETTINGS: new Settings(body, lang).show();
+      default: Home.mk(body);
+    }
+  }
+
+  // Control -------------------------------------------------------------------
+
+  function home (): Void {
+    menuSel = HOME;
+    show();
+  }
+
+  function standings (): Void {
+    menuSel = STANDINGS;
+    show();
+  }
+
+  function pointsPg (): Void {
+    menuSel = POINTS;
+    show();
+  }
+
+  function betsPg (): Void {
+    menuSel = BETS;
+    show();
+  }
+
+  function docPg (): Void {
+    menuSel = DOC;
+    show();
+  }
+
+  function settings (): Void {
+    menuSel = SETTINGS;
+    show();
+  }
+
+  function close (): Void {
+    if (!Ui.confirm(_("Application exit?"))) {
+      return;
+    }
+    Cts.client.send([
+      "source" => Js.ws("Main"),
+      "rq" => Js.ws("close"),
+      "sessionId" => Js.ws(Cts.client.sessionId())
+    ], rp -> {
+      new MsgPg(wg , _args(_("Logout-message"), [Cts.appName]), false).show();
+    });
+  }
 
   // Static --------------------------------------------------------------------
 
-  static function mkMenu (
-    isCurrentYear: Bool, year: String, page: String
-  ): Menu {
-    function close () {
-      if (!Ui.confirm(_("Application exit?"))) {
-        return;
-      }
-      Cts.client.send([
-        "source" => Js.ws("Main"),
-        "rq" => Js.ws("close"),
-        "sessionId" => Js.ws(Cts.client.sessionId())
-      ], rp -> {
-        final wg = Q("div");
-        MsgPage.mk(wg , Cts.app, _args(_("Logout-message"), [Cts.app]), false);
-        Q("@body")
-          .removeAll()
-          .add(wg)
-          .add(Cts.foot)
-        ;
-      });
-    }
-
-    final selLink = page + "&" + year;
-    var myear = Menu.tlink("year&" + year, year);
-    if (!isCurrentYear) myear.wg.setStyle("color", "#800000");
-    var lopts = [
-      myear,
-      Menu.separator2(),
-      Menu.tlink("results&" + year, _("Results")),
-      Menu.separator(),
-      Menu.tlink("clubs&" + year, _("Clubs")),
-      Menu.separator(),
-      Menu.tlink("bets&" + year, _("Bets")),
-    ];
-    var ropts = [
-      Menu.tlink("settings&" + year, _("Settings")),
-      Menu.separator(),
-      Menu.close(close)
-    ];
-    return new Menu(lopts, ropts, selLink);
-  }
-
-  static function mk (wg: Domo, fn: () -> Void) {
+  static function mk (wg: Domo, fn: Void -> Void) {
     Cts.client.connect(ok -> {
       if (ok) {
-        if (Storage.getLang() == "en") I18n.en()
-        else I18n.es();
-        final url = Ui.url();
-
-        final now = Date.now();
-
-        final urlPage = url["0"];
-        final page = urlPage == null ? "results" : urlPage;
-
-        final currentYear = Year.current();
-        final urlSelectedYear = url["1"];
-        final selectedYear = urlSelectedYear == null
-          ? currentYear
-          : Year.validate(urlSelectedYear)
-        ;
-        final body = Q("div");
-        switch (page) {
-          case "year": YearPg.mk(body, selectedYear);
-          case "results": ResultsPg.mk(body, selectedYear);
-          case "clubs": ClubsPg.mk(body, selectedYear);
-          case "bets": BetsPg.mk(body, selectedYear);
-          case "settings": SettingsPg.mk(body);
-          default: ResultsPg.mk(body, selectedYear);
-        }
-
-        wg
-          .removeAll()
-          .add(mkMenu(currentYear == selectedYear, selectedYear, page).wg)
-          .add(body)
-        ;
+        new Main(wg).show();
         fn();
       } else {
-        Authentication.mk(wg, Cts.app, () -> mk(wg, fn));
+        new Authentication(wg, Cts.appName, () -> mk(wg, fn));
         fn();
       }
     });
@@ -109,6 +141,13 @@ class Main {
 
   /// Application entry.
   static public function main (): Void {
+    lang = switch(Store.get(Cts.langKey)) {
+        case Some(l): l;
+        case None: "es";
+      };
+    if (lang == "es") I18n.es();
+    else I18n.en();
+
     var wg = Q("div");
     mk(wg, () -> {
       Q("@body")
@@ -117,6 +156,9 @@ class Main {
         .add(Cts.foot)
         .add(Ui.upTop("up"))
       ;
+
+      var fc = Q("#autofocus");
+      if (fc.e != null) fc.e.focus();
     });
   }
 }

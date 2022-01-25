@@ -1,0 +1,164 @@
+// Copyright 29-Dec-2021 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Arr[OOOResult *].
+
+#ifndef DATA_RESULT_AOOORESULT_H
+  #define DATA_RESULT_AOOORESULT_H
+
+#include "dmc/Arr.h"
+#include "data/Result/OOOOResult.h"
+
+#include "data/Result/OOOResult.h"
+
+/// Arr[OOOResult *].
+struct aOOOResult_AOOOResult {
+  OOOResult **es; // Start elements.
+  OOOResult **end; // End elements. (Elements are between 'es' (inclusive) and 'end'
+              // exclusive.
+  OOOResult **endbf; // End buffer.
+};
+
+/// Arr[OOOResult *].
+typedef struct aOOOResult_AOOOResult AOOOResult;
+
+/// Creates a new Array with buffer size of 15 elements.
+AOOOResult *aOOOResult_new (void);
+
+/// 'buffer' must be > 0.
+AOOOResult *aOOOResult_bf_new (int buffer);
+
+/// Creates a new array from several elements.
+/// Elements list must finish with NULL.
+AOOOResult *aOOOResult_new_from (OOOResult *e, ...);
+
+/// Creates a new array from a C array. For example:
+///   Arr *a = arr_new_c(3, (void *[]){"c", "d", "e"});
+/// If 'size' is less than C array length, result is ok (only will be
+/// used 'size' first elements); but if 'size' is greater, the result is
+/// undetermined.
+AOOOResult *aOOOResult_new_c (int size, OOOResult **es);
+
+/// Returns a new array with elements of 'this'.
+AOOOResult *aOOOResult_copy (AOOOResult *this);
+
+///
+int aOOOResult_size (AOOOResult *this);
+
+/// Resturn the element at position ix.
+OOOResult *aOOOResult_get (AOOOResult *this, int ix);
+
+/// Adds an element at the end of 'this'. 'e' will be freed by 'this'.
+void aOOOResult_push (AOOOResult *this, OOOResult *e);
+
+/// Returns and removes the last element.
+OOOResult *aOOOResult_pop (AOOOResult *this);
+
+/// Returns the las element.
+OOOResult *aOOOResult_peek (AOOOResult *this);
+
+/// Sets the element at position ix.
+void aOOOResult_set (AOOOResult *this, int ix, OOOResult *e);
+
+/// Inserts an element at position ix.
+void aOOOResult_insert (AOOOResult *this, int ix, OOOResult *e);
+
+/// Removes an element at position ix. Buffer size of 'this' does not change.
+void aOOOResult_remove (AOOOResult *this, int ix);
+
+/// Adds pointer to elements of 'other' to 'this'.
+void aOOOResult_cat (AOOOResult *this, AOOOResult *other);
+
+/// Inserts pointer to elements of 'other' at 'ix'
+void aOOOResult_insert_arr (AOOOResult *this, int ix, AOOOResult *other);
+
+/// Removes elements between [begin-end). Buffer size of 'this' does not change.
+void aOOOResult_remove_range (AOOOResult *this, int begin, int end);
+
+/// Removes every element of 'this'.
+void aOOOResult_clear (AOOOResult *this);
+
+/// Reverses elements of 'this'.
+void aOOOResult_reverse (AOOOResult *this);
+
+/// Sorts 'this' ascendantly using the function 'greater' that returns '1'
+/// if 'e1' > 'e2'.
+void aOOOResult_sort (AOOOResult *this, int (*greater)(OOOResult *e1, OOOResult *e2));
+
+/// aOOOResult_shuflle remix 'this' elements. It should be used after calling
+/// rnd_init() or sys_init().
+void aOOOResult_shuffle (AOOOResult *this);
+
+/// Returns '1' if every element of 'this' yields '1' with 'pred'.
+int aOOOResult_all (AOOOResult *this, int (*pred)(OOOResult *e));
+
+/// Returns '1' if some element of 'this' yields '1' with 'pred'.
+int aOOOResult_any (AOOOResult *this, int (*pred)(OOOResult *e));
+
+/// Returns the index of the first elements which returns '1'
+/// with 'pred', or -1 if such element does not exist.
+int aOOOResult_index (AOOOResult *this, int (*pred)(OOOResult *e));
+
+/// Returns the index of the last elements which returns '1'
+/// with 'pred', or -1 if such element does not exist.
+int aOOOResult_last_index (AOOOResult *this, int (*pred)(OOOResult *e));
+
+/// Returns the first element which pruduces '1' with 'pred' or 'tp_none'.
+OOOOResult *aOOOResult_find(AOOOResult *this, int (*pred)(OOOResult *e));
+
+/// Returns the last element which pruduces '1' with 'pred' or 'tp_none'.
+OOOOResult *aOOOResult_find_last(AOOOResult *this, int (*pred)(OOOResult *e));
+
+/// aOOOResult_filter_in removes every element which returns '0' with 'pred'.
+void aOOOResult_filter_in (AOOOResult *this, int (*pred)(OOOResult *e));
+
+/// Returns a new Arr with the n first elements of this.
+/// If this has less elements than n, returs a copy of this.
+AOOOResult *aOOOResult_take (AOOOResult *this, int n);
+
+/// Returns a new Arr with the first elements which return '1' with 'predicate'.
+AOOOResult *aOOOResult_takef (AOOOResult *this, int (*predicate)(OOOResult *e));
+
+/// Returns a new Arr with elements left after aOOOResult_take.
+AOOOResult *aOOOResult_drop (AOOOResult *this, int n);
+
+/// Returns a new Arr with elements left after aOOOResult_takef.
+AOOOResult *aOOOResult_dropf (AOOOResult *this, int (*predicate)(OOOResult *e));
+
+/// Returns a new Arr with every element which returns '1' with 'pred'.
+AOOOResult *aOOOResult_filter_to (AOOOResult *this, int (*predicate)(OOOResult *e));
+
+/// Returns a new Arr with elements generated by converter.
+Arr *aOOOResult_map (AOOOResult *this, void *(*converter)(OOOResult *e));
+
+/// Returns a new Arr whit the first element generated by conv1 and the rest
+/// by conv2.
+Arr *aOOOResult_map2 (AOOOResult *this, void *(*conv1)(OOOResult *e), void *(*conv2)(OOOResult *e));
+
+/// Returns a new Arr mixing values of 'a1' and 'a2'. The size of the resultant
+/// array is the less of 'a1' size and 'a2' size.
+Arr *aOOOResult_zip (AOOOResult *a1, AOOOResult *a2, void *(*converter)(OOOResult *e1, OOOResult *e2));
+
+/// Returns a new Arr mixing values of 'a1', 'a2' and 'a3'. The size of the
+/// resultant array is the less of 'a1' size, 'a2' size and 'a3' size.
+Arr *aOOOResult_zip3 (
+  AOOOResult *a1, AOOOResult *a2, AOOOResult *a3,
+  void *(*conveter)(OOOResult*e1, OOOResult*e2, OOOResult*e3)
+);
+
+/// Removes duplicates with function 'feq=1' and returns them in a new array.
+/// It returns only the first duplicated element.
+AOOOResult *aOOOResult_duplicates (AOOOResult *this, int (feq)(OOOResult *e1, OOOResult *e2));
+
+/// Returns this JSONized.
+///   this: Container.
+char *aOOOResult_to_js (AOOOResult *this);
+
+/// Returns the container from its JSON representation.
+///   js  : Container JSONized.
+AOOOResult *aOOOResult_from_js (char *js);
+
+
+//--// Not remove
+
+#endif

@@ -45,7 +45,7 @@ class Summary {
     final lopts = [
       Menu.toption("All", _("All"), () -> setMenu(-1))
     ];
-    for (i in 0...data[0].managersData.length) {
+    for (i in 0...data[0].investorsData.length) {
       final op = _("Inv-") + Std.string(i);
       lopts.push(Menu.separator());
       lopts.push(Menu.toption(op, op, () -> setMenu(i)));
@@ -64,7 +64,7 @@ class Summary {
       var yprof = 0.0;
       var prof = 0.0;
       if (iCo == -1) {
-        for (acc in co.managersData) {
+        for (acc in co.investorsData) {
           if (acc.stocks > 0) {
             final iv = acc.stocks * acc.price;
             inv += iv;
@@ -80,7 +80,7 @@ class Summary {
           }
         }
       } else {
-        final acc = co.managersData[iCo];
+        final acc = co.investorsData[iCo];
         if (acc.stocks > 0) {
           final iv = acc.stocks * acc.price;
           inv = iv;

@@ -30,4 +30,7 @@ Doc *doc_new (char *doc);
 ///
 char *doc_to_js (Doc *this);
 
+///
+Doc *doc_from_js(char *js);
+
 #endif

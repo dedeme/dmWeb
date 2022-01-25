@@ -14,6 +14,8 @@ import dm.Js;
 @:build(dm.Mac.record([
   "level: Int",
   "speed: Int",
-  "id: String"
+  "id: String",
+  "shortPlays: Int",
+  "longPlays: Int"
   ], true))
 class DanceSong {}

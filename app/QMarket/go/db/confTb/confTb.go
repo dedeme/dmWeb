@@ -15,7 +15,7 @@ import (
 const (
 	langKey     = "lang"
 	activityKey = "activity"
-  ranges = "ranges"
+	ranges      = "ranges"
 )
 
 var fpath string
@@ -25,24 +25,24 @@ var fpath string
 func Initialize(parent string) {
 	fpath = path.Join(parent, "Conf.tb")
 
-  var rs []json.T
-  for i := 0; i < cts.Qlevels; i++ {
-    rs = append(rs, json.Wa([]json.T{}))
-  }
+	var rs []json.T
+	for i := 0; i < cts.Qlevels; i++ {
+		rs = append(rs, json.Wa([]json.T{}))
+	}
 
 	if !file.Exists(fpath) {
 		Write(map[string]json.T{
 			langKey:     json.Ws("es"),
 			activityKey: activity.NewNow(cts.ActSleeping2).ToJs(),
-      ranges:      json.Wa(rs),
+			ranges:      json.Wa(rs),
 		})
 	}
 
-  conf := Read()
-  if len(conf[ranges].Ra()) != cts.Qlevels {
-    conf[ranges] = json.Wa(rs)
-    Write(conf)
-  }
+	conf := Read()
+	if len(conf[ranges].Ra()) != cts.Qlevels {
+		conf[ranges] = json.Wa(rs)
+		Write(conf)
+	}
 
 }
 
@@ -83,24 +83,24 @@ func SetActivity(ac *activity.T) {
 }
 
 // Gets current range of an investor (Qlevel)
-func Range (inv int) []int {
-  var r []int
-  for _, ijs := range Read()[ranges].Ra()[inv].Ra() {
-    r = append(r, ijs.Ri())
-  }
-  return r
+func Range(inv int) []int {
+	var r []int
+	for _, ijs := range Read()[ranges].Ra()[inv].Ra() {
+		r = append(r, ijs.Ri())
+	}
+	return r
 }
 
 // Sets current range of an investor (Qlevel)
-func SetRange (inv int, irange []int) {
-  var r []json.T
-  for _, i := range irange {
-    r = append(r, json.Wi(i))
-  }
+func SetRange(inv int, irange []int) {
+	var r []json.T
+	for _, i := range irange {
+		r = append(r, json.Wi(i))
+	}
 
-  conf := Read()
-  a := conf[ranges].Ra()
-  a[inv] = json.Wa(r)
-  conf[ranges] = json.Wa(a)
-  Write(conf)
+	conf := Read()
+	a := conf[ranges].Ra()
+	a[inv] = json.Wa(r)
+	conf[ranges] = json.Wa(a)
+	Write(conf)
 }

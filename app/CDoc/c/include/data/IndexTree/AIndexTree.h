@@ -1,4 +1,4 @@
-// Copyright 08-Dec-2021 ºDeme
+// Copyright 25-Dec-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 /// Arr[IndexTree *].
@@ -152,13 +152,11 @@ AIndexTree *aIndexTree_duplicates (AIndexTree *this, int (feq)(IndexTree *e1, In
 
 /// Returns this JSONized.
 ///   this: Container.
-///   to  : Converter of container element to JSON.
-char *aIndexTree_to_js (AIndexTree *this, char *(*to)(IndexTree *e));
+char *aIndexTree_to_js (AIndexTree *this);
 
 /// Returns the container from its JSON representation.
 ///   js  : Container JSONized.
-///   from: Converter from JSON to container element.
-AIndexTree *aIndexTree_from_js (char *js, IndexTree *(*from)(char *ejs));
+AIndexTree *aIndexTree_from_js (char *js);
 
 
 //--// Not remove

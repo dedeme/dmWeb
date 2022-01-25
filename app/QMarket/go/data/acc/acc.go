@@ -148,7 +148,7 @@ func (op *OperationT) Pr() (amount float64, cause string, ok bool) {
 	return
 }
 
-// Returns a Fees operation or "ok=false"
+// Returns a fees operation or "ok=false"
 func (op *OperationT) Fe() (amount float64, cause string, ok bool) {
 	if op.tp == annFe {
 		amount = op.f
@@ -158,7 +158,7 @@ func (op *OperationT) Fe() (amount float64, cause string, ok bool) {
 	return
 }
 
-// Returns a profits operation or "ok=false"
+// Returns a 'positive difference' operation or "ok=false"
 func (op *OperationT) Pd() (amount float64, cause string, ok bool) {
 	if op.tp == annPd {
 		amount = op.f
@@ -168,7 +168,7 @@ func (op *OperationT) Pd() (amount float64, cause string, ok bool) {
 	return
 }
 
-// Returns a profits operation or "ok=false"
+// Returns a 'negative difference' operation or "ok=false"
 func (op *OperationT) Nd() (amount float64, cause string, ok bool) {
 	if op.tp == annNd {
 		amount = op.f
@@ -446,11 +446,11 @@ func (l *LedgerT) ToJs() json.T {
 }
 
 func ledgerSell(
-	l *LedgerT, nick string, stocks int, buyPrice, sellPrice float64,
+	l *LedgerT, stocks int, buyPrice, sellPrice float64,
 ) *LedgerT {
 	cost := fns.Fix(float64(stocks)*buyPrice, 2)
 	incom := fns.Fix(float64(stocks)*sellPrice, 2)
-	fees := incom - fns.Fix(broker.Sell(nick, stocks, sellPrice), 2)
+	fees := incom - fns.Fix(broker.Sell(stocks, sellPrice), 2)
 	return NewLedger(
 		l.stocks-cost,
 		l.cash+incom-fees,
@@ -462,12 +462,12 @@ func ledgerSell(
 	)
 }
 
-func ledgerBuy(l *LedgerT, nick string, stocks int, price float64) *LedgerT {
+func ledgerBuy(l *LedgerT, stocks int, price float64) *LedgerT {
 	if price == 0 {
 		return l
 	}
 	cost := fns.Fix(float64(stocks)*price, 2)
-	fees := fns.Fix(broker.Buy(nick, stocks, price), 2) - cost
+	fees := fns.Fix(broker.Buy(stocks, price), 2) - cost
 	return NewLedger(
 		l.stocks+cost,
 		l.cash-cost-fees,
@@ -532,7 +532,7 @@ func Settlement(annotations []*AnnotationT) (
 						)
 					} else {
 						portfolio = pf
-						ledger = ledgerSell(ledger, n, s, pfe.price, p)
+						ledger = ledgerSell(ledger, s, pfe.price, p)
 					}
 				} else {
 					addErr("%v: Nick is missing in portfolio", n)
@@ -549,7 +549,7 @@ func Settlement(annotations []*AnnotationT) (
 				addErr("%v: Buing price %v (< 0)", n, p)
 			} else {
 				portfolio = pfAdd(portfolio, n, s, p)
-				ledger = ledgerBuy(ledger, n, s, p)
+				ledger = ledgerBuy(ledger, s, p)
 			}
 			continue
 		}

@@ -24,7 +24,7 @@ func Initialize(parent string) {
 	if !file.Exists(fpath) {
 		Write(investors.NewTable())
 	}
-  Regularize()
+	Regularize()
 }
 
 // Writes table.

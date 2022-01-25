@@ -3,7 +3,8 @@
 
 #include "data/Doc.h"
 #include "dmc/DEFS.h"
-#include "dmc/Js.h"
+#include "dmc/js.h"
+#include "dmc/err.h"
 #include "dmc/char/Achar.h"
 
 Doc *doc_new (char *doc) {
@@ -45,5 +46,9 @@ char *doc_to_js (Doc *this) {
     )),
     NULL
   ));
+}
+
+Doc *doc_from_js(char *js) {
+  return FAIL("Unimplemented function");
 }
 

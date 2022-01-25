@@ -30,4 +30,7 @@ IndexTree *indexTree_new (char *id, Ochar *doc, AIndexTree *trees);
 ///
 char *indexTree_to_js (IndexTree *this);
 
+///
+IndexTree *indexTree_from_js (char *js);
+
 #endif

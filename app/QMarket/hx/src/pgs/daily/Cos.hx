@@ -50,7 +50,7 @@ class Cos {
         final dataPond = data.map(d -> {
             final quote = d.quotes[d.quotes.length - 1];
             var psel = None;
-            for (e in d.managersData) {
+            for (e in d.investorsData) {
               final isSell = e.ref < d.close;
               final dif = type == "portfolio"
                 ? e.stocks > 0
@@ -193,7 +193,7 @@ class Cos {
       : type == "sel"
         ? chartsData.filter(e -> Selection.contains(e.nick))
         : chartsData.filter(
-          e -> It.from(e.managersData).reduce(0, (r, d) -> r + d.stocks) > 0
+          e -> It.from(e.investorsData).reduce(0, (r, d) -> r + d.stocks) > 0
         )
     ;
 

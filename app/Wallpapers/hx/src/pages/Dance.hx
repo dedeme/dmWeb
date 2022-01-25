@@ -174,7 +174,9 @@ class Dance {
     Cts.client.ssend([
       "source" => Js.ws("Dance"),
       "rq" => Js.ws("idata"),
-      "isShort" => Js.wb(isShort)
+      "isShort" => Js.wb(isShort),
+      "songGroup" => Js.ws(songGroup),
+      "song" => Js.ws(song)
     ], rp -> {
       final group = rp["group"].rs();
       final pict = Pict.fromJs(rp["pict"]);

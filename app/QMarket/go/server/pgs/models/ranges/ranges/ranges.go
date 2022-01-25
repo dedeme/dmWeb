@@ -9,8 +9,8 @@ import (
 	"github.com/dedeme/QMarket/data/cts"
 	"github.com/dedeme/QMarket/data/model"
 	"github.com/dedeme/QMarket/db/confTb"
-	"github.com/dedeme/QMarket/db/quotesDb"
 	"github.com/dedeme/QMarket/db/modelsDb"
+	"github.com/dedeme/QMarket/db/quotesDb"
 	"github.com/dedeme/QMarket/lock"
 	"github.com/dedeme/golib/cgi"
 	"github.com/dedeme/golib/json"
@@ -25,7 +25,7 @@ func values(qlevel int, start, end, step int) []json.T {
 	n := 0
 	sumEval := float64(0)
 	sumSales := float64(0)
-	fn := func(param int, rs *model.RsT) bool {
+	fn := func(param int, rss []*model.RsT) bool {
 		if param < start {
 			return false
 		}
@@ -33,6 +33,8 @@ func values(qlevel int, start, end, step int) []json.T {
 		if param >= end {
 			return true
 		}
+
+		rs := rss[qlevel]
 
 		if subFirst {
 			subParam = param
@@ -64,7 +66,7 @@ func values(qlevel int, start, end, step int) []json.T {
 		return false
 	}
 
-	modelsDb.EachResult(qlevel, fn)
+	modelsDb.EachResult(fn)
 
 	if n > 0 {
 		r = append(r, json.Wa([]json.T{
@@ -95,20 +97,20 @@ func Process(ck string, mrq map[string]json.T) string {
 			end := (cts.RangesMin + cts.RangesGroups) * cts.RangesGroupNumber
 			step := cts.RangesGroupNumber / 10
 			if len(param) == 1 {
-        start = param[0] * cts.RangesGroupNumber
-        end = start +  cts.RangesGroupNumber
-        step = cts.RangesGroupNumber / 100
+				start = param[0] * cts.RangesGroupNumber
+				end = start + cts.RangesGroupNumber
+				step = cts.RangesGroupNumber / 100
 			} else if len(param) == 2 {
-        start = param[0] * cts.RangesGroupNumber +
-          param[1] * cts.RangesGroupNumber/10
-        end = start +  cts.RangesGroupNumber/10
-        step = cts.RangesGroupNumber / 1000
+				start = param[0]*cts.RangesGroupNumber +
+					param[1]*cts.RangesGroupNumber/10
+				end = start + cts.RangesGroupNumber/10
+				step = cts.RangesGroupNumber / 1000
 			} else if len(param) == 3 {
-        start = param[0] * cts.RangesGroupNumber +
-          param[1] * cts.RangesGroupNumber/10 +
-          param[2] * cts.RangesGroupNumber/100
-        end = start +  cts.RangesGroupNumber/100
-        step = cts.RangesGroupNumber / 10000
+				start = param[0]*cts.RangesGroupNumber +
+					param[1]*cts.RangesGroupNumber/10 +
+					param[2]*cts.RangesGroupNumber/100
+				end = start + cts.RangesGroupNumber/100
+				step = cts.RangesGroupNumber / 10000
 			}
 			rp["values"] = json.Wa(values(qlevel, start, end, step))
 		})
@@ -124,25 +126,25 @@ func Process(ck string, mrq map[string]json.T) string {
 			confTb.SetRange(qlevel, param)
 		})
 		return cgi.RpEmpty(ck)
-  case "model":
+	case "model":
 		qlevel := cgi.RqInt(mrq, "qlevel")
 		paramId := cgi.RqInt(mrq, "paramId")
-    rp := map[string]json.T{}
+		rp := map[string]json.T{}
 		lock.Run(func() {
-      opens := quotesDb.Opens()
-      closes := quotesDb.Closes()
-      md := model.New(qlevel, paramId)
-      if ok, tb := modelsDb.Read(modelsDb.Group(md)); ok {
-        if rs, ok := tb.Results()[paramId]; ok {
-          md.SetEvaluation(rs[qlevel], opens, closes)
-          rp["model"] = md.ToJs()
-          return
-        }
-      }
-      md.FirstEvaluation(opens, closes)
-      rp["model"] = md.ToJs()
-    })
-    return cgi.Rp(ck, rp)
+			opens := quotesDb.Opens()
+			closes := quotesDb.Closes()
+			md := model.New(qlevel, paramId)
+			if ok, tb := modelsDb.Read(modelsDb.Group(md)); ok {
+				if rs, ok := tb.Results()[paramId]; ok {
+					md.SetEvaluation(rs[qlevel], opens, closes)
+					rp["model"] = md.ToJs()
+					return
+				}
+			}
+			md.FirstEvaluation(opens, closes)
+			rp["model"] = md.ToJs()
+		})
+		return cgi.Rp(ck, rp)
 	default:
 		panic(fmt.Sprintf("Value of rq ('%v') is not valid", rq))
 	}

@@ -105,9 +105,12 @@ class DanceSelector {
             .add(Q("button")
               .att("id", "bt:" + i)
               .style("width:100%;white-space:nowrap;text-align:left")
-              .text(s.id)))
+              .text(s.id))
               .on(KEYDOWN, e -> keyInButton(e, i))
-              .on(CLICK, e -> play(s.id))
+              .on(CLICK, e -> play(s.id)))
+          .add(Q("td")
+            .klass("frame")
+            .text(Cts.formatInt(isShort ? s.shortPlays : s.longPlays, 2)))
       );
     }
     return rows;

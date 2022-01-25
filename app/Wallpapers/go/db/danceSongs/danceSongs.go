@@ -99,7 +99,7 @@ func ReadJs(group string) json.T {
 	return json.FromString(file.ReadAll(fpath(group)))
 }
 
-// Returns song groups.
+// Returns songs of a group.
 func Read(group string) []*danceSong.T {
 	var songs []*danceSong.T
 	for _, songJs := range ReadJs(group).Ra() {
@@ -108,7 +108,7 @@ func Read(group string) []*danceSong.T {
 	return songs
 }
 
-// Write song Groups
+// Write song of a group.
 func Write(group string, songs []*danceSong.T) {
 	var songsJs []json.T
 	for _, song := range songs {
@@ -127,5 +127,11 @@ func SetLevel(group string, id string, level int) {
 // Set speed of song 'group'-'id'.
 func SetSpeed(group string, id string, speed int) {
 	songs := danceSong.SetSpeed(Read(group), id, speed)
+	Write(group, songs)
+}
+
+// Increments reproductions counter.
+func IncrementPlays(group string, id string, isShort bool) {
+	songs := danceSong.IncrementPlays(Read(group), id, isShort)
 	Write(group, songs)
 }

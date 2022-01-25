@@ -3,6 +3,7 @@
 
 #include "data/DocRs.h"
 #include "dmc/DEFS.h"
+#include "dmc/err.h"
 
 DocRs *docRs_new (char *doc, char *line) {
   DocRs *this = MALLOC(DocRs);
@@ -11,3 +12,10 @@ DocRs *docRs_new (char *doc, char *line) {
   return this;
 }
 
+char *docRs_to_js (DocRs *this) {
+  return FAIL("Unimplemented function");
+}
+
+DocRs *docRs_from_js (char *js) {
+  return FAIL("Unimplemented function");
+}

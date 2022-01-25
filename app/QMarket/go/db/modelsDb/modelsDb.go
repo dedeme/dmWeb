@@ -74,28 +74,27 @@ func Group(md *model.T) int {
 //
 // The function is run from the least parameter to the greats one in turn and it
 // is stopped when returns 'true' or the paramenters are exausted.
-//    qlevel: Model level.
 //    fn: Function to execute with each record.
 //        fn arguments are:
 //          paramId      : Parameter to calculate values.
-//          result       : Evaluation results.
+//          result       : Qlevels evaluation results (0 to cts.Qlevels).
 //          RETURN       : true if 'fn' must stop after execute it.
-func EachResult(qlevel int, fn func (int, *model.RsT) bool) {
-  stop := false
-  for gr := cts.RangesMin; gr < cts.RangesMin + cts.RangesGroups; gr++ {
-    ok, tb := Read(gr)
-    rss := tb.Results()
-    if ok {
-      for i := 0; i < cts.RangesGroupNumber; i++ {
-        paramId := gr * cts.RangesGroupNumber + i
-        if fn(paramId, rss[paramId][qlevel]) {
-          stop = true
-          break
-        }
-      }
-    }
-    if stop {
-      break
-    }
-  }
+func EachResult(fn func(int, []*model.RsT) bool) {
+	stop := false
+	for gr := cts.RangesMin; gr < cts.RangesMin+cts.RangesGroups; gr++ {
+		ok, tb := Read(gr)
+		rss := tb.Results()
+		if ok {
+			for i := 0; i < cts.RangesGroupNumber; i++ {
+				paramId := gr*cts.RangesGroupNumber + i
+				if fn(paramId, rss[paramId]) {
+					stop = true
+					break
+				}
+			}
+		}
+		if stop {
+			break
+		}
+	}
 }

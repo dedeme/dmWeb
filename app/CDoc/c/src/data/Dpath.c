@@ -3,7 +3,7 @@
 
 #include "data/Dpath.h"
 #include "dmc/DEFS.h"
-#include "dmc/Js.h"
+#include "dmc/js.h"
 #include "dmc/char/Achar.h"
 
 Dpath *dpath_new (

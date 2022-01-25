@@ -1,4 +1,4 @@
-// Copyright 08-Dec-2021 ºDeme
+// Copyright 25-Dec-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "data/DocEntry/ODocEntry.h"
@@ -6,6 +6,7 @@
 #include "dmc/DEFS.h"
 #include "dmc/err.h"
 #include "dmc/Opt.h"
+#include "dmc/js.h"
 
 struct oDocEntry_ODocEntry {
   DocEntry *value;
@@ -43,12 +44,12 @@ DocEntry *oDocEntry_nsome (ODocEntry *opt) {
   return opt->value;
 }
 
-char *oDocEntry_to_js (ODocEntry *opt, char *(*to)(DocEntry *e)) {
-  return opt->value ? to(opt->value) : "null";
+char *oDocEntry_to_js (ODocEntry *opt) {
+  return opt_to_js((Opt *)opt, (char *(*)(void *))docEntry_to_js);
 }
 
-ODocEntry *oDocEntry_from_js (char *js, DocEntry *(*from)(char *jse)) {
-  return strcmp(js, "null") ? oDocEntry_mk_some(from(js)) : oDocEntry_mk_none();
+ODocEntry *oDocEntry_from_js (char *js) {
+  return (ODocEntry *)opt_from_js(js, (void *(*)(char *))docEntry_from_js);
 }
 
 //--// Not remove

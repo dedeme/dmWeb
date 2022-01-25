@@ -2,6 +2,7 @@
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 // Model broker
+// It works equals to brokerA, but with a surcharge on fees.
 package brokerM
 
 import (
@@ -12,7 +13,7 @@ import (
 //    amount: Operation amount.
 func Fees(amount float64) float64 {
 	penalty := amount*0.0017 + 9.53
-	return brokerA.Fees("", amount) + penalty
+	return brokerA.Fees(amount) + penalty
 }
 
 // Returns net cost of operation (cost + fees).

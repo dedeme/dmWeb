@@ -1,4 +1,4 @@
-// Copyright 08-Dec-2021 ºDeme
+// Copyright 25-Dec-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 /// Opt[Dpath*].
@@ -34,13 +34,11 @@ Dpath *oDpath_nsome (ODpath *opt);
 
 /// Returns this JSONized.
 ///   this: Container.
-///   to  : Converter of container element to JSON.
-char *oDpath_to_js (ODpath *this, char *(*to)(Dpath *e));
+char *oDpath_to_js (ODpath *this);
 
 /// Returns the container from its JSON representation.
 ///   js  : Container JSONized.
-///   from: Converter from JSON to container element.
-ODpath *oDpath_from_js (char *js, Dpath *(*from)(char *ejs));
+ODpath *oDpath_from_js (char *js);
 
 
 //--// Not remove

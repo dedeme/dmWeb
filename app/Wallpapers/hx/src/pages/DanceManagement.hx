@@ -135,6 +135,12 @@ class DanceManagement {
         .add(Q("td")
           .klass("frame")
           .text(s.id))
+        .add(Q("td")
+          .klass("frame")
+          .text(Cts.formatInt(s.shortPlays, 2)))
+        .add(Q("td")
+          .klass("frame")
+          .text(Cts.formatInt(s.longPlays, 2)))
     );
   }
 

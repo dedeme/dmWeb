@@ -20,4 +20,10 @@ typedef struct docRs_DocRs DocRs;
 ///   line: File line text.
 DocRs *docRs_new (char *doc, char *line);
 
+///
+char *docRs_to_js (DocRs *this);
+
+///
+DocRs *docRs_from_js (char *js);
+
 #endif

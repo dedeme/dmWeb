@@ -1,9 +1,10 @@
-// Copyright 08-Dec-2021 ºDeme
+// Copyright 25-Dec-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "data/DocEntry/ADocEntry.h"
 #include <string.h>
 #include <stdarg.h>
+#include "dmc/js.h"
 
 ADocEntry *aDocEntry_new (void) {
   return (ADocEntry *)arr_new();
@@ -179,12 +180,12 @@ ADocEntry *aDocEntry_duplicates (
   return (ADocEntry *)arr_duplicates((Arr *)this, (int(*)(void *, void *))feq);
 }
 
-char *aDocEntry_to_js (ADocEntry *this, char *(*to)(DocEntry *e)) {
-  return arr_to_js((Arr *)this, (char *(*)(void *))to);
+char *aDocEntry_to_js (ADocEntry *this) {
+  return arr_to_js((Arr *)this, (char *(*)(void *))docEntry_to_js);
 }
 
-ADocEntry *aDocEntry_from_js (char *js, DocEntry *(*from)(char *ejs)) {
-  return (ADocEntry *)arr_from_js(js, (void *(*)(char *))from);
+ADocEntry *aDocEntry_from_js (char *js) {
+  return (ADocEntry *)arr_from_js(js, (void *(*)(char *))docEntry_from_js);
 }
 
 

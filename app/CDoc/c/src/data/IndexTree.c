@@ -3,7 +3,8 @@
 
 #include "data/IndexTree.h"
 #include "dmc/DEFS.h"
-#include "dmc/Js.h"
+#include "dmc/js.h"
+#include "dmc/err.h"
 #include "dmc/char/Achar.h"
 #include "data/IndexTree/AIndexTree.h"
 
@@ -18,8 +19,12 @@ IndexTree *indexTree_new (char *id, Ochar *doc, AIndexTree *trees) {
 char *indexTree_to_js (IndexTree *this) {
   return js_wa(achar_new_from(
     js_ws(this->id),
-    ochar_to_js(this->doc, js_ws),
-    aIndexTree_to_js(this->trees, indexTree_to_js),
+    ochar_to_js(this->doc),
+    aIndexTree_to_js(this->trees),
     NULL
   ));
+}
+
+IndexTree *indexTree_from_js (char *js) {
+  return FAIL("Unimplemented function");
 }

@@ -1,0 +1,164 @@
+// Copyright 28-Dec-2021 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Arr[ADecision *].
+
+#ifndef DATA_DECISION_AADECISION_H
+  #define DATA_DECISION_AADECISION_H
+
+#include "dmc/Arr.h"
+#include "data/Decision/OADecision.h"
+
+#include "data/Decision/ADecision.h"
+
+/// Arr[ADecision *].
+struct aADecision_AADecision {
+  ADecision **es; // Start elements.
+  ADecision **end; // End elements. (Elements are between 'es' (inclusive) and 'end'
+              // exclusive.
+  ADecision **endbf; // End buffer.
+};
+
+/// Arr[ADecision *].
+typedef struct aADecision_AADecision AADecision;
+
+/// Creates a new Array with buffer size of 15 elements.
+AADecision *aADecision_new (void);
+
+/// 'buffer' must be > 0.
+AADecision *aADecision_bf_new (int buffer);
+
+/// Creates a new array from several elements.
+/// Elements list must finish with NULL.
+AADecision *aADecision_new_from (ADecision *e, ...);
+
+/// Creates a new array from a C array. For example:
+///   Arr *a = arr_new_c(3, (void *[]){"c", "d", "e"});
+/// If 'size' is less than C array length, result is ok (only will be
+/// used 'size' first elements); but if 'size' is greater, the result is
+/// undetermined.
+AADecision *aADecision_new_c (int size, ADecision **es);
+
+/// Returns a new array with elements of 'this'.
+AADecision *aADecision_copy (AADecision *this);
+
+///
+int aADecision_size (AADecision *this);
+
+/// Resturn the element at position ix.
+ADecision *aADecision_get (AADecision *this, int ix);
+
+/// Adds an element at the end of 'this'. 'e' will be freed by 'this'.
+void aADecision_push (AADecision *this, ADecision *e);
+
+/// Returns and removes the last element.
+ADecision *aADecision_pop (AADecision *this);
+
+/// Returns the las element.
+ADecision *aADecision_peek (AADecision *this);
+
+/// Sets the element at position ix.
+void aADecision_set (AADecision *this, int ix, ADecision *e);
+
+/// Inserts an element at position ix.
+void aADecision_insert (AADecision *this, int ix, ADecision *e);
+
+/// Removes an element at position ix. Buffer size of 'this' does not change.
+void aADecision_remove (AADecision *this, int ix);
+
+/// Adds pointer to elements of 'other' to 'this'.
+void aADecision_cat (AADecision *this, AADecision *other);
+
+/// Inserts pointer to elements of 'other' at 'ix'
+void aADecision_insert_arr (AADecision *this, int ix, AADecision *other);
+
+/// Removes elements between [begin-end). Buffer size of 'this' does not change.
+void aADecision_remove_range (AADecision *this, int begin, int end);
+
+/// Removes every element of 'this'.
+void aADecision_clear (AADecision *this);
+
+/// Reverses elements of 'this'.
+void aADecision_reverse (AADecision *this);
+
+/// Sorts 'this' ascendantly using the function 'greater' that returns '1'
+/// if 'e1' > 'e2'.
+void aADecision_sort (AADecision *this, int (*greater)(ADecision *e1, ADecision *e2));
+
+/// aADecision_shuflle remix 'this' elements. It should be used after calling
+/// rnd_init() or sys_init().
+void aADecision_shuffle (AADecision *this);
+
+/// Returns '1' if every element of 'this' yields '1' with 'pred'.
+int aADecision_all (AADecision *this, int (*pred)(ADecision *e));
+
+/// Returns '1' if some element of 'this' yields '1' with 'pred'.
+int aADecision_any (AADecision *this, int (*pred)(ADecision *e));
+
+/// Returns the index of the first elements which returns '1'
+/// with 'pred', or -1 if such element does not exist.
+int aADecision_index (AADecision *this, int (*pred)(ADecision *e));
+
+/// Returns the index of the last elements which returns '1'
+/// with 'pred', or -1 if such element does not exist.
+int aADecision_last_index (AADecision *this, int (*pred)(ADecision *e));
+
+/// Returns the first element which pruduces '1' with 'pred' or 'tp_none'.
+OADecision *aADecision_find(AADecision *this, int (*pred)(ADecision *e));
+
+/// Returns the last element which pruduces '1' with 'pred' or 'tp_none'.
+OADecision *aADecision_find_last(AADecision *this, int (*pred)(ADecision *e));
+
+/// aADecision_filter_in removes every element which returns '0' with 'pred'.
+void aADecision_filter_in (AADecision *this, int (*pred)(ADecision *e));
+
+/// Returns a new Arr with the n first elements of this.
+/// If this has less elements than n, returs a copy of this.
+AADecision *aADecision_take (AADecision *this, int n);
+
+/// Returns a new Arr with the first elements which return '1' with 'predicate'.
+AADecision *aADecision_takef (AADecision *this, int (*predicate)(ADecision *e));
+
+/// Returns a new Arr with elements left after aADecision_take.
+AADecision *aADecision_drop (AADecision *this, int n);
+
+/// Returns a new Arr with elements left after aADecision_takef.
+AADecision *aADecision_dropf (AADecision *this, int (*predicate)(ADecision *e));
+
+/// Returns a new Arr with every element which returns '1' with 'pred'.
+AADecision *aADecision_filter_to (AADecision *this, int (*predicate)(ADecision *e));
+
+/// Returns a new Arr with elements generated by converter.
+Arr *aADecision_map (AADecision *this, void *(*converter)(ADecision *e));
+
+/// Returns a new Arr whit the first element generated by conv1 and the rest
+/// by conv2.
+Arr *aADecision_map2 (AADecision *this, void *(*conv1)(ADecision *e), void *(*conv2)(ADecision *e));
+
+/// Returns a new Arr mixing values of 'a1' and 'a2'. The size of the resultant
+/// array is the less of 'a1' size and 'a2' size.
+Arr *aADecision_zip (AADecision *a1, AADecision *a2, void *(*converter)(ADecision *e1, ADecision *e2));
+
+/// Returns a new Arr mixing values of 'a1', 'a2' and 'a3'. The size of the
+/// resultant array is the less of 'a1' size, 'a2' size and 'a3' size.
+Arr *aADecision_zip3 (
+  AADecision *a1, AADecision *a2, AADecision *a3,
+  void *(*conveter)(ADecision*e1, ADecision*e2, ADecision*e3)
+);
+
+/// Removes duplicates with function 'feq=1' and returns them in a new array.
+/// It returns only the first duplicated element.
+AADecision *aADecision_duplicates (AADecision *this, int (feq)(ADecision *e1, ADecision *e2));
+
+/// Returns this JSONized.
+///   this: Container.
+char *aADecision_to_js (AADecision *this);
+
+/// Returns the container from its JSON representation.
+///   js  : Container JSONized.
+AADecision *aADecision_from_js (char *js);
+
+
+//--// Not remove
+
+#endif

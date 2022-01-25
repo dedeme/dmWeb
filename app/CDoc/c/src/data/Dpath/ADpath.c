@@ -1,9 +1,10 @@
-// Copyright 08-Dec-2021 ºDeme
+// Copyright 25-Dec-2021 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 #include "data/Dpath/ADpath.h"
 #include <string.h>
 #include <stdarg.h>
+#include "dmc/js.h"
 
 ADpath *aDpath_new (void) {
   return (ADpath *)arr_new();
@@ -179,12 +180,12 @@ ADpath *aDpath_duplicates (
   return (ADpath *)arr_duplicates((Arr *)this, (int(*)(void *, void *))feq);
 }
 
-char *aDpath_to_js (ADpath *this, char *(*to)(Dpath *e)) {
-  return arr_to_js((Arr *)this, (char *(*)(void *))to);
+char *aDpath_to_js (ADpath *this) {
+  return arr_to_js((Arr *)this, (char *(*)(void *))dpath_to_js);
 }
 
-ADpath *aDpath_from_js (char *js, Dpath *(*from)(char *ejs)) {
-  return (ADpath *)arr_from_js(js, (void *(*)(char *))from);
+ADpath *aDpath_from_js (char *js) {
+  return (ADpath *)arr_from_js(js, (void *(*)(char *))dpath_from_js);
 }
 
 
