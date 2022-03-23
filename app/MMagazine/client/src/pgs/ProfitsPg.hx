@@ -9,6 +9,7 @@ import dm.Ui.Q;
 import dm.Js;
 import dm.Dt;
 import dm.It;
+import dm.Opt;
 import cm.data.ProfitsEntry;
 import dm.LineChart;
 import I18n._;
@@ -45,7 +46,7 @@ class ProfitsPg {
       labels.push(e.date.substring(6) + "/" + e.date.substring(4, 6));
       final pfs = e.profits;
       for (i in 0...invs) {
-        sets[i].push(pfs[i]);
+        sets[i].push(Some(pfs[i]));
       }
     }
     final setAtts = [

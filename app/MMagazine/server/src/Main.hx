@@ -28,7 +28,7 @@ class Main {
       Update.process();
     } else if (args[0] == "test") {
       Db.init();
-      trace("Done");
+      update.ModelsUpdate.run();
     } else if (args[0] == "help") {
       Sys.println(help);
     } else {

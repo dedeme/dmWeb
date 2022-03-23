@@ -9,7 +9,7 @@ import dm.Js;
 class ModelEval {
   /// Model id.
   public final model: String;
-  /// Math.round (valuation * 100000).
+  /// Math.round (evaluation * 100000).
   public final eval: Int;
 
   public function new (model: String, eval: Int) {

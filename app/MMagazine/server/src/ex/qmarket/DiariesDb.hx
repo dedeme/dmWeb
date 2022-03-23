@@ -9,6 +9,7 @@ import dm.Js;
 import dm.File;
 import data.acc.Diary;
 
+/// Retrieves diaries of investors from QMarket.
 class DiariesDb {
   static var dir = null;
 

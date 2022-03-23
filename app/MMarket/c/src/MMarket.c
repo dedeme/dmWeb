@@ -16,18 +16,10 @@
 
 static char *help = "Usage: MMarket [update | test | help | <request>]";
 
-static void test (void) {/*
-  #include "data/Model.h"
-  #include "data/models.h"
-  #include "external/quotesReader.h"
-  AModelEval *evs = model_range_new_evaluation(models_get("GA"), quotesReader_read(),
-    aModelEval_new());
-  ModelEval **pevs = evs->es;
-  while (pevs < evs->es) {
-    ModelEval *ev = *pevs++;
-    puts(modelEval_to_js(ev));
-  }
-*/}
+static void test (void) {
+  update_run();
+  puts("done");
+}
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {

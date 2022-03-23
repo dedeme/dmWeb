@@ -9,10 +9,11 @@
 #include "db/evalsDb.h"
 #include "data/models.h"
 #include "data/eval/ModelEvals.h"
+#include "db/simProfitsDb.h"
+#include "data/simulation/SimProfitsData.h"
 
 void update_run (void) {
   char *last_sunday = dateFns_last_sunday();
-
   Quotes *qs = quotesTb_read();
   if (str_greater(last_sunday, qs->date)) {
     qs = quotesReader_read();
@@ -27,7 +28,20 @@ void update_run (void) {
         ? model_range_new_evaluation(md, qs, evs->evals)
         : model_range_replace_evaluation(md, qs, evs->evals)
       ;
-      evalsDb_write(md->id, modelEvals_new(dateFns_last_sunday(), ev));
+      evalsDb_write(md->id, modelEvals_new(last_sunday, ev));
+
+      SimProfitsData *pfsdt = simProfitsDb_read(md->id);
+      ASimProfitsRow *pfs = str_greater(last_sunday, pfsdt->date)
+        ? model_simulation_new(md, qs, pfsdt->rows)
+        : model_simulation_replace(md, qs, pfsdt->rows)
+      ;
+      simProfitsDb_write(md->id, simProfitsData_new(last_sunday, pfs));
     }
   }
 }
+
+// NOTE:
+// xxx_replace functions are intended for special situations.
+// They only will be called if the condition
+//    'if (str_greater(last_sunday, qs->date)) {'
+// is deactivated.

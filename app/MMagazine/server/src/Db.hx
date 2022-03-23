@@ -11,6 +11,7 @@ class Db {
     ex.qmarket.Profits.init();
     ex.qmarket.DiariesDb.init();
     ex.mmarket.MModelEvalsDb.init();
+    ex.mmarket.MModelSimProfitsDb.init();
 
     if (!File.exists(Cts.dbHome)) {
       File.mkdir(Cts.dbHome);
@@ -18,6 +19,8 @@ class Db {
     db.Rankings.init(Cts.dbHome);
     db.IbexTb.init(Cts.dbHome);
     db.ModelEvalsTb.init(Cts.dbHome);
+    db.HotMapsDb.init(Cts.dbHome);
+    db.ModelSimProfitsDb.init(Cts.dbHome);
   }
 
 }

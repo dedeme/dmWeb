@@ -14,8 +14,8 @@ char *cts_app_name (void);
 /// Path absolute of data directory
 char *cts_data_dir (void);
 
-/// Path absolute of MultiMarket data directory.
-char *cts_multimarket_data_dir (void);
+/// Path absolute of QMarket data directory.
+char *cts_qmarket_data_dir (void);
 
 /// String to test database.
 char *cts_data_version (void);

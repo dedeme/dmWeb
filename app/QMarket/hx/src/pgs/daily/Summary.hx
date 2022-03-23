@@ -41,7 +41,6 @@ class Summary {
 
   function view () {
     final sel = mSel == -1 ? "All" : _("Inv-") + Std.string(mSel);
-
     final lopts = [
       Menu.toption("All", _("All"), () -> setMenu(-1))
     ];
@@ -101,7 +100,6 @@ class Summary {
 
     final dailyProfits = todayProfits - yesterdayProfits;
     final ratio = investing > 0 ? dailyProfits / investing : 0;
-
     wg
       .removeAll()
       .add(menu.wg)

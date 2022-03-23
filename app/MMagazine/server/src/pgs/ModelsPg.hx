@@ -5,12 +5,8 @@ package pgs;
 
 import dm.Cgi;
 import dm.Js;
-import dm.It;
-import dm.Dt;
-import ex.qmarket.Profits;
-import ex.qmarket.DiariesDb;
-import db.IbexTb;
-import data.DailyProfitsEntry;
+import cm.data.ModelFloats;
+import cm.data.ModelFloat;
 
 /// Models page.
 class ModelsPg {
@@ -18,7 +14,27 @@ class ModelsPg {
     final rq = Cgi.rqString(mrq, "rq");
     return switch (rq) {
       case "idata":
+        final type = Cgi.rqString(mrq, "type");
         final rp = new Map<String, Js>();
+        rp["type"] = Js.ws(type);
+        switch (type) {
+          case "total":
+            rp["dataGroups"] = db.ModelSimProfitsDb.readTotalsJs();
+          case "cash":
+            rp["dataGroups"] = db.ModelSimProfitsDb.readCashesJs();
+          case "ref":
+            rp["dataGroups"] = db.ModelSimProfitsDb.readRefsJs();
+          default: {
+            rp["type"] = Js.ws("points");
+            rp["dataGroups"] = Js.wa(db.ModelEvalsTb.read()
+              .map(e -> new ModelFloats(
+                    e.date,
+                    e.evals.map(e -> new ModelFloat(e.model, e.eval / 100))
+                  ).toJs()
+                )
+              );
+          }
+        }
         return Cgi.rp(rp);
       default: throw new haxe.Exception(
           'Value of rq (${rq}) is not valid'

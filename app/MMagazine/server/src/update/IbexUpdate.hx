@@ -7,8 +7,9 @@ import dm.Dt;
 import ex.net.IbexNet;
 import db.IbexTb;
 
+/// Ibex quotes update.
 class IbexUpdate {
-  public static function run() {
+  public static function run(): Void {
     final lastSunday = cm.Fns.lastSunday();
     final today = Date.now();
     if (lastSunday != Dt.to(today)) {

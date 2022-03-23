@@ -1,0 +1,37 @@
+// Copyright 06-Mar-2022 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Package index page.
+
+import "dm/cgi";
+import "db/pathsTb";
+
+/// Process request.
+/// \m -> s
+process = \Rq -> {
+  rq = js.rs(Rq.rq);
+  switch (rq) {
+    "code": {
+      pack = js.rs(Rq.pack);
+      pt = js.rs(Rq.path);
+      
+      Code = [];
+      Ppath = arr.find(pathsTb.read(), \P -> return P.id == pack;);
+      if (arr.size(Ppath) != 0) {
+        fpath = path.cat([Ppath[0].path, pt + ".kut"]);
+        if (file.exists(fpath)) {
+          arr.push(Code, file.read(fpath));
+        }
+      }
+      
+      return cgi.rp({
+        "code": arr.size(Code) == 0
+          ? js.wn()
+          : js.ws(Code[0])
+      });
+    }
+    default: sys.fail("Value of rq (" + rq + ") is not valid");
+  };
+};
+
+

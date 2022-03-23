@@ -48,7 +48,8 @@ class Main {
       pg = url.get("0").trim();
     }
     switch (pg) {
-      case "description", "results", "hot", "charts", "settings": {};
+      case "description", "results", "simulations", "hot", "charts",
+           "settings": {};
       default: pg = defaultPage;
     }
 
@@ -56,6 +57,8 @@ class Main {
       Menu.tlink("description", _("Description"), model),
       Menu.separator2(),
       Menu.tlink("results", _("Results"), model),
+      Menu.separator(),
+      Menu.tlink("simulations", _("Simulations"), model),
       Menu.separator(),
       Menu.tlink("hot", _("Hot Map"), model),
       Menu.separator(),
@@ -97,6 +100,7 @@ class Main {
 
     switch (pg) {
       case "results": pgs.ResultsPg.mk(body2, model);
+      case "simulations": pgs.SimulationsPg.mk(body2, model);
       case "hot": pgs.HotPg.mk(body2, model);
       case "charts": new pgs.Charts(body2, model).show();
       case "settings": new pgs.Settings(body, lang).show();

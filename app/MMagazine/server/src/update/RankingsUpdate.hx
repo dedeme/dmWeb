@@ -8,8 +8,9 @@ import db.Rankings;
 import cm.data.Ranking;
 import cm.data.RankingEntry;
 
+/// QMarket rankings update.
 class RankingsUpdate {
-  public static function run() {
+  public static function run(): Void {
     final lastSunday = cm.Fns.lastSunday();
     final rkData = Rankings.read();
     final day = rkData[rkData.length - 1].date;

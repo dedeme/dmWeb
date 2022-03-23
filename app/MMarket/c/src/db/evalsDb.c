@@ -35,7 +35,6 @@ void evalsDb_init (char *parent) {
       )));
     }
   }
-
 }
 
 ModelEvals *evalsDb_read(char *model_id) {

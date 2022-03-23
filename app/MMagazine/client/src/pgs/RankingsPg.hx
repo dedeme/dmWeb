@@ -54,7 +54,7 @@ class RankingsPg {
     deltaDfs = switch (deltas[0]) {
       case Some(df0): deltas.map(d -> switch (d) {
           case Some(df):
-            final d2 = (df - df0) / df0;
+            final d2 = (df - df0) / Math.abs(df0);
             mxDf = switch (mxDf) {
               case Some(mx): Math.abs(d2) > mx ? Some(Math.abs(d2)) : mxDf;
               case None: Some(Math.abs(d2));

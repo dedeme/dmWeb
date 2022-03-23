@@ -3,11 +3,14 @@
 
 import update.RankingsUpdate;
 import update.IbexUpdate;
+import update.ModelsUpdate;
+
+/// Data update.
 
 class Update {
-
   public static function process () {
     RankingsUpdate.run();
     IbexUpdate.run();
+    ModelsUpdate.run();
   }
 }

@@ -3,9 +3,9 @@
 
 package data;
 
-import dm.Mac;
 import dm.Js;
 
+/// Song data.
 class Song {
   public var level: Int;
   public var sights: Int;

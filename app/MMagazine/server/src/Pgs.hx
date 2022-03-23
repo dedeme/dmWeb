@@ -57,6 +57,7 @@ class Pgs {
       case "ProfitsPg": pgs.ProfitsPg.process(mrq);
       case "PercentsPg": pgs.PercentsPg.process(mrq);
       case "ModelsPg": pgs.ModelsPg.process(mrq);
+      case "HotMapsPg": pgs.HotMapsPg.process(mrq);
       case "ChangePass": pgs.ChangePass.process(mrq);
       default: throw new haxe.Exception(
           'Value of source (${source}) is not valid'

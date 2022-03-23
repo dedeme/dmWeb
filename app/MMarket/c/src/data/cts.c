@@ -13,8 +13,8 @@ char *cts_data_dir (void) {
   return path_cat("/home/deme/.dmCApp", cts_app_name(), "data", NULL);
 }
 
-char *cts_multimarket_data_dir (void) {
-  return "/home/deme/.dmGoApp/MultiMarket/data";
+char *cts_qmarket_data_dir (void) {
+  return "/home/deme/.dmGoApp/QMarket/data";
 }
 
 char *cts_data_version (void) {

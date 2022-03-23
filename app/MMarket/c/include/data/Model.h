@@ -10,6 +10,7 @@
 #include "data/ADouble/AADouble.h"
 #include "data/Quotes.h"
 #include "data/eval/ModelEval/AModelEval.h"
+#include "data/simulation/SimProfitsRow/ASimProfitsRow.h"
 #include "data/eval/Result.h"
 #include "data/Order/AOrder.h"
 
@@ -92,9 +93,19 @@ AModelEval *model_range_replace_evaluation (
   Model *this, Quotes *qs, AModelEval *evals
 );
 
-/// Returns references of one company,
+/// Reevaluate 'profits' in a new AModelEval, adding a new evaluation.
+ASimProfitsRow *model_simulation_new(
+  Model *this, Quotes *qs, ASimProfitsRow *profits
+);
+
+/// Reevaluate 'profits' in a new AModelEval, replacing the last evaluation.
+ASimProfitsRow *model_simulation_replace(
+  Model *this, Quotes *qs, ASimProfitsRow *profits
+);
+
+/// Returns references of one company.
 ///   this  :
-///   co_qs : Quotes of one company,
+///   co_qs : Quotes of one company.
 ///   params: Parameters to calculate references.
 ADouble *model_refs(Model *this, Quotes *co_qs, ADouble *params);
 
@@ -104,7 +115,7 @@ ADouble *model_refs(Model *this, Quotes *co_qs, ADouble *params);
 ///   params: Parameters to calculate references.
 ADouble *model_historic(Model *this, Quotes *qs, ADouble *params);
 
-/// Returns orders of one model,
+/// Returns orders of one model.
 ///   this  :
 ///   qs    : Quotes of all the companies,
 ///   params: Parameters to calculate references.

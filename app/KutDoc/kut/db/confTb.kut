@@ -1,0 +1,39 @@
+// Copyright 03-Mar-2022 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Configuration table.
+
+import "data/conf";
+
+fpath = [""];
+
+/// Initializes configuation table.
+///   parent: parent directory.
+/// \s -> ()
+init = \parent -> {
+  fpath[0] = path.cat([parent, "conf.tb"]);
+  if (!file.exists(fpath[0])) {
+    write(conf.new("@", "es", true));
+  }
+};
+
+/// \s -> ()
+writeJs = \j -> {
+  file.write(fpath[0], j);
+};
+
+/// \m -> ()
+write = \Cf -> {
+  writeJs(conf.toJs(Cf));
+};
+
+/// \ -> s
+readJs = \ -> {
+  return file.read(fpath[0]);
+};
+
+/// \ -> m
+read = \ -> {
+  return conf.fromJs(readJs());
+};
+

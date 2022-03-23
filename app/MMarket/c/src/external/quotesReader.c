@@ -33,7 +33,7 @@ static void normalize (AADouble *qs) {
 
 Quotes *quotesReader_read (void) {
   Achar *cos = achar_new();
-  char *nkstb = path_cat(cts_multimarket_data_dir(), "Nicks.tb", NULL);
+  char *nkstb = path_cat(cts_qmarket_data_dir(), "Nicks.tb", NULL);
   Achar *a = js_ra(file_read(nkstb));
   Achar *cos_js = js_ra(achar_get(a, 2));
   char **pcos_js = cos_js->es;
@@ -47,7 +47,7 @@ Quotes *quotesReader_read (void) {
 
   Achar *dates = achar_new();
   char *qstb = path_cat(
-    cts_multimarket_data_dir(), "quotes",
+    cts_qmarket_data_dir(), "quotes",
     str_cat(achar_get(cos, 0), ".tb", NULL),
     NULL
   );
@@ -75,7 +75,7 @@ Quotes *quotesReader_read (void) {
     char *co = *pcos++;
 
     char *qstb = path_cat(
-      cts_multimarket_data_dir(), "quotes",
+      cts_qmarket_data_dir(), "quotes",
       str_cat(co, ".tb", NULL),
       NULL
     );

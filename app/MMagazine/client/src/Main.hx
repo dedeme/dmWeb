@@ -38,7 +38,7 @@ class Main {
       final p = url.get("0").trim();
       switch (p) {
         case "home", "rankings", "settings", "profits",
-             "percents", "models": pg = p;
+             "percents", "models", "hotmaps": pg = p;
       }
     }
 
@@ -69,6 +69,7 @@ class Main {
       case "profits": pgs.ProfitsPg.mk(body);
       case "percents": pgs.PercentsPg.mk(body);
       case "models": pgs.ModelsPg.mk(body);
+      case "hotmaps": pgs.HotMapsPg.mk(body);
       case "settings": new pgs.Settings(body, lang).show();
       default: pgs.Home.mk(body);
     }

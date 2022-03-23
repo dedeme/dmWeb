@@ -1,0 +1,28 @@
+// Copyright 06-Mar-2022 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Package index page.
+
+import "dm/cgi";
+import "readers/ixReader";
+import "data/ixTree";
+
+/// Process request.
+/// \m -> s
+process = \Rq -> {
+  rq = js.rs(Rq.rq);
+  switch (rq) {
+    "index": {
+      pack = js.rs(Rq.pack);
+      IxT = ixReader.read(pack);      
+      return cgi.rp({
+        "index": arr.size(IxT) == 0
+          ? js.wn()
+          : ixTree.toJs(IxT[0])
+      });
+    }
+    default: sys.fail("Value of rq (" + rq + ") is not valid");
+  };
+};
+
+

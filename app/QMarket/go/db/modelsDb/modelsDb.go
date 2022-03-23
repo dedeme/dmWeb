@@ -76,8 +76,8 @@ func Group(md *model.T) int {
 // is stopped when returns 'true' or the paramenters are exausted.
 //    fn: Function to execute with each record.
 //        fn arguments are:
-//          paramId      : Parameter to calculate values.
-//          result       : Qlevels evaluation results (0 to cts.Qlevels).
+//          paramId      : Parameter which generated the results.
+//          result       : Evaluation results. One for each level (0...Cts.qlevels).
 //          RETURN       : true if 'fn' must stop after execute it.
 func EachResult(fn func(int, []*model.RsT) bool) {
 	stop := false

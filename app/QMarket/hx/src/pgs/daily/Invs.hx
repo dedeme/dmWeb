@@ -27,6 +27,7 @@ class Invs {
     this.inv = inv;
     dailyData = data;
     this.parent = parent;
+    changeOrder(BUY);
 
     view();
   }
@@ -66,14 +67,14 @@ class Invs {
       .style("padding-bottom:6px")
       .add(Q("tr")
         .add(Q("td")
-          .add(Ui.link(e -> changeOrder(SELL))
-            .klass(parent.iorder == SELL ? "link frame" : "link")
-            .text(_("Sell")))
-          .add(Q("span")
-            .html("&nbsp;&nbsp;&nbsp;"))
           .add(Ui.link(e -> changeOrder(BUY))
             .klass(parent.iorder == BUY ? "link frame" : "link")
-            .text(_("Buy")))))
+            .text(_("Buy")))
+          .add(Q("span")
+            .html("&nbsp;&nbsp;&nbsp;"))
+          .add(Ui.link(e -> changeOrder(SELL))
+            .klass(parent.iorder == SELL ? "link frame" : "link")
+            .text(_("Sell")))))
     ;
 
 

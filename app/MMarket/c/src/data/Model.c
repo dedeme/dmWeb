@@ -10,6 +10,9 @@
 #include "data/cts.h"
 #include "data/broker.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+
 Model *model_new (
   char *id, char *name, char *doc,
   Achar *param_names,
@@ -248,43 +251,41 @@ static AModelEval *range_evaluation (
     ++ixparams;
     if (ixparams < nparams) continue;
 
-    if (ixparams == nparams) {
 
-      /**/int ffind (ModelEval *e) {
-      /**/  return aDouble_eq(params, e->params, 0.000001);
-      /**/}
-      ModelEval *mdev = oModelEval_osome(
-        aModelEval_find(evals, ffind),
-        modelEval_new(params, 0, 0, 0, 0, 0)
-      );
+    /**/int ffind (ModelEval *e) {
+    /**/  return aDouble_eq(params, e->params, 0.000001);
+    /**/}
+    ModelEval *mdev = oModelEval_osome(
+      aModelEval_find(evals, ffind),
+      modelEval_new(params, 0, 0, 0, 0, 0)
+    );
 
-      Result *rs = model_group_result(this, qs, params);
+    Result *rs = model_group_result(this, qs, params);
 
-      int n = mdev->weeks;
-      int n1 = n + 1;
-      double value = result_eval(rs);
-      double sales = rs->sales;
-      ModelEval *new_mdev = is_new || n == 0
-        ? modelEval_new(
-            aDouble_copy(params),
-            n < cts_eval_weeks() ? n1 : n,
-            (mdev->hvalue * n + value) / n1,
-            (mdev->hsales * n + sales) / n1,
-            value,
-            sales
-          )
-      : modelEval_new(
-            aDouble_copy(params),
-            n,
-            (mdev->hvalue * n - mdev->value + value) / n,
-            (mdev->hsales * n - mdev->sales + sales) / n,
-            value,
-            sales
-          )
-      ;
+    int n = mdev->weeks;
+    int n1 = n + 1;
+    double value = result_eval(rs);
+    double sales = rs->sales;
+    ModelEval *new_mdev = is_new || n == 0
+      ? modelEval_new(
+          aDouble_copy(params),
+          n < cts_eval_weeks() ? n1 : n,
+          (mdev->hvalue * n + value) / n1,
+          (mdev->hsales * n + sales) / n1,
+          value,
+          sales
+        )
+    : modelEval_new(
+          aDouble_copy(params),
+          n,
+          (mdev->hvalue * n - mdev->value + value) / n,
+          (mdev->hsales * n - mdev->sales + sales) / n,
+          value,
+          sales
+        )
+    ;
 
-      aModelEval_push(r, new_mdev);
-    }
+    aModelEval_push(r, new_mdev);
 
     --ixparams;
   }
@@ -303,6 +304,272 @@ AModelEval *model_range_replace_evaluation (
   Model *this, Quotes *qs, AModelEval *evals
 ) {
   return range_evaluation(this, qs, evals, 0);
+}
+
+SimProfits *model_single_simulation (Model *this, Quotes *qs, ADouble *params) {
+  double bet = cts_bet();
+  double min_to_bet = cts_min_to_bet();
+
+  int ncos = achar_size(qs->cos);
+  double a_cash = cts_initial_capital();
+
+  AInt *a_stocks = aInt_new();
+  ADouble *a_costs = aDouble_new();
+  AInt *operations = aInt_bf_new(ncos); // 0=Nop, 1=Buy, -1=Sell
+  for (int i = 0; i < ncos; ++i) {
+    aInt_push(a_stocks, 0);
+    aDouble_push(a_costs, 0);
+  }
+
+  double pfCash = 0;
+
+  int is_first = 1;
+  ADouble *prev_refs = aDouble_new();
+  ADouble *prev_closes = aDouble_new();
+  ADouble **popens = qs->opens->es;
+
+  /**/// CALLBACK
+
+      void callback (ADouble *closes, ADouble *refs) {
+        ADouble *opens = *popens++;
+        if (is_first) {
+          prev_refs = refs;
+          prev_closes = closes;
+          is_first = 0;
+          return;
+        }
+
+        // Day beginning -----------------------------------
+
+        int *poperations = operations->es;
+        double *popens = opens ->es;
+        int *pa_stocks = a_stocks->es;
+        double *pa_costs = a_costs->es;
+
+        while (poperations < operations->end) {
+          int op = *poperations++;
+          double open = *popens++;
+          int a_st = *pa_stocks;
+          double a_cost = *pa_costs;
+
+          if (op == 1) { // buy
+            if (a_cash >= min_to_bet) {
+              int stocks = bet / open;
+              double cost = broker_buy(stocks, open);
+              *pa_stocks = a_st + stocks;
+              *pa_costs = a_cost + cost;
+              a_cash -= cost;
+            }
+          } else if (op == -1) { // sell
+            if (a_st > 0) {
+              double incomes = broker_sell(a_st, open);
+              pfCash += incomes - *pa_costs;
+              *pa_stocks = 0;
+              *pa_costs = 0;
+              a_cash += incomes;
+            }
+          }
+
+          ++pa_stocks;
+          ++pa_costs;
+        }
+
+        // Day end -----------------------------------------
+
+        double *pcloses = closes->es;
+        double *pprev_closes = prev_closes->es;
+        double *prefs = refs->es;
+        double *pprev_refs = prev_refs->es;
+        operations = aInt_bf_new(ncos);
+        while (pcloses < closes->end) {
+          double close = *pcloses++;
+          double prev_close = *pprev_closes++;
+          double ref = *prefs++;
+          double prev_ref = *pprev_refs++;
+          if (close < ref) {
+            if (prev_close >= prev_ref) { // Sell
+              aInt_push(operations, -1);
+            } else {
+              aInt_push(operations, 0);
+            }
+          } else {
+            if (prev_close < prev_ref) { // Buy
+              aInt_push(operations, 1);
+            } else {
+              aInt_push(operations, 0);
+            }
+          }
+        }
+
+        prev_refs = refs;
+        prev_closes = closes;
+      }
+
+  /**/// END CALLBACK
+
+  this->calc(qs->closes, params->es, callback);
+
+  ADouble *last_closes =
+    aADouble_get(qs->closes, aADouble_size(qs->closes) - 1);
+  double *plast_closes = last_closes->es;
+  double *plast_refs = prev_refs->es;
+  int *pa_stocks = a_stocks->es;
+  double total_sum = a_cash;
+  double ref_sum = a_cash;
+  while (plast_closes < last_closes->end) {
+    double last_close = *plast_closes++;
+    double last_ref = *plast_refs++;
+    int a_st = *pa_stocks++;
+
+    if (a_st) {
+      total_sum += broker_sell(a_st, last_close);
+      ref_sum += broker_sell(a_st, last_ref);
+    }
+  }
+
+  return simProfits_new(total_sum, pfCash, ref_sum);
+}
+
+SimProfits *model_group_simulation(Model *this, Quotes *qs, ADouble *params) {
+  int env_steps = cts_env_steps();
+  int total_steps = env_steps * 2 + 1;
+
+  SimProfits *r = simProfits_new(0, 0, 0);
+  double *incs = this->param_env_incs;
+
+  int nparams = aDouble_size(params);
+  double *pparams = params->es;
+  ADouble *pms = aDouble_new();
+  int ixparams = 0;
+  AInt *param_ixs = aInt_new();
+  int results_n = 0;
+  for (;;) {
+    if (aInt_size(param_ixs) <= ixparams) {
+      aInt_push(param_ixs, 0);
+      double val = pparams[ixparams] + incs[ixparams] * (-env_steps);
+      aDouble_push(pms, val);
+    } else {
+      int ixval = aInt_get(param_ixs, ixparams) + 1;
+      if (ixval >= total_steps) {
+        if (ixparams == 0) break;
+        aInt_set(param_ixs, ixparams, -1);
+        --ixparams;
+        continue;
+      }
+      aInt_set(param_ixs, ixparams, ixval);
+      double val = pparams[ixparams] +
+        incs[ixparams] * (ixval - env_steps);
+      aDouble_set(pms, ixparams, val);
+    }
+    ++ixparams;
+    if (ixparams < nparams) continue;
+
+    if (ixparams == nparams) {
+      SimProfits *rs = model_single_simulation(this, qs, pms);
+      r = simProfits_sum(r, rs);
+      ++results_n;
+    }
+
+    --ixparams;
+  }
+
+  return simProfits_div(r, results_n);
+}
+
+ASimProfitsRow *model_simulation (
+  Model *this, Quotes *qs, ASimProfitsRow *profits, int is_new
+) {
+  int eval_steps = cts_eval_steps();
+
+  ASimProfitsRow *r = aSimProfitsRow_new();
+
+  double *bases = this->param_bases;
+  double *incs = this->param_base_incs;
+
+  int nparams = achar_size(this->param_names);
+  ADouble *params = aDouble_new();
+  int ixparams = 0;
+  AInt *param_ixs = aInt_new();
+  for (;;) {
+    if (aInt_size(param_ixs) <= ixparams) {
+      aInt_push(param_ixs, 0);
+      aDouble_push(params, bases[ixparams]);
+    } else {
+      int ixval = aInt_get(param_ixs, ixparams) + 1;
+      if (ixval >= eval_steps) {
+        if (ixparams == 0) break;
+        aInt_set(param_ixs, ixparams, -1);
+        aDouble_set(params, ixparams, bases[ixparams] - incs[ixparams]);
+        --ixparams;
+        continue;
+      }
+      aInt_set(param_ixs, ixparams, ixval);
+      double val = aDouble_get(params, ixparams) + incs[ixparams];
+      aDouble_set(params, ixparams, val);
+    }
+    ++ixparams;
+    if (ixparams < nparams) continue;
+
+    /**/int ffind (SimProfitsRow *e) {
+    /**/  return aDouble_eq(params, e->params, 0.000001);
+    /**/}
+    SimProfitsRow *pf_row = oSimProfitsRow_osome(
+      aSimProfitsRow_find(profits, ffind),
+      simProfitsRow_new(
+        params,
+        0,
+        simProfits_new(0, 0, 0),
+        simProfits_new(0, 0, 0)
+      )
+    );
+
+    SimProfits *rs = model_group_simulation(this, qs, params);
+
+    int n = pf_row->weeks;
+    SimProfits *hprofits = pf_row->hprofits;
+    SimProfits *profits = pf_row->profits;
+    int n1 = n + 1;
+    SimProfitsRow *new_pf_row = is_new || n == 0
+      ? simProfitsRow_new(
+          aDouble_copy(params),
+          n < cts_eval_weeks() ? n1 : n,
+          simProfits_new(
+            (hprofits->total * n + rs->total) / n1,
+            (hprofits->cash * n + rs->cash) / n1,
+            (hprofits->ref * n + rs->ref) / n1
+          ),
+          rs
+        )
+      : simProfitsRow_new(
+          aDouble_copy(params),
+          n,
+          simProfits_new(
+            (hprofits->total * n - profits->total + rs->total) / n,
+            (hprofits->cash * n - profits->cash + rs->cash) / n,
+            (hprofits->ref * n - profits->ref + rs->ref) / n
+          ),
+          rs
+        )
+    ;
+
+    aSimProfitsRow_push(r, new_pf_row);
+
+    --ixparams;
+  }
+
+  return r;
+}
+
+ASimProfitsRow *model_simulation_new(
+  Model *this, Quotes *qs, ASimProfitsRow *profits
+) {
+  return model_simulation(this, qs, profits, 1);
+}
+
+ASimProfitsRow *model_simulation_replace(
+  Model *this, Quotes *qs, ASimProfitsRow *profits
+) {
+return model_simulation(this, qs, profits, 0);
 }
 
 ADouble *model_refs(Model *this, Quotes *co_qs, ADouble *params) {

@@ -493,7 +493,7 @@ class Balance {
               stocks,
               (e.stocks * e.price + e2.stocks * e2.price) / stocks,
               e2.quote,
-              e2.ref > e.ref ? e2.ref : e.ref
+              (e.stocks * e.ref + e2.stocks * e2.ref) / stocks
             );
           }
         }

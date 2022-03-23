@@ -6,6 +6,7 @@
 #include "data/cts.h"
 #include "db/quotesTb.h"
 #include "db/evalsDb.h"
+#include "db/simProfitsDb.h"
 
 void db_init (void) {
   char *dir = cts_data_dir();
@@ -15,4 +16,5 @@ void db_init (void) {
 
   quotesTb_init(dir);
   evalsDb_init(dir);
+  simProfitsDb_init(dir);
 }

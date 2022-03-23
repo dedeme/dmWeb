@@ -24,27 +24,18 @@ class ModelEvalsTb {
     }
   }
 
+  /// 'data' is an unsorted array.
   public static function write (data: Array<ModelEvals>): Void {
     File.write(path, Js.wa(data.map(e -> e.toJs())).to());
-  }
-
-  public static function writeMap (data: Map<String, Array<ModelEval>>) {
-    final r = [];
-    for (k => v in data) r.push(new ModelEvals(k, v));
-    return r;
   }
 
   public static function readJs (): Js {
     return Js.from(File.read(path));
   }
 
+  /// Returns an unsorted array.
   public static function read (): Array<ModelEvals> {
     return Js.from(File.read(path)).ra().map(e -> ModelEvals.fromJs(e));
   }
 
-  public static function readMap (): Map<String, Array<ModelEval>> {
-    final r = new Map<String, Array<ModelEval>>();
-    for (e in read()) r[e.date] = e.evals;
-    return r;
-  }
 }

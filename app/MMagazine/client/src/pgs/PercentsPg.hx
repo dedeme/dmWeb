@@ -9,6 +9,7 @@ import dm.Ui.Q;
 import dm.Js;
 import dm.Dt;
 import dm.It;
+import dm.Opt;
 import cm.data.ProfitsEntry;
 import cm.data.IbexSundays;
 import dm.LineChart;
@@ -89,12 +90,12 @@ class PercentsPg {
       var sum = 0.0;
       for (i in 0...invs) {
         final dif = pfs[i] - initialPfs[i];
-        sets[i].push(dif * 100 / initialAssets[i]);
+        sets[i].push(Some(dif * 100 / initialAssets[i]));
         sum += dif;
       }
-      sums.push(sum * 100 / sumInitialAssets);
+      sums.push(Some(sum * 100 / sumInitialAssets));
     }
-    sets.push(ibexrts.map(v -> v * 100));
+    sets.push(ibexrts.map(v -> Some(v * 100)));
     sets.push(sums);
 
     final setAtts = [];

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd hx
+./dep
+cd ../c
+./dep
+cd ..

@@ -3,9 +3,12 @@
 
 package data;
 
+/// Model results.
+
 import dm.Js;
 import dm.It;
 
+/// Model result.
 class ModelResult {
   public final lastSales: Int;
   public final lastValue: Float;
@@ -32,9 +35,13 @@ class ModelResult {
   }
 }
 
+/// Table of model results.
 class ModelTable {
+  /// Table date
   public final date: String;
+  /// Days for ponderation.
   public final days: Int;
+  ///
   public final results: Map<Int, Array<ModelResult>>;
 
   function new (

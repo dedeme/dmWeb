@@ -6,7 +6,7 @@ package cm.data;
 import dm.Js;
 
 /// Unsorted model evaluations of a date.
-class ModelEvals {
+class ModelEvals implements Dated {
   public final date: String;
   /// Unsorted array.
   public final evals: Array<ModelEval>;

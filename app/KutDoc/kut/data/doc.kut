@@ -1,0 +1,31 @@
+// Copyright 06-Mar-2022 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+import "data/docEntry";
+
+/// Module documentation data.
+
+/// \s, [m...], [m...] -> m
+new = \documentation, functions, values -> return {
+  "documentation": documentation,
+  "functions": functions,
+  "values": values
+};;
+
+/// \m -> s
+toJs = \D -> {
+  return js.wa([
+  js.ws(D.documentation),
+  js.wa(arr.mp(D.functions, \F -> return docEntry.toJs(F);)),
+  js.wa(arr.mp(D.values, \F -> return docEntry.toJs(F);))
+]);};
+
+/// \s -> m
+fromJs = \j -> {
+  a = js.ra(j);
+  return new([
+    js.rs(a[0]),
+    arr.mp(js.ra(a[1]), \ejs -> return docEntry.fromJs(ejs);),
+    arr.mp(js.ra(a[2]), \ejs -> return docEntry.fromJs(ejs);)
+  ]);
+};

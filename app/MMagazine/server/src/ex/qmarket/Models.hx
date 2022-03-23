@@ -10,6 +10,7 @@ import dm.Js;
 import cm.Cts;
 import data.ModelTable;
 
+/// Model results reader from QMarket.
 class Models {
   static var dir = null;
 
@@ -17,7 +18,7 @@ class Models {
     dir = "/home/deme/.dmGoApp/QMarket/data/models";
   }
 
-  public static function read(group: Int): Option<ModelTable> {
+  static function read(group: Int): Option<ModelTable> {
     final p = Path.cat([dir, cm.Fns.format00(group) + ".tb"]);
     if (!File.exists(p)) {
       return None;
@@ -31,8 +32,8 @@ class Models {
   /// and it is stopped when returns 'true' or parameters are exausted.
   ///    fn: Function to execute with each record.
   ///        fn arguments are:
-  ///          paramId      : Parameter to calculate values.
-  ///          results      : Levels evaluation results (0...Cts.qlevels).
+  ///          paramId      : Parameter which generated the results.
+  ///          results      : Evaluation results. One for each level (0...Cts.qlevels).
   ///          RETURN       : true if 'fn' must stop after execute it.
   public static function eachResult (
     fn: (Int, Array<ModelResult>) -> Bool

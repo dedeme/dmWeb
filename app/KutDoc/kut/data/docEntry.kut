@@ -1,0 +1,33 @@
+// Copyright 06-Mar-2022 ºDeme
+// GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
+/// Documentation entry.
+
+/// \s, s, s, s -> m
+new = \name, doc, code, link -> return {
+    "name": name,
+    "doc": doc,
+    "code": code,
+    "link": link
+  };
+;
+
+/// \m -> s
+toJs = \E -> return js.wa([
+    js.ws(E.name),
+    js.ws(E.doc),
+    js.ws(E.code),
+    js.ws(E.link)
+  ]);
+;
+
+/// \s -> m
+fromJs = \j -> {
+  a = js.ra(j);
+  return new(
+    js.rs(a[0]),
+    js.rs(a[1]),
+    js.rs(a[2]),
+    js.rs(a[3])
+  );
+};

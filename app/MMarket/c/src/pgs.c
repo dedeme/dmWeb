@@ -13,6 +13,7 @@
 #include "pgs/main.h"
 #include "pgs/descriptionPg.h"
 #include "pgs/resultsPg.h"
+#include "pgs/simulationsPg.h"
 #include "pgs/hotPg.h"
 #include "pgs/cosPg.h"
 #include "pgs/historicPg.h"
@@ -24,6 +25,7 @@ static char *server_source_process (Mchar *mrq) {
   if (str_eq(source, "Main")) return main_process(mrq);
   else if (str_eq(source, "Description")) return descriptionPg_process(mrq);
   else if (str_eq(source, "ResultsPg")) return resultsPg_process(mrq);
+  else if (str_eq(source, "SimulationsPg")) return simulationsPg_process(mrq);
   else if (str_eq(source, "HotPg")) return hotPg_process(mrq);
   else if (str_eq(source, "CosPg")) return cosPg_process(mrq);
   else if (str_eq(source, "HistoricPg")) return historicPg_process(mrq);

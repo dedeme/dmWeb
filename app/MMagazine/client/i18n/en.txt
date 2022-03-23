@@ -4,11 +4,14 @@
 # src/pgs/ChangePass.hx: 58
 Accept = Accept
 
-# src/Main.hx: 81
+# src/Main.hx: 87
 Application exit? = Application exit?
 
 # src/pgs/ChangePass.hx: 53
 Cancel = Cancel
+
+# src/pgs/ModelsPg.hx: 42
+Cash Prfs. = Cash Prfs.
 
 # src/pgs/Settings.hx: 43
 Change Language to %0 = Change Language to %0
@@ -32,7 +35,7 @@ Current password = Current password
 # src/pgs/ChangePass.hx: 173
 Current password is missing = 'Current password' is missing
 
-# src/pgs/PercentsPg.hx: 187
+# src/pgs/PercentsPg.hx: 188
 Dates of profits and ibex does not match = Dates of profits and ibex does not match
 
 # src/pgs/Authentication.hx: 180
@@ -42,14 +45,17 @@ Grey squares checks are wrong = Grey squares checks are wrong
 # src/Main.hx: 46
 Home = Home
 
-# src/pgs/PercentsPg.hx: 196
+# src/Main.hx: 56
+Hot Maps = Hot Maps
+
+# src/pgs/PercentsPg.hx: 197
 Ibex = Ibex
 
-# src/pgs/PercentsPg.hx: 155
-# src/pgs/ProfitsPg.hx: 93
+# src/pgs/PercentsPg.hx: 156
+# src/pgs/ProfitsPg.hx: 94
 Investor = Investor
 
-# src/pgs/PercentsPg.hx: 174
+# src/pgs/PercentsPg.hx: 175
 Investors average = Investors average
 
 # src/pgs/Authentication.hx: 88
@@ -59,8 +65,14 @@ Keep connected = Keep connected
 # src/pgs/ChangePass.hx: 155
 Login = Login
 
-# src/Main.hx: 90
+# src/Main.hx: 96
 Logout-message = <p>%0 has finished.</p><p><b>Good by!</b></p>
+
+# src/pgs/ModelsPg.hx: 101
+Model = Model
+
+# src/Main.hx: 54
+Models = Models
 
 # src/pgs/ChangePass.hx: 72
 # src/pgs/ChangePass.hx: 79
@@ -84,8 +96,12 @@ Password successfully changed = Password successfully changed
 # src/Main.hx: 52
 Percentages = Percentages
 
+# src/pgs/ModelsPg.hx: 38
+# src/pgs/ModelsPg.hx: 104
+Points = Points
+
 # src/Main.hx: 50
-# src/pgs/PercentsPg.hx: 192
+# src/pgs/PercentsPg.hx: 193
 Profits = Profits
 
 # src/pgs/RankingsPg.hx: 96
@@ -94,10 +110,13 @@ Pts. = Pts.
 # src/Main.hx: 48
 Rankings = Rankings
 
+# src/pgs/ModelsPg.hx: 44
+Ref. Prfs. = Ref. Prfs.
+
 # src/Cts.hx: 24
 Session is expired. = Session is expired.
 
-# src/Main.hx: 55
+# src/Main.hx: 59
 # src/pgs/Settings.hx: 33
 Settings = Settings
 
@@ -106,6 +125,9 @@ There is a new best parameter = There is a new best parameter
 
 # src/pgs/Home.hx: 47
 This week continue the same best parameter = This week continue the same best parameter
+
+# src/pgs/ModelsPg.hx: 40
+Total Prfs. = Total Prfs.
 
 # src/pgs/Authentication.hx: 61
 User = User
