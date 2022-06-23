@@ -31,10 +31,11 @@ toJs (T n p s e) = Js.wa $ [ Js.ws n, Js.ws p, Js.wb s, Js.wb e ]
 
 --- fromJs js
 fromJs :: Js.T -> Result T
-fromJs js =
-  Js.ra js >>=
-  \a ->       Js.rs (a!!0) >>=
-        \n -> Js.rs (a!!1) >>=
-        \p -> Js.rb (a!!2) >>=
-        \s -> Js.rb (a!!3) >>=
-        \e -> Right $ T n p s e
+fromJs js = do
+  a <- Js.ra js
+  n <- Js.rs(a!!0)
+  p <- Js.rs(a!!1)
+  s <- Js.rb(a!!2)
+  e <- Js.rb(a!!3)
+  return $ T n p s e
+
