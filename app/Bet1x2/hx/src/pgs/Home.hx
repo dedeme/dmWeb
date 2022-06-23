@@ -11,6 +11,7 @@ import dm.Js;
 import dm.Dt;
 import dm.Opt;
 import dm.Tp;
+import dm.Log;
 import dm.Menu;
 import dm.Vmenu;
 import data.Result;
@@ -65,13 +66,33 @@ class Home {
       Vmenu.separator(),
       Vmenu.option("total", _("Total"), () -> selVmenu("total")),
       Vmenu.separator(),
-      Vmenu.option(strategies[0], strategies[0], () -> selVmenu(strategies[0]))
     ];
-    for (i in 1...strategies.length) {
+    for (i in 0...strategies.length) {
       final s = strategies[i];
-      vopts.push(Vmenu.option(s, s, () -> selVmenu(s)));
+      final opt = Vmenu.option(s, s, () -> selVmenu(s));
+      opt.wg.att("title", doc[s]);
+      vopts.push(opt);
     }
     final vmenu = new Vmenu(vopts, strategy);
+
+    final logDiv = Q("div");
+
+    function load (fn: Array<LogRow> -> Void) {
+      Cts.client.send([
+        "source" => Js.ws("Home"),
+        "rq" => Js.ws("getLog")
+      ], rp -> {
+        final log = rp["log"].ra();
+        fn(log.map(js -> LogRow.fromJs(js)));
+      });
+    }
+
+    function reset (fn: () -> Void) {
+      Ui.alert(_("Reset must be made from server!") +
+        "\n \nBet1x2 resetLog\n ");
+      fn();
+    }
+    Log.mk(logDiv, load, reset, _, true);
 
     final body = Q("div");
 
@@ -84,7 +105,9 @@ class Home {
           .add(Q("td")
             .style("width: 5px;vertical-align:top")
             .add(vmenu.wg))
-          .add(body)))
+          .add(Q("td")
+            .add(body)
+            .add(logDiv))))
     ;
 
     if (year == "all") {

@@ -5,6 +5,8 @@ lib
 *.gz
 gitk
 
+LinkToLogForI18n.hx
+
 #c
 bin
 
@@ -23,3 +25,6 @@ bin
 **/yeti/pack/
 **/yeti/doc/
 
+#kut
+**/Bet1x2/kut
+**/MMagazine/kut
