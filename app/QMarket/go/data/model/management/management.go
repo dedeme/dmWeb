@@ -9,7 +9,7 @@ import (
 )
 
 func downGap(q, d, jmp, lgJump float64) float64 {
-	return math.Pow(jmp, (math.Round(math.Log(q/d)/lgJump))-1.0) * d
+	return math.Pow(jmp, math.Round(math.Log(q/d)/lgJump)-1.0) * d
 }
 
 func upGap(q, d, jmp, lgJump float64) float64 {
@@ -86,7 +86,7 @@ func Run(
 							refs[iCo] = newRef
 						}
 					} else if q > ref {
-						refs[iCo] = downGap(q, d, jmp, lgJump) / jmp
+						refs[iCo] = downGap(q, d, jmp, lgJump)
 						toBuys[iCo] = false
 					}
 				} else {
@@ -96,7 +96,7 @@ func Run(
 							refs[iCo] = newRef
 						}
 					} else if q < ref {
-						refs[iCo] = upGap(q, d, jmp, lgJump) * jmp
+						refs[iCo] = upGap(q, d, jmp, lgJump)
 						toBuys[iCo] = true
 					}
 				}

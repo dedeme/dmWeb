@@ -188,7 +188,7 @@ func (t *TableT) Del(nickId int) *TableT {
 //    name: new name.
 //    Return:
 //      oldName: The changed name. If the new name is equals to the old name,
-//               the function do nothing and returns changed == "".
+//               the function do nothing.
 //      ok     : Return false if 'name' is duplicated.
 func (t *TableT) Modify(nickId int, name string) (oldName string, ok bool) {
 	nk, idOk := t.NickFromId(nickId)

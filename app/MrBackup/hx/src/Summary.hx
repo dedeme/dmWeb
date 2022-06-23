@@ -5,8 +5,7 @@ import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
 import dm.Js;
-import data.LogRow;
-import wgs.Log;
+import dm.Log;
 import I18n._;
 
 class Summary {
@@ -51,7 +50,7 @@ class Summary {
       .add(bkDiv)
       .add(logDiv)
     ;
-    Log.mk(logDiv, load, reset);
+    Log.mk(logDiv, load, reset, _);
     updateDirs();
     updateFiles(false, false);
     update(false);
@@ -96,7 +95,7 @@ class Summary {
           .add(mkTr(_("Directories"), -1, dirs))
           .add(mkTr(_("Directories in bad condition"), badDirs, -1)))
       ;
-      Log.onReload();
+      Log.reload();
     });
   }
 
@@ -169,7 +168,7 @@ class Summary {
             update(true);
           }))
       ;
-      Log.onReload();
+      Log.reload();
     });
   }
 
@@ -197,7 +196,7 @@ class Summary {
             update(false);
             updateDirs();
             updateFiles(true, false);
-            Log.onReload();
+            Log.reload();
             tm.stop();
           }
         });

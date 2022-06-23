@@ -161,7 +161,7 @@ func TxToQs(qsTx string) (qs []*T, err error) {
 	}
 	if len(qs) != cts.HistoricQuotes {
 		err = errors.New(fmt.Sprintf(
-			"Wrong quotes number (%v != &v).", len(qs), cts.HistoricQuotes,
+			"Wrong quotes number (%v != %v).", len(qs), cts.HistoricQuotes,
 		))
 	}
 	return

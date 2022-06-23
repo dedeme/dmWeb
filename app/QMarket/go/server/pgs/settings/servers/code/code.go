@@ -29,13 +29,13 @@ func Process(ck string, mrq map[string]json.T) string {
 				}
 			}()
 
-			nick, ok := nicksTb.Read().NickFromId(nickId)
+			nk, ok := nicksTb.Read().NickFromId(nickId)
 			if !ok {
 				logTb.Error(fmt.Sprintf("Nick id %v not found", nickId))
 				rp["withError"] = json.Wb(true)
 				return
 			}
-			warns, err := net.TestHistoricConf(serverId, nick)
+			warns, err := net.TestHistoricConf(serverId, nk)
 			if err == nil && len(warns) == 0 {
 				rp["withError"] = json.Wb(false)
 				return

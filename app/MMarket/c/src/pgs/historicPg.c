@@ -31,7 +31,7 @@ char *historicPg_process (Mchar *mrq) {
     }
     if (js_is_null(params_js)) { // Warning: Not use 'else'
       /**/int fgreater (ModelEval *e1, ModelEval *e2) {
-      /**/  return e1->value < e2->value;
+      /**/  return e1->hvalue < e2->hvalue;
       /**/}
       aModelEval_sort(evs, fgreater);
       eval = *(evs->es);

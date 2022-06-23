@@ -54,7 +54,7 @@ static void calc (
         if (q < q0) {
           aDouble_push(new_refs, up_gap2(q, ref));
         } else if (q > ref) {
-          aDouble_push(new_refs, down_gap(q) / jmp);
+          aDouble_push(new_refs, down_gap(q));
         } else {
           aDouble_push(new_refs, ref);
         }
@@ -62,7 +62,7 @@ static void calc (
         if (q > q0) {
           aDouble_push(new_refs, down_gap2(q, ref));
         } else if (q < ref) {
-          aDouble_push(new_refs, up_gap(q) * jmp);
+          aDouble_push(new_refs, up_gap(q));
         } else {
           aDouble_push(new_refs, ref);
         }

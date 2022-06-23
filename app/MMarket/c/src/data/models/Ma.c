@@ -12,7 +12,7 @@ static void calc (
   double *params,
   void (*action)(ADouble *closes, ADouble *refs)
 ) {
-  int days = params[0] + 0.5;
+  int days = params[0] + 0.4;
   double strip = params[1];
   int ncos = aDouble_size(*closes->es);
 
@@ -31,7 +31,11 @@ static void calc (
 
     double *prow = row->es;
     double *psums = sums->es;
-    while (prow < row->end) aDouble_push(new_sums, *psums++ + *prow++);
+    while (prow < row->end) {
+      aDouble_push(new_sums, *psums + *prow);
+      psums++;
+      prow++;
+    }
     sums = new_sums;
 
     action(row, irefs);
@@ -80,6 +84,7 @@ static void calc (
           double new_ref = new_avg * (1 - strip);
           aDouble_push(new_refs, new_ref);
         } else {
+          aInt_push(new_is_solds, 1);
           double new_ref = new_avg * (1 + strip);
           aDouble_push(new_refs, new_ref < ref ? new_ref : ref);
         }
@@ -89,6 +94,7 @@ static void calc (
           double new_ref = new_avg * (1 + strip);
           aDouble_push(new_refs, new_ref);
         } else {
+          aInt_push(new_is_solds, 0);
           double new_ref = new_avg * (1 - strip);
           aDouble_push(new_refs, new_ref > ref ? new_ref : ref);
         }
