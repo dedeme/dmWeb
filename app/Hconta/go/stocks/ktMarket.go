@@ -5,7 +5,7 @@
 package stocks
 
 import (
-	"github.com/dedeme/Hconta/data/brokerA"
+	"github.com/dedeme/Hconta/data/broker"
 	"github.com/dedeme/golib/date"
 	"github.com/dedeme/golib/file"
 	"github.com/dedeme/golib/json"
@@ -14,12 +14,12 @@ import (
 	"strconv"
 )
 
-const dQMarket = "/home/deme/.dmGoApp/QMarket/data/acc"
+const dKtMarket = "/home/deme/.dmGoApp/KtMarket/data/acc"
 
 // Each element in entries is: nick, stocks, price
-func qMarketData(lastDate string) (entries []json.T, cash float64) {
-	if !file.Exists(dQMarket) {
-		panic(dQMarket + " not found")
+func ktMarketData(lastDate string) (entries []json.T, cash float64) {
+	if !file.Exists(dKtMarket) {
+		panic(dKtMarket + " not found")
 	}
 
 	year := date.Now().Format("%Y") + ".tb"
@@ -28,7 +28,7 @@ func qMarketData(lastDate string) (entries []json.T, cash float64) {
 		pf := map[string][]json.T{}
 		portfolios = append(portfolios, pf)
 		fdb := path.Join(
-			dQMarket, "Investor-"+strconv.Itoa(i), "diaries", year)
+			dKtMarket, "Investor-"+strconv.Itoa(i), "diaries", year)
 
 		for _, es := range json.FromString(file.ReadAll(fdb)).Ra()[1].Ra() {
 			ejs := es.Ra()
@@ -48,7 +48,7 @@ func qMarketData(lastDate string) (entries []json.T, cash float64) {
 				price := ejs[5].Rd()
 				eCost := price * float64(eStks)
 
-				cash -= math.Round(brokerA.Buy(nick, eStks, price)*100) / 100
+				cash -= math.Round(broker.Buy(eStks, price)*100) / 100
 				if oldV, ok := pf[nick]; ok {
 					stks := eStks + oldV[0].Ri()
 					cost := eCost + oldV[1].Rd()
@@ -61,7 +61,7 @@ func qMarketData(lastDate string) (entries []json.T, cash float64) {
 				eStks := ejs[4].Ri()
 				price := ejs[5].Rd()
 
-				cash += math.Round(brokerA.Sell(nick, eStks, price)*100) / 100
+				cash += math.Round(broker.Sell(eStks, price)*100) / 100
 				if oldV, ok := pf[nick]; ok {
 					oldStocks := oldV[0].Ri()
 					stks := oldStocks - eStks
