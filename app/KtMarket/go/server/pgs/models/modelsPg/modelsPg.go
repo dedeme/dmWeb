@@ -6,6 +6,7 @@ package modelsPg
 
 import (
 	"github.com/dedeme/KtMarket/data/assetsRs"
+	"github.com/dedeme/KtMarket/data/investor"
 	"github.com/dedeme/KtMarket/data/model"
 	"github.com/dedeme/KtMarket/data/nick"
 	"github.com/dedeme/KtMarket/data/order"
@@ -27,9 +28,10 @@ func Process(ck string, mrq cgi.T) string {
 		})
 	case "results":
 		modelId := js.Rs(mrq["modelId"])
-		params := arr.Map(js.Ra(mrq["params"]), js.Rd)
+		paramsJs := mrq["params"]
 
 		var ok bool
+		var params []float64
 		var dates []string
 		var nks []string
 		var lastCloses []float64
@@ -38,6 +40,19 @@ func Process(ck string, mrq cgi.T) string {
 		var assets []float64
 
 		thread.Sync(func() {
+			inv, ok2 := arr.Find(
+				db.InvestorsTb().Read().Investors, func(inv *investor.T) bool {
+					return inv.Base.Model.Id == modelId
+				})
+			if !ok2 {
+				log.Error("Investor with model " + modelId + " not found")
+				inv = db.InvestorsTb().Read().Investors[0]
+			}
+			params = inv.Base.Params
+			if !js.IsNull(paramsJs) {
+				params = arr.Map(js.Ra(mrq["params"]), js.Rd)
+			}
+
 			err := ""
 			dates, err = db.Dates()
 			if err != "" {
@@ -105,6 +120,7 @@ func Process(ck string, mrq cgi.T) string {
 
 		return cgi.Rp(ck, cgi.T{
 			"ok":         js.Wb(ok),
+			"params":     js.Wa(arr.Map(params, js.Wd)),
 			"dates":      js.Wa(arr.Map(dates, js.Ws)),
 			"assets":     js.Wa(arr.Map(assets, js.Wd)),
 			"results":    assetsRs.ToJs(results),

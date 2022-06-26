@@ -33,7 +33,7 @@ static void normalize (AADouble *qs) {
 
 Quotes *quotesReader_read (void) {
   Achar *cos = achar_new();
-  char *nkstb = path_cat(cts_ktmarket_data_dir(), "Nicks.tb", NULL);
+  char *nkstb = path_cat(cts_ktmarket_data_dir(), "nicks.tb", NULL);
   Achar *a = js_ra(file_read(nkstb));
   Achar *cos_js = js_ra(achar_get(a, 2));
   char **pcos_js = cos_js->es;

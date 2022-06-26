@@ -79,7 +79,7 @@ const (
 	ActActive = "Active"
 
 	// Hour to start actHistoric fase
-	ActHistoricStart = 3
+	ActHistoricStart = 2
 
 	// Models - Investors --------------------------------------------------------
 	//

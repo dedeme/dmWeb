@@ -10,24 +10,24 @@ import dm.Js;
 import dm.Dt;
 import dm.It;
 import dm.Opt;
-import cm.data.ProfitsEntry;
-import cm.data.IbexSundays;
+import data.ProfitsEntry;
+import data.IbexSundays;
 import dm.LineChart;
 import I18n._;
 
 /// Profits page.
 class PercentsPg {
-  static final invs = cm.Cts.qlevels;
   static final pfColor = "#000000";
   static final ibexColor = "#800000";
   final wg: Domo;
+  final invs: Int;
   final initialAssets: Array<Float>;
   final profits: Array<ProfitsEntry>;
   final ibexdts: Array<Date>;
   final ibexrts: Array<Float>;
 
   function new (
-    wg: Domo, initialAssets: Array<Float>,
+    wg: Domo, investors: Int, initialAssets: Array<Float>,
     profits: Array<ProfitsEntry>, ibex: IbexSundays
   ) {
     if (profits.length == 0) {
@@ -53,6 +53,7 @@ class PercentsPg {
     this.ibexrts = ibexrts;
 
     this.wg = wg;
+    this.invs = investors;
     this.initialAssets = initialAssets;
     this.profits = profits;
   }
@@ -60,7 +61,7 @@ class PercentsPg {
   // View ----------------------------------------------------------------------
 
   public function show () {
-    if (profits[0].profits.length != cm.Cts.qlevels) {
+    if (profits[0].profits.length != invs) {
       throw new haxe.Exception("Investor number is not " + invs);
     }
 
@@ -125,6 +126,22 @@ class PercentsPg {
     chart.inPadding = new LineChartPadding(25, 25, 30, 100);
     chart.data = data;
 
+    final data2 = new LineChartData(
+      labels,
+      [It.range(sums.length).map(i ->
+        Opt.bind(sums[i], sum -> Some(sum - ibexrts[i] * 100))
+      ).to()],
+      [pfAtts]
+    );
+    data2.drawLabel = data.drawLabel;
+    data2.drawGrid = data.drawGrid;
+
+    final chart2 = LineChart.mk();
+    chart2.exArea.width = 600;
+    chart2.exArea.height = 200;
+    chart2.inPadding = new LineChartPadding(25, 25, 30, 100);
+    chart2.data = data2;
+
     wg
       .removeAll()
       .add(Q("table")
@@ -138,7 +155,23 @@ class PercentsPg {
             .style("width:5px;")
             .text("%"))
           .add(Q("td")
-            .add(chart.mkWg()))))
+            .add(chart.mkWg())))
+        .add(Q("tr")
+          .add(Q("td")
+            .att("colspan", "2")
+            .style("height:15px")
+            .text(" ")))
+        .add(Q("tr")
+          .add(Q("td"))
+          .add(Q("td")
+            .add(caption2())))
+        .add(Q("tr")
+          .add(Q("td")
+            .style("width:5px;")
+            .text("%"))
+          .add(Q("td")
+            .add(chart2.mkWg())))
+        )
     ;
   }
 
@@ -173,6 +206,20 @@ class PercentsPg {
         .add(Q("td")
           .style("vertical-align: middle;text-align:left;")
           .text(_("Investors average"))))
+    ;
+  }
+
+  function caption2 () {
+    return Q("table")
+      .klass("frame")
+      .att("align", "center")
+      .add(Q("tr")
+        .add(Q("td")
+          .style("width:30px")
+          .add(Ui.led(pfColor, 6)))
+        .add(Q("td")
+          .style("vertical-align: middle;text-align:left;")
+          .text(_("Investors - Ibex"))))
     ;
   }
 
@@ -222,11 +269,12 @@ class PercentsPg {
       "source" => Js.ws("PercentsPg"),
       "rq" => Js.ws("idata"),
     ], rp -> {
+      final investors = rp["investors"].ri();
       final initialAssets = rp["initialAssets"].ra().map(e -> e.rf());
       final profits = rp["profits"].ra().map(e -> ProfitsEntry.fromJs(e));
       final ibex = IbexSundays.fromJs(rp["ibex"]);
 
-      new PercentsPg(wg, initialAssets, profits, ibex).show();
+      new PercentsPg(wg, investors, initialAssets, profits, ibex).show();
     });
   }
 

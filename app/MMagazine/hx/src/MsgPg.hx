@@ -35,7 +35,7 @@ class MsgPg {
       .add(Q("div")
         .klass("head")
         .style("padding-bottom:20px;")
-        .text(cm.Cts.appName))
+        .text(Cts.appName))
       .add(Q("table")
         .klass("main")
         .add(Q("tr")

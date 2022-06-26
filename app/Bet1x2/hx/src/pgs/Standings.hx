@@ -40,7 +40,8 @@ class Standings {
   // View ----------------------------------------------------------------------
 
   public function show () {
-    final lopts = [Menu.toption(year, year, () -> sel(year))];
+    final y = years[0];
+    final lopts = [Menu.toption(y, y, () -> sel(y))];
     for (i in 1...years.length) {
       final y = years[i];
       lopts.push(Menu.separator());

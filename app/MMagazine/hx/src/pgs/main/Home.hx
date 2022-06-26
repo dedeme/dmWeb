@@ -10,18 +10,25 @@ import dm.Js;
 import dm.It;
 import dm.Dec;
 import dm.Log;
-import cm.data.RankingEntry;
+import data.ParamsEval;
 import I18n._;
 import I18n._args;
 
 /// Home page.
 class Home {
   final wg: Domo;
-  final ok: Bool;
+  final iparams: Array<Array<Float>>;
+  final models: Array<String>;
+  final paramsEvals: Array<ParamsEval>;
 
-  function new (wg: Domo, ok: Bool) {
+  function new (
+    wg: Domo, iparams: Array<Array<Float>>, models: Array<String>,
+    paramsEvals: Array<ParamsEval>
+  ) {
     this.wg = wg;
-    this.ok = ok;
+    this.models = models;
+    this.paramsEvals = paramsEvals;
+    this.iparams = iparams;
   }
 
   // View ----------------------------------------------------------------------
@@ -56,7 +63,15 @@ class Home {
         .add(Q("tr")
           .add(Q("td")
             .add(Q("span")
-              .text(ok ? "Ok" : "Fail")))))
+              .html(
+                "Los mejores resultados de los modelos usados por los inversores son:<br>" +
+                "<pre>" +
+                It.range(models.length).map(i ->
+                  "Inv-" + i + " (" + Std.string(iparams[i]) + ") -> " +
+                  models[i] + Std.string(paramsEvals[i].params) +
+                  ": " + Std.string(paramsEvals[i].eval / 100)).to().join("\n") +
+                "</pre>"
+              )))))
       .add(logDiv)
     ;
   }
@@ -69,8 +84,10 @@ class Home {
       "source" => Js.ws("Home"),
       "rq" => Js.ws("idata"),
     ], rp -> {
-      final ok = rp["ok"].rb();
-      new Home(wg, ok).show();
+      final iparams = rp["iparams"].ra().map(e -> e.ra().map(e2 -> e2.rf()));
+      final models = rp["models"].ra().map(e -> e.rs());
+      final paramsEvals = rp["paramsEvals"].ra().map(e -> ParamsEval.fromJs(e));
+      new Home(wg, iparams, models, paramsEvals).show();
     });
   }
 }

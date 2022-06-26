@@ -88,7 +88,7 @@ class Dmenu {
       "sessionId" => Js.ws(Cts.client.sessionId())
     ], rp -> {
       new MsgPg(
-        Q("@body"), _args(_("Logout-message"), [cm.Cts.appName]), false
+        Q("@body"), _args(_("Logout-message"), [Cts.appName]), false
       ).show();
     });
   }

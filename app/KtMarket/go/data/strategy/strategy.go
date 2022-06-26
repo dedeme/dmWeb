@@ -10,6 +10,7 @@ import (
 	"github.com/dedeme/KtMarket/data/broker"
 	"github.com/dedeme/KtMarket/data/model"
 	"github.com/dedeme/KtMarket/data/order"
+	"github.com/dedeme/KtMarket/data/quote"
 	"github.com/dedeme/ktlib/arr"
 	"github.com/dedeme/ktlib/js"
 	"github.com/dedeme/ktlib/math"
@@ -83,8 +84,7 @@ func Refs(s *T, closes []float64, initRef float64) []float64 {
 //  closes : Company closes (from before to after), with at least one element.
 //  initRef: Initial reference or -1 if there is no one.
 func LastRef(s *T, closes []float64, initRef float64) float64 {
-	rfs := Refs(s, closes, initRef)
-	return rfs[len(rfs)-1]
+	return quote.LastValue(Refs(s, closes, initRef))
 }
 
 // Returns references (one for each close) of a group of companies

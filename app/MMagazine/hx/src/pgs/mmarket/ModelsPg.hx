@@ -14,7 +14,7 @@ import dm.Dt;
 import dm.Opt;
 import dm.Dec;
 import dm.Menu;
-import cm.data.ModelFloats;
+import data.ModelFloats;
 import I18n._;
 
 /// Models page.

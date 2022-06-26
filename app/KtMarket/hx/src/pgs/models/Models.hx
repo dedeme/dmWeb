@@ -141,9 +141,7 @@ class Models {
       case Some(m): m;
       default: models[0];
     };
-    var params = It.range(model.paramMaxs.length).map(i ->
-      (model.paramMaxs[i] + model.paramMins[i]) / 2.0
-    ).to();
+    var params = None;
 
     if (lcPath.length > 2) {
       try {
@@ -157,7 +155,7 @@ class Models {
               ok = false;
           }
           if (ok) {
-            params = ps;
+            params = Some(ps);
           } else {
             trace("Bad parameters");
           }
@@ -170,13 +168,17 @@ class Models {
       "module" => Js.ws("models"),
       "source" => Js.ws("models"),
       "modelId" => Js.ws(model.id),
-      "params" => Js.wa(params.map(e -> Js.wf(e))),
+      "params" => switch(params) {
+        case Some(ps): Js.wa(ps.map(e -> Js.wf(e)));
+        default: Js.wn();
+      },
       "rq" => Js.ws("results")
     ], rp -> {
       if (!rp["ok"].rb()) {
         Msg.error(Cts.failMsg);
         return;
       }
+      final params = rp["params"].ra().map(e -> e.rf());
       final dates = rp["dates"].ra().map(e -> e.rs());
       final assets = rp["assets"].ra().map(e -> e.rf());
       final results = AssetsRs.fromJs(rp["results"]);

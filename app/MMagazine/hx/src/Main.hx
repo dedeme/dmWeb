@@ -83,7 +83,7 @@ class Main {
         new Main(wg).show();
         fn();
       } else {
-        new Authentication(wg, cm.Cts.appName, () -> mk(wg, fn));
+        new Authentication(wg, Cts.appName, () -> mk(wg, fn));
         fn();
       }
     });

@@ -109,7 +109,7 @@ func FromStr(s string) (q *T, ok bool) {
 	return
 }
 
-// Returns quotes from a table type text.
+// Returns quotes, from after to before, from a table type text.
 //
 // If the final number of quotes is different to 'cts.HistoricQuotes', an
 // error is raised.
@@ -329,7 +329,8 @@ func Correct3(last, previous *T) (newQ *T, errs []string) {
 	return
 }
 
-// Corrects "qs" and returns a list with corrected quotes.
+// Corrects "qs" and returns a list with corrected quotes. Everey slice of quotes
+// is ordered from after to before.
 //    qs: Historic quotes.
 //    ----
 //    Returns:
@@ -370,7 +371,8 @@ func Correct(qs []*T) (newQs []*T, errs []string) {
 	return
 }
 
-// Corrects "qs" and returns a list with corrected quotes.
+// Corrects "qs" and returns a list with corrected quotes. Everey slice of quotes
+// is ordered from after to before.
 //    mqs: Historic quotes of company model
 //    qs : Historic quotes of company.
 //    ----
@@ -420,7 +422,8 @@ func CorrectDates(mqs, qs []*T) (newQs []*T, errs []string) {
 	return
 }
 
-// Merges new quotes with others already existent.
+// Merges new quotes with others already existent. Everey slice of quotes
+// is ordered from after to before.
 //    model: Model quotes. When quotes are of company model, it is an
 //           empty array.
 //    newQs: Last quotes read from the Internet. It can not be empty.
@@ -536,4 +539,48 @@ func VolumeAvg(qs []*T) float64 {
 		func(r, e float64) float64 {
 			return r + e
 		}) / float64(lim)
+}
+
+// Returns opens-closes from quotes, ordered from before to after.
+//    qs: Company quotes sorted from after to before.
+func OpenCloses(qs []*T) (opens, closes []float64) {
+	lg := len(qs)
+	opens = make([]float64, lg)
+	closes = make([]float64, lg)
+	for i, q := range arr.Reverse(qs) {
+		opens[i] = q.Open
+		closes[i] = q.Close
+	}
+	return
+}
+
+// Returns the last value geater or equals to 0.0 of values.
+//    values: Float values intended for closes and references.
+func LastValue(values []float64) float64 {
+	for i := len(values) - 1; i >= 0; i-- {
+		if values[i] != -1.0 {
+			return values[i]
+		}
+	}
+	panic("All values of slice are less than 0.0")
+}
+
+// Returns the last two value geater or equals to 0.0 of values.
+//    values: Float values intended for closes and references.
+func LastValue2(values []float64) (last, penultimate float64) {
+	i := len(values) - 1
+	for ; i >= 0; i-- {
+		if values[i] != -1.0 {
+			last = values[i]
+			break
+		}
+	}
+	i--
+	for ; i >= 0; i-- {
+		if values[i] != -1.0 {
+			penultimate = values[i]
+			return
+		}
+	}
+	panic("All values of slice are less than 0.0")
 }

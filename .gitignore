@@ -5,6 +5,7 @@ lib
 *.gz
 gitk
 
+#web/hx
 LinkToLogForI18n.hx
 
 #c

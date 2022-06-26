@@ -14,8 +14,8 @@ import dm.Dt;
 import dm.Opt;
 import dm.Dec;
 import dm.Menu;
-import cm.data.HotMap;
-import cm.data.ParamsEval;
+import data.HotMap;
+import data.ParamsEval;
 import I18n._;
 
 /// Hot maps page.

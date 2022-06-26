@@ -51,7 +51,7 @@ Current password = Current password
 # src/pgs/main/ChangePass.hx: 173
 Current password is missing = 'Current password' is missing
 
-# src/pgs/ktmarket/PercentsPg.hx: 188
+# src/pgs/ktmarket/PercentsPg.hx: 235
 Dates of profits and ibex does not match = Dates of profits and ibex does not match
 
 # src/LinkToLogForI18n.hx: 175
@@ -70,14 +70,17 @@ Home = Home
 # src/pgs/Mmarket.hx: 26
 Hot Maps = Hot Maps
 
-# src/pgs/ktmarket/PercentsPg.hx: 197
+# src/pgs/ktmarket/PercentsPg.hx: 244
 Ibex = Ibex
 
-# src/pgs/ktmarket/PercentsPg.hx: 156
-# src/pgs/ktmarket/ProfitsPg.hx: 94
+# src/pgs/ktmarket/PercentsPg.hx: 189
+# src/pgs/ktmarket/ProfitsPg.hx: 95
 Investor = Investor
 
-# src/pgs/ktmarket/PercentsPg.hx: 175
+# src/pgs/ktmarket/PercentsPg.hx: 222
+Investors - Ibex = Investors - Ibex
+
+# src/pgs/ktmarket/PercentsPg.hx: 208
 Investors average = Investors average
 
 # src/pgs/main/Authentication.hx: 88
@@ -133,19 +136,19 @@ Percentages = Percentages
 Points = Points
 
 # src/pgs/Ktmarket.hx: 24
-# src/pgs/ktmarket/PercentsPg.hx: 193
+# src/pgs/ktmarket/PercentsPg.hx: 240
 Profits = Profits
 
 # src/LinkToLogForI18n.hx: 170
 Reload = Reload
 
-# src/pgs/main/Home.hx: 44
+# src/pgs/main/Home.hx: 51
 Reset must be made from server! = Reset must be made from server!
 
 # src/pgs/mmarket/ModelsPg.hx: 44
 Risk = Risk
 
-# src/Cts.hx: 24
+# src/Cts.hx: 28
 Session is expired. = Session is expired.
 
 # src/pgs/main/Settings.hx: 33

@@ -150,7 +150,7 @@ func UpdateInvestors() (err string) {
 
 				rf := newRfBase.Ref
 				rf2 := newRfBase2.Ref
-				cl := closes[len(closes)-1]
+				cl := quote.LastValue(closes)
 
 				if (rf > cl && rf2 > cl) || (rf < cl && rf2 < cl) {
 					st = stBase
@@ -205,8 +205,7 @@ func Operations() (err string) {
 			return
 		}
 		closes = arr.Drop(closes, len(closes)-cts.ReferenceQuotes)
-		lastClose := closes[len(closes)-1]
-		lastClose2 := closes[len(closes)-2]
+		lastClose, lastClose2 := quote.LastValue2(closes)
 
 		invs := InvestorsTb().Read().Investors
 		for i := 0; i < cts.Investors; i++ {
@@ -222,8 +221,7 @@ func Operations() (err string) {
 				initRef = refBase.Ref
 			}
 			refs := strategy.Refs(st, closes, initRef)
-			lastRef := refs[len(refs)-1]
-			lastRef2 := refs[len(refs)-2]
+			lastRef, lastRef2 := quote.LastValue2(refs)
 
 			if lastRef > lastClose && lastRef2 < lastClose2 {
 				pfEntry, ok := arr.Find(pfs[i], func(e *acc.PfEntryT) bool {
@@ -310,17 +308,7 @@ func ActivateDailyCharts() {
 		closes := arr.Map(qs, func(q *quote.T) float64 {
 			return q.Close
 		})
-		close = -1.0
-		for i := len(closes) - 1; i >= 0; i-- {
-			if closes[i] >= 0 {
-				close = closes[i]
-				break
-			}
-		}
-		if close < 0 {
-			log.Error("Every close of " + nk.Name + " is less than 0")
-			return r
-		}
+		close = quote.LastValue(closes)
 
 		tm := time.Now()
 		hours[0] = time.Hour(tm)
@@ -388,7 +376,7 @@ func UpdateDailyCharts(readQs func(*server.T) ([]*nick.IdValT, []string, string)
 	dailyDb := DailyTb()
 	dailyTb := dailyDb.Read()
 	if tm == dailyTb.Date {
-		eq := true
+		eq := len(dailyTb.Values) != 0 // Set to false if there is no value.
 		for _, nkVal := range dailyTb.Values {
 			q, ok := arr.Find(qs, func(q *nick.IdValT) bool {
 				return q.Nick == nkVal.Nick
@@ -399,7 +387,7 @@ func UpdateDailyCharts(readQs func(*server.T) ([]*nick.IdValT, []string, string)
 			}
 		}
 		if eq {
-			return // if daylyTb is equals to new data
+			return // if daylyTb is there are values and they are equals to new data
 		}
 	}
 	dailyDb.Write(nick.NewTbIdVal(tm, qs))
@@ -463,11 +451,7 @@ func UpdateHistoricProfits() {
 				continue
 			}
 			closes = arr.Drop(closes, len(closes)-cts.ReferenceQuotes)
-			lastClose := closes[len(closes)-1]
-			if lastClose < 0 {
-				log.Error("Las close of " + nk.Name + " not found in 'utils.UpdateHistoricProfits'")
-				continue
-			}
+			lastClose := quote.LastValue(closes)
 
 			st, ok := inv.Nicks[nk.Name]
 			if !ok {

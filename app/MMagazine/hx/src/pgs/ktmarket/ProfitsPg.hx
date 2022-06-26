@@ -10,17 +10,17 @@ import dm.Js;
 import dm.Dt;
 import dm.It;
 import dm.Opt;
-import cm.data.ProfitsEntry;
+import data.ProfitsEntry;
 import dm.LineChart;
 import I18n._;
 
 /// Profits page.
 class ProfitsPg {
-  static final invs = cm.Cts.qlevels;
+  final invs: Int;
   final wg: Domo;
   final profits: Array<ProfitsEntry>;
 
-  function new (wg: Domo, profits: Array<ProfitsEntry>) {
+  function new (wg: Domo, investors: Int, profits: Array<ProfitsEntry>) {
     if (profits.length == 0) {
       profits = [new ProfitsEntry(
         Dt.to(Dt.mk(1, 1, Dt.year(Date.now()))), [0, 0, 0]
@@ -30,13 +30,14 @@ class ProfitsPg {
       profits.push(profits[0]);
     }
     this.wg = wg;
+    this.invs = investors;
     this.profits = profits;
   }
 
   // View ----------------------------------------------------------------------
 
   public function show () {
-    if (profits[0].profits.length != cm.Cts.qlevels) {
+    if (profits[0].profits.length != invs) {
       throw new haxe.Exception("Investor number is not " + invs);
     }
     final labels = [];
@@ -107,9 +108,10 @@ class ProfitsPg {
       "source" => Js.ws("ProfitsPg"),
       "rq" => Js.ws("idata"),
     ], rp -> {
+      final investors = rp["investors"].ri();
       final profits = rp["profits"].ra().map(e -> ProfitsEntry.fromJs(e));
 
-      new ProfitsPg(wg, profits).show();
+      new ProfitsPg(wg, investors, profits).show();
     });
   }
 

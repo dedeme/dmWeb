@@ -32,7 +32,7 @@ class ChangePass {
     this.wg = wg;
     this.fn = fn;
 
-    app = cm.Cts.appName;
+    app = Cts.appName;
     oldPass = Ui.pass("newPass").att("id", "autofocus");
     newPass = Ui.pass("newPass2").att("id", "newPass");
     newPass2 = Ui.pass("acceptBt").att("id", "newPass2");
