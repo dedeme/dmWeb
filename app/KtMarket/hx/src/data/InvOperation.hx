@@ -11,7 +11,7 @@ class InvOperation {
 ///       If stocks == 0 is a normal buy operation.
 ///       if stocks < 0 is a rebuy
   public var stocks(default, null): Int;
-  public var manager(default, null): Int;
+  public var investor(default, null): Int;
   public var nick(default, null): String;
 
   function new () {}
@@ -20,7 +20,7 @@ class InvOperation {
     final a = js.ra();
     final r = new InvOperation();
     r.stocks = a[0].ri();
-    r.manager = a[1].ri();
+    r.investor = a[1].ri();
     r.nick = a[2].rs();
     return r;
   }

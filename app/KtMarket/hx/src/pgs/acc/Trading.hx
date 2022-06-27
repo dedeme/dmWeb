@@ -48,7 +48,7 @@ class Trading {
       .style("width:80px")
       .value(Dec.toIso(bet, 0));
     Ui.changePoint(bentry);
-    pentry = Ui.field("calcBt")
+    pentry = Ui.field("calcBuyBt")
       .style("width:80px")
       .att("id", "pentry");
     Ui.changePoint(pentry);
@@ -56,7 +56,7 @@ class Trading {
     result = Q("div").klass("frame").style("text-align:right");
     result2 = Q("div").klass("frame").style("text-align:right");
 
-    sentry = Ui.field("calcBt")
+    sentry = Ui.field("calcSellBt")
       .style("width:80px")
       .att("id", "sentry");
     Ui.changePoint(sentry);
@@ -99,6 +99,7 @@ class Trading {
           .att("colspan", "2")
           .style("text-align:center")
           .add(Q("button")
+            .att("id", "calcBuyBt")
             .text(_("Calculate"))
             .on(CLICK, e -> calculateBuy()))))
       .add(Q("tr")
@@ -158,6 +159,7 @@ class Trading {
           .att("colspan", "2")
           .style("text-align:center")
           .add(Q("button")
+            .att("id", "calcSellBt")
             .text(_("Calculate"))
             .on(CLICK, e -> calculateSell()))))
       .add(Q("tr")
@@ -175,6 +177,13 @@ class Trading {
   }
 
   function view () {
+    rebuys.sort((e1, e2) ->
+      e1.value < e2.value
+        ? 1
+        : e1.value > e2.value
+          ? -1
+          : e1.nick > e2.nick ? 1 : e1.nick < e2.nick ? -1 : 0
+    );
     final rebuyTrs = rebuys.length == 0
       ? [
         Q("tr")
@@ -194,6 +203,13 @@ class Trading {
       )
     ;
     final os = operations;
+    os.sort((e1, e2) ->
+      e1.investor > e2.investor
+        ? 1
+        : e1.investor < e2.investor
+          ? -1
+          : e1.nick > e2.nick ? 1 : e1.nick < e2.nick ? -1 : 0
+    );
     final buys = os.filter(o -> o.stocks <= 0);
     final buyTrs = buys.length == 0
       ? [
@@ -205,7 +221,7 @@ class Trading {
       ]
       : buys.map(o ->
         Q("tr")
-          .add(invTd(o.manager))
+          .add(invTd(o.investor))
           .add(ciaTd(o.nick).style(
               o.stocks == 0 ? "" : "text-decoration:line-through"
             ))
@@ -234,7 +250,7 @@ class Trading {
             default:{}
           }
           return Q("tr")
-            .add(invTd(o.manager))
+            .add(invTd(o.investor))
             .add(ciaTd(o.nick))
             .add(stocksTd(o.stocks))
             .add(quoteTd(gol))
@@ -264,7 +280,7 @@ class Trading {
                       .klass("head")
                       .html(_("Rebuys")))
                     .add(Q("table")
-                      .klass("buys")
+                      .klass("frame2")
                       .add(Q("tr")
                         .add(Q("td").klass("head").html(_("Co.")))
                         .add(Q("td").klass("head").html(_("Date"))))
@@ -338,6 +354,13 @@ class Trading {
   }
 
   function calculateSell () {
+    final ps = cast(sentry.getValue(), String);
+    final p = Opt.get(Dec.fromIso(ps));
+    if (p == null) {
+      Ui.alert('${ps} is not a valid number.');
+      return;
+    }
+    sprice2.text(Dec.toIso(p * 1.1, 2));
   }
 
   // Static --------------------------------------------------------------------
