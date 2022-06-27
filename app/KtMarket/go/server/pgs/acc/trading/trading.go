@@ -7,6 +7,8 @@ package trading
 import (
 	"github.com/dedeme/KtMarket/cts"
 	"github.com/dedeme/KtMarket/data/acc"
+	"github.com/dedeme/KtMarket/data/quote"
+	"github.com/dedeme/KtMarket/data/invOperation"
 	"github.com/dedeme/KtMarket/data/nick"
 	"github.com/dedeme/KtMarket/db"
 	"github.com/dedeme/KtMarket/db/acc/diariesDb"
@@ -23,19 +25,22 @@ func Process(ck string, mrq cgi.T) string {
 	switch rq {
 	case "idata":
 
-		var operations string
+		var operationsJs string
 		var rebuys []*nick.NameStrT
+    var pfEntries []*acc.PfEntryT
 		thread.Sync(func() {
+			operationsJs = db.InvOperationsTb().ReadJs()
+      ops := db.InvOperationsTb().Read().Operations
 			now := time.Now()
 			for i := 0; i < cts.Investors; i++ {
 				anns := diariesDb.ReadAnnotations(i)
-				_, _, lastOps, errs := acc.Settlement(anns)
+				_, pf, lastOps, errs := acc.Settlement(anns)
 				for _, err := range errs {
 					log.Error(err)
 				}
 				for k, v := range lastOps {
 					if rs, ok := v.Profits(); ok {
-						if rs < 0 {
+						if rs < cts.RebuyLimit {
 							tm := time.FromStr(v.Date)
 							if time.DfDays(now, tm) < 63 {
 								rebuys = append(rebuys, nick.NewNameStr(k, v.Date))
@@ -43,15 +48,47 @@ func Process(ck string, mrq cgi.T) string {
 						}
 					}
 				}
-			}
 
-			operations = db.InvOperationsTb().ReadJs()
+        es := arr.Map(arr.Filter(pf, func(e *acc.PfEntryT) bool {
+          _, ok := arr.Find(ops, func (op *invOperation.T) bool {
+            return op.Nick == e.Nick && op.Investor == i
+          })
+          return ok
+        }), func(e *acc.PfEntryT) *acc.PfEntryT {
+          nk, ok := db.NicksTb().Read().NickFromName(e.Nick)
+          if !ok {
+            log.Error("Nick " + e.Nick + " not found")
+            return e
+          }
+          closes, err := db.CurrentCloses(nk)
+          if err != ""{
+            log.Error(err)
+            return e
+          }
+          lastClose := quote.LastValue(closes)
+          newe := acc.NewPfEntry(e.Nick, e.Stocks, e.Price, lastClose, 0.0)
+
+          e2, ok := arr.Find(pfEntries, func(e2 *acc.PfEntryT) bool {
+            return e2.Nick == e.Nick
+          })
+          if ok {
+            stocks := e2.Stocks + e.Stocks
+            price := (float64(e2.Stocks) * e2.Price + float64(e.Stocks) * e.Price) /
+              float64(e2.Stocks + e.Stocks)
+            newe = acc.NewPfEntry(e.Nick, stocks, price, lastClose, 0.0)
+          }
+
+          return newe
+        })
+        pfEntries = append(pfEntries, es...)
+			}
 		})
 
 		return cgi.Rp(ck, cgi.T{
 			"bet":        js.Wd(cts.Bet),
 			"rebuys":     js.Wa(arr.Map(rebuys, nick.NameStrToJs)),
-			"operations": operations,
+			"operations": operationsJs,
+      "pfEntries": js.Wa(arr.Map(pfEntries, acc.PfEntryToJs)), // value Ref == 0.0
 		})
 
 	default:

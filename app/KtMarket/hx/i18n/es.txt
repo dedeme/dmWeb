@@ -129,7 +129,7 @@ Value less than minimum = Valor menor que el mínimo
 # src/pgs/settings/acc/Editor.hx: 549
 '%0' is not a positive number = '%0' no es un número positivo
 
-# src/linkToLogForI18n.hx: 158
+# src/LinkToLogForI18n.hx: 158
 2 Days = 2 Días
 
 # src/Authentication.hx: 78
@@ -155,8 +155,8 @@ Activate = Activar
 # src/pgs/settings/servers/Configuration.hx: 163
 Active = Activo
 
-# src/linkToLogForI18n.hx: 163
-# src/linkToLogForI18n.hx: 185
+# src/LinkToLogForI18n.hx: 163
+# src/LinkToLogForI18n.hx: 185
 # src/pgs/acc/Balance.hx: 460
 # src/pgs/acc/Profits.hx: 37
 # src/pgs/acc/Speedometers.hx: 48
@@ -171,7 +171,7 @@ All CO's = Todas las Cías.
 # src/pgs/acc/Companies.hx: 78
 All Companies = Todas las empresas
 
-# src/linkToLogForI18n.hx: 272
+# src/LinkToLogForI18n.hx: 272
 All log entries will be deleted.\nContinue? = Todas las entradas del registro será borradas.\n¿Continuar?
 
 # src/pgs/settings/acc/Editor.hx: 191
@@ -235,19 +235,19 @@ Balance(Operations) = Saldo
 Bet = Apuesta
 
 # src/pgs/acc/Balance.hx: 323
-# src/pgs/acc/Trading.hx: 137
+# src/pgs/acc/Trading.hx: 157
 # src/pgs/daily/Invs.hx: 72
 # src/pgs/settings/acc/Editor.hx: 171
 # src/pgs/settings/acc/Editor.hx: 390
 # src/pgs/settings/acc/wgs/Annotations.hx: 61
 Buy = Compra
 
-# src/pgs/acc/Trading.hx: 199
+# src/pgs/acc/Trading.hx: 229
 # src/pgs/models/charts/Charts.hx: 98
 # src/pgs/models/charts/Charts.hx: 295
 Buys = Compras
 
-# src/pgs/acc/Trading.hx: 161
+# src/pgs/acc/Trading.hx: 181
 Calculate = Calcular
 
 # src/pgs/models/tests/Orders.hx: 106
@@ -311,8 +311,9 @@ Close Year = Cierre de ejercicio
 CloseN = Cierre
 
 # src/pgs/acc/Balance.hx: 319
-# src/pgs/acc/Trading.hx: 205
-# src/pgs/acc/Trading.hx: 215
+# src/pgs/acc/Trading.hx: 223
+# src/pgs/acc/Trading.hx: 235
+# src/pgs/acc/Trading.hx: 245
 Co. = Cia.
 
 # src/pgs/settings/servers/Configuration.hx: 582
@@ -361,6 +362,7 @@ Daily configuration selected = Seleccionada configuración diaria
 # src/pgs/settings/servers/wgs/Wserver.hx: 44
 Daily configuration stopped = Detenida configuración diaria
 
+# src/pgs/acc/Trading.hx: 224
 # src/pgs/models/charts/Charts.hx: 291
 # src/pgs/models/tests/wgs/OrdersWg.hx: 52
 # src/pgs/models/wgs/Operations.hx: 62
@@ -401,7 +403,7 @@ Day = Día
 # src/pgs/settings/investorsPg/InvestorsPg.hx: 168
 Default Model = Modelo por defecto
 
-# src/linkToLogForI18n.hx: 175
+# src/LinkToLogForI18n.hx: 175
 # src/pgs/settings/nicks/wgs/Wnick.hx: 43
 # src/pgs/settings/servers/wgs/Wserver.hx: 64
 Delete = Eliminar
@@ -455,7 +457,7 @@ Edit = Editar
 # src/pgs/acc/Balance.hx: 234
 Equity = Pasivo
 
-# src/linkToLogForI18n.hx: 180
+# src/LinkToLogForI18n.hx: 180
 Errors = Errores
 
 # src/pgs/settings/nicks/List.hx: 215
@@ -515,8 +517,8 @@ Income = Ingreso
 # src/pgs/settings/acc/Editor.hx: 453
 Intial stockage can not be deleted = Cartera inicial no puede ser eliminada
 
-# src/pgs/acc/Trading.hx: 204
-# src/pgs/acc/Trading.hx: 214
+# src/pgs/acc/Trading.hx: 234
+# src/pgs/acc/Trading.hx: 244
 # src/pgs/daily/Daily.hx: 100
 # src/pgs/daily/Daily.hx: 104
 Inv = Inv
@@ -531,7 +533,7 @@ Inv = Inv
 # src/pgs/daily/Summary.hx: 47
 Inv- = Inv-
 
-# src/pgs/acc/Trading.hx: 146
+# src/pgs/acc/Trading.hx: 166
 Invest = Inversión
 
 # src/pgs/settings/SettingsMenu.hx: 52
@@ -555,8 +557,8 @@ Last Year = Último año
 # src/pgs/settings/nicks/Nicks.hx: 50
 List = Lista
 
-# src/linkToLogForI18n.hx: 204
-# src/linkToLogForI18n.hx: 221
+# src/LinkToLogForI18n.hx: 204
+# src/LinkToLogForI18n.hx: 221
 Log = Registro
 
 # src/Authentication.hx: 178
@@ -703,8 +705,8 @@ Password successfully changed = La contraseña se cambió correctamente
 # src/pgs/models/charts/Charts.hx: 303
 Portfolio = Cartera
 
-# src/pgs/acc/Trading.hx: 153
-# src/pgs/acc/Trading.hx: 193
+# src/pgs/acc/Trading.hx: 173
+# src/pgs/acc/Trading.hx: 213
 # src/pgs/models/tests/wgs/OrdersWg.hx: 53
 # src/pgs/models/wgs/Operations.hx: 63
 # src/pgs/settings/acc/Editor.hx: 120
@@ -744,6 +746,9 @@ Ratio = Ratio
 # src/pgs/daily/Daily.hx: 186
 Reactivate daily charts? = ¿Reactivar los gráficos del día?
 
+# src/pgs/acc/Trading.hx: 219
+Rebuys = Recompras
+
 # src/pgs/acc/Balance.hx: 206
 Reference (‰) = Referencia (‰)
 
@@ -753,7 +758,7 @@ References = Referencias
 # src/pgs/settings/servers/Configuration.hx: 206
 RegEx = RegEx
 
-# src/linkToLogForI18n.hx: 170
+# src/LinkToLogForI18n.hx: 170
 Reload = Recargar
 
 # src/pgs/settings/servers/Configuration.hx: 145
@@ -813,7 +818,7 @@ Selection = Selección
 Sell = Venta
 
 # src/pgs/acc/Balance.hx: 266
-# src/pgs/acc/Trading.hx: 209
+# src/pgs/acc/Trading.hx: 239
 # src/pgs/models/charts/Charts.hx: 299
 Sells = Ventas
 
@@ -868,7 +873,7 @@ Special days = Días especiales
 # src/pgs/acc/Acc.hx: 52
 Speedometers = Velocímetros
 
-# src/pgs/acc/Trading.hx: 178
+# src/pgs/acc/Trading.hx: 198
 Spread = Horquilla
 
 # src/pgs/settings/nicks/Editor.hx: 453
@@ -877,9 +882,9 @@ State = Estado
 # src/pgs/acc/Balance.hx: 239
 # src/pgs/acc/Balance.hx: 309
 # src/pgs/acc/Speedometers.hx: 108
-# src/pgs/acc/Trading.hx: 171
-# src/pgs/acc/Trading.hx: 189
-# src/pgs/acc/Trading.hx: 216
+# src/pgs/acc/Trading.hx: 191
+# src/pgs/acc/Trading.hx: 209
+# src/pgs/acc/Trading.hx: 246
 # src/pgs/settings/acc/Editor.hx: 118
 # src/pgs/settings/acc/Editor.hx: 119
 # src/pgs/settings/acc/Editor.hx: 136
@@ -991,8 +996,9 @@ Without data = Sin datos
 # src/pgs/settings/calendarPg/CalendarPg.hx: 148
 Without dates = Sin fechas
 
-# src/pgs/acc/Trading.hx: 95
-# src/pgs/acc/Trading.hx: 113
+# src/pgs/acc/Trading.hx: 99
+# src/pgs/acc/Trading.hx: 115
+# src/pgs/acc/Trading.hx: 133
 Without operations = Sin operaciones
 
 # src/pgs/settings/servers/Servers.hx: 57

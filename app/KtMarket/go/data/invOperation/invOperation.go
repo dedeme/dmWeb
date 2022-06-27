@@ -14,21 +14,21 @@ type T struct {
 	//       If stocks == 0 is a normal buy operation.
 	//       if stocks < 0 is a rebuy
 	Stocks  int
-	Manager int
+	Investor int
 	Nick    string
 }
 
 // NOTE: If stocks > 0 is a sell operation.
 //       If stocks == 0 is a normal buy operation.
 //       if stocks < 0 is a rebuy
-func New(stocks, manager int, nickName string) *T {
-	return &T{stocks, manager, nickName}
+func New(stocks, inv int, nickName string) *T {
+	return &T{stocks, inv, nickName}
 }
 
 func ToJs(o *T) string {
 	return js.Wa([]string{
 		js.Wi(o.Stocks),
-		js.Wi(o.Manager),
+		js.Wi(o.Investor),
 		js.Ws(o.Nick),
 	})
 }

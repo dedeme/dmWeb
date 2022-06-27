@@ -189,7 +189,7 @@ func Operations() (err string) {
 		for k, v := range lastOs {
 			if v.Date > rebuyDate {
 				profs, ok := v.Profits()
-				if ok && profs < 0 {
+				if ok && profs < cts.RebuyLimit {
 					rebuyNicks = append(rebuyNicks, k)
 				}
 			}
@@ -223,7 +223,7 @@ func Operations() (err string) {
 			refs := strategy.Refs(st, closes, initRef)
 			lastRef, lastRef2 := quote.LastValue2(refs)
 
-			if lastRef > lastClose && lastRef2 < lastClose2 {
+			if lastRef > lastClose {
 				pfEntry, ok := arr.Find(pfs[i], func(e *acc.PfEntryT) bool {
 					return e.Nick == nk.Name
 				})

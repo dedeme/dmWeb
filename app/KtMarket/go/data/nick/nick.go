@@ -127,6 +127,13 @@ func (t *TbT) NickFromId(id int) (nk *T, ok bool) {
 	})
 }
 
+// Returns a nick from its 'name' or "ok==false"
+func (t *TbT) NickFromName(name string) (nk *T, ok bool) {
+	return arr.Find(t.List, func(n *T) bool {
+		return n.Name == name
+	})
+}
+
 // Add a new nick if there is no one with the same name, otherwise returns
 // 'ok==false'
 //    t : Table to add a new nick.

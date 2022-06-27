@@ -9,9 +9,12 @@ import dm.Ui.Q;
 import dm.Js;
 import dm.Dec;
 import dm.Opt;
+import dm.Dt;
+import dm.It;
 import data.Broker;
 import data.InvOperation;
 import data.Nick; // NickNameStr
+import data.acc.PfEntry;
 import I18n._;
 
 /// Accounting profits.
@@ -20,24 +23,26 @@ class Trading {
   final bet: Float;
   final rebuys: Array<NickNameStr>;
   final operations: Array<InvOperation>;
+  final pfEntries: Array<PfEntry>;
 
   var bentry: Domo;
   var pentry: Domo;
+  var price2: Domo;
   var result: Domo;
-  var spreadWg: Domo;
+  var result2: Domo;
+  var sentry: Domo;
+  var sprice2: Domo;
   var blankTd = Q("td");
-  var stPoss: Array<Domo> = [];
-  var prPoss: Array<Domo> = [];
-  var posTrs: Array<Domo> = [];
 
   function new (
     wg: Domo, bet: Float, rebuys: Array<NickNameStr>,
-    operations: Array<InvOperation>
+    operations: Array<InvOperation>, pfEntries: Array<PfEntry>
   ) {
     this.wg = wg;
     this.bet = bet;
     this.rebuys = rebuys;
     this.operations = operations;
+    this.pfEntries = pfEntries;
 
     bentry = Ui.field("pentry")
       .style("width:80px")
@@ -47,47 +52,127 @@ class Trading {
       .style("width:80px")
       .att("id", "pentry");
     Ui.changePoint(pentry);
+    price2 = Q("div").klass("frame").style("text-align:right");
     result = Q("div").klass("frame").style("text-align:right");
-    spreadWg = Q("div").klass("frame").style("text-align:right");
+    result2 = Q("div").klass("frame").style("text-align:right");
 
-    prPoss.push(Q("div")
-      .klass("frame")
-      .style("text-align:right")
-    );
-    posTrs.push(Q("tr")
-      .add(blankTd)
-      .add(Q("td")
-        .att("rowspan", "3")
-        .add(prPoss[0]))
-    );
-    for (i in 0...11) {
-      var bold = i == 5 ? ";font-weight:bold" : "";
-      var stPos = Q("div").style("text-align:right" + bold);
-      stPoss.push(stPos);
-
-      if (i == 4) bold = ";font-weight:bold";
-      var prPos = Q("div").klass("frame").style("text-align:right" + bold);
-      prPoss.push(prPos);
-
-      posTrs.push(Q("tr").add(Q("td")));
-      posTrs.push(Q("tr")
-        .add(Q("td")
-          .att("rowspan", "2")
-          .add(stPos))
-      );
-      posTrs.push(Q("tr")
-        .add(Q("td")
-          .att("rowspan", "3")
-          .add(prPos))
-      );
-    }
-    posTrs.push(Q("tr").add(Q("td")));
-    posTrs.push(Q("tr").add(Q("td")));
+    sentry = Ui.field("calcBt")
+      .style("width:80px")
+      .att("id", "sentry");
+    Ui.changePoint(sentry);
+    sprice2 = Q("div").klass("frame").style("text-align:right");
 
     view();
   }
 
   // View ----------------------------------------------------------------------
+
+  function buyWg () {
+    return Q("table")
+      .klass("frame4")
+      .add(Q("tr")
+        .add(Q("td")
+          .att("colspan", "2")
+          .add(Q("div")
+            .klass("head")
+            .text(_("Buy")))))
+      .add(Q("tr")
+        .add(Q("td")
+          .att("colspan", "2")
+          .add(Q("hr"))))
+      .add(Q("tr")
+        .add(Q("td")
+          .style("text-align:right")
+          .add(Q("div")
+            .html("<b>" + _("Invest") + ":</b>")))
+        .add(Q("td")
+          .add(bentry)))
+      .add(Q("tr")
+        .add(Q("td")
+          .style("text-align:right")
+          .add(Q("div")
+            .html("<b>" + _("Price") + ":</b>")))
+        .add(Q("td")
+          .add(pentry)))
+      .add(Q("tr")
+        .add(Q("td")
+          .att("colspan", "2")
+          .style("text-align:center")
+          .add(Q("button")
+            .text(_("Calculate"))
+            .on(CLICK, e -> calculateBuy()))))
+      .add(Q("tr")
+        .add(Q("td")
+          .att("colspan", "2")
+          .add(Q("hr"))))
+      .add(Q("tr")
+        .add(Q("td")
+          .style("text-align:right")
+          .add(Q("div")
+            .html("<b>" + _("Stocks") + ":</b>")))
+        .add(Q("td")
+          .add(result)))
+      .add(Q("tr")
+        .add(Q("td")
+          .att("colspan", "2")
+          .add(Q("hr"))))
+      .add(Q("tr")
+        .add(Q("td")
+          .style("text-align:right;white-space:nowrap")
+          .add(Q("div")
+            .html("<b>" + _("Price") + " + :</b>")))
+        .add(Q("td")
+          .add(price2)))
+      .add(Q("tr")
+        .add(Q("td")
+          .style("text-align:right;white-space:nowrap")
+          .add(Q("div")
+            .html("<b>" + _("Stocks") + " + :</b>")))
+        .add(Q("td")
+          .add(result2)))
+    ;
+  }
+
+  function sellWg () {
+    return Q("table")
+      .klass("frame3")
+      .add(Q("tr")
+        .add(Q("td")
+          .att("colspan", "2")
+          .add(Q("div")
+            .klass("head")
+            .text(_("Sell")))))
+      .add(Q("tr")
+        .add(Q("td")
+          .att("colspan", "2")
+          .add(Q("hr"))))
+      .add(Q("tr")
+        .add(Q("td")
+          .style("text-align:right")
+          .add(Q("div")
+            .html("<b>" + _("Price") + ":</b>")))
+        .add(Q("td")
+          .add(sentry)))
+      .add(Q("tr")
+        .add(Q("td")
+          .att("colspan", "2")
+          .style("text-align:center")
+          .add(Q("button")
+            .text(_("Calculate"))
+            .on(CLICK, e -> calculateSell()))))
+      .add(Q("tr")
+        .add(Q("td")
+          .att("colspan", "2")
+          .add(Q("hr"))))
+      .add(Q("tr")
+        .add(Q("td")
+          .style("text-align:right;white-space:nowrap")
+          .add(Q("div")
+            .html("<b>" + _("Price") + " + :</b>")))
+        .add(Q("td")
+          .add(sprice2)))
+    ;
+  }
 
   function view () {
     final rebuyTrs = rebuys.length == 0
@@ -101,7 +186,11 @@ class Trading {
       : rebuys.map(r ->
         Q("tr")
           .add(ciaTd(r.nick))
-          .add(ciaTd(r.value))
+          .add(ciaTd(
+            I18n.lang == "es"
+              ? Dt.toIso(Opt.get(Dt.from(r.value)))
+              : Dt.toEn(Opt.get(Dt.from(r.value)))
+          ))
       )
     ;
     final os = operations;
@@ -132,11 +221,27 @@ class Trading {
             .klass("borderWhite")
             .html(_("Without operations")))
       ]
-      : sells.map(o ->
-        Q("tr")
-          .add(invTd(o.manager))
-          .add(ciaTd(o.nick))
-          .add(stocksTd(o.stocks))
+      : sells.map(o -> {
+          var gol = 0.0;
+          var q = 0.0;
+          var dif = 0.0;
+          switch (It.from(pfEntries).find(e -> e.nick == o.nick)) {
+            case Some(e): {
+              gol = e.price * 1.01;
+              q = e.quote;
+              dif = (gol - q) * 100 / q;
+            };
+            default:{}
+          }
+          return Q("tr")
+            .add(invTd(o.manager))
+            .add(ciaTd(o.nick))
+            .add(stocksTd(o.stocks))
+            .add(quoteTd(gol))
+            .add(quoteTd(q))
+            .add(quoteTd(dif))
+          ;
+        }
       )
     ;
 
@@ -147,83 +252,26 @@ class Trading {
         .add(Q("tr")
           .add(Q("td")
             .style("vertical-align:top;width:5px")
-            .add(Q("table")
-              .klass("frame4")
-              .add(Q("tr")
-                .add(Q("td")
-                  .att("colspan", "2")
-                  .add(Q("div")
-                    .klass("head")
-                    .text(_("Buy")))))
-              .add(Q("tr")
-                .add(Q("td")
-                  .att("colspan", "2")
-                  .add(Q("hr"))))
-              .add(Q("tr")
-                .add(Q("td")
-                  .style("text-align:right")
-                  .add(Q("div")
-                    .html("<b>" + _("Invest") + ":</b>")))
-                .add(Q("td")
-                  .add(bentry)))
-              .add(Q("tr")
-                .add(Q("td")
-                  .style("text-align:right")
-                  .add(Q("div")
-                    .html("<b>" + _("Price") + ":</b>")))
-                .add(Q("td")
-                  .add(pentry)))
-              .add(Q("tr")
-                .add(Q("td")
-                  .att("colspan", "2")
-                  .style("text-align:center")
-                  .add(Q("button")
-                    .text(_("Calculate"))
-                    .on(CLICK, e -> calculate()))))
-              .add(Q("tr")
-                .add(Q("td")
-                  .att("colspan", "2")
-                  .add(Q("hr"))))
-              .add(Q("tr")
-                .add(Q("td")
-                  .style("text-align:right")
-                  .add(Q("div")
-                    .html("<b>" + _("Stocks") + ":</b>")))
-                .add(Q("td")
-                  .add(result)))
-              .add(Q("tr")
-                .add(Q("td")
-                  .style("text-align:right")
-                  .add(Q("div")
-                    .html("<b>" + _("Spread") + ":</b>")))
-                .add(Q("td")
-                  .add(spreadWg)))
-              .add(Q("tr")
-                .add(Q("td")
-                  .att("colspan", "2")
-                  .add(Q("hr"))))
-              .add(Q("tr")
-                .add(Q("td")
-                  .style("text-align:right")
-                  .add(Q("div")
-                    .html("<b>" + _("Stocks") + "</b>")))
-                .add(Q("td")
-                  .style("text-align:right")
-                  .add(Q("div")
-                    .html("<b>" + _("Price") + "</b>"))))
-              .adds(posTrs)))
+            .add(buyWg()))
           .add(Q("td")
             .style("text-align:center")
+              .add(Q("table")
+                .klass("frame")
+                .att("align", "center")
+                .add(Q("tr")
+                  .add(Q("td")
+                    .add(Q("div")
+                      .klass("head")
+                      .html(_("Rebuys")))
+                    .add(Q("table")
+                      .klass("buys")
+                      .add(Q("tr")
+                        .add(Q("td").klass("head").html(_("Co.")))
+                        .add(Q("td").klass("head").html(_("Date"))))
+                      .adds(rebuyTrs)))))
             .add(Q("div")
               .klass("head")
-              .html(_("Rebuys")))
-            .add(Q("table")
-              .att("align", "center")
-              .add(Q("tr")
-                .add(Q("td").klass("head").html(_("Co.")))
-                .add(Q("td").klass("head").html(_("Date"))))
-              .adds(rebuyTrs))
-            .add(Q("hr"))
+              .html("&nbsp;"))
             .add(Q("div")
               .klass("head")
               .html(_("Buys")))
@@ -243,14 +291,21 @@ class Trading {
               .add(Q("tr")
                 .add(Q("td").klass("head").html(_("Inv")))
                 .add(Q("td").klass("head").html(_("Co.")))
-                .add(Q("td").klass("head").html(_("Stocks"))))
-              .adds(sellTrs)))))
+                .add(Q("td").klass("head").html(_("Stocks")))
+                .add(Q("td").klass("head").html(_("Gol")))
+                .add(Q("td").klass("head").html(_("Quote")))
+                .add(Q("td").klass("head").html(_("Dif.")))
+                )
+              .adds(sellTrs)))
+          .add(Q("td")
+            .style("vertical-align:top;width:5px")
+            .add(sellWg()))))
     ;
   }
 
   // Control -------------------------------------------------------------------
 
-  function calculate () {
+  function calculateBuy () {
     final bs = cast(bentry.getValue(), String);
     final ps = cast(pentry.getValue(), String);
     final b = Opt.get(Dec.fromIso(bs));
@@ -270,20 +325,19 @@ class Trading {
       return;
     }
 
-    var rs = Std.int(b2 / p);
+    final rs = Std.int(b2 / p);
+    final p2 = p * 0.9;
+    final rs2 = Std.int(b2 / p2);
 
+    price2.text(Dec.toIso(p2, 2));
     result.text(Dec.toIso(rs, 0));
-    spreadWg.text(Dec.toIso(spreads(p), 4));
+    result2.text(Dec.toIso(rs2, 0));
 
-    var b2 = b + b - Broker.buy(1, b);
-    for (i in 0...12) {
-      var st = rs + i - 5;
-      var pr = Std.int(b2 * 10000 / st) / 10000;
-      if (i < 11) stPoss[i].text(Dec.toIso(st, 0));
-      prPoss[i].text(Dec.toIso(pr, 4));
-    }
 
     blankTd.html("&nbsp;");
+  }
+
+  function calculateSell () {
   }
 
   // Static --------------------------------------------------------------------
@@ -310,8 +364,9 @@ class Trading {
       final bet = rp["bet"].rf();
       final rebuys = rp["rebuys"].ra().map(e -> NickNameStr.fromJs(e));
       final operations = rp["operations"].ra().map(e -> InvOperation.fromJs(e));
+      final pfEntries = rp["pfEntries"].ra().map(e -> PfEntry.fromJs(e));
 
-      new Trading(wg, bet, rebuys, operations);
+      new Trading(wg, bet, rebuys, operations, pfEntries);
     });
   }
 
@@ -335,6 +390,14 @@ class Trading {
       .klass("borderWhite")
       .style("text-align:right")
       .text(Dec.toIso(stocks, 0))
+    ;
+  }
+
+  function quoteTd (q: Float): Domo {
+    return Q("td")
+      .klass("borderWhite")
+      .style("text-align:right")
+      .text(Dec.toIso(q, 2))
     ;
   }
 
