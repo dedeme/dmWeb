@@ -28,6 +28,8 @@ class Charts {
       Menu.toption("historic", _("Historic"), () -> go("historic")),
       Menu.separator(),
       Menu.toption("operations", _("Operations"), () -> go("operations")),
+      Menu.separator2(),
+      Menu.toption("noLost", _("No Lost"), () -> go("noLost")),
     ];
     final menu = new Menu(lopts, [], chart);
 
@@ -35,6 +37,7 @@ class Charts {
     switch (chart) {
       case "cos": CosPg.mk(body, model);
       case "historic": HistoricPg.mk(body, model);
+      case "noLost": NoLostPg.mk(body, model);
       default: OperationsPg.mk(body, model);
     }
 

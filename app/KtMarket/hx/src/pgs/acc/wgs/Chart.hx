@@ -55,7 +55,6 @@ class Chart {
         final quotes = rp["quotes"].ra()
           .map(row -> row.ra().map(e -> e.rf()));
         regularize(dates, quotes);
-
         mkGrs(
           wg, invsN, onPortfolio, nick, url, price, invs, profits, dates, quotes
         );

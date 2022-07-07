@@ -4,11 +4,15 @@
 # src/pgs/ChangePass.hx: 58
 Accept = Aceptar
 
-# src/Main.hx: 116
+# src/Main.hx: 120
 Application exit? = ¿Terminar la aplicación?
 
-# src/pgs/CosPg.hx: 97
-# src/pgs/HistoricPg.hx: 77
+# src/pgs/CosPg.hx: 103
+# src/pgs/HistoricPg.hx: 76
+# src/pgs/NoLostPg.hx: 138
+# src/pgs/NoLostPg.hx: 193
+# src/pgs/OperationsPg.hx: 126
+# src/pgs/OperationsPg.hx: 181
 Assets = Activo
 
 # src/pgs/DescriptionPg.hx: 67
@@ -17,8 +21,17 @@ Base = Base
 # src/pgs/DescriptionPg.hx: 75
 Base Increment = Incremento de la base
 
+# src/pgs/NoLostPg.hx: 225
+# src/pgs/OperationsPg.hx: 204
+Buys = Compras
+
 # src/pgs/ChangePass.hx: 53
 Cancel = Cancelar
+
+# src/pgs/NoLostPg.hx: 245
+# src/pgs/OperationsPg.hx: 216
+# src/pgs/SimulationsPg.hx: 91
+Cash = Caja
 
 # src/pgs/Settings.hx: 43
 Change Language to %0 = Cambiar el lenguage a %0
@@ -26,7 +39,7 @@ Change Language to %0 = Cambiar el lenguage a %0
 # src/pgs/Settings.hx: 51
 Change Password = Cambiar la contraseña
 
-# src/Main.hx: 62
+# src/Main.hx: 65
 Charts = Gráficos
 
 # src/pgs/Authentication.hx: 130
@@ -36,12 +49,21 @@ Check gray squares = Marcar los cuadrados grises
 # src/pgs/MsgPg.hx: 34
 Click %0 to continue. = Hacer click %0 para continuar.
 
+# src/pgs/NoLostPg.hx: 200
+Client = Cliente
+
+# src/pgs/CosPg.hx: 311
+Close = Cierre
+
 # src/pgs/Charts.hx: 26
-# src/pgs/CosPg.hx: 69
+# src/pgs/CosPg.hx: 75
 Companies = Compañías
 
 # src/pgs/ChangePass.hx: 182
 Confirm password is missing = Falta la confirmación de la contraseña
+
+# src/pgs/NoLostPg.hx: 229
+Coughts = Atrapados
 
 # src/pgs/ChangePass.hx: 65
 Current password = Contraseña actual
@@ -49,16 +71,24 @@ Current password = Contraseña actual
 # src/pgs/ChangePass.hx: 173
 Current password is missing = Falta indicar la contraseña actual
 
-# src/Main.hx: 56
+# src/pgs/NoLostPg.hx: 221
+# src/pgs/OperationsPg.hx: 200
+Date = Fecha
+
+# src/Main.hx: 57
 Description = Descripción
 
 # src/pgs/DescriptionPg.hx: 83
 Environment Increment = Incremento del entorno
 
-# src/pgs/CosPg.hx: 103
-# src/pgs/CosPg.hx: 133
-# src/pgs/HistoricPg.hx: 83
-# src/pgs/HistoricPg.hx: 113
+# src/pgs/CosPg.hx: 109
+# src/pgs/CosPg.hx: 139
+# src/pgs/HistoricPg.hx: 82
+# src/pgs/HistoricPg.hx: 112
+# src/pgs/NoLostPg.hx: 144
+# src/pgs/NoLostPg.hx: 174
+# src/pgs/OperationsPg.hx: 132
+# src/pgs/OperationsPg.hx: 162
 # src/pgs/ResultsPg.hx: 51
 Eval. = Eval.
 
@@ -66,25 +96,43 @@ Eval. = Eval.
 # src/pgs/ChangePass.hx: 191
 Grey squares checks are wrong = Las casillas grises están mal marcadas
 
-# src/pgs/CosPg.hx: 127
-# src/pgs/HistoricPg.hx: 107
+# src/pgs/SimulationsPg.hx: 76
+H. Cash = H. Caja
+
+# src/pgs/CosPg.hx: 133
+# src/pgs/HistoricPg.hx: 106
+# src/pgs/NoLostPg.hx: 168
+# src/pgs/OperationsPg.hx: 156
 # src/pgs/ResultsPg.hx: 45
 H. Eval. = H. Eval.
 
-# src/pgs/CosPg.hx: 130
-# src/pgs/HistoricPg.hx: 110
+# src/pgs/SimulationsPg.hx: 81
+H. Ref. = H. Ref.
+
+# src/pgs/CosPg.hx: 136
+# src/pgs/HistoricPg.hx: 109
+# src/pgs/NoLostPg.hx: 171
+# src/pgs/OperationsPg.hx: 159
 # src/pgs/ResultsPg.hx: 48
 H. Sales = H. Ventas
 
+# src/pgs/SimulationsPg.hx: 71
+H. Total = H. Total
+
 # src/pgs/Charts.hx: 28
-# src/pgs/HistoricPg.hx: 49
+# src/pgs/HistoricPg.hx: 48
+# src/pgs/NoLostPg.hx: 110
+# src/pgs/OperationsPg.hx: 98
 Historic = Histórico
 
-# src/Main.hx: 60
+# src/Main.hx: 63
 Hot Map = Mapa de calor
 
 # src/pgs/DescriptionPg.hx: 43
 Id = Id
+
+# src/pgs/NoLostPg.hx: 241
+Jail = Jaula
 
 # src/pgs/Authentication.hx: 88
 Keep connected = Mantenerse conectado
@@ -93,14 +141,16 @@ Keep connected = Mantenerse conectado
 # src/pgs/ChangePass.hx: 155
 Login = Identificación
 
-# src/Main.hx: 125
+# src/Main.hx: 129
 Logout-message = <p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>
 
-# src/pgs/CosPg.hx: 77
-# src/pgs/HistoricPg.hx: 57
+# src/pgs/CosPg.hx: 83
+# src/pgs/HistoricPg.hx: 56
+# src/pgs/NoLostPg.hx: 118
+# src/pgs/OperationsPg.hx: 106
 Model = Modelo
 
-# src/Main.hx: 76
+# src/Main.hx: 79
 Models = Modelos
 
 # src/pgs/DescriptionPg.hx: 50
@@ -116,8 +166,15 @@ New password and confirm password do not match = La nueva contraseña y su confi
 # src/pgs/ChangePass.hx: 178
 New password is missing = Falta indicar la nueva contraseña
 
+# src/pgs/Charts.hx: 32
+No Lost = Sin pérdidas
+
 # src/pgs/Charts.hx: 30
 Operations = Operaciones
+
+# src/pgs/NoLostPg.hx: 213
+# src/pgs/OperationsPg.hx: 192
+Orders = Órdenes
 
 # src/pgs/Authentication.hx: 68
 Password = Contraseña
@@ -128,29 +185,55 @@ Password is missing = Falta indicar la contraseña
 # src/pgs/ChangePass.hx: 206
 Password successfully changed = La contraseña se cambió correctamente
 
-# src/pgs/CosPg.hx: 100
-# src/pgs/HistoricPg.hx: 80
-Profits (%) = Beneficios (%)
-
-# src/Main.hx: 58
-Results = Resultados
+# src/pgs/NoLostPg.hx: 237
+# src/pgs/OperationsPg.hx: 212
+Portfolio = Cartera
 
 # src/pgs/CosPg.hx: 106
-# src/pgs/CosPg.hx: 136
-# src/pgs/HistoricPg.hx: 86
-# src/pgs/HistoricPg.hx: 116
+# src/pgs/HistoricPg.hx: 79
+# src/pgs/NoLostPg.hx: 141
+# src/pgs/OperationsPg.hx: 129
+Profits (%) = Beneficios (%)
+
+# src/pgs/SimulationsPg.hx: 96
+Ref. = Ref.
+
+# src/Main.hx: 59
+Results = Resultados
+
+# src/pgs/CosPg.hx: 112
+# src/pgs/CosPg.hx: 142
+# src/pgs/HistoricPg.hx: 85
+# src/pgs/HistoricPg.hx: 115
+# src/pgs/NoLostPg.hx: 147
+# src/pgs/NoLostPg.hx: 177
+# src/pgs/OperationsPg.hx: 135
+# src/pgs/OperationsPg.hx: 165
 # src/pgs/ResultsPg.hx: 54
 Sales = Ventas
+
+# src/pgs/NoLostPg.hx: 233
+# src/pgs/OperationsPg.hx: 208
+Sells = Ventas
+
+# src/pgs/NoLostPg.hx: 203
+Server = Servidor
 
 # src/Cts.hx: 33
 Session is expired. = La sesión ha expirado.
 
-# src/Main.hx: 65
+# src/Main.hx: 68
 # src/pgs/Settings.hx: 33
 Settings = Configuración
 
-# src/pgs/HotPg.hx: 129
+# src/Main.hx: 61
+Simulations = Simulaciones
+
+# src/pgs/HotPg.hx: 141
 There is no hot map for %0 parameters = No hay mapa de calor para %0 parámetros
+
+# src/pgs/SimulationsPg.hx: 86
+Total = Total
 
 # src/pgs/Authentication.hx: 61
 User = Usuario

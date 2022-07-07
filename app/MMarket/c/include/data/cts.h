@@ -34,6 +34,9 @@ double cts_bet (void);
 /// Minimun cash to bet
 double cts_min_to_bet (void);
 
+/// Multiplicator for no-lost
+double cts_no_lost_multiplicator (void);
+
 // Models evaluation ---------------------------------------------------------
 
 /// Historic simulation ratio

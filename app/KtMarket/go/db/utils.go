@@ -47,7 +47,7 @@ func Dates() (dates []string, err string) {
 
 // Returns current closes of a company (from before to after), updated with
 // the daily ones if these have a posterior data.
-func CurrentCloses(nk *nick.T) (closes []float64, err string) {
+func CurrentCloses(nk *nick.T) (dates []string, closes []float64, err string) {
 	qs, e := QsRead(nk.Name)
 	if e != "" {
 		err = e
@@ -58,6 +58,9 @@ func CurrentCloses(nk *nick.T) (closes []float64, err string) {
 	closes = arr.Map(qs, func(q *quote.T) float64 {
 		return q.Close
 	})
+	dates = arr.Map(qs, func(q *quote.T) string {
+		return q.Date
+	})
 
 	dailyQs := DailyTb().Read()
 	if dailyQs.Date > lastQsDate {
@@ -66,6 +69,7 @@ func CurrentCloses(nk *nick.T) (closes []float64, err string) {
 		})
 		if ok {
 			closes = append(arr.Drop(closes, 1), c.Value)
+			dates = append(arr.Drop(dates, 1), dailyQs.Date)
 		}
 	}
 
@@ -74,11 +78,6 @@ func CurrentCloses(nk *nick.T) (closes []float64, err string) {
 
 // Modify 'investors.tb' and 'refsBase.tb'
 func UpdateInvestors() (err string) {
-	dates, e := Dates()
-	if e != "" {
-		err = e
-		return
-	}
 	nks := NicksTb().Read().List
 
 	refsDb := RefBasesTb()
@@ -108,7 +107,7 @@ func UpdateInvestors() (err string) {
 				st = stBase
 			}
 
-			closes, e := CurrentCloses(nk)
+			dates, closes, e := CurrentCloses(nk)
 			if e != "" {
 				if err == "" {
 					err = e
@@ -199,12 +198,12 @@ func Operations() (err string) {
 
 	var ops []*invOperation.T
 	for _, nk := range nks {
-		closes, e := CurrentCloses(nk)
+		_, allCloses, e := CurrentCloses(nk)
 		if e != "" {
 			err = e
 			return
 		}
-		closes = arr.Drop(closes, len(closes)-cts.ReferenceQuotes)
+		closes := arr.Drop(allCloses, len(allCloses)-cts.ReferenceQuotes)
 		lastClose, lastClose2 := quote.LastValue2(closes)
 
 		invs := InvestorsTb().Read().Investors
@@ -215,12 +214,14 @@ func Operations() (err string) {
 			if !ok {
 				st = inv.Base
 			}
-			initRef := -1.0
+
+      var refs []float64
 			refBase, ok := RefBasesTb().Read().Get(nk, st)
 			if ok {
-				initRef = refBase.Ref
-			}
-			refs := strategy.Refs(st, closes, initRef)
+				refs = strategy.Refs(st, closes, refBase.Ref)
+			} else {
+        refs = strategy.Refs(st, allCloses, -1)
+      }
 			lastRef, lastRef2 := quote.LastValue2(refs)
 
 			if lastRef > lastClose {
@@ -303,6 +304,9 @@ func ActivateDailyCharts() {
 			log.Error(err)
 			return r
 		}
+		allCloses := arr.Map(qs, func(q *quote.T) float64 {
+			return q.Close
+		})
 		qs = arr.Take(qs, cts.ReferenceQuotes)
 		arr.ReverseIn(qs)
 		closes := arr.Map(qs, func(q *quote.T) float64 {
@@ -329,19 +333,19 @@ func ActivateDailyCharts() {
 				st = inv.Base
 			}
 
-			initRef := -1.0
 			refBase, ok := arr.Find(RefBasesTb().Read().Refs, func(r *refBase.T) bool {
-				return r.Nick.Name == nk.Name && r.Strategy == st
+				return r.Nick.Name == nk.Name && strategy.Eq(r.Strategy, st)
 			})
 			if ok {
-				initRef = refBase.Ref
-			}
-
-			invsData[i].Ref = strategy.LastRef(st, closes, initRef)
+        invsData[i].Ref = strategy.LastRef(st, closes, refBase.Ref)
+			} else {
+        invsData[i].Ref = strategy.LastRef(st, allCloses, -1)
+      }
 		}
 
 		return dailyChart.New(nk.Name, close, hours, quotes, invsData)
 	})
+
 	DailyChartTb().Write(dailyChart.NewTb(nks))
 }
 
@@ -445,26 +449,27 @@ func UpdateHistoricProfits() {
 				log.Error("Nick " + e.Nick + " not found")
 				continue
 			}
-			closes, err := CurrentCloses(nk)
+			_, allCloses, err := CurrentCloses(nk)
 			if err != "" {
 				log.Error(err)
 				continue
 			}
-			closes = arr.Drop(closes, len(closes)-cts.ReferenceQuotes)
+			closes := arr.Drop(allCloses, len(allCloses)-cts.ReferenceQuotes)
 			lastClose := quote.LastValue(closes)
 
 			st, ok := inv.Nicks[nk.Name]
 			if !ok {
 				st = inv.Base
 			}
-			initRef := -1.0
+			var lastRef float64
 			refBase, ok := arr.Find(RefBasesTb().Read().Refs, func(r *refBase.T) bool {
 				return r.Nick.Name == nk.Name && strategy.Eq(r.Strategy, st)
 			})
 			if ok {
-				initRef = refBase.Ref
-			}
-			lastRef := strategy.LastRef(st, closes, initRef)
+        lastRef = strategy.LastRef(st, closes, refBase.Ref)
+			} else {
+        lastRef = strategy.LastRef(st, allCloses, -1)
+      }
 			if lastRef > lastClose { // Sell situation.
 				lastRef = lastClose
 			}

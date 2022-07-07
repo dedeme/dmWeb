@@ -58,15 +58,19 @@ Quotes *quotesReader_read (void) {
 
   AADouble *opens = aADouble_new();
   AADouble *closes = aADouble_new();
+  AADouble *maxs = aADouble_new();
   for (int d = 0; d < achar_size(dates); ++d) {
     ADouble *ropens = aDouble_new();
     ADouble *rcloses = aDouble_new();
+    ADouble *rmaxs = aDouble_new();
     for (int c = 0; c < achar_size(cos); ++c) {
       aDouble_push(ropens, -1);
       aDouble_push(rcloses, -1);
+      aDouble_push(rmaxs, -1);
     }
     aADouble_push(opens, ropens);
     aADouble_push(closes, rcloses);
+    aADouble_push(maxs, rmaxs);
   }
 
   char **pcos = cos->es;
@@ -88,6 +92,7 @@ Quotes *quotesReader_read (void) {
       Achar *fields = str_csplit(*ptxqs++, ':');
       aDouble_set(aADouble_get(opens, idate), ico, atof(achar_get(fields, 1)));
       aDouble_set(aADouble_get(closes, idate), ico, atof(achar_get(fields, 2)));
+      aDouble_set(aADouble_get(maxs, idate), ico, atof(achar_get(fields, 3)));
 
       ++idate;
     }
@@ -97,5 +102,6 @@ Quotes *quotesReader_read (void) {
 
   normalize(opens);
   normalize(closes);
-  return quotes_new(dateFns_last_sunday(), cos, dates, opens, closes);
+  normalize(maxs);
+  return quotes_new(dateFns_last_sunday(), cos, dates, opens, closes, maxs);
 }

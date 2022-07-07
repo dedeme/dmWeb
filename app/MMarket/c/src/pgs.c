@@ -18,6 +18,7 @@
 #include "pgs/cosPg.h"
 #include "pgs/historicPg.h"
 #include "pgs/operationsPg.h"
+#include "pgs/noLostPg.h"
 #include "pgs/changePass.h"
 
 static char *server_source_process (Mchar *mrq) {
@@ -30,6 +31,7 @@ static char *server_source_process (Mchar *mrq) {
   else if (str_eq(source, "CosPg")) return cosPg_process(mrq);
   else if (str_eq(source, "HistoricPg")) return historicPg_process(mrq);
   else if (str_eq(source, "OperationsPg")) return operationsPg_process(mrq);
+  else if (str_eq(source, "NoLostPg")) return noLostPg_process(mrq);
   else if (str_eq(source, "ChangePass")) return changePass_process(mrq);
   else return FAIL(str_f("Unexpected value for 'source': %s", source));
 }

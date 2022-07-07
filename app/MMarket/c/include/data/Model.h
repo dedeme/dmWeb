@@ -9,6 +9,7 @@
 #include "dmc/char/Achar.h"
 #include "data/ADouble/AADouble.h"
 #include "data/Quotes.h"
+#include "data/NoLost.h"
 #include "data/eval/ModelEval/AModelEval.h"
 #include "data/simulation/SimProfitsRow/ASimProfitsRow.h"
 #include "data/eval/Result.h"
@@ -120,6 +121,12 @@ ADouble *model_historic(Model *this, Quotes *qs, ADouble *params);
 ///   qs    : Quotes of all the companies,
 ///   params: Parameters to calculate references.
 AOrder *model_orders(Model *this, Quotes *qs, ADouble *params);
+
+/// Returns assets and orders of one model with 'no-lost' system.
+///   this  :
+///   qs    : Quotes of all the companies,
+///   params: Parameters to calculate references.
+NoLost *model_noLost(Model *this, Quotes *qs, ADouble *params);
 
 /// Partial serialization.
 char *model_to_js (Model *this);

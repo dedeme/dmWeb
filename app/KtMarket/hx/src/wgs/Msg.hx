@@ -11,7 +11,7 @@ import I18n._;
 
 class Msg {
   static final iwg = Q("div");
-  static final box = new ModalBox(iwg, false);
+  public static final box = new ModalBox(iwg, false);
   public static var wg(get, never): Domo;
   static function get_wg () {
     return box.wg;

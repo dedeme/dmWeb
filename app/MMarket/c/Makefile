@@ -3,7 +3,7 @@ CFLAGS = -Wall -rdynamic
 OBJECTS = $(subst src,lib/obj,$(patsubst %.c,%.o,$(wildcard src/*.c)))
 
 DIRS = data data/Model data/models data/modelDocs data/ADouble data/Order \
-			 data/eval data/eval/ModelEval data/simulation \
+			 data/OrderNL data/eval data/eval/ModelEval data/simulation \
 			 data/simulation/SimProfitsRow pgs external db
 OBJECTS2 = $(foreach DIR, $(DIRS),\
   $(subst src/$(DIR)/,lib/obj/$(subst /,_,$(DIR)_),\
@@ -46,6 +46,11 @@ lib/obj/data_ADouble_%.o : src/data/ADouble/%.c include/data/ADouble/%.h
 		-Ilib/libdmc/include
 
 lib/obj/data_Order_%.o : src/data/Order/%.c include/data/Order/%.h
+	gcc $(CFLAGS) -c $< -o $@ \
+		-Iinclude \
+		-Ilib/libdmc/include
+
+lib/obj/data_OrderNL_%.o : src/data/OrderNL/%.c include/data/OrderNL/%.h
 	gcc $(CFLAGS) -c $< -o $@ \
 		-Iinclude \
 		-Ilib/libdmc/include

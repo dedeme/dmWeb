@@ -11,6 +11,7 @@ import dm.Dec;
 import dm.Opt;
 import dm.Dt;
 import dm.It;
+import wgs.Msg;
 import data.Broker;
 import data.InvOperation;
 import data.Nick; // NickNameStr
@@ -23,7 +24,7 @@ class Trading {
   final bet: Float;
   final rebuys: Array<NickNameStr>;
   final operations: Array<InvOperation>;
-  final pfEntries: Array<PfEntry>;
+  final portfolios: Array<Array<PfEntry>>;
 
   var bentry: Domo;
   var pentry: Domo;
@@ -36,13 +37,13 @@ class Trading {
 
   function new (
     wg: Domo, bet: Float, rebuys: Array<NickNameStr>,
-    operations: Array<InvOperation>, pfEntries: Array<PfEntry>
+    operations: Array<InvOperation>, portfolios: Array<Array<PfEntry>>
   ) {
     this.wg = wg;
     this.bet = bet;
     this.rebuys = rebuys;
     this.operations = operations;
-    this.pfEntries = pfEntries;
+    this.portfolios = portfolios;
 
     bentry = Ui.field("pentry")
       .style("width:80px")
@@ -241,21 +242,24 @@ class Trading {
           var gol = 0.0;
           var q = 0.0;
           var dif = 0.0;
-          switch (It.from(pfEntries).find(e -> e.nick == o.nick)) {
+          var ref = 0.0;
+          switch (It.from(portfolios[o.investor]).find(e -> e.nick == o.nick)) {
             case Some(e): {
-              gol = e.price * 1.01;
+              gol = e.price * Cts.noLostMultiplicator;
               q = e.quote;
               dif = (gol - q) * 100 / q;
+              ref = e.ref;
             };
             default:{}
           }
+          final color = dif <= 5 ? "#d0d9f0" : dif <= 15 ? "#f0f0d9" : "#ffffff";
           return Q("tr")
-            .add(invTd(o.investor))
-            .add(ciaTd(o.nick))
-            .add(stocksTd(o.stocks))
-            .add(quoteTd(gol))
-            .add(quoteTd(q))
-            .add(quoteTd(dif))
+            .add(invTd(o.investor).setStyle("background", color))
+            .add(ciaTd(o.nick).setStyle("background", color))
+            .add(stocksTd(o.stocks).setStyle("background", color))
+            .add(quoteTd(gol).setStyle("background", color))
+            .add(quoteTd(q).setStyle("background", color))
+            .add(quoteTd(dif).setStyle("background", color))
           ;
         }
       )
@@ -319,80 +323,6 @@ class Trading {
     ;
   }
 
-  // Control -------------------------------------------------------------------
-
-  function calculateBuy () {
-    final bs = cast(bentry.getValue(), String);
-    final ps = cast(pentry.getValue(), String);
-    final b = Opt.get(Dec.fromIso(bs));
-    if (b == null) {
-      Ui.alert('${bs} is not a valid number.');
-      return;
-    }
-    final b2 = b + b - Broker.buy(1, b);
-
-    final p = Opt.get(Dec.fromIso(ps));
-    if (p == null) {
-      Ui.alert('${ps} is not a valid number.');
-      return;
-    }
-    if (p == 0) {
-      Ui.alert("Price is 0");
-      return;
-    }
-
-    final rs = Std.int(b2 / p);
-    final p2 = p * 0.9;
-    final rs2 = Std.int(b2 / p2);
-
-    price2.text(Dec.toIso(p2, 2));
-    result.text(Dec.toIso(rs, 0));
-    result2.text(Dec.toIso(rs2, 0));
-
-
-    blankTd.html("&nbsp;");
-  }
-
-  function calculateSell () {
-    final ps = cast(sentry.getValue(), String);
-    final p = Opt.get(Dec.fromIso(ps));
-    if (p == null) {
-      Ui.alert('${ps} is not a valid number.');
-      return;
-    }
-    sprice2.text(Dec.toIso(p * 1.1, 2));
-  }
-
-  // Static --------------------------------------------------------------------
-
-  /// Constructor:
-  ///   wg: Container.
-  public static function mk (wg: Domo) {
-    wg
-      .removeAll()
-      .add(Q("table")
-        .klass("main")
-        .add(Q("tr")
-          .add(Q("td")
-            .style("text-align:center")
-            .add(Ui.Q("img")
-              .att("src", "img/wait2.gif")
-              .klass("frame")))))
-    ;
-    Cts.client.send([
-      "module" => Js.ws("acc"),
-      "source" => Js.ws("trading"),
-      "rq" => Js.ws("idata")
-    ], rp -> {
-      final bet = rp["bet"].rf();
-      final rebuys = rp["rebuys"].ra().map(e -> NickNameStr.fromJs(e));
-      final operations = rp["operations"].ra().map(e -> InvOperation.fromJs(e));
-      final pfEntries = rp["pfEntries"].ra().map(e -> PfEntry.fromJs(e));
-
-      new Trading(wg, bet, rebuys, operations, pfEntries);
-    });
-  }
-
   function invTd (inv: Int): Domo {
     return Q("td")
       .klass("borderWhite")
@@ -420,8 +350,52 @@ class Trading {
     return Q("td")
       .klass("borderWhite")
       .style("text-align:right")
-      .text(Dec.toIso(q, 2))
+      .text(Dec.toIso(q, 4))
     ;
+  }
+
+  // Control -------------------------------------------------------------------
+
+  function calculateBuy () {
+    final bs = cast(bentry.getValue(), String);
+    final ps = cast(pentry.getValue(), String);
+    final b = Opt.get(Dec.fromIso(bs));
+    if (b == null) {
+      Ui.alert('${bs} is not a valid number.');
+      return;
+    }
+    final b2 = b + b - Broker.buy(1, b);
+
+    final p = Opt.get(Dec.fromIso(ps));
+    if (p == null) {
+      Ui.alert('${ps} is not a valid number.');
+      return;
+    }
+    if (p == 0) {
+      Ui.alert("Price is 0");
+      return;
+    }
+
+    final rs = Std.int(b2 / p);
+    final p2 = p * 0.99;
+    final rs2 = Std.int(b2 / p2);
+
+    price2.text(Dec.toIso(p2, 2));
+    result.text(Dec.toIso(rs, 0));
+    result2.text(Dec.toIso(rs2, 0));
+
+
+    blankTd.html("&nbsp;");
+  }
+
+  function calculateSell () {
+    final ps = cast(sentry.getValue(), String);
+    final p = Opt.get(Dec.fromIso(ps));
+    if (p == null) {
+      Ui.alert('${ps} is not a valid number.');
+      return;
+    }
+    sprice2.text(Dec.toIso(p * 1.01, 2));
   }
 
   function spreads (price: Float): Float {
@@ -436,6 +410,38 @@ class Trading {
       : price < 500 ? 0.05
       : 0.1
     ;
+  }
+
+  // Static --------------------------------------------------------------------
+
+  /// Constructor:
+  ///   wg: Container.
+  public static function mk (wg: Domo) {
+    wg
+      .removeAll()
+      .add(Q("table")
+        .klass("main")
+        .add(Q("tr")
+          .add(Q("td")
+            .style("text-align:center")
+            .add(Ui.Q("img")
+              .att("src", "img/wait2.gif")
+              .klass("frame")))))
+    ;
+    Cts.client.send([
+      "module" => Js.ws("acc"),
+      "source" => Js.ws("trading"),
+      "rq" => Js.ws("idata")
+    ], rp -> {
+      final bet = rp["bet"].rf();
+      final rebuys = rp["rebuys"].ra().map(e -> NickNameStr.fromJs(e));
+      final operations = rp["operations"].ra().map(e -> InvOperation.fromJs(e));
+      final portfolios = rp["portfolios"].ra().map(pf ->
+        pf.ra().map(PfEntry.fromJs)
+      );
+
+      new Trading(wg, bet, rebuys, operations, portfolios);
+    });
   }
 
 }

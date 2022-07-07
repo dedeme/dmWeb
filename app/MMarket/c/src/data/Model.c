@@ -647,7 +647,7 @@ ADouble *model_historic(Model *this, Quotes *qs, ADouble *params) {
         while (pcloses < closes->end) {
           double close = *pcloses++;
           double a_st = *pa_stocks++;
-          assets += a_st * close;
+          if (a_st > 0) assets += broker_sell(a_st, close);
         }
         aDouble_push(r, assets);
 
@@ -759,13 +759,6 @@ AOrder *model_orders(Model *this, Quotes *qs, ADouble *params) {
         }
 
         double *pcloses = closes->es;
-        pa_stocks = a_stocks->es;
-        double assets = a_cash;
-        while (pcloses < closes->end) {
-          double close = *pcloses++;
-          double a_st = *pa_stocks++;
-          assets += a_st * close;
-        }
 
         // Day end -----------------------------------------
 
@@ -803,6 +796,159 @@ AOrder *model_orders(Model *this, Quotes *qs, ADouble *params) {
   this->calc(qs->closes, params->es, callback);
 
   return r;
+}
+
+NoLost *model_noLost(Model *this, Quotes *qs, ADouble *params) {
+  ADouble *assets = aDouble_new();
+  AOrderNL *orders = aOrderNL_new();
+
+  double bet = cts_bet();
+  double min_to_bet = cts_min_to_bet();
+  double multiplicator = cts_no_lost_multiplicator();
+
+  int ncos = achar_size(qs->cos);
+  double a_cash = cts_initial_capital();
+
+  AInt *a_stocks = aInt_new();
+  AInt *a_coughts = aInt_new();
+  ADouble *a_prices = aDouble_bf_new(ncos);
+  AInt *operations = aInt_bf_new(ncos); // 0=Nop, 1=Buy, -1=Sell
+  for (int i = 0; i < ncos; ++i) {
+    aInt_push(a_stocks, 0);
+    aInt_push(a_coughts, 0);
+  }
+
+  int is_first = 1;
+  ADouble *prev_refs = aDouble_new();
+  ADouble *prev_closes = aDouble_new();
+  ADouble **popens = qs->opens->es;
+  ADouble **pmaxs = qs->maxs->es;
+  char **pdates = qs->dates->es;
+
+  /**/// CALLBACK
+
+      void callback (ADouble *closes, ADouble *refs) {
+        ADouble *opens = *popens++;
+        ADouble *maxs = *pmaxs++;
+        char *date = *pdates++;
+        if (is_first) {
+          prev_refs = refs;
+          prev_closes = closes;
+          aDouble_push(assets, a_cash);
+          is_first = 0;
+          return;
+        }
+
+        // Day beginning -----------------------------------
+
+        int *poperations = operations->es;
+        double *popens = opens->es;
+        double *pmaxs = maxs->es;
+        int *pa_stocks = a_stocks->es;
+        int *pa_coughts = a_coughts->es;
+        double *pa_prices = a_prices->es;
+        int ico = 0;
+        while (poperations < operations->end) {
+          int op = *poperations++;
+          double open = *popens++;
+          double max = *pmaxs++;
+          double a_st = *pa_stocks;
+          double price = *pa_prices;
+
+          if (*pa_coughts == 0) {
+            if (op == 1) { // buy
+              if (a_cash >= min_to_bet) {
+                double cost = a_st == 0 ? 0 : a_st * price;
+                int stocks = bet / open;
+                *pa_stocks = a_st + stocks;
+                *pa_prices = (stocks * open + cost) / *pa_stocks;
+                a_cash -= broker_buy(stocks, open);
+
+                aOrderNL_push(orders, orderNL_new(
+                  date, qs->cos->es[ico], orderNL_BUY, stocks, open
+                ));
+              }
+            } else if (op == -1) { // sell
+              if (a_st > 0) {
+                if (open > price * multiplicator) {
+                  *pa_stocks = 0;
+                  a_cash += broker_sell(a_st, open);
+
+                  aOrderNL_push(orders, orderNL_new(
+                    date, qs->cos->es[ico], orderNL_SELL, a_st, open
+                  ));
+                } else {
+                  *pa_coughts = 1;
+
+                  aOrderNL_push(orders, orderNL_new(
+                    date, qs->cos->es[ico], orderNL_CATCH, a_st, price
+                  ));
+                }
+              }
+            }
+          } else if (max > price * multiplicator) {
+            *pa_stocks = 0;
+            a_cash += broker_sell(a_st, price * multiplicator);
+            *pa_coughts = 0;
+            // It is not necessary set up *pa_prices.
+
+            aOrderNL_push(orders, orderNL_new(
+              date, qs->cos->es[ico], orderNL_SELL, a_st, price * multiplicator
+            ));
+          }
+
+          ++pa_stocks;
+          ++pa_coughts;
+          ++pa_prices;
+          ++ico;
+        }
+
+        double *pcloses = closes->es;
+        pa_stocks = a_stocks->es;
+        double as = a_cash;
+        while (pcloses < closes->end) {
+          double close = *pcloses++;
+          double a_st = *pa_stocks++;
+          if (a_st > 0) as += broker_sell(a_st, close);
+        }
+        aDouble_push(assets, as);
+
+        // Day end -----------------------------------------
+
+        pcloses = closes->es;
+        double *pprev_closes = prev_closes->es;
+        double *prefs = refs->es;
+        double *pprev_refs = prev_refs->es;
+        operations = aInt_bf_new(ncos);
+        while (pcloses < closes->end) {
+          double close = *pcloses++;
+          double prev_close = *pprev_closes++;
+          double ref = *prefs++;
+          double prev_ref = *pprev_refs++;
+          if (close < ref) {
+            if (prev_close >= prev_ref) { // Sell
+              aInt_push(operations, -1);
+            } else {
+              aInt_push(operations, 0);
+            }
+          } else {
+            if (prev_close < prev_ref) { // Buy
+              aInt_push(operations, 1);
+            } else {
+              aInt_push(operations, 0);
+            }
+          }
+        }
+
+        prev_refs = refs;
+        prev_closes = closes;
+      }
+
+  /**/// END CALLBACK
+
+  this->calc(qs->closes, params->es, callback);
+
+  return noLost_new(assets, orders);
 }
 
 /// Partial serialization.

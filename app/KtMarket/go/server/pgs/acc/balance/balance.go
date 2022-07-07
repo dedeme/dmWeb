@@ -52,7 +52,7 @@ func Process(ck string, mrq cgi.T) string {
 						log.Error("Nick " + e.Nick + " not found")
 						return
 					}
-					closes, err := db.CurrentCloses(nk)
+					_, closes, err := db.CurrentCloses(nk)
 					if err != "" {
 						log.Error(err)
 						return

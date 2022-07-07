@@ -27,7 +27,7 @@ func Process(ck string, mrq cgi.T) string {
 
 		var operationsJs string
 		var rebuys []*nick.NameStrT
-    var pfEntries []*acc.PfEntryT
+    portfolios := make([][]*acc.PfEntryT, cts.Investors)
 		thread.Sync(func() {
 			operationsJs = db.InvOperationsTb().ReadJs()
       ops := db.InvOperationsTb().Read().Operations
@@ -49,7 +49,7 @@ func Process(ck string, mrq cgi.T) string {
 					}
 				}
 
-        es := arr.Map(arr.Filter(pf, func(e *acc.PfEntryT) bool {
+        pfEntries := arr.Map(arr.Filter(pf, func(e *acc.PfEntryT) bool {
           _, ok := arr.Find(ops, func (op *invOperation.T) bool {
             return op.Nick == e.Nick && op.Investor == i
           })
@@ -60,27 +60,15 @@ func Process(ck string, mrq cgi.T) string {
             log.Error("Nick " + e.Nick + " not found")
             return e
           }
-          closes, err := db.CurrentCloses(nk)
+          _, closes, err := db.CurrentCloses(nk)
           if err != ""{
             log.Error(err)
             return e
           }
           lastClose := quote.LastValue(closes)
-          newe := acc.NewPfEntry(e.Nick, e.Stocks, e.Price, lastClose, 0.0)
-
-          e2, ok := arr.Find(pfEntries, func(e2 *acc.PfEntryT) bool {
-            return e2.Nick == e.Nick
-          })
-          if ok {
-            stocks := e2.Stocks + e.Stocks
-            price := (float64(e2.Stocks) * e2.Price + float64(e.Stocks) * e.Price) /
-              float64(e2.Stocks + e.Stocks)
-            newe = acc.NewPfEntry(e.Nick, stocks, price, lastClose, 0.0)
-          }
-
-          return newe
+          return acc.NewPfEntry(e.Nick, e.Stocks, e.Price, lastClose, 0.0)
         })
-        pfEntries = append(pfEntries, es...)
+        portfolios[i] = pfEntries
 			}
 		})
 
@@ -88,7 +76,10 @@ func Process(ck string, mrq cgi.T) string {
 			"bet":        js.Wd(cts.Bet),
 			"rebuys":     js.Wa(arr.Map(rebuys, nick.NameStrToJs)),
 			"operations": operationsJs,
-      "pfEntries": js.Wa(arr.Map(pfEntries, acc.PfEntryToJs)), // value Ref == 0.0
+      "portfolios": js.Wa(
+        arr.Map(portfolios, func(pfEntries []*acc.PfEntryT) string {
+          return js.Wa(arr.Map(pfEntries, acc.PfEntryToJs))
+        })), // value Ref == 0.0
 		})
 
 	default:

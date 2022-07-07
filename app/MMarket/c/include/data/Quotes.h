@@ -18,11 +18,14 @@ struct quotes_Quotes {
   // Dates in format YYYYMMDD, from before to after.
   Achar *dates;
   // Matrix of quotes opens.
-  // Its rows match 'dates' and is columns 'cias'.
+  // Its rows match 'dates' and is columns 'cos'.
   AADouble *opens;
   // Matrix of quotes closes.
-  // Its rows match 'dates' and is columns 'cias'.
+  // Its rows match 'dates' and is columns 'cos'.
   AADouble *closes;
+  // Matrix of maximum closes.
+  // Its rows match 'dates' and is columns 'cos'.
+  AADouble *maxs;
 };
 
 /// Companies quotes.
@@ -33,11 +36,14 @@ typedef struct quotes_Quotes Quotes;
 ///   cos   : Company nicks, sorted.
 ///   dates : Dates in format YYYYMMDD, from before to after.
 ///   opens : Matrix of quotes opens.
-///           Its rows match 'dates' and is columns 'cias'.
+///           Its rows match 'dates' and is columns 'cos'.
 ///   closes: Matrix of quotes closes.
-///           Its rows match 'dates' and is columns 'cias'.
+///           Its rows match 'dates' and is columns 'cos'.
+///   maxs  : Matrix of maximun quotes.
+///           Its rows match 'dates' and is columns 'cos'.
 Quotes *quotes_new (
-  char *date, Achar *cos, Achar *dates, AADouble *opens, AADouble *closes
+  char *date, Achar *cos, Achar *dates,
+  AADouble *opens, AADouble *closes, AADouble *maxs
 );
 
 /// Returns company index or -1.
@@ -49,6 +55,11 @@ int quotes_ico(Quotes *this, char *co);
 ///   this:
 ///   ico : Company index as result of 'quotes_ico'.
 ADouble *quotes_closes(Quotes *this, int ico);
+
+/// Returns maximun quotes of a company.
+///   this:
+///   ico : Company index as result of 'quotes_ico'.
+ADouble *quotes_maxs(Quotes *this, int ico);
 
 /// Returns closes of a company in format 'Quotes'.
 ///   this:

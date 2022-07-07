@@ -107,12 +107,8 @@ func Process(ck string, mrq cgi.T) string {
         return
       }
       var err string
-      dates, err = db.Dates()
-      if err != "" {
-        log.Error(err)
-        return
-      }
-      cls, err := db.CurrentCloses(nk)
+      var cls []float64
+      dates, cls, err = db.CurrentCloses(nk)
       if err != "" {
         log.Error(err)
         dates = []string{}

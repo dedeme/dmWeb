@@ -60,7 +60,7 @@ static void calc (
       int is_sold = *pis_solds++;
 
       if (is_sold) {
-        if (q > q0) {
+        if (q > ref) {
           aInt_push(new_is_solds, 0);
           double new_ref = q0 * (1 - strip);
           aDouble_push(new_refs, new_ref);

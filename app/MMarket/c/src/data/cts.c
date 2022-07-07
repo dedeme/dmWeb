@@ -37,6 +37,10 @@ double cts_min_to_bet (void) {
   return 11000;
 }
 
+double cts_no_lost_multiplicator (void) {
+  return 1.05;
+}
+
 double cts_assets_ratio (void) {
   return 0.35;
 }

@@ -35,14 +35,14 @@ class Cts {
       .add(foot)
     ;
   });
-  /// Decimals number of flea parameter.
-//  public static final paramDecs = 6;
   /// Ammount to make a buy.
   public static final bet = 10000.0;
   /// Investor initial capital.
   public static final initialCapital = 100000.0;
   /// Minimun cash to bet
   public static final minToBet = 11000.0;
+  /// Gol multiplicator for coughts
+  public static final noLostMultiplicator = 1.05;
   /// Extern program name.
   public static final wget = "Wget";
   /// Extern program name.
@@ -55,21 +55,6 @@ class Cts {
   public static final serverSelected = 2;
   /// Number of quotes for accounting charts.
   public static final accountingQuotes = 250;
-
-  /// Minimum value to analyze by investors
-//  public static final rangesMin = 12; // id 120000 -> parameter 0.12
-	/// Group of 10000 to analyze
-//	public static final rangesGroups = 10; // from 120000 inclusive to 220000 exclusive [0.12-0.22)
-	/// Number of model per group
-//	public static final rangesGroupNumber = 10000;
-	/// Medium value to autamate investors creation.
-//	public static final rangesMedium = 17;
-  /// Returns the divisor value to convert a model id in a parameter.
-//  public static final rangesToParam = 1000000; // id = 134567 -> range = id / 1000000 = 0.134567
-
-
-  /// Investors number
-//  public static final qlevels = 3;
 
 
   /// Standar messsage for server fails.

@@ -17,7 +17,6 @@ Order *order_new (
   return this;
 }
 
-///
 char *order_to_js (Order *this) {
   return js_wa(achar_new_from(
     js_ws(this->date),
@@ -29,7 +28,6 @@ char *order_to_js (Order *this) {
   ));
 }
 
-///
 Order *order_from_js (char *js) {
   Achar *a = js_ra(js);
   return order_new(
