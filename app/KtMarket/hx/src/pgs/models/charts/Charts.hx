@@ -240,11 +240,11 @@ class Charts {
           sells = [];
           lastDate = o.date;
         }
-        if (o.isSell) {
+        if (o.type == Order.SELL) {
           sells.push(o.nick);
           portfolio[o.nick] = portfolio[o.nick] - o.stocks;
           cash += Broker.sell(o.stocks, o.price);
-        } else {
+        } else if (o.type == Order.BUY) {
           buys.push(o.nick);
           portfolio[o.nick] = portfolio[o.nick] + o.stocks;
           cash -= Broker.buy(o.stocks, o.price);

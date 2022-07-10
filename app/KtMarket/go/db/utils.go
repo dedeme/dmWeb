@@ -38,10 +38,7 @@ func Dates() (dates []string, err string) {
 		err = e
 		return
 	}
-	arr.ReverseIn(qs)
-	dates = arr.Map(qs, func(q *quote.T) string {
-		return q.Date
-	})
+	dates = quote.Dates(qs)
 	return
 }
 
@@ -53,14 +50,10 @@ func CurrentCloses(nk *nick.T) (dates []string, closes []float64, err string) {
 		err = e
 		return
 	}
-	lastQsDate := qs[0].Date
-	arr.ReverseIn(qs)
-	closes = arr.Map(qs, func(q *quote.T) float64 {
-		return q.Close
-	})
-	dates = arr.Map(qs, func(q *quote.T) string {
-		return q.Date
-	})
+
+	dates = quote.Dates(qs)
+	closes = quote.Closes(qs)
+	lastQsDate := dates[len(dates)-1]
 
 	dailyQs := DailyTb().Read()
 	if dailyQs.Date > lastQsDate {
@@ -149,7 +142,7 @@ func UpdateInvestors() (err string) {
 
 				rf := newRfBase.Ref
 				rf2 := newRfBase2.Ref
-				cl := quote.LastValue(closes)
+				cl := closes[len(closes)-1]
 
 				if (rf > cl && rf2 > cl) || (rf < cl && rf2 < cl) {
 					st = stBase
@@ -204,7 +197,8 @@ func Operations() (err string) {
 			return
 		}
 		closes := arr.Drop(allCloses, len(allCloses)-cts.ReferenceQuotes)
-		lastClose, lastClose2 := quote.LastValue2(closes)
+		lastClose := closes[len(closes)-1]
+		lastClose2 := closes[len(closes)-2]
 
 		invs := InvestorsTb().Read().Investors
 		for i := 0; i < cts.Investors; i++ {
@@ -215,14 +209,15 @@ func Operations() (err string) {
 				st = inv.Base
 			}
 
-      var refs []float64
+			var refs []float64
 			refBase, ok := RefBasesTb().Read().Get(nk, st)
 			if ok {
 				refs = strategy.Refs(st, closes, refBase.Ref)
 			} else {
-        refs = strategy.Refs(st, allCloses, -1)
-      }
-			lastRef, lastRef2 := quote.LastValue2(refs)
+				refs = strategy.Refs(st, allCloses, -1)
+			}
+			lastRef := refs[len(refs)-1]
+			lastRef2 := refs[len(refs)-2]
 
 			if lastRef > lastClose {
 				pfEntry, ok := arr.Find(pfs[i], func(e *acc.PfEntryT) bool {
@@ -304,15 +299,10 @@ func ActivateDailyCharts() {
 			log.Error(err)
 			return r
 		}
-		allCloses := arr.Map(qs, func(q *quote.T) float64 {
-			return q.Close
-		})
+		allCloses := quote.Closes(qs)
 		qs = arr.Take(qs, cts.ReferenceQuotes)
-		arr.ReverseIn(qs)
-		closes := arr.Map(qs, func(q *quote.T) float64 {
-			return q.Close
-		})
-		close = quote.LastValue(closes)
+		closes := quote.Closes(qs)
+		close = closes[len(closes)-1]
 
 		tm := time.Now()
 		hours[0] = time.Hour(tm)
@@ -337,10 +327,10 @@ func ActivateDailyCharts() {
 				return r.Nick.Name == nk.Name && strategy.Eq(r.Strategy, st)
 			})
 			if ok {
-        invsData[i].Ref = strategy.LastRef(st, closes, refBase.Ref)
+				invsData[i].Ref = strategy.LastRef(st, closes, refBase.Ref)
 			} else {
-        invsData[i].Ref = strategy.LastRef(st, allCloses, -1)
-      }
+				invsData[i].Ref = strategy.LastRef(st, allCloses, -1)
+			}
 		}
 
 		return dailyChart.New(nk.Name, close, hours, quotes, invsData)
@@ -455,7 +445,7 @@ func UpdateHistoricProfits() {
 				continue
 			}
 			closes := arr.Drop(allCloses, len(allCloses)-cts.ReferenceQuotes)
-			lastClose := quote.LastValue(closes)
+			lastClose := closes[len(closes)-1]
 
 			st, ok := inv.Nicks[nk.Name]
 			if !ok {
@@ -466,10 +456,10 @@ func UpdateHistoricProfits() {
 				return r.Nick.Name == nk.Name && strategy.Eq(r.Strategy, st)
 			})
 			if ok {
-        lastRef = strategy.LastRef(st, closes, refBase.Ref)
+				lastRef = strategy.LastRef(st, closes, refBase.Ref)
 			} else {
-        lastRef = strategy.LastRef(st, allCloses, -1)
-      }
+				lastRef = strategy.LastRef(st, allCloses, -1)
+			}
 			if lastRef > lastClose { // Sell situation.
 				lastRef = lastClose
 			}

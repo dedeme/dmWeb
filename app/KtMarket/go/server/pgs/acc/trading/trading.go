@@ -7,7 +7,6 @@ package trading
 import (
 	"github.com/dedeme/KtMarket/cts"
 	"github.com/dedeme/KtMarket/data/acc"
-	"github.com/dedeme/KtMarket/data/quote"
 	"github.com/dedeme/KtMarket/data/invOperation"
 	"github.com/dedeme/KtMarket/data/nick"
 	"github.com/dedeme/KtMarket/db"
@@ -27,10 +26,10 @@ func Process(ck string, mrq cgi.T) string {
 
 		var operationsJs string
 		var rebuys []*nick.NameStrT
-    portfolios := make([][]*acc.PfEntryT, cts.Investors)
+		portfolios := make([][]*acc.PfEntryT, cts.Investors)
 		thread.Sync(func() {
 			operationsJs = db.InvOperationsTb().ReadJs()
-      ops := db.InvOperationsTb().Read().Operations
+			ops := db.InvOperationsTb().Read().Operations
 			now := time.Now()
 			for i := 0; i < cts.Investors; i++ {
 				anns := diariesDb.ReadAnnotations(i)
@@ -49,26 +48,26 @@ func Process(ck string, mrq cgi.T) string {
 					}
 				}
 
-        pfEntries := arr.Map(arr.Filter(pf, func(e *acc.PfEntryT) bool {
-          _, ok := arr.Find(ops, func (op *invOperation.T) bool {
-            return op.Nick == e.Nick && op.Investor == i
-          })
-          return ok
-        }), func(e *acc.PfEntryT) *acc.PfEntryT {
-          nk, ok := db.NicksTb().Read().NickFromName(e.Nick)
-          if !ok {
-            log.Error("Nick " + e.Nick + " not found")
-            return e
-          }
-          _, closes, err := db.CurrentCloses(nk)
-          if err != ""{
-            log.Error(err)
-            return e
-          }
-          lastClose := quote.LastValue(closes)
-          return acc.NewPfEntry(e.Nick, e.Stocks, e.Price, lastClose, 0.0)
-        })
-        portfolios[i] = pfEntries
+				pfEntries := arr.Map(arr.Filter(pf, func(e *acc.PfEntryT) bool {
+					_, ok := arr.Find(ops, func(op *invOperation.T) bool {
+						return op.Nick == e.Nick && op.Investor == i
+					})
+					return ok
+				}), func(e *acc.PfEntryT) *acc.PfEntryT {
+					nk, ok := db.NicksTb().Read().NickFromName(e.Nick)
+					if !ok {
+						log.Error("Nick " + e.Nick + " not found")
+						return e
+					}
+					_, closes, err := db.CurrentCloses(nk)
+					if err != "" {
+						log.Error(err)
+						return e
+					}
+					lastClose := closes[len(closes)-1]
+					return acc.NewPfEntry(e.Nick, e.Stocks, e.Price, lastClose, 0.0)
+				})
+				portfolios[i] = pfEntries
 			}
 		})
 
@@ -76,10 +75,10 @@ func Process(ck string, mrq cgi.T) string {
 			"bet":        js.Wd(cts.Bet),
 			"rebuys":     js.Wa(arr.Map(rebuys, nick.NameStrToJs)),
 			"operations": operationsJs,
-      "portfolios": js.Wa(
-        arr.Map(portfolios, func(pfEntries []*acc.PfEntryT) string {
-          return js.Wa(arr.Map(pfEntries, acc.PfEntryToJs))
-        })), // value Ref == 0.0
+			"portfolios": js.Wa(
+				arr.Map(portfolios, func(pfEntries []*acc.PfEntryT) string {
+					return js.Wa(arr.Map(pfEntries, acc.PfEntryToJs))
+				})), // value Ref == 0.0
 		})
 
 	default:

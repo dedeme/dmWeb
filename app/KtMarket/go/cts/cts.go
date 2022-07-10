@@ -104,6 +104,9 @@ const (
 	// Minimun cash to bet
 	MinToBet = 11000.0
 
-  // Rebuy limit
-  RebuyLimit = 400.0
+	// No lost multiplicator
+	NoLostMultiplicator = 1.05
+
+	// Rebuy limit
+	RebuyLimit = 400.0
 )

@@ -229,6 +229,7 @@ class Trading {
       )
     ;
 
+    var losses = 0.0;
     final sells = os.filter(o -> o.stocks > 0);
     final sellTrs = sells.length == 0
       ? [
@@ -249,6 +250,7 @@ class Trading {
               q = e.quote;
               dif = (gol - q) * 100 / q;
               ref = e.ref;
+              losses += e.stocks * (gol - q);
             };
             default:{}
           }
@@ -316,7 +318,19 @@ class Trading {
                 .add(Q("td").klass("head").html(_("Quote")))
                 .add(Q("td").klass("head").html(_("Dif.")))
                 )
-              .adds(sellTrs)))
+              .adds(sellTrs)
+              .add(Q("tr")
+                .add(Q("td")
+                  .att("colspan", "3")
+                  .style("text-align:right")
+                  .html(_("Losses") + ":&nbsp;"))
+                .add(Q("td")
+                  .klass("borderWhite")
+                  .style("text-align:center")
+                  .att("colspan", "2")
+                  .text(Dec.toIso(losses, 2)))
+                .add(Q("td")))
+              ))
           .add(Q("td")
             .style("vertical-align:top;width:5px")
             .add(sellWg()))))

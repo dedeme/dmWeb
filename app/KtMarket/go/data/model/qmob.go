@@ -46,12 +46,6 @@ func qmobCalc(
 		newIsSolds := make([]bool, nCos)
 
 		for i, c := range cs {
-			if c < 0 {
-				newRefs[i] = refs[i]
-				newIsSolds[i] = isSolds[i]
-				continue
-			}
-
 			rf := refs[i]
 			isSold := isSolds[i]
 

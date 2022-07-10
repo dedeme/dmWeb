@@ -27,7 +27,7 @@ func New(nk *nick.T, st *strategy.T, date string, ref float64) *T {
 func MkRefBase(
 	nk *nick.T, st *strategy.T, dates []string, closes []float64,
 ) *T {
-  n := len(closes)-cts.ReferenceQuotes-1
+	n := len(closes) - cts.ReferenceQuotes - 1
 	cs := arr.Take(closes, n)
 	lastRef := strategy.LastRef(st, cs, -1)
 	return New(nk, st, dates[n-1], lastRef)

@@ -30,7 +30,9 @@ func New(params []float64, weeks int, hvalue, hsales, value, sales float64) *T {
 
 func ToJs(me *T) string {
 	return js.Wa([]string{
-		js.Wa(arr.Map(me.Params, js.Wd)),
+		js.Wa(arr.Map(me.Params, func (n float64) string {
+      return js.WdDec(n, 6)
+    })),
 		js.Wi(me.Weeks),
 		js.Wd(me.Hvalue),
 		js.Wd(me.Hsales),

@@ -6,11 +6,9 @@ package strategy
 
 import (
 	"github.com/dedeme/KtMarket/cts"
-	"github.com/dedeme/KtMarket/data/assetsRs"
 	"github.com/dedeme/KtMarket/data/broker"
 	"github.com/dedeme/KtMarket/data/model"
 	"github.com/dedeme/KtMarket/data/order"
-	"github.com/dedeme/KtMarket/data/quote"
 	"github.com/dedeme/ktlib/arr"
 	"github.com/dedeme/ktlib/js"
 	"github.com/dedeme/ktlib/math"
@@ -84,7 +82,8 @@ func Refs(s *T, closes []float64, initRef float64) []float64 {
 //  closes : Company closes (from before to after), with at least one element.
 //  initRef: Initial reference or -1 if there is no one.
 func LastRef(s *T, closes []float64, initRef float64) float64 {
-	return quote.LastValue(Refs(s, closes, initRef))
+	r := Refs(s, closes, initRef)
+	return r[len(r)-1]
 }
 
 // Returns references (one for each close) of a group of companies
@@ -101,241 +100,145 @@ func AllRefs(s *T, closes [][]float64, initRefs []float64) [][]float64 {
 	return r
 }
 
-// Returns profits (in percentage of inital capital) of a company
-//  s      : Strategy.
-//  opens  : Company opens (from before to after), with at least one element.
-//  closes : Company closes (from before to after), with at least one element.
-func Profits(s *T, opens, closes []float64) float64 {
-	acloses := arr.Map(closes, func(c float64) []float64 {
-		return []float64{c}
-	})
-	aopens := arr.Map(opens, func(o float64) []float64 {
-		return []float64{o}
-	})
+// Returns results of run a simulation:
+//  orders: Every market order ordered by date.
+//  historic: Assets historic. One value for each 'qs.Dates'.
+//  cash: Final cash.
+//  refAssets: Final assets using references intead closes (risk).
+//  refs: Referencies. One for each 'qs.Closes'
+//  buys: Buy dates. A slice for each 'qs.Cos'
+//  sales: Sales dates. A slice for each 'qs.Cos'
+//  profits: Profits ratios. One for each 'qs.Cos'
+// Parameters
+//  s     : Stragegy
+//  dates : Dates of opens (for before to after).
+//  nks   : Ordered nicks (one for each column of opens)
+//  opens : Matrix of 'dates x companies' with historic opens.
+//  closes: closes matching 'opens'.
+//  maxs  : maximums matching 'opens'.
+func Simulation(
+	s *T, dates []string, nks []string, opens, closes, maxs [][]float64,
+) (orders []*order.T, historic []float64, cash, refAssets float64,
+	refs [][]float64, buys, sales [][]string, profits []float64,
+) {
+	nDates := len(dates)
+	nCos := len(nks)
+	cash = cts.InitialCapital
 
-	return AllProfits(s, aopens, acloses)
-}
-
-// Returns profits (in percentage of inital capital) of a group of companies
-//  s      : Strategy.
-//  opens  : Companies group opens (from before to after), every one with at
-//           least one element.
-//  closes : Companies group closes (from before to after), every one with at
-//           least one element.
-func AllProfits(s *T, opens, closes [][]float64) float64 {
-	cash := cts.InitialCapital
-	lg := len(opens[0])
-	initRefs := make([]float64, lg)
-	toSells := make([]bool, lg)
-	for i := 0; i < lg; i++ {
-		initRefs[i] = -1
-		toSells[i] = true
+	historic = make([]float64, nDates)
+	refs = make([][]float64, nDates)
+	for i := range dates {
+		refs[i] = make([]float64, nCos)
 	}
-	toDos := make([]bool, lg)
-	stockss := make([]int, lg)
+	buys = make([][]string, nCos)
+	sales = make([][]string, nCos)
+	profits = make([]float64, nCos)
+
+	prfCashs := make([]float64, nCos)
+	toSells := make([]bool, nCos)
+	initRefs := make([]float64, nCos)
+	for i := 0; i < nCos; i++ {
+		initRefs[i] = -1.0
+		toSells[i] = true
+		prfCashs[i] = cts.Bet
+	}
+	toDos := make([]bool, nCos)
+	stockss := make([]int, nCos)
+	prfStockss := make([]int, nCos)
+	prices := make([]float64, nCos)
+	prfPrices := make([]float64, nCos)
+	coughts := make([]bool, nCos)
+	prfCoughts := make([]bool, nCos)
 	ix := 0
 
 	s.Model.Calc(closes, s.Params, initRefs, func(cs, rs []float64) {
-		os := opens[ix]
-		ix++
-
-		for i := 0; i < lg; i++ {
-			op := os[i]
-			cl := cs[i]
-			rf := rs[i]
-			stocks := stockss[i]
-			toSell := toSells[i]
-			toDo := toDos[i]
-
-			if toDo && op > 0 {
-				if toSell { // there is buy order.
-					if cash > cts.MinToBet {
-						stocks = int(cash / op)
-						stockss[i] = stocks
-						cash -= broker.Buy(stocks, op)
-					}
-				} else if stocks > 0 {
-					cash += broker.Sell(stocks, op)
-					stockss[i] = 0
-				}
-
-				toDos[i] = false
-			}
-
-			if cl < 0 {
-				continue
-			}
-
-			if toSell {
-				if rf > cl {
-					toDos[i] = true
-					toSells[i] = false
-				}
-			} else if rf < cl {
-				toDos[i] = true
-				toSells[i] = true
-			}
-		}
-	})
-
-	for i := 0; i < lg; i++ {
-		stocks := stockss[i]
-		if stocks > 0 {
-			cl := 0.0
-			for row := len(closes) - 1; row >= 0; row-- {
-				c := closes[row][i]
-				if c >= 0 {
-					cl = c
-					break
-				}
-			}
-			cash += broker.Sell(stocks, cl)
-		}
-	}
-
-	return (cash - cts.InitialCapital) / cts.InitialCapital
-}
-
-// Returns every market order and final results of operating with 'opens' and
-// 'closes'.
-// Returns profits (in percentage of inital capital) of a group of companies
-//  s      : Strategy.
-//  dates  : Operation dates. It has the same 'len' that 'closes' and 'opens'.
-//  nks    : Nicks matching each column of 'opens' and 'closes'
-//  opens  : Companies group opens (from before to after), every one with at
-//           least one element.
-//  closes : Companies group closes (from before to after), every one with at
-//           least one element.
-func Orders(
-	s *T, dates []string, nks []string, opens, closes [][]float64,
-) (orders []*order.T, results *assetsRs.T) {
-	buys := 0
-	sells := 0
-	cash := cts.InitialCapital
-	lg := len(opens[0])
-	initRefs := make([]float64, lg)
-	toSells := make([]bool, lg)
-	for i := 0; i < lg; i++ {
-		initRefs[i] = -1
-		toSells[i] = true
-	}
-	toDos := make([]bool, lg)
-	stockss := make([]int, lg)
-	ix := 0
-
-	s.Model.Calc(closes, s.Params, initRefs, func(cs, rs []float64) {
+		refs[ix] = rs
 		date := dates[ix]
 		os := opens[ix]
-		ix++
-		for i := 0; i < lg; i++ {
-			nk := nks[i]
+		mxs := maxs[ix]
+
+		assets := 0.0
+		for i, nk := range nks {
 			op := os[i]
 			cl := cs[i]
 			rf := rs[i]
-			stocks := stockss[i]
 			toSell := toSells[i]
 			toDo := toDos[i]
 
-			if toDo && op > 0 {
+			if toDo {
 				if toSell { // there is buy order.
-					if cash > cts.MinToBet {
-						stocks = int(cts.Bet / op)
+					if !prfCoughts[i] {
+						prfCash := prfCashs[i]
+						stocks := int((prfCash - broker.Fees(prfCash)) / op)
+						cost := broker.Buy(stocks, op)
+						for cost > prfCash {
+							stocks--
+							cost = broker.Buy(stocks, op)
+						}
+						prfStockss[i] = stocks
+						prfCashs[i] -= cost
+						buys[i] = append(buys[i], date)
+						prfPrices[i] = op
+					}
+					if cash > cts.MinToBet && !coughts[i] {
+						stocks := int(cts.Bet / op)
 						stockss[i] = stocks
 						cash -= broker.Buy(stocks, op)
-						orders = append(orders, order.New(date, nk, false, stocks, op))
-						buys++
+						orders = append(orders, order.New(date, nk, order.BUY, stocks, op))
+						prices[i] = op
 					}
-				} else if stocks > 0 {
-					cash += broker.Sell(stocks, op)
-					stockss[i] = 0
-					orders = append(orders, order.New(date, nk, true, stocks, op))
-					sells++
+				} else {
+					stocks := stockss[i]
+					if stocks > 0 && !coughts[i] {
+						if op > prices[i]*cts.NoLostMultiplicator {
+							cash += broker.Sell(stocks, op)
+							stockss[i] = 0
+							orders = append(orders, order.New(date, nk, order.SELL, stocks, op))
+						} else {
+							orders = append(orders, order.New(date, nk, order.CATCH, stocks, op))
+							coughts[i] = true
+						}
+					}
+					stocks = prfStockss[i]
+					if stocks > 0 && !prfCoughts[i] {
+						if op > prfPrices[i]*cts.NoLostMultiplicator {
+							prfCashs[i] += broker.Sell(stocks, op)
+							prfStockss[i] = 0
+							sales[i] = append(sales[i], date)
+						} else {
+							prfCoughts[i] = true
+						}
+					}
 				}
 
 				toDos[i] = false
 			}
 
-			if cl < 0 {
-				continue
-			}
-
-			if toSell {
-				if rf > cl {
-					toDos[i] = true
-					toSells[i] = false
-				}
-			} else if rf < cl {
-				toDos[i] = true
-				toSells[i] = true
-			}
-		}
-	})
-	for i := 0; i < lg; i++ {
-		stocks := stockss[i]
-		if stocks > 0 {
-			cl := 0.0
-			for row := len(closes) - 1; row >= 0; row-- {
-				c := closes[row][i]
-				if c >= 0 {
-					cl = c
-					break
-				}
-			}
-			cash += broker.Sell(stocks, cl)
-		}
-	}
-
-	results = assetsRs.New(cash, buys, sells)
-	return
-}
-
-// Diary of assets (one value for each 'open'-'close')
-//  s      : Strategy.
-//  opens  : Companies group opens (from before to after), every one with at
-//           least one element.
-//  closes : Companies group closes (from before to after), every one with at
-//           least one element.
-func Assets(s *T, opens, closes [][]float64) (assets []float64) {
-	cash := cts.InitialCapital
-	lg := len(opens[0])
-	initRefs := make([]float64, lg)
-	toSells := make([]bool, lg)
-	for i := 0; i < lg; i++ {
-		initRefs[i] = -1
-		toSells[i] = true
-	}
-	toDos := make([]bool, lg)
-	stockss := make([]int, lg)
-	ix := 0
-
-	s.Model.Calc(closes, s.Params, initRefs, func(cs, rs []float64) {
-		os := opens[ix]
-		ix++
-		for i := 0; i < lg; i++ {
-			op := os[i]
-			cl := cs[i]
-			rf := rs[i]
-			stocks := stockss[i]
-			toSell := toSells[i]
-			toDo := toDos[i]
-
-			if toDo && op > 0 {
-				if toSell { // there is buy order.
-					if cash > cts.MinToBet {
-						stocks = int(cts.Bet / op)
-						stockss[i] = stocks
-						cash -= broker.Buy(stocks, op)
-					}
-				} else if stocks > 0 {
-					cash += broker.Sell(stocks, op)
+			if coughts[i] {
+				price := prices[i] * cts.NoLostMultiplicator
+				if mxs[i] > price {
+					stocks := stockss[i]
+					cash += broker.Sell(stocks, price)
 					stockss[i] = 0
+					orders = append(orders, order.New(date, nk, order.SELL, stocks, price))
+					coughts[i] = false
 				}
-
-				toDos[i] = false
 			}
 
-			if cl < 0 {
-				continue
+			if prfCoughts[i] {
+				price := prfPrices[i] * cts.NoLostMultiplicator
+				if mxs[i] > price {
+					stocks := prfStockss[i]
+					prfCashs[i] += broker.Sell(stocks, price)
+					prfStockss[i] = 0
+					sales[i] = append(sales[i], date)
+					prfCoughts[i] = false
+				}
+			}
+
+			stks := stockss[i]
+			if stks > 0 {
+				assets += broker.Sell(stks, cl)
 			}
 
 			if toSell {
@@ -349,24 +252,27 @@ func Assets(s *T, opens, closes [][]float64) (assets []float64) {
 			}
 		}
 
-		as := cash
-		for i := 0; i < lg; i++ {
-			stocks := stockss[i]
-			if stocks > 0 {
-				cl := 0.0
-				for row := ix - 1; row >= 0; row-- {
-					c := closes[row][i]
-					if c >= 0 {
-						cl = c
-						break
-					}
-				}
-				as += broker.Sell(stocks, cl)
-			}
-		}
-
-		assets = append(assets, as)
+		historic[ix] = cash + assets
+		ix++
 	})
+
+	refAss := 0.0
+	lastCloses := closes[nDates-1]
+	lastRef := refs[nDates-1]
+	for i := range nks {
+		stks := prfStockss[i]
+		if stks == 0 {
+			profits[i] = (prfCashs[i] - cts.Bet) / cts.Bet
+		} else {
+			profits[i] = (prfCashs[i] - cts.Bet + broker.Sell(stks, lastCloses[i])) /
+				cts.Bet
+		}
+		stks = stockss[i]
+		if stks > 0 {
+			refAss += broker.Sell(stks, lastRef[i])
+		}
+	}
+	refAssets = cash + refAss
 
 	return
 }

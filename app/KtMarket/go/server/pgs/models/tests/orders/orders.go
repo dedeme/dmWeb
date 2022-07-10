@@ -9,6 +9,7 @@ import (
 	"github.com/dedeme/KtMarket/data/model"
 	"github.com/dedeme/KtMarket/data/nick"
 	"github.com/dedeme/KtMarket/data/order"
+	"github.com/dedeme/KtMarket/data/quote"
 	"github.com/dedeme/KtMarket/data/strategy"
 	"github.com/dedeme/KtMarket/db"
 	"github.com/dedeme/ktlib/arr"
@@ -32,12 +33,6 @@ func Process(ck string, mrq cgi.T) string {
 		var assets *assetsRs.T
 
 		thread.Sync(func() {
-			dates, err := db.Dates()
-			if err != "" {
-				log.Error(err)
-				return
-			}
-
 			md, ok2 := arr.Find(model.List(), func(m *model.T) bool {
 				return m.Id == modelId
 			})
@@ -53,9 +48,14 @@ func Process(ck string, mrq cgi.T) string {
 				func(n *nick.T) string {
 					return n.Name
 				})
+			arr.Sort(nks, func(n1, n2 string) bool {
+				return n1 < n2
+			})
 			lg := len(nks)
 			var opens [][]float64
 			var closes [][]float64
+			var maxs [][]float64
+			var dates []string
 
 			for i, nk := range nks {
 				qs, err := db.QsRead(nk)
@@ -63,18 +63,26 @@ func Process(ck string, mrq cgi.T) string {
 					log.Error(err)
 					return
 				}
-				arr.ReverseIn(qs)
-
 				if i == 0 {
+					dates = quote.Dates(qs)
 					for range qs {
 						opens = append(opens, make([]float64, lg))
 						closes = append(closes, make([]float64, lg))
+						maxs = append(maxs, make([]float64, lg))
 					}
 				}
 
-				for j, q := range qs {
-					opens[j][i] = q.Open
-					closes[j][i] = q.Close
+				nkOpens := quote.Opens(qs)
+				for j, o := range nkOpens {
+					opens[j][i] = o
+				}
+				nkCloses := quote.Closes(qs)
+				for j, c := range nkCloses {
+					closes[j][i] = c
+				}
+				nkMaxs := quote.Maxs(qs)
+				for j, m := range nkMaxs {
+					maxs[j][i] = m
 				}
 			}
 
@@ -90,7 +98,10 @@ func Process(ck string, mrq cgi.T) string {
 				lastCloses = append(lastCloses, lc)
 			}
 
-			os, assets = strategy.Orders(st, dates, nks, opens, closes)
+			var as []float64
+			os, as, _, _, _, _, _, _ =
+				strategy.Simulation(st, dates, nks, opens, closes, maxs)
+			assets = assetsRs.New(as[len(as)-1], order.Buys(os), order.Sales(os))
 
 			ok = true
 		})

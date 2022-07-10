@@ -40,7 +40,6 @@ func stop() {
 }
 
 func test() {
-  db.ActivateDailyCharts()
 	sys.Println("All tests ok")
 }
 

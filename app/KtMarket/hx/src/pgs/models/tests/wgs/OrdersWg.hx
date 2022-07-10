@@ -14,6 +14,14 @@ import I18n._;
 
 /// Widgets to show market orders.
 class OrdersWg {
+  static final NUM = 5;
+  static final CV = 3;
+  static final DATE = 12;
+  static final NICK = 6;
+  static final STOCKS = 9;
+  static final PRICE = 10;
+  static final CASH = 13;
+
   var orders: Array<Order>;
   var nicks: Array<String>;
   var lastCloses: Array<Float>;
@@ -55,16 +63,21 @@ class OrdersWg {
     tx += rule;
     final pf = nicks.map(e -> 0);
     It.from(orders).eachIx((o, ix) -> {
-      final op = o.isSell ? _("S(ell)") : _("B(uy)");
+      final op = o.type == Order.SELL
+        ? _("S(ell)")
+        : o.type == Order.BUY
+          ? _("B(uy)")
+          : _("C(atch)")
+      ;
       final date = o.date;
       final nick = o.nick;
       final stocks = o.stocks;
       final price = o.price;
       final nickIx = nicks.indexOf(nick);
-      if (o.isSell) {
+      if (o.type == Order.SELL) {
         cash += Broker.sell(stocks, price);
         pf[nickIx] = 0;
-      } else {
+      } else if (o.type == Order.BUY) {
         cash -= Broker.buy(stocks, price);
         pf[nickIx] = stocks;
       }
@@ -84,14 +97,6 @@ class OrdersWg {
 
 
   // Static --------------------------------------------------------------------
-
-  static final NUM = 5;
-  static final CV = 3;
-  static final DATE = 12;
-  static final NICK = 6;
-  static final STOCKS = 9;
-  static final PRICE = 10;
-  static final CASH = 13;
 
   // Format filled.
   static function ff (width) {

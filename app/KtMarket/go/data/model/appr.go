@@ -17,21 +17,9 @@ func apprCalc(
 	start := params[0]
 	incr := params[1]
 	nCos := len(closes[0])
-	pvrow := make([]float64, nCos)
-	for i := 0; i < nCos; i++ {
-		for _, cs := range closes {
-			if cs[i] > 0 {
-				pvrow[i] = cs[i]
-				break
-			}
-		}
-		if pvrow[i] == 0 {
-			pvrow[i] = 1
-		}
-	}
 
 	isSolds := make([]bool, nCos)
-	for i, c := range pvrow {
+	for i, c := range closes[0] {
 		rf := refs[i]
 		if rf < 0 {
 			refs[i] = c * (1 - start)
@@ -47,12 +35,6 @@ func apprCalc(
 		newIsSolds := make([]bool, nCos)
 
 		for i, c := range cs {
-			if c < 0 {
-				newRefs[i] = refs[i]
-				newIsSolds[i] = isSolds[i]
-				continue
-			}
-
 			rf := refs[i]
 			isSold := isSolds[i]
 
@@ -85,7 +67,7 @@ func apprCalc(
 
 func newAppr() *T {
 	return &T{
-		"APROX",
+		"APRX",
 		"Aproximaciones sucesivas",
 		apprDoc.Get(),
 		[]string{

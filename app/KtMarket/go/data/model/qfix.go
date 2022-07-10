@@ -45,21 +45,10 @@ func qfixCalc(
 
 	nCos := len(closes[0])
 	pvrow := make([]float64, nCos)
-	for i := 0; i < nCos; i++ {
-		for _, cs := range closes {
-			if cs[i] > 0 {
-				pvrow[i] = cs[i]
-				break
-			}
-		}
-		if pvrow[i] == 0 {
-			pvrow[i] = 1
-		}
-	}
-
-	for i, c := range pvrow {
+	for i, cl := range closes[0] {
+		pvrow[i] = cl
 		if refs[i] < 0 {
-			refs[i] = downGap(c) / jmp
+			refs[i] = downGap(cl) / jmp
 		}
 	}
 
@@ -67,10 +56,6 @@ func qfixCalc(
 		var newRefs []float64
 
 		for i, q := range row {
-			if q < 0 {
-				newRefs = append(newRefs, refs[i])
-				continue
-			}
 			q0 := pvrow[i]
 			ref := refs[i]
 

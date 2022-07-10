@@ -6,6 +6,7 @@ package companies
 
 import (
 	"github.com/dedeme/KtMarket/data/model"
+	"github.com/dedeme/KtMarket/data/quote"
 	"github.com/dedeme/KtMarket/data/strategy"
 	"github.com/dedeme/KtMarket/db"
 	"github.com/dedeme/ktlib/arr"
@@ -14,6 +15,10 @@ import (
 	"github.com/dedeme/ktlib/log"
 	"github.com/dedeme/ktlib/thread"
 )
+
+func mkArray(n float64) []float64 {
+	return []float64{n}
+}
 
 func Process(ck string, mrq cgi.T) string {
 	rq := js.Rs(mrq["rq"])
@@ -45,16 +50,21 @@ func Process(ck string, mrq cgi.T) string {
 				return
 			}
 
-			arr.ReverseIn(qs)
-			for _, q := range qs {
-				dates = append(dates, q.Date)
-				closes = append(closes, q.Close)
-				opens = append(opens, q.Open)
-			}
+			dates = quote.Dates(qs)
+			closes = quote.Closes(qs)
+			opens = quote.Opens(qs)
+			maxs := quote.Maxs(qs)
+
 			st := strategy.New(md, params)
 			refs = strategy.Refs(st, closes, -1)
 
-			profits = strategy.Profits(st, opens, closes)
+			_, _, _, _, _, _, _, profitss :=
+				strategy.Simulation(st, dates, []string{nickName},
+					arr.Map(opens, mkArray),
+					arr.Map(closes, mkArray),
+					arr.Map(maxs, mkArray),
+				)
+			profits = profitss[0]
 
 			ok = true
 		})

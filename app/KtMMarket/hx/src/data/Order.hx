@@ -1,4 +1,4 @@
-// Copyright 22-Ja¡un-2022 ºDeme
+// Copyright 22-Jun-2022 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 package data;

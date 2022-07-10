@@ -73,7 +73,9 @@ func NewRow(params []float64, weeks int, hprofits, profits *T) *RowT {
 
 func RowToJs(r *RowT) string {
 	return js.Wa([]string{
-		js.Wa(arr.Map(r.Params, js.Wd)),
+		js.Wa(arr.Map(r.Params, func (n float64) string {
+      return js.WdDec(n, 6)
+    })),
 		js.Wi(r.Weeks),
 		ToJs(r.Hprofits),
 		ToJs(r.Profits),

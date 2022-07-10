@@ -60,7 +60,7 @@ func apprCalc(
 
 func newAppr() *T {
 	return &T{
-		"APROX",
+		"APRX",
 		"Aproximaciones sucesivas",
 		apprDoc.Get(),
 		[]string{

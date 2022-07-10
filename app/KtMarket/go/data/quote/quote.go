@@ -14,13 +14,13 @@ import (
 )
 
 type T struct {
-	Date  string
-	Open  float64
-	Close float64
-	Max   float64
-	Min   float64
-	Vol   int
-	Err   bool
+	date  string
+	open  float64
+	close float64
+	max   float64
+	min   float64
+	vol   int
+	err   bool
 }
 
 // Create a new quote.
@@ -37,13 +37,13 @@ func New(date string, open, close, max, min float64, vol int, err bool) *T {
 
 func ToJs(q *T) string {
 	return js.Wa([]string{
-		js.Ws(q.Date),
-		js.Wd(q.Open),
-		js.Wd(q.Close),
-		js.Wd(q.Max),
-		js.Wd(q.Min),
-		js.Wi(q.Vol),
-		js.Wb(q.Err),
+		js.Ws(q.date),
+		js.Wd(q.open),
+		js.Wd(q.close),
+		js.Wd(q.max),
+		js.Wd(q.min),
+		js.Wi(q.vol),
+		js.Wb(q.err),
 	})
 }
 
@@ -63,15 +63,15 @@ func FromJs(j string) *T {
 // Returns a string representation of "q".
 func ToStr(q *T) string {
 	e := "false"
-	if q.Err {
+	if q.err {
 		e = "true"
 	}
-	return q.Date + ":" +
-		str.Fmt("%.4f", q.Open) + ":" +
-		str.Fmt("%.4f", q.Close) + ":" +
-		str.Fmt("%.4f", q.Max) + ":" +
-		str.Fmt("%.4f", q.Min) + ":" +
-		str.Fmt("%d", q.Vol) + ":" +
+	return q.date + ":" +
+		str.Fmt("%.4f", q.open) + ":" +
+		str.Fmt("%.4f", q.close) + ":" +
+		str.Fmt("%.4f", q.max) + ":" +
+		str.Fmt("%.4f", q.min) + ":" +
+		str.Fmt("%d", q.vol) + ":" +
 		e
 }
 
@@ -135,7 +135,7 @@ func TxToQs(tx string) (qs []*T, err string) {
 //    qs: Quotes
 func Manuals(qs []*T) (n int) {
 	for _, e := range qs {
-		if e.Err {
+		if e.err {
 			n++
 		}
 	}
@@ -156,15 +156,15 @@ func Manuals(qs []*T) (n int) {
 //      errs : List of corrections (e.g. Close > Max).
 func Correct1(q *T) (newQ *T, errs []string) {
 	newQ = q
-	if q.Err {
+	if q.err {
 		return
 	}
-	date := q.Date
-	open := q.Open
-	close := q.Close
-	max := q.Max
-	min := q.Min
-	vol := q.Vol
+	date := q.date
+	open := q.open
+	close := q.close
+	max := q.max
+	min := q.min
+	vol := q.vol
 
 	if open > max {
 		max = open
@@ -204,20 +204,20 @@ func Correct1(q *T) (newQ *T, errs []string) {
 //      errs : List of corrections (e.g. Close > Max).
 func Correct2(last, previous *T) (newQ *T, errs []string) {
 	newQ = last
-	if last.Err {
+	if last.err {
 		return
 	}
-	date := last.Date
-	open := last.Open
-	close := last.Close
-	max := last.Max
-	min := last.Min
-	vol := last.Vol
+	date := last.date
+	open := last.open
+	close := last.close
+	max := last.max
+	min := last.min
+	vol := last.vol
 
-	open0 := previous.Open
-	close0 := previous.Close
-	max0 := previous.Max
-	min0 := previous.Min
+	open0 := previous.open
+	close0 := previous.close
+	max0 := previous.max
+	min0 := previous.min
 
 	if max0 < min0 || open0 < 0 {
 		newQ, errs = Correct1(last)
@@ -278,20 +278,20 @@ func Correct2(last, previous *T) (newQ *T, errs []string) {
 //      errs : List of corrections (e.g. Close +20%).
 func Correct3(last, previous *T) (newQ *T, errs []string) {
 	newQ = last
-	if last.Err {
+	if last.err {
 		return
 	}
-	date := last.Date
-	open := last.Open
-	close := last.Close
-	max := last.Max
-	min := last.Min
-	vol := last.Vol
+	date := last.date
+	open := last.open
+	close := last.close
+	max := last.max
+	min := last.min
+	vol := last.vol
 
-	open0 := previous.Open
-	close0 := previous.Close
-	max0 := previous.Max
-	min0 := previous.Min
+	open0 := previous.open
+	close0 := previous.close
+	max0 := previous.max
+	min0 := previous.min
 
 	if open0 < 0 {
 		return
@@ -341,7 +341,7 @@ func Correct(qs []*T) (newQs []*T, errs []string) {
 	mkErrs := func(q *T, es []string) []string {
 		var r []string
 		for _, e := range es {
-			r = append(r, q.Date+": "+e)
+			r = append(r, q.date+": "+e)
 		}
 		return r
 	}
@@ -390,14 +390,14 @@ func CorrectDates(mqs, qs []*T) (newQs []*T, errs []string) {
 			mq := mqs[mi]
 			if i < lqs {
 				q := qs[i]
-				if mq.Date > q.Date {
-					errs = append(errs, mq.Date+": "+"Missing quote")
-					newQs = append(newQs, &T{mq.Date, -1, -1, -1, -1, -1, true})
+				if mq.date > q.date {
+					errs = append(errs, mq.date+": "+"Missing quote")
+					newQs = append(newQs, &T{mq.date, -1, -1, -1, -1, -1, true})
 					mi++
 					continue
 				}
-				if mq.Date < q.Date {
-					errs = append(errs, q.Date+": "+"Extra quote")
+				if mq.date < q.date {
+					errs = append(errs, q.date+": "+"Extra quote")
 					i++
 					continue
 				}
@@ -406,14 +406,14 @@ func CorrectDates(mqs, qs []*T) (newQs []*T, errs []string) {
 				mi++
 				continue
 			}
-			errs = append(errs, mq.Date+": "+"Missing quote")
-			newQs = append(newQs, &T{mq.Date, -1, -1, -1, -1, -1, true})
+			errs = append(errs, mq.date+": "+"Missing quote")
+			newQs = append(newQs, &T{mq.date, -1, -1, -1, -1, -1, true})
 			mi++
 			continue
 		}
 		if i < lqs {
 			q := qs[i]
-			errs = append(errs, q.Date+": "+"Extra quote")
+			errs = append(errs, q.date+": "+"Extra quote")
 			i++
 			continue
 		}
@@ -443,7 +443,7 @@ func Merge(model, newQs, oldQs []*T) (qs []*T, errs []string) {
 	var oldQs2 []*T
 	var control = true
 	for _, e := range oldQs {
-		if control && e.Open < 0 {
+		if control && e.open < 0 {
 			continue
 		}
 		control = false
@@ -465,13 +465,13 @@ func Merge(model, newQs, oldQs []*T) (qs []*T, errs []string) {
 			if ios < los {
 				nq := newQs[ins]
 				oq := oldQs[ios]
-				if nq.Date > oq.Date {
+				if nq.date > oq.date {
 					qs = append(qs, newQs[ins])
 					ins++
 					iqs++
 					continue
 				}
-				if nq.Date < oq.Date {
+				if nq.date < oq.date {
 					qs = append(qs, oldQs[ios])
 					ios++
 					iqs++
@@ -521,9 +521,9 @@ func VolumeAvg(qs []*T) float64 {
 
 	var vols []float64
 	for _, q := range qs {
-		mx := q.Max
-		mn := q.Min
-		v := float64(q.Vol)
+		mx := q.max
+		mn := q.min
+		v := float64(q.vol)
 		if mx >= 0.0 && mn >= 0.0 && v >= 0.0 {
 			vols = append(vols, (mx+mn)*v/2.0)
 		}
@@ -548,39 +548,8 @@ func OpenCloses(qs []*T) (opens, closes []float64) {
 	opens = make([]float64, lg)
 	closes = make([]float64, lg)
 	for i, q := range arr.Reverse(qs) {
-		opens[i] = q.Open
-		closes[i] = q.Close
+		opens[i] = q.open
+		closes[i] = q.close
 	}
 	return
-}
-
-// Returns the last value geater or equals to 0.0 of values.
-//    values: Float values intended for closes and references.
-func LastValue(values []float64) float64 {
-	for i := len(values) - 1; i >= 0; i-- {
-		if values[i] != -1.0 {
-			return values[i]
-		}
-	}
-	panic("All values of slice are less than 0.0")
-}
-
-// Returns the last two value geater or equals to 0.0 of values.
-//    values: Float values intended for closes and references.
-func LastValue2(values []float64) (last, penultimate float64) {
-	i := len(values) - 1
-	for ; i >= 0; i-- {
-		if values[i] != -1.0 {
-			last = values[i]
-			break
-		}
-	}
-	i--
-	for ; i >= 0; i-- {
-		if values[i] != -1.0 {
-			penultimate = values[i]
-			return
-		}
-	}
-	panic("All values of slice are less than 0.0")
 }

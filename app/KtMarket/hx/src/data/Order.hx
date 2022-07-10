@@ -1,24 +1,29 @@
-// Copyright 16-Jun-2022 ºDeme
+// Copyright 22-Jun-2022 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 package data;
 
 import dm.Js;
 
-/// Order received in Orders page test.
+/// Order recieved in Orders page.
 class Order {
+  public static final BUY = 0;
+  public static final SELL = 1;
+  public static final CATCH = 2;
+
   public var date(default, null): String;
   public var nick(default, null): String;
-  public var isSell(default, null): Bool;
+  public var type(default, null): Int;
   public var stocks(default, null): Int;
   public var price(default, null): Float;
 
+  /// 'type' can be BUY, SELL or CATCH.
   function new (
-    date: String, nick: String, isSell: Bool, stocks: Int, price: Float
+    date: String, nick: String, type: Int, stocks: Int, price: Float
   ) {
     this.date = date;
     this.nick = nick;
-    this.isSell = isSell;
+    this.type = type;
     this.stocks = stocks;
     this.price = price;
   }
@@ -28,10 +33,9 @@ class Order {
     return new Order(
       a[0].rs(),
       a[1].rs(),
-      a[2].rb(),
+      a[2].ri(),
       a[3].ri(),
       a[4].rf()
     );
   }
-
 }

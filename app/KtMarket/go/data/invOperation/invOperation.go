@@ -13,9 +13,9 @@ type T struct {
 	// NOTE: If stocks > 0 is a sell operation.
 	//       If stocks == 0 is a normal buy operation.
 	//       if stocks < 0 is a rebuy
-	Stocks  int
+	Stocks   int
 	Investor int
-	Nick    string
+	Nick     string
 }
 
 // NOTE: If stocks > 0 is a sell operation.
