@@ -66,7 +66,9 @@ class Summary {
           if (acc.stocks > 0) {
             final iv = acc.stocks * acc.price;
             inv += iv;
-            yprof += acc.stocks * co.close - iv;
+            if (!acc.todayBuy) {
+              yprof += acc.stocks * co.close - iv;
+            }
             final q = Fns.validQuote(
               co.quotes, co.quotes.length - 1, acc.price
             );
@@ -82,7 +84,9 @@ class Summary {
         if (acc.stocks > 0) {
           final iv = acc.stocks * acc.price;
           inv = iv;
-          yprof = acc.stocks * co.close - iv;
+          if (!acc.todayBuy) {
+            yprof = acc.stocks * co.close - iv;
+          }
           final q = Fns.validQuote(co.quotes, co.quotes.length - 1, acc.price);
           prof = acc.stocks * q - iv;
           for (i in 0...profits.length) {

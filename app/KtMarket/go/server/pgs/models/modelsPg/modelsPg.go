@@ -39,6 +39,7 @@ func Process(ck string, mrq cgi.T) string {
 		var os []*order.T
 		var results *assetsRs.T
 		var assets []float64
+		var withdrawals []float64
 
 		thread.Sync(func() {
 			inv, ok2 := arr.Find(
@@ -126,7 +127,7 @@ func Process(ck string, mrq cgi.T) string {
 				lastCloses = append(lastCloses, lc)
 			}
 
-			os, assets, _, _, _, _, _, _ =
+			os, assets, withdrawals, _, _, _, _, _, _ =
 				strategy.Simulation(st, dates, nks, opens, closes, maxs)
 			results = assetsRs.New(
 				assets[len(assets)-1], order.Buys(os), order.Sales(os),
@@ -136,14 +137,15 @@ func Process(ck string, mrq cgi.T) string {
 		})
 
 		return cgi.Rp(ck, cgi.T{
-			"ok":         js.Wb(ok),
-			"params":     js.Wa(arr.Map(params, js.Wd)),
-			"dates":      js.Wa(arr.Map(dates, js.Ws)),
-			"assets":     js.Wa(arr.Map(assets, js.Wd)),
-			"results":    assetsRs.ToJs(results),
-			"nicks":      js.Wa(arr.Map(nks, js.Ws)),
-			"lastCloses": js.Wa(arr.Map(lastCloses, js.Wd)),
-			"orders":     js.Wa(arr.Map(os, order.ToJs)),
+			"ok":          js.Wb(ok),
+			"params":      js.Wa(arr.Map(params, js.Wd)),
+			"dates":       js.Wa(arr.Map(dates, js.Ws)),
+			"assets":      js.Wa(arr.Map(assets, js.Wd)),
+			"withdrawals": js.Wa(arr.Map(withdrawals, js.Wd)),
+			"results":     assetsRs.ToJs(results),
+			"nicks":       js.Wa(arr.Map(nks, js.Ws)),
+			"lastCloses":  js.Wa(arr.Map(lastCloses, js.Wd)),
+			"orders":      js.Wa(arr.Map(os, order.ToJs)),
 		})
 	default:
 		panic("Value of rq (" + rq + ") is not valid")

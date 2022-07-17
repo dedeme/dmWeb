@@ -47,8 +47,10 @@ Active = Active
 # src/LinkToLogForI18n.hx: 163
 # src/LinkToLogForI18n.hx: 185
 # src/pgs/acc/Balance.hx: 460
+# src/pgs/acc/Jail.hx: 37
 # src/pgs/acc/Profits.hx: 37
 # src/pgs/acc/Speedometers.hx: 48
+# src/pgs/acc/wgs/JailWg.hx: 343
 # src/pgs/acc/wgs/ProfitsWg.hx: 394
 # src/pgs/daily/Summary.hx: 44
 # src/pgs/settings/acc/Acc.hx: 44
@@ -103,10 +105,10 @@ Annotations & Settings = Annotations & Settings
 Application exit? = Application exit?
 
 # src/pgs/acc/Balance.hx: 228
-# src/pgs/models/charts/Charts.hx: 71
-# src/pgs/models/charts/Charts.hx: 97
-# src/pgs/models/charts/Charts.hx: 178
-# src/pgs/models/charts/Charts.hx: 273
+# src/pgs/models/charts/Charts.hx: 77
+# src/pgs/models/charts/Charts.hx: 103
+# src/pgs/models/charts/Charts.hx: 189
+# src/pgs/models/charts/Charts.hx: 293
 Assets = Assets
 
 # src/pgs/models/tests/wgs/OrdersWg.hx: 69
@@ -131,9 +133,9 @@ Bet = Bet
 # src/pgs/settings/acc/wgs/Annotations.hx: 61
 Buy = Buy
 
-# src/pgs/acc/Trading.hx: 299
-# src/pgs/models/charts/Charts.hx: 98
-# src/pgs/models/charts/Charts.hx: 295
+# src/pgs/acc/Trading.hx: 326
+# src/pgs/models/charts/Charts.hx: 104
+# src/pgs/models/charts/Charts.hx: 315
 Buys = Buys
 
 # src/pgs/models/tests/wgs/OrdersWg.hx: 70
@@ -160,7 +162,7 @@ Cancel = Cancel
 Capital = Capital
 
 # src/pgs/acc/Balance.hx: 257
-# src/pgs/models/charts/Charts.hx: 307
+# src/pgs/models/charts/Charts.hx: 327
 # src/pgs/models/tests/wgs/OrdersWg.hx: 62
 Cash = Cash
 
@@ -204,9 +206,10 @@ Close Year = Close Year
 CloseN = Close
 
 # src/pgs/acc/Balance.hx: 319
-# src/pgs/acc/Trading.hx: 291
-# src/pgs/acc/Trading.hx: 305
-# src/pgs/acc/Trading.hx: 315
+# src/pgs/acc/Trading.hx: 294
+# src/pgs/acc/Trading.hx: 303
+# src/pgs/acc/Trading.hx: 332
+# src/pgs/acc/Trading.hx: 342
 Co. = Co.
 
 # src/pgs/settings/servers/Configuration.hx: 582
@@ -218,13 +221,14 @@ Codes = Codes
 # src/pgs/acc/Acc.hx: 44
 # src/pgs/acc/Speedometers.hx: 56
 # src/pgs/acc/Speedometers.hx: 187
-# src/pgs/models/charts/Charts.hx: 75
+# src/pgs/models/charts/Charts.hx: 81
 # src/pgs/models/tests/References.hx: 84
 Companies = Companies
 
 # src/pgs/settings/settings/ChangePass.hx: 184
 Confirm password is missing = 'Confirm password' is missing
 
+# src/pgs/acc/wgs/JailWg.hx: 339
 # src/pgs/acc/wgs/ProfitsWg.hx: 390
 Current Year = Current Year
 
@@ -255,8 +259,8 @@ Daily configuration selected = Daily configuration selected
 # src/pgs/settings/servers/wgs/Wserver.hx: 44
 Daily configuration stopped = Daily configuration stopped
 
-# src/pgs/acc/Trading.hx: 292
-# src/pgs/models/charts/Charts.hx: 291
+# src/pgs/acc/Trading.hx: 295
+# src/pgs/models/charts/Charts.hx: 311
 # src/pgs/models/tests/wgs/OrdersWg.hx: 60
 # src/pgs/models/wgs/Operations.hx: 62
 # src/pgs/settings/acc/Editor.hx: 79
@@ -320,7 +324,7 @@ Delete '%0'? = Delete '%0'?
 # src/pgs/settings/acc/Editor.hx: 355
 Description = Description
 
-# src/pgs/acc/Trading.hx: 319
+# src/pgs/acc/Trading.hx: 346
 Dif. = Dif.
 
 # src/pgs/settings/acc/Editor.hx: 320
@@ -377,7 +381,7 @@ General Time Table = General Time Table
 # src/pgs/acc/Speedometers.hx: 83
 Global = Global
 
-# src/pgs/acc/Trading.hx: 317
+# src/pgs/acc/Trading.hx: 344
 Gol = Gol
 
 # src/Authentication.hx: 42
@@ -416,14 +420,16 @@ Income = Income
 # src/pgs/settings/acc/Editor.hx: 453
 Intial stockage can not be deleted = Intial stockage can not be deleted
 
-# src/pgs/acc/Trading.hx: 304
-# src/pgs/acc/Trading.hx: 314
+# src/pgs/acc/Trading.hx: 331
+# src/pgs/acc/Trading.hx: 341
 # src/pgs/daily/Daily.hx: 100
 # src/pgs/daily/Daily.hx: 104
 Inv = Inv
 
 # src/pgs/acc/Balance.hx: 457
 # src/pgs/acc/Balance.hx: 463
+# src/pgs/acc/Jail.hx: 34
+# src/pgs/acc/Jail.hx: 40
 # src/pgs/acc/Profits.hx: 34
 # src/pgs/acc/Profits.hx: 40
 # src/pgs/acc/Speedometers.hx: 45
@@ -444,12 +450,17 @@ Is ISO date? = Is ISO date?
 # src/pgs/settings/servers/Configuration.hx: 237
 Is ISO number? = Is ISO number?
 
+# src/pgs/acc/Acc.hx: 54
+Jail = Jail
+
 # src/Authentication.hx: 111
 Keep connected = Keep connected
 
+# src/pgs/acc/wgs/JailWg.hx: 337
 # src/pgs/acc/wgs/ProfitsWg.hx: 388
 Last Month = Last Month
 
+# src/pgs/acc/wgs/JailWg.hx: 341
 # src/pgs/acc/wgs/ProfitsWg.hx: 392
 Last Year = Last Year
 
@@ -471,7 +482,8 @@ Logout-message = <p>%0 has finished.</p><p><b>Good by!</b></p>
 # src/pgs/acc/Speedometers.hx: 114
 # src/pgs/acc/Speedometers.hx: 165
 # src/pgs/acc/Speedometers.hx: 203
-# src/pgs/acc/Trading.hx: 326
+# src/pgs/acc/Trading.hx: 304
+# src/pgs/acc/Trading.hx: 353
 Losses = Losses
 
 # src/pgs/settings/nicks/Editor.hx: 450
@@ -482,7 +494,7 @@ Max = Max
 # src/pgs/settings/servers/Configuration.hx: 587
 Min = Min
 
-# src/pgs/models/charts/Charts.hx: 80
+# src/pgs/models/charts/Charts.hx: 86
 # src/pgs/settings/investorsPg/InvestorsPg.hx: 175
 # src/pgs/settings/investorsPg/InvestorsPg.hx: 202
 # src/pgs/settings/nicks/wgs/Wnick.hx: 38
@@ -579,8 +591,8 @@ Operation successfully done. = Operation successfully done.
 # src/pgs/daily/Cos.hx: 105
 Order by = Order by
 
-# src/pgs/models/charts/Charts.hx: 73
-# src/pgs/models/charts/Charts.hx: 283
+# src/pgs/models/charts/Charts.hx: 79
+# src/pgs/models/charts/Charts.hx: 303
 # src/pgs/models/tests/Tests.hx: 34
 Orders = Orders
 
@@ -602,7 +614,7 @@ Password successfully changed = Password successfully changed
 
 # src/pgs/acc/Companies.hx: 78
 # src/pgs/daily/Daily.hx: 93
-# src/pgs/models/charts/Charts.hx: 303
+# src/pgs/models/charts/Charts.hx: 323
 Portfolio = Portfolio
 
 # src/pgs/acc/Trading.hx: 95
@@ -633,7 +645,7 @@ Profits = Profits
 # src/pgs/models/tests/References.hx: 156
 Profits calculated by server: %0 = Profits calculated by server: %0
 
-# src/pgs/acc/Trading.hx: 318
+# src/pgs/acc/Trading.hx: 345
 Quote = Quote
 
 # src/pgs/settings/nicks/Editor.hx: 146
@@ -651,7 +663,7 @@ Ratio = Ratio
 # src/pgs/daily/Daily.hx: 186
 Reactivate daily charts? = Reactivate daily charts?
 
-# src/pgs/acc/Trading.hx: 287
+# src/pgs/acc/Trading.hx: 289
 Rebuys = Rebuys
 
 # src/pgs/acc/Balance.hx: 206
@@ -703,7 +715,7 @@ Row start = Row start
 # src/pgs/models/wgs/Operations.hx: 88
 S(ell) = S
 
-# src/pgs/models/charts/Charts.hx: 99
+# src/pgs/models/charts/Charts.hx: 105
 Sales = Sales
 
 # src/pgs/settings/servers/Configuration.hx: 170
@@ -724,8 +736,8 @@ Selection = Selection
 Sell = Sell
 
 # src/pgs/acc/Balance.hx: 266
-# src/pgs/acc/Trading.hx: 309
-# src/pgs/models/charts/Charts.hx: 299
+# src/pgs/acc/Trading.hx: 336
+# src/pgs/models/charts/Charts.hx: 319
 Sells = Sells
 
 # src/pgs/settings/servers/Servers.hx: 183
@@ -787,7 +799,7 @@ State = State
 # src/pgs/acc/Speedometers.hx: 108
 # src/pgs/acc/Trading.hx: 114
 # src/pgs/acc/Trading.hx: 132
-# src/pgs/acc/Trading.hx: 316
+# src/pgs/acc/Trading.hx: 343
 # src/pgs/settings/acc/Editor.hx: 118
 # src/pgs/settings/acc/Editor.hx: 119
 # src/pgs/settings/acc/Editor.hx: 136
@@ -805,7 +817,7 @@ Stopped = Stopped
 
 # src/pgs/acc/Speedometers.hx: 156
 # src/pgs/daily/Daily.hx: 91
-# src/pgs/daily/Summary.hx: 109
+# src/pgs/daily/Summary.hx: 113
 Summary = Summary
 
 # src/pgs/settings/servers/Configuration.hx: 258
@@ -881,6 +893,9 @@ Warning found.\nSee log. = Warning found.\nSee log.
 # src/pgs/settings/acc/wgs/Annotations.hx: 103
 Withdrawal = Withdrawal
 
+# src/pgs/models/charts/Charts.hx: 198
+Withdrawals = Withdrawals
+
 # src/pgs/settings/servers/Servers.hx: 67
 Without Data = Without Data
 
@@ -890,6 +905,8 @@ Without Nicks = Without Nicks
 
 # src/pgs/acc/wgs/Chart.hx: 139
 # src/pgs/acc/wgs/Chart.hx: 247
+# src/pgs/acc/wgs/JailWg.hx: 30
+# src/pgs/acc/wgs/JailWg.hx: 298
 # src/pgs/acc/wgs/ProfitsWg.hx: 30
 # src/pgs/acc/wgs/ProfitsWg.hx: 322
 # src/pgs/models/wgs/HistoricChart.hx: 54
@@ -901,7 +918,7 @@ Without dates = Without dates
 
 # src/pgs/acc/Trading.hx: 194
 # src/pgs/acc/Trading.hx: 221
-# src/pgs/acc/Trading.hx: 240
+# src/pgs/acc/Trading.hx: 242
 Without operations = Without operations
 
 # src/pgs/settings/servers/Servers.hx: 57

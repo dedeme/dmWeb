@@ -99,7 +99,7 @@ func Process(ck string, mrq cgi.T) string {
 			}
 
 			var as []float64
-			os, as, _, _, _, _, _, _ =
+			os, as, _, _, _, _, _, _, _ =
 				strategy.Simulation(st, dates, nks, opens, closes, maxs)
 			assets = assetsRs.New(as[len(as)-1], order.Buys(os), order.Sales(os))
 

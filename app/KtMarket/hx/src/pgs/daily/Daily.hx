@@ -74,7 +74,7 @@ class Daily {
     for (d in chartsData) {
       for (e in d.investorsData) {
         investing += e.stocks * e.price;
-        assetsYesterday += e.stocks * d.close;
+        assetsYesterday += e.stocks * (e.todayBuy ? e.price : d.close);
         assets += e.stocks * d.quotes[d.quotes.length - 1];
       }
     }

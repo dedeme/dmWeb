@@ -31,23 +31,14 @@ func Process(ck string, mrq cgi.T) string {
 			operationsJs = db.InvOperationsTb().ReadJs()
 			ops := db.InvOperationsTb().Read().Operations
 			now := time.Now()
+			var anns []*acc.AnnotationT
 			for i := 0; i < cts.Investors; i++ {
-				anns := diariesDb.ReadAnnotations(i)
-				_, pf, lastOps, errs := acc.Settlement(anns)
+				invAnns := diariesDb.ReadAnnotations(i)
+				anns = append(anns, invAnns...)
+				_, pf, _, errs := acc.Settlement(invAnns)
 				for _, err := range errs {
 					log.Error(err)
 				}
-				for k, v := range lastOps {
-					if rs, ok := v.Profits(); ok {
-						if rs < cts.RebuyLimit {
-							tm := time.FromStr(v.Date)
-							if time.DfDays(now, tm) < 63 {
-								rebuys = append(rebuys, nick.NewNameStr(k, v.Date))
-							}
-						}
-					}
-				}
-
 				pfEntries := arr.Map(arr.Filter(pf, func(e *acc.PfEntryT) bool {
 					_, ok := arr.Find(ops, func(op *invOperation.T) bool {
 						return op.Nick == e.Nick && op.Investor == i
@@ -68,6 +59,21 @@ func Process(ck string, mrq cgi.T) string {
 					return acc.NewPfEntry(e.Nick, e.Stocks, e.Price, lastClose, 0.0)
 				})
 				portfolios[i] = pfEntries
+			}
+
+			_, _, lastOps, errs := acc.Settlement(anns)
+			for _, err := range errs {
+				log.Error(err)
+			}
+			for k, v := range lastOps {
+				if rs, ok := v.Profits(); ok {
+					if rs < cts.RebuyLimit {
+						tm := time.FromStr(v.Date)
+						if time.DfDays(now, tm) < 63 {
+							rebuys = append(rebuys, nick.NewNameStr(k, v.Date))
+						}
+					}
+				}
 			}
 		})
 

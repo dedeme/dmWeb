@@ -26,8 +26,8 @@ import dm.File;
 using StringTools;
 
 class QuotesConverter {
-  static final txt = File.ropen("LRE.txt");
-  static final tb = File.wopen("LRE.tb");
+  static final txt = File.ropen("SOL.txt");
+  static final tb = File.wopen("SOL.tb");
 
   public static function main () {
     File.readLines(txt, l -> {

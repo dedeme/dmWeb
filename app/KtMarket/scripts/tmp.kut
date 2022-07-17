@@ -1,0 +1,18 @@
+// Set values of date < 'CUT' to ":-1:-1:-1:-1:-1:true"
+// Use:
+//  - Change values of 'source', 'target' and 'CUT'.
+//  - Run with F9
+
+source = "SOL.tb";
+target = "SOL2.tb";
+CUT = "20201028";
+
+tx = file.read(source);
+ls = str.split(tx, "\n");
+ls2 = arr.mp(ls, \l -> {
+  if (str.trim(l) == "") return "";
+  ps = str.split(l, ":");
+  if (ps[0] >= CUT) return l;
+  return ps[0] + ":-1:-1:-1:-1:-1:true";
+});
+file.write(target, arr.join(ls2, "\n"));

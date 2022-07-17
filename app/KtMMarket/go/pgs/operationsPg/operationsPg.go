@@ -46,9 +46,9 @@ func Process(ck string, mrq cgi.T) string {
 		}
 
 		qs := db.QuotesTb().Read()
-		orders, historic, _, _, _, _, _, profits := md.Simulation(qs, params)
+		orders, hassets, _, _, _, _, _, _, profits := md.Simulation(qs, params)
 		rs := result.New(
-			historic[len(historic)-1],
+			hassets[len(hassets)-1],
 			arr.Reduce(profits, 0, func(r, e float64) float64 {
 				return r + e
 			})/float64(len(profits)),

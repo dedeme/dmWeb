@@ -45,10 +45,6 @@ class Balance {
 
   // View ----------------------------------------------------------------------
 
-  /**
-      @private
-      @return function(number, number):number
-  **/
   function sortf (): (PfEntry, PfEntry) -> Int {
     return order == NICK_ORDER
       ? (row1, row2) -> row1.nick > row2.nick ? 1 : -1

@@ -58,7 +58,7 @@ func Process(ck string, mrq cgi.T) string {
 			st := strategy.New(md, params)
 			refs = strategy.Refs(st, closes, -1)
 
-			_, _, _, _, _, _, _, profitss :=
+			_, _, _, _, _, _, _, _, profitss :=
 				strategy.Simulation(st, dates, []string{nickName},
 					arr.Map(opens, mkArray),
 					arr.Map(closes, mkArray),

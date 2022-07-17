@@ -18,6 +18,7 @@ import (
 	"github.com/dedeme/KtMarket/data/server"
 	"github.com/dedeme/KtMarket/data/serverBox"
 	"github.com/dedeme/KtMarket/db/acc/diariesDb"
+	"github.com/dedeme/KtMarket/db/acc/jailLossesDb"
 	"github.com/dedeme/KtMarket/db/acc/profitsDb"
 	"github.com/dedeme/ktlib/arr"
 	"github.com/dedeme/ktlib/file"
@@ -49,6 +50,7 @@ func Initialize() {
 
 	diariesDb.Initialize(path.Cat(cts.DataPath, "acc"))
 	profitsDb.Initialize(path.Cat(cts.DataPath, "acc"))
+	jailLossesDb.Initialize(path.Cat(cts.DataPath, "acc"))
 }
 
 // Returns 'conf.tb'
@@ -179,7 +181,7 @@ func QsRead(nk string) (qs []*quote.T, err string) {
 		err = "Quotes file " + nk + ".tb not found."
 		return
 	}
-	qs, err = quote.TxToQs(file.Read(p))
+	qs, err = quote.TxToQs(str.Trim(file.Read(p)))
 	return
 }
 

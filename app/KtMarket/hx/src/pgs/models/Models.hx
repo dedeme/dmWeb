@@ -181,13 +181,15 @@ class Models {
       final params = rp["params"].ra().map(e -> e.rf());
       final dates = rp["dates"].ra().map(e -> e.rs());
       final assets = rp["assets"].ra().map(e -> e.rf());
+      final withdrawals = rp["withdrawals"].ra().map(e -> e.rf());
       final results = AssetsRs.fromJs(rp["results"]);
       final nicks = rp["nicks"].ra().map(e -> e.rs());
       final lastCloses = rp["lastCloses"].ra().map(e -> e.rf());
       final orders = rp["orders"].ra().map(e -> Order.fromJs(e));
 
       new Charts(
-        wg, model, params, dates, assets, results, nicks, orders, lastCloses
+        wg, model, params, dates, assets, withdrawals,
+        results, nicks, orders, lastCloses
       );
     });
   }

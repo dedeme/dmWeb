@@ -7,17 +7,19 @@ import dm.Js;
 
 /// Profits entry data.
 class ProfitsEntry {
-  public var date(default, null): String;
-  public var total(default, null): Float;
-  public var acc(default, null): Float;
-  public var risk(default, null): Float;
+  public final date: String;
+  public final total: Float;
+  public final acc: Float;
+  public final risk: Float;
 
   /// Constructor.
   ///   date : Data date.
   ///   total: Total profits.
   ///   acc  : Accounting profits.
   ///   risk : Total profits with risk.
-  public function new (date: String, total: Float, acc: Float, risk: Float) {
+  public function new (
+    date: String, total: Float, acc: Float, risk: Float
+  ) {
     this.date = date;
     this.total = total;
     this.acc = acc;

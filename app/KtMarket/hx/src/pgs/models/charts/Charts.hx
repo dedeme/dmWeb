@@ -29,29 +29,35 @@ class Charts {
   final params: Array<Float>;
   final dates: Array<String>;
   final assets: Array<Float>;
+  final withdrawals: Array<Float>;
   final results: AssetsRs;
   final nicks: Array<String>;
   final orders: Array<Order>;
   final lastCloses: Array<Float>;
   var menuSel: String;
   /// Constructor.
-  ///   wg        : Container.
-  ///   model     : Model.
-  ///   params    : Parameters.
-  ///   results   : Results.
-  ///   nicks     : Nicks list.
-  ///   orders    : Orders list.
+  ///   wg         : Container.
+  ///   model      : Model.
+  ///   params     : Parameters.
+  ///   dates      : Historic dates.
+  ///   assets     : Assets historic.
+  ///   withdrawals: Withdrawal historic.
+  ///   results    : Results.
+  ///   nicks      : Nicks list.
+  ///   orders     : Orders list.
   ///   lastCloses: Final comapany closes.
   public function new (
     wg: Domo, model: Model, params: Array<Float>,
-    dates: Array<String>, assets: Array<Float>, results: AssetsRs,
-    nicks: Array<String>, orders: Array<Order>, lastCloses: Array<Float>
+    dates: Array<String>, assets: Array<Float>, withdrawals: Array<Float>,
+    results: AssetsRs, nicks: Array<String>, orders: Array<Order>,
+    lastCloses: Array<Float>
   ) {
     this.wg = wg;
     this.model = model;
     this.params = params;
     this.dates = dates;
     this.assets = assets;
+    this.withdrawals = withdrawals;
     this.results = results;
     this.nicks = nicks;
     this.orders = orders;
@@ -170,6 +176,11 @@ class Charts {
       qs.push(new HistoricChartEntry(dates[i], Math.round(assets[i])));
     }
     final chart = new HistoricChart(true, qs).wg;
+    final qs2 = [];
+    for (i in 0...dates.length) {
+      qs2.push(new HistoricChartEntry(dates[i], Math.round(withdrawals[i])));
+    }
+    final chart2 = new HistoricChart(true, qs2).wg;
 
     wg
       .removeAll()
@@ -181,6 +192,15 @@ class Charts {
         .add(Q("tr")
           .add(Q("td")
             .add(chart
+              .klass("frame")))))
+      .add(Q("div")
+        .klass("head")
+        .text(_("Withdrawals")))
+      .add(Q("table")
+        .att("align", "center")
+        .add(Q("tr")
+          .add(Q("td")
+            .add(chart2
               .klass("frame")))))
     ;
   }

@@ -71,6 +71,7 @@ class I18n {
     "Total" => "Total",
     "User" => "User",
     "User name is missing" => "User name is missing",
+    "Withdrawals" => "Withdrawals",
     "Wrong password" => "Wrong password",
     "here" => "here"
   ];
@@ -113,7 +114,7 @@ class I18n {
     "Historic" => "Histórico",
     "Hot Map" => "Mapa de calor",
     "Id" => "Id",
-    "Jail" => "Jaula",
+    "Jail" => "Cárcel",
     "Keep connected" => "Mantenerse conectado",
     "Log" => "Registro",
     "Login" => "Identificación",
@@ -143,6 +144,7 @@ class I18n {
     "Total" => "Total",
     "User" => "Usuario",
     "User name is missing" => "Falta indicar el nombre del usuario",
+    "Withdrawals" => "Retiradas",
     "Wrong password" => "La contraseña es incorrecta",
     "here" => "aquí"
   ];

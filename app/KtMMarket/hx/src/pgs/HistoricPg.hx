@@ -25,10 +25,12 @@ class HistoricPg {
   final dates: Array<String>;
   final eval: ModelEval;
   final assets: Array<Float>;
+  final withdrawals: Array<Float>;
 
   function new (
     wg: Domo, model: Model, result: Result,
-    dates: Array<String>, eval: ModelEval, assets: Array<Float>
+    dates: Array<String>, eval: ModelEval,
+    assets: Array<Float>, withdrawals: Array<Float>
   ) {
     this.wg = wg;
     this.model = model;
@@ -36,6 +38,7 @@ class HistoricPg {
     this.dates = dates;
     this.eval = eval;
     this.assets = assets;
+    this.withdrawals = withdrawals;
   }
 
   // View ----------------------------------------------------------------------
@@ -126,24 +129,35 @@ class HistoricPg {
           .add(Q("td")
             .klass("rframe")
             .text(Dec.toIso(eval.sales, 0)))))
+      .add(Q("div")
+        .klass("head")
+        .text(_("Assets")))
       .add(Q("table")
         .att("align", "center")
         .add(Q("tr")
           .add(Q("td")
-            .add(mkGr()))))
+            .add(mkGr(true)))))
+      .add(Q("div")
+        .klass("head")
+        .text(_("Withdrawals")))
+      .add(Q("table")
+        .att("align", "center")
+        .add(Q("tr")
+          .add(Q("td")
+            .add(mkGr(false)))))
     ;
   }
 
-  function mkGr (): Domo {
+  function mkGr (isAssets: Bool): Domo {
     final labels = dates.map(e -> e.substring(4, 6));
     final ch = LineChart.mk();
     ch.exArea.width = 600;
-    ch.exArea.height = 300;
+    ch.exArea.height = isAssets ? 300 : 150;
     ch.inPadding.left = 100;
     ch.inAtts.background = "#e9e9e9";
     ch.data = new LineChartData(
       labels,
-      [assets.map(e->Some(e))],
+      isAssets ? [assets.map(e->Some(e))] : [withdrawals.map(e->Some(e))],
       [ new LineChartLine(1, "#000000", false)]
     );
     ch.data.round = 0;
@@ -186,7 +200,8 @@ class HistoricPg {
       final dates = rp["dates"].ra().map(e-> e.rs());
       final eval = ModelEval.fromJs(rp["eval"]);
       final assets = rp["assets"].ra().map(e -> e.rf());
-      new HistoricPg(wg, model, result, dates, eval, assets).show();
+      final withdrawals = rp["withdrawals"].ra().map(e -> e.rf());
+      new HistoricPg(wg, model, result, dates, eval, assets, withdrawals).show();
     });
   }
 }

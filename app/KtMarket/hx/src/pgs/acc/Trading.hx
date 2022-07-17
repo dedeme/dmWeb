@@ -224,7 +224,9 @@ class Trading {
         Q("tr")
           .add(invTd(o.investor))
           .add(ciaTd(o.nick).style(
-              o.stocks == 0 ? "" : "text-decoration:line-through"
+              It.from(rebuys).indexf(rb -> rb.nick == o.nick) == -1
+              ? ""
+              : "text-decoration:line-through"
             ))
       )
     ;
@@ -287,10 +289,35 @@ class Trading {
                       .html(_("Rebuys")))
                     .add(Q("table")
                       .klass("frame2")
+                      .style("border-collapse : collapse;")
                       .add(Q("tr")
                         .add(Q("td").klass("head").html(_("Co.")))
                         .add(Q("td").klass("head").html(_("Date"))))
-                      .adds(rebuyTrs)))))
+                      .adds(rebuyTrs))
+                    .add(Q("div").style("padding:7px"))
+                    .add(Q("table")
+                      .klass("frame3")
+                      .att("align", "center")
+                      .style("border-collapse : collapse;")
+                      .add(Q("tr")
+                        .add(Q("td").klass("head").html(_("Co.")))
+                        .add(Q("td").klass("head").html(_("Losses"))))
+                      .add(Q("tr")
+                        .add(ciaTd("EDR"))
+                        .add(moneyTd(1953.14)))
+                      .add(Q("tr")
+                        .add(ciaTd("IAG"))
+                        .add(moneyTd(2196.36)))
+                      .add(Q("tr")
+                        .add(ciaTd("ITX"))
+                        .add(moneyTd(1036.61)))
+                      .add(Q("tr")
+                        .add(ciaTd("MEL"))
+                        .add(moneyTd(1296.53)))
+                      .add(Q("tr")
+                        .add(ciaTd("MTS"))
+                        .add(moneyTd(773.12)))
+                    ))))
             .add(Q("div")
               .klass("head")
               .html("&nbsp;"))
@@ -324,11 +351,9 @@ class Trading {
                   .att("colspan", "3")
                   .style("text-align:right")
                   .html(_("Losses") + ":&nbsp;"))
-                .add(Q("td")
-                  .klass("borderWhite")
-                  .style("text-align:center")
-                  .att("colspan", "2")
-                  .text(Dec.toIso(losses, 2)))
+                .add(moneyTd(losses)
+                  .setStyle("text-align", "center")
+                  .att("colspan", "2"))
                 .add(Q("td")))
               ))
           .add(Q("td")
@@ -365,6 +390,14 @@ class Trading {
       .klass("borderWhite")
       .style("text-align:right")
       .text(Dec.toIso(q, 4))
+    ;
+  }
+
+  function moneyTd (q: Float): Domo {
+    return Q("td")
+      .klass("borderWhite")
+      .style("text-align:right")
+      .text(Dec.toIso(q, 2))
     ;
   }
 
@@ -410,20 +443,6 @@ class Trading {
       return;
     }
     sprice2.text(Dec.toIso(p * 1.01, 2));
-  }
-
-  function spreads (price: Float): Float {
-    return price < 1 ? 0.0001
-      : price < 2 ? 0.0002
-      : price < 5 ? 0.0005
-      : price < 10 ? 0.001
-      : price < 20 ? 0.002
-      : price < 50 ? 0.005
-      : price < 100 ? 0.01
-      : price < 200 ? 0.02
-      : price < 500 ? 0.05
-      : 0.1
-    ;
   }
 
   // Static --------------------------------------------------------------------

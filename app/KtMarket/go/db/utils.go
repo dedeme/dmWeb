@@ -16,6 +16,7 @@ import (
 	"github.com/dedeme/KtMarket/data/serverBox"
 	"github.com/dedeme/KtMarket/data/strategy"
 	"github.com/dedeme/KtMarket/db/acc/diariesDb"
+	"github.com/dedeme/KtMarket/db/acc/jailLossesDb"
 	"github.com/dedeme/KtMarket/db/acc/profitsDb"
 	"github.com/dedeme/ktlib/arr"
 	"github.com/dedeme/ktlib/log"
@@ -167,24 +168,14 @@ func Operations() (err string) {
 	nks := arr.Filter(NicksTb().Read().List, func(nk *nick.T) bool {
 		return nk.IsSel
 	})
-	rebuyDate := time.ToStr(time.AddDays(time.Now(), -62))
-	var rebuyNicks []string
+
 	pfs := make([][]*acc.PfEntryT, cts.Investors)
 	for i := 0; i < cts.Investors; i++ {
 		anns := diariesDb.ReadAnnotations(i)
-		_, pf, lastOs, es := acc.Settlement(anns)
+		_, pf, _, es := acc.Settlement(anns)
 		if len(es) > 0 {
 			err = arr.Join(es, "\n")
 			return
-		}
-
-		for k, v := range lastOs {
-			if v.Date > rebuyDate {
-				profs, ok := v.Profits()
-				if ok && profs < cts.RebuyLimit {
-					rebuyNicks = append(rebuyNicks, k)
-				}
-			}
 		}
 		pfs[i] = pf
 	}
@@ -227,13 +218,7 @@ func Operations() (err string) {
 					ops = append(ops, invOperation.New(pfEntry.Stocks, i, nk.Name))
 				}
 			} else if lastRef < lastClose && lastRef2 > lastClose2 {
-				stocks := 0
-				if arr.Any(rebuyNicks, func(nkName string) bool {
-					return nkName == nk.Name
-				}) {
-					stocks = -1
-				}
-				ops = append(ops, invOperation.New(stocks, i, nk.Name))
+				ops = append(ops, invOperation.New(0, i, nk.Name))
 			}
 		}
 	}
@@ -266,10 +251,12 @@ func NextServer() {
 }
 
 func ActivateDailyCharts() {
+	today := time.ToStr(time.Now())
+	var todayBuys []string
 	pfs := make([][]*acc.PfEntryT, cts.Investors)
 	for i := 0; i < cts.Investors; i++ {
 		anns := diariesDb.ReadAnnotations(i)
-		_, pf, _, serrs := acc.Settlement(anns)
+		_, pf, lastOps, serrs := acc.Settlement(anns)
 		if len(serrs) != 0 {
 			for _, e := range serrs {
 				log.Error(e)
@@ -277,6 +264,13 @@ func ActivateDailyCharts() {
 			pf = []*acc.PfEntryT{}
 		}
 		pfs[i] = pf
+		for k, v := range lastOps {
+			if v.Date == today {
+				if _, ok := v.Profits(); !ok {
+					todayBuys = append(todayBuys, k)
+				}
+			}
+		}
 	}
 
 	selNicks := arr.Filter(NicksTb().Read().List, func(nk *nick.T) bool {
@@ -290,7 +284,7 @@ func ActivateDailyCharts() {
 		invsData := make([]*dailyChart.DataT, cts.Investors)
 		for i := 0; i < cts.Investors; i++ {
 			st := invs[i].Base
-			invsData[i] = dailyChart.NewData(st.Model.Id, st.Params, 0.0, 0.0, 0.0)
+			invsData[i] = dailyChart.NewData(st.Model.Id, st.Params, 0.0, 0.0, 0.0, false)
 		}
 
 		r := dailyChart.New(nk.Name, close, hours, quotes, invsData)
@@ -315,6 +309,11 @@ func ActivateDailyCharts() {
 			if ok {
 				invsData[i].Stocks = pfE.Stocks
 				invsData[i].Price = pfE.Price
+				if arr.Any(todayBuys, func(n string) bool {
+					return n == nk.Name
+				}) {
+					invsData[i].TodayBuy = true
+				}
 			}
 
 			inv := invs[i]
@@ -417,6 +416,7 @@ func UpdateDailyCharts(readQs func(*server.T) ([]*nick.IdValT, []string, string)
 	dailyChartDb.Write(dailyChart.NewTb(nkDs))
 }
 
+// Update profits and jail losses.
 func UpdateHistoricProfits() {
 	invs := InvestorsTb().Read().Investors
 	for i := 0; i < cts.Investors; i++ {
@@ -431,6 +431,7 @@ func UpdateHistoricProfits() {
 		account := base + ledger.Stocks
 		total := base
 		risk := base
+		losses := 0.0
 		for _, e := range portfolio {
 			nk, ok := arr.Find(NicksTb().Read().List, func(n *nick.T) bool {
 				return n.Name == e.Nick
@@ -462,12 +463,17 @@ func UpdateHistoricProfits() {
 			}
 			if lastRef > lastClose { // Sell situation.
 				lastRef = lastClose
+				jailRef := e.Price * cts.NoLostMultiplicator
+				if jailRef > lastClose {
+					losses += float64(e.Stocks) * (jailRef - lastClose)
+				}
 			}
 
 			total += float64(e.Stocks) * lastClose
 			risk += float64(e.Stocks) * lastRef
 		}
 		profitsDb.Add(i, total, account, risk)
+		jailLossesDb.Add(i, losses)
 	}
 
 }

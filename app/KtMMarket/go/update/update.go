@@ -17,7 +17,8 @@ func Run() {
 	lastSunday := fns.LastSunday()
 	quotesDb := db.QuotesTb()
 	qs := quotesDb.Read()
-	if qs.Date < lastSunday {
+  qsDate := qs.Date
+	if qsDate < lastSunday {
 		qs = quotesReader.Read()
 		quotesDb.Write(qs)
 
@@ -26,7 +27,7 @@ func Run() {
 			evs := evalsDb.Read().Evals
 			simProfitsDb := db.SimProfitsDb(md.Id)
 			profRows := simProfitsDb.Read().Rows
-			if qs.Date < lastSunday {
+			if qsDate < lastSunday {
 				evs, profRows = md.RangeNewSimulation(qs, evs, profRows)
 			} else {
 				evs, profRows = md.RangeReplaceSimulation(qs, evs, profRows)

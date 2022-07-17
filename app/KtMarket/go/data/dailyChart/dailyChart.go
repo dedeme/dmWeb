@@ -20,12 +20,15 @@ type DataT struct {
 	Price float64
 	// Reference of buy-sell
 	Ref float64
+	// Returns 'true' if is a today buy
+	TodayBuy bool
 }
 
 func NewData(
-	modelId string, params []float64, stocks int, price float64, ref float64,
+	modelId string, params []float64,
+	stocks int, price float64, ref float64, todayBuy bool,
 ) *DataT {
-	return &DataT{modelId, params, stocks, price, ref}
+	return &DataT{modelId, params, stocks, price, ref, todayBuy}
 }
 
 func dataToJs(d *DataT) string {
@@ -35,6 +38,7 @@ func dataToJs(d *DataT) string {
 		js.Wi(d.Stocks),
 		js.Wd(d.Price),
 		js.Wd(d.Ref),
+		js.Wb(d.TodayBuy),
 	})
 }
 
@@ -46,14 +50,16 @@ func dataFromJs(j string) *DataT {
 		js.Ri(a[2]),
 		js.Rd(a[3]),
 		js.Rd(a[4]),
+		js.Rb(a[5]),
 	)
 }
 
 type T struct {
 	// Company nick.
 	Nick string
-	// Previous market day close. For each investor data (d), if d.ref > close,
-	// its position is to buy.
+	// Previous market day close.
+	//   - For each investorData (d), if d.ref > close, its position is to buy.
+	//   - If 'nick' was bougth today, Close = buyPrice.
 	Close float64
 	// Hours of each daily quote.
 	Hours []int
@@ -101,7 +107,7 @@ func NewTb(nks []*T) *TbT {
 func Default() *TbT {
 	var idata []*DataT
 	for i := 0; i < cts.Investors; i++ {
-		idata = append(idata, NewData("MFAKE", []float64{3.33}, 0, 0.0, 9.9))
+		idata = append(idata, NewData("MFAKE", []float64{3.33}, 0, 0.0, 9.9, false))
 	}
 	return NewTb([]*T{
 		New("FAKE", 10.0, []int{9}, []float64{11.1}, idata),

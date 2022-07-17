@@ -7,6 +7,7 @@ package acc
 import (
 	"github.com/dedeme/KtMarket/server/pgs/acc/balance"
 	"github.com/dedeme/KtMarket/server/pgs/acc/companies"
+	"github.com/dedeme/KtMarket/server/pgs/acc/jail"
 	"github.com/dedeme/KtMarket/server/pgs/acc/profits"
 	"github.com/dedeme/KtMarket/server/pgs/acc/speedometers"
 	"github.com/dedeme/KtMarket/server/pgs/acc/trading"
@@ -27,6 +28,8 @@ func Process(ck string, rq cgi.T) string {
 		return profits.Process(ck, rq)
 	case "speedometers":
 		return speedometers.Process(ck, rq)
+	case "jail":
+		return jail.Process(ck, rq)
 	default:
 		panic("Value of source (" + source + ") is not valid")
 	}

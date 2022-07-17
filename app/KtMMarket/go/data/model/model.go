@@ -15,6 +15,7 @@ import (
 	"github.com/dedeme/KtMMarket/fns"
 	"github.com/dedeme/ktlib/arr"
 	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/math"
 )
 
 type T struct {
@@ -49,8 +50,9 @@ type T struct {
 
 // Returns results of run a simulation with 'qs':
 //  orders: Every market order ordered by date.
-//  historic: Assets historic. One value for each 'qs.Dates'.
-//  cash: Final cash.
+//  hassets: Assets historic. One value for each 'qs.Dates'.
+//  hwithdrawal: Withdrawal historic. One value for each 'qs.Dates'.
+//  cash: Final cash + withdrawals.
 //  refAssets: Final assets using references intead closes (risk).
 //  refs: Referencies. One for each 'qs.Closes'
 //  buys: Buy dates. A slice for each 'qs.Cos'
@@ -59,7 +61,7 @@ type T struct {
 // Parameters
 //  quotes: Quotes for simulation.
 func (md *T) Simulation(qs *quotes.T, params []float64) (
-	orders []*order.T, historic []float64, cash, refAssets float64,
+	orders []*order.T, hassets, hwithdrawal []float64, cash, refAssets float64,
 	refs [][]float64, buys, sales [][]string, profits []float64,
 ) {
 	dates := qs.Dates
@@ -69,9 +71,11 @@ func (md *T) Simulation(qs *quotes.T, params []float64) (
 	opens := qs.Opens
 	closes := qs.Closes
 	maxs := qs.Maxs
-	cash = cts.InitialCapital
+	cashIn := cts.InitialCapital
+  withdrawal := 0.0
 
-	historic = make([]float64, nDates)
+	hassets = make([]float64, nDates)
+	hwithdrawal = make([]float64, nDates)
 	refs = make([][]float64, nDates)
 	for i := range dates {
 		refs[i] = make([]float64, nCos)
@@ -124,10 +128,10 @@ func (md *T) Simulation(qs *quotes.T, params []float64) (
             buys[i] = append(buys[i], date)
             prfPrices[i] = op
           }
-					if cash > cts.MinToBet && !coughts[i] {
+					if cashIn > cts.MinToBet && !coughts[i] {
 						stocks := int(cts.Bet / op)
 						stockss[i] = stocks
-						cash -= broker.Buy(stocks, op)
+						cashIn -= broker.Buy(stocks, op)
 						orders = append(orders, order.New(date, nk, order.BUY, stocks, op))
 						prices[i] = op
 					}
@@ -135,7 +139,7 @@ func (md *T) Simulation(qs *quotes.T, params []float64) (
 					stocks := stockss[i]
 					if stocks > 0 && !coughts[i] {
 						if op > prices[i]*cts.NoLostMultiplicator {
-							cash += broker.Sell(stocks, op)
+							cashIn += broker.Sell(stocks, op)
 							stockss[i] = 0
 							orders = append(orders, order.New(date, nk, order.SELL, stocks, op))
 						} else {
@@ -162,7 +166,7 @@ func (md *T) Simulation(qs *quotes.T, params []float64) (
 				price := prices[i] * cts.NoLostMultiplicator
 				if mxs[i] > price {
           stocks := stockss[i]
-					cash += broker.Sell(stocks, price)
+					cashIn += broker.Sell(stocks, price)
 					stockss[i] = 0
 					orders = append(orders, order.New(date, nk, order.SELL, stocks, price))
 					coughts[i] = false
@@ -196,10 +200,28 @@ func (md *T) Simulation(qs *quotes.T, params []float64) (
 			}
 		}
 
-		historic[ix] = cash + assets
+    total := cashIn + assets
+    if total > cts.InitialCapital + cts.Bet + cts.Bet {
+      dif := total - cts.InitialCapital - cts.Bet
+      securAmount := cts.MinToBet - cts.Bet
+      withdraw := -1.0
+      if cashIn > dif + securAmount {
+        withdraw = dif
+      } else if cashIn > cts.MinToBet {
+        withdraw = math.Floor((cashIn - securAmount) / cts.Bet) * cts.Bet
+      }
+      if withdraw > 0 {
+        withdrawal += withdraw
+        cashIn -= withdraw
+      }
+    }
+
+		hassets[ix] = cashIn + withdrawal + assets
+    hwithdrawal[ix] = withdrawal
 		ix++
 	})
 
+  cash = cashIn + withdrawal
 	refAss := 0.0
 	lastCloses := closes[nDates-1]
 	lastRef := refs[nDates-1]
@@ -260,9 +282,9 @@ func (md *T) groupEvaluation(qs *quotes.T, params []float64) (
 		}
 
 		if ixparams == nparams {
-			orders, historic, cash, refAssets, _, _, _, profits :=
+			orders, hassets, _, cash, refAssets, _, _, _, profits :=
 				md.Simulation(qs, pms)
-			assets := historic[len(historic)-1]
+			assets := hassets[len(hassets)-1]
 
 			newRs := result.New(
 				assets,

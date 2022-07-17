@@ -108,5 +108,5 @@ const (
 	NoLostMultiplicator = 1.05
 
 	// Rebuy limit
-	RebuyLimit = 400.0
+	RebuyLimit = 300.0
 )

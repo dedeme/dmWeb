@@ -18,7 +18,8 @@ All log entries will be deleted.\nContinue? = Todas las entradas del registro se
 Application exit? = ¿Terminar la aplicación?
 
 # src/pgs/CosPg.hx: 104
-# src/pgs/HistoricPg.hx: 76
+# src/pgs/HistoricPg.hx: 79
+# src/pgs/HistoricPg.hx: 134
 # src/pgs/OperationsPg.hx: 133
 # src/pgs/OperationsPg.hx: 188
 Assets = Activo
@@ -91,8 +92,8 @@ Errors = Errores
 
 # src/pgs/CosPg.hx: 110
 # src/pgs/CosPg.hx: 140
-# src/pgs/HistoricPg.hx: 82
-# src/pgs/HistoricPg.hx: 112
+# src/pgs/HistoricPg.hx: 85
+# src/pgs/HistoricPg.hx: 115
 # src/pgs/OperationsPg.hx: 139
 # src/pgs/OperationsPg.hx: 169
 # src/pgs/ResultsPg.hx: 51
@@ -106,7 +107,7 @@ Grey squares checks are wrong = Las casillas grises están mal marcadas
 H. Cash = H. Caja
 
 # src/pgs/CosPg.hx: 134
-# src/pgs/HistoricPg.hx: 106
+# src/pgs/HistoricPg.hx: 109
 # src/pgs/OperationsPg.hx: 163
 # src/pgs/ResultsPg.hx: 45
 H. Eval. = H. Eval.
@@ -115,7 +116,7 @@ H. Eval. = H. Eval.
 H. Ref. = H. Ref.
 
 # src/pgs/CosPg.hx: 137
-# src/pgs/HistoricPg.hx: 109
+# src/pgs/HistoricPg.hx: 112
 # src/pgs/OperationsPg.hx: 166
 # src/pgs/ResultsPg.hx: 48
 H. Sales = H. Ventas
@@ -124,7 +125,7 @@ H. Sales = H. Ventas
 H. Total = H. Total
 
 # src/pgs/Charts.hx: 28
-# src/pgs/HistoricPg.hx: 48
+# src/pgs/HistoricPg.hx: 51
 # src/pgs/OperationsPg.hx: 105
 Historic = Histórico
 
@@ -135,7 +136,7 @@ Hot Map = Mapa de calor
 Id = Id
 
 # src/pgs/OperationsPg.hx: 227
-Jail = Jaula
+Jail = Cárcel
 
 # src/pgs/Authentication.hx: 88
 Keep connected = Mantenerse conectado
@@ -152,7 +153,7 @@ Login = Identificación
 Logout-message = <p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>
 
 # src/pgs/CosPg.hx: 84
-# src/pgs/HistoricPg.hx: 56
+# src/pgs/HistoricPg.hx: 59
 # src/pgs/OperationsPg.hx: 113
 Model = Modelo
 
@@ -191,7 +192,7 @@ Password successfully changed = La contraseña se cambió correctamente
 Portfolio = Cartera
 
 # src/pgs/CosPg.hx: 107
-# src/pgs/HistoricPg.hx: 79
+# src/pgs/HistoricPg.hx: 82
 # src/pgs/OperationsPg.hx: 136
 Profits (%) = Beneficios (%)
 
@@ -206,8 +207,8 @@ Results = Resultados
 
 # src/pgs/CosPg.hx: 113
 # src/pgs/CosPg.hx: 143
-# src/pgs/HistoricPg.hx: 85
-# src/pgs/HistoricPg.hx: 115
+# src/pgs/HistoricPg.hx: 88
+# src/pgs/HistoricPg.hx: 118
 # src/pgs/OperationsPg.hx: 142
 # src/pgs/OperationsPg.hx: 172
 # src/pgs/ResultsPg.hx: 54
@@ -237,6 +238,9 @@ User = Usuario
 
 # src/pgs/Authentication.hx: 171
 User name is missing = Falta indicar el nombre del usuario
+
+# src/pgs/HistoricPg.hx: 142
+Withdrawals = Retiradas
 
 # src/pgs/Authentication.hx: 113
 # src/pgs/ChangePass.hx: 113

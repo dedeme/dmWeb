@@ -40,11 +40,14 @@ class ChSmall {
     final rs = [];
     for (manIx in 0...d.investorsData.length) {
       final e = d.investorsData[manIx];
-      var daily = 0.0;
       if (e.stocks > 0) {
-        daily = e.stocks * (quote - close);
+        final total = e.stocks * (quote - e.price);
+        final daily = e.todayBuy
+          ? total
+          : e.stocks * (quote - close)
+        ;
         dailyProfits += daily;
-        totalProfits += e.stocks * (quote - e.price);
+        totalProfits += total;
         inPortfolio = true;
       }
       final isSold = e.ref < close ? 1 : -1;
