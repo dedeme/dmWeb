@@ -194,6 +194,14 @@ func UpdateInvestors() (err string) {
 
 // Calculate and save investors operations
 func Operations() (err string) {
+	invOperationsDb := InvOperationsTb()
+	invOps := arr.Filter(
+		invOperationsDb.Read().Operations,
+		func(iv *invOperation.T) bool {
+			return iv.Stocks > 0
+		},
+	)
+
 	nks := arr.Filter(NicksTb().Read().List, func(nk *nick.T) bool {
 		return nk.IsSel
 	})
@@ -222,6 +230,9 @@ func Operations() (err string) {
 
 		invs := InvestorsTb().Read().Investors
 		for i := 0; i < cts.Investors; i++ {
+			isCought := arr.Anyf(invOps, func(iv *invOperation.T) bool {
+				return iv.Investor == i && iv.Nick == nk.Name
+			})
 			inv := invs[i]
 
 			st, ok := inv.Nicks[nk.Name]
@@ -239,7 +250,7 @@ func Operations() (err string) {
 			lastRef := refs[len(refs)-1]
 			lastRef2 := refs[len(refs)-2]
 
-			if lastRef > lastClose {
+			if lastRef > lastClose || isCought {
 				pfEntry, ok := arr.Find(pfs[i], func(e *acc.PfEntryT) bool {
 					return e.Nick == nk.Name
 				})
@@ -252,7 +263,7 @@ func Operations() (err string) {
 		}
 	}
 
-	InvOperationsTb().Write(invOperation.NewTb(ops))
+	invOperationsDb.Write(invOperation.NewTb(ops))
 	return
 }
 
