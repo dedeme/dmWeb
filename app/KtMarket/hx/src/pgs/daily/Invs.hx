@@ -95,7 +95,7 @@ class Invs {
               }
               final d = data[ix];
               return Q("td")
-                .add(ChSmall.mk(d, (isAdd, nick) -> {
+                .add(ChSmall.mk(false, d, (isAdd, nick, inv) -> {
                   changeSel(isAdd, nick);
                 }))
               ;
@@ -115,7 +115,7 @@ class Invs {
 
   function changeSel (isAdd: Bool, nick: String): Void {
     if (isAdd) {
-      Selection.add(nick);
+      Selection.add(nick, inv);
     } else {
       Selection.remove(nick);
     }

@@ -57,12 +57,14 @@ class DailyChartData {
   public final price: Float;
   /// Reference of buy-sell
   public final ref: Float;
-  /// Returns 'true' if is a today buy
+  /// Returns 'true' if it is a today buy
   public final todayBuy: Bool;
+  /// Returns 'true' if stocks are in jail
+  public final cought: Bool;
 
   function new (
     modelId: String, params: Array<Float>,
-    stocks: Int, price: Float, ref: Float, todayBuy: Bool
+    stocks: Int, price: Float, ref: Float, todayBuy: Bool, cought: Bool
   ) {
     this.modelId = modelId;
     this.params = params;
@@ -70,6 +72,7 @@ class DailyChartData {
     this.price = price;
     this.ref = ref;
     this.todayBuy = todayBuy;
+    this.cought = cought;
   }
 
   public static function fromJs(js: Js): DailyChartData {
@@ -80,7 +83,8 @@ class DailyChartData {
       a[2].ri(),
       a[3].rf(),
       a[4].rf(),
-      a[5].rb()
+      a[5].rb(),
+      a[6].rb()
     );
   }
 }

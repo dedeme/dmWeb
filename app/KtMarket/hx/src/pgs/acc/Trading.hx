@@ -250,9 +250,9 @@ class Trading {
             case Some(e): {
               gol = e.price * Cts.noLostMultiplicator;
               q = e.quote;
-              dif = (gol - q) * 100 / q;
+              dif = (gol - q) / q * 100;
               ref = e.ref;
-              losses += e.stocks * (gol - q);
+              if (e.price > q) losses += e.stocks * (e.price - q);
             };
             default:{}
           }
@@ -306,13 +306,13 @@ class Trading {
                         .add(ciaTd("EDR"))
                         .add(moneyTd(1953.14)))
                       .add(Q("tr")
-                        .add(ciaTd("IAG"))
+                        .add(ciaTd("· IAG"))
                         .add(moneyTd(2196.36)))
                       .add(Q("tr")
                         .add(ciaTd("ITX"))
                         .add(moneyTd(1036.61)))
                       .add(Q("tr")
-                        .add(ciaTd("MEL"))
+                        .add(ciaTd("· MEL"))
                         .add(moneyTd(1296.53)))
                       .add(Q("tr")
                         .add(ciaTd("MTS"))
@@ -343,7 +343,7 @@ class Trading {
                 .add(Q("td").klass("head").html(_("Stocks")))
                 .add(Q("td").klass("head").html(_("Gol")))
                 .add(Q("td").klass("head").html(_("Quote")))
-                .add(Q("td").klass("head").html(_("Dif.")))
+                .add(Q("td").klass("head").html("%&Delta;"))
                 )
               .adds(sellTrs)
               .add(Q("tr")

@@ -44,9 +44,7 @@ func New(date string, cos, dates []string, opens, closes, maxs [][]float64) *T {
 
 // Returns the index of one company from its nick, or -1 if nick is not found.
 func (qs *T) CompanyIndex(nick string) int {
-	return arr.Index(qs.Cos, func(nk string) bool {
-		return nick == nk
-	})
+	return arr.Index(qs.Cos, nick)
 }
 
 // Returns data of the company with index 'coIx' in format *T

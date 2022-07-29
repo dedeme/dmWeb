@@ -59,7 +59,8 @@ type T struct {
 //  sales: Sales dates. A slice for each 'qs.Cos'
 //  profits: Profits ratios. One for each 'qs.Cos'
 // Parameters
-//  quotes: Quotes for simulation.
+//  qs: Quotes for simulation.
+//  params: Model parameters.
 func (md *T) Simulation(qs *quotes.T, params []float64) (
 	orders []*order.T, hassets, hwithdrawal []float64, cash, refAssets float64,
 	refs [][]float64, buys, sales [][]string, profits []float64,
@@ -72,7 +73,7 @@ func (md *T) Simulation(qs *quotes.T, params []float64) (
 	closes := qs.Closes
 	maxs := qs.Maxs
 	cashIn := cts.InitialCapital
-  withdrawal := 0.0
+	withdrawal := 0.0
 
 	hassets = make([]float64, nDates)
 	hwithdrawal = make([]float64, nDates)
@@ -115,19 +116,19 @@ func (md *T) Simulation(qs *quotes.T, params []float64) (
 
 			if toDo {
 				if toSell { // there is buy order.
-          if !prfCoughts[i] {
-            prfCash := prfCashs[i]
-            stocks := int((prfCash - broker.Fees(prfCash)) / op)
-            cost := broker.Buy(stocks, op)
-            for cost > prfCash {
-              stocks--
-              cost = broker.Buy(stocks, op)
-            }
-            prfStockss[i] = stocks
-            prfCashs[i] -= cost
-            buys[i] = append(buys[i], date)
-            prfPrices[i] = op
-          }
+					if !prfCoughts[i] {
+						prfCash := prfCashs[i]
+						stocks := int((prfCash - broker.Fees(prfCash)) / op)
+						cost := broker.Buy(stocks, op)
+						for cost > prfCash {
+							stocks--
+							cost = broker.Buy(stocks, op)
+						}
+						prfStockss[i] = stocks
+						prfCashs[i] -= cost
+						buys[i] = append(buys[i], date)
+						prfPrices[i] = op
+					}
 					if cashIn > cts.MinToBet && !coughts[i] {
 						stocks := int(cts.Bet / op)
 						stockss[i] = stocks
@@ -165,7 +166,7 @@ func (md *T) Simulation(qs *quotes.T, params []float64) (
 			if coughts[i] {
 				price := prices[i] * cts.NoLostMultiplicator
 				if mxs[i] > price {
-          stocks := stockss[i]
+					stocks := stockss[i]
 					cashIn += broker.Sell(stocks, price)
 					stockss[i] = 0
 					orders = append(orders, order.New(date, nk, order.SELL, stocks, price))
@@ -176,7 +177,7 @@ func (md *T) Simulation(qs *quotes.T, params []float64) (
 			if prfCoughts[i] {
 				price := prfPrices[i] * cts.NoLostMultiplicator
 				if mxs[i] > price {
-          stocks := prfStockss[i]
+					stocks := prfStockss[i]
 					prfCashs[i] += broker.Sell(stocks, price)
 					prfStockss[i] = 0
 					sales[i] = append(sales[i], date)
@@ -200,28 +201,28 @@ func (md *T) Simulation(qs *quotes.T, params []float64) (
 			}
 		}
 
-    total := cashIn + assets
-    if total > cts.InitialCapital + cts.Bet + cts.Bet {
-      dif := total - cts.InitialCapital - cts.Bet
-      securAmount := cts.MinToBet - cts.Bet
-      withdraw := -1.0
-      if cashIn > dif + securAmount {
-        withdraw = dif
-      } else if cashIn > cts.MinToBet {
-        withdraw = math.Floor((cashIn - securAmount) / cts.Bet) * cts.Bet
-      }
-      if withdraw > 0 {
-        withdrawal += withdraw
-        cashIn -= withdraw
-      }
-    }
+		total := cashIn + assets
+		if total > cts.InitialCapital+cts.Bet+cts.Bet {
+			dif := total - cts.InitialCapital - cts.Bet
+			securAmount := cts.MinToBet - cts.Bet
+			withdraw := -1.0
+			if cashIn > dif+securAmount {
+				withdraw = dif
+			} else if cashIn > cts.MinToBet {
+				withdraw = math.Floor((cashIn-securAmount)/cts.Bet) * cts.Bet
+			}
+			if withdraw > 0 {
+				withdrawal += withdraw
+				cashIn -= withdraw
+			}
+		}
 
 		hassets[ix] = cashIn + withdrawal + assets
-    hwithdrawal[ix] = withdrawal
+		hwithdrawal[ix] = withdrawal
 		ix++
 	})
 
-  cash = cashIn + withdrawal
+	cash = cashIn + withdrawal
 	refAss := 0.0
 	lastCloses := closes[nDates-1]
 	lastRef := refs[nDates-1]

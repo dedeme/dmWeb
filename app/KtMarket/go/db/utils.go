@@ -9,7 +9,9 @@ import (
 	"github.com/dedeme/KtMarket/data/dailyChart"
 	"github.com/dedeme/KtMarket/data/invOperation"
 	"github.com/dedeme/KtMarket/data/investor"
+	"github.com/dedeme/KtMarket/data/ixsChartEntry"
 	"github.com/dedeme/KtMarket/data/nick"
+	"github.com/dedeme/KtMarket/data/profitsEntry"
 	"github.com/dedeme/KtMarket/data/quote"
 	"github.com/dedeme/KtMarket/data/refBase"
 	"github.com/dedeme/KtMarket/data/server"
@@ -67,6 +69,33 @@ func CurrentCloses(nk *nick.T) (dates []string, closes []float64, err string) {
 		}
 	}
 
+	return
+}
+
+// Returns the last ref of
+func LastRef(
+	inv *investor.T, nkName string, cought bool,
+	closes, allCloses []float64, lastClose float64,
+) (ref float64) {
+	st, ok := inv.Nicks[nkName]
+	if !ok {
+		st = inv.Base
+	}
+
+	refBase, ok := arr.Find(RefBasesTb().Read().Refs, func(r *refBase.T) bool {
+		return r.Nick.Name == nkName && strategy.Eq(r.Strategy, st)
+	})
+	if ok {
+		ref = strategy.LastRef(st, closes, refBase.Ref)
+	} else {
+		ref = strategy.LastRef(st, allCloses, -1)
+	}
+
+	if cought {
+		ref = lastClose
+	} else if ref > lastClose { // Sell situation.
+		ref = lastClose
+	}
 	return
 }
 
@@ -250,7 +279,7 @@ func NextServer() {
 	sboxDb.Write(serverBox.New(dsvs))
 }
 
-func ActivateDailyCharts() {
+func ActivateDailyCharts(readIndexes func() ([]float64, string)) {
 	today := time.ToStr(time.Now())
 	var todayBuys []string
 	pfs := make([][]*acc.PfEntryT, cts.Investors)
@@ -273,6 +302,7 @@ func ActivateDailyCharts() {
 		}
 	}
 
+	invOps := InvOperationsTb().Read().Operations
 	selNicks := arr.Filter(NicksTb().Read().List, func(nk *nick.T) bool {
 		return nk.IsSel
 	})
@@ -284,7 +314,8 @@ func ActivateDailyCharts() {
 		invsData := make([]*dailyChart.DataT, cts.Investors)
 		for i := 0; i < cts.Investors; i++ {
 			st := invs[i].Base
-			invsData[i] = dailyChart.NewData(st.Model.Id, st.Params, 0.0, 0.0, 0.0, false)
+			invsData[i] = dailyChart.NewData(st.Model.Id,
+				st.Params, 0.0, 0.0, 0.0, false, false)
 		}
 
 		r := dailyChart.New(nk.Name, close, hours, quotes, invsData)
@@ -309,37 +340,44 @@ func ActivateDailyCharts() {
 			if ok {
 				invsData[i].Stocks = pfE.Stocks
 				invsData[i].Price = pfE.Price
-				if arr.Any(todayBuys, func(n string) bool {
+				if arr.Anyf(todayBuys, func(n string) bool {
 					return n == nk.Name
-				}) {
+				}) { // BUY TODAY
 					invsData[i].TodayBuy = true
+				} else if _, ok := arr.Find(invOps, func(io *invOperation.T) bool {
+					return io.Investor == i && io.Nick == nk.Name
+				}); ok { // IN JAIL
+					invsData[i].Cought = true
+					invsData[i].Ref = pfE.Price * cts.NoLostMultiplicator
+
+					continue
 				}
 			}
 
-			inv := invs[i]
-			st, ok := inv.Nicks[nk.Name]
-			if !ok {
-				st = inv.Base
-			}
-
-			refBase, ok := arr.Find(RefBasesTb().Read().Refs, func(r *refBase.T) bool {
-				return r.Nick.Name == nk.Name && strategy.Eq(r.Strategy, st)
+			cought := arr.Anyf(invOps, func(iv *invOperation.T) bool {
+				return iv.Investor == i && iv.Nick == nk.Name
 			})
-			if ok {
-				invsData[i].Ref = strategy.LastRef(st, closes, refBase.Ref)
-			} else {
-				invsData[i].Ref = strategy.LastRef(st, allCloses, -1)
-			}
+			invsData[i].Ref =
+				LastRef(invs[i], nk.Name, cought, closes, allCloses, close)
+
 		}
 
 		return dailyChart.New(nk.Name, close, hours, quotes, invsData)
 	})
 
 	DailyChartTb().Write(dailyChart.NewTb(nks))
+
+	// indexesChart
+	ixsTb := IndexesTb().Read()[0]
+	IndexesChartTb().Write(
+		[]*ixsChartEntry.T{ixsChartEntry.NewNow(ixsTb.Invs, ixsTb.Ixs)})
 }
 
 // readQs is the function 'net.ServerReadDaily'
-func UpdateDailyCharts(readQs func(*server.T) ([]*nick.IdValT, []string, string)) {
+func UpdateDailyCharts(
+	readQs func(*server.T) ([]*nick.IdValT, []string, string),
+	readIndexes func() ([]float64, string),
+) {
 	svName := ServerBoxTb().Read().Servers[0]
 	svs := arr.Filter(ServersTb().Read().List, func(sv *server.T) bool {
 		if cf, ok := sv.DailyConf(); ok {
@@ -414,10 +452,30 @@ func UpdateDailyCharts(readQs func(*server.T) ([]*nick.IdValT, []string, string)
 		nkD.Quotes = append(nkD.Quotes, q.Value)
 	}
 	dailyChartDb.Write(dailyChart.NewTb(nkDs))
+
+	// Update indexesChart
+	ixsChartDb := IndexesChartTb()
+	tb := ixsChartDb.Read()
+	invs := arr.Map(profitsDb.Read(), func(es []*profitsEntry.T) float64 {
+		return es[len(es)-1].Total()
+	})
+	ixs, err := readIndexes()
+	if err != "" {
+		ixs = tb[len(tb)-1].Ixs
+		log.Error(err)
+	}
+	tb = append(tb, ixsChartEntry.NewNow(invs, ixs))
+	ixsChartDb.Write(tb)
 }
 
 // Update profits and jail losses.
 func UpdateHistoricProfits() {
+	invOps := arr.Filter(
+		InvOperationsTb().Read().Operations,
+		func(iv *invOperation.T) bool {
+			return iv.Stocks > 0
+		},
+	)
 	invs := InvestorsTb().Read().Investors
 	for i := 0; i < cts.Investors; i++ {
 		inv := invs[i]
@@ -448,25 +506,13 @@ func UpdateHistoricProfits() {
 			closes := arr.Drop(allCloses, len(allCloses)-cts.ReferenceQuotes)
 			lastClose := closes[len(closes)-1]
 
-			st, ok := inv.Nicks[nk.Name]
-			if !ok {
-				st = inv.Base
-			}
-			var lastRef float64
-			refBase, ok := arr.Find(RefBasesTb().Read().Refs, func(r *refBase.T) bool {
-				return r.Nick.Name == nk.Name && strategy.Eq(r.Strategy, st)
+			cought := arr.Anyf(invOps, func(iv *invOperation.T) bool {
+				return iv.Investor == i && iv.Nick == nk.Name
 			})
-			if ok {
-				lastRef = strategy.LastRef(st, closes, refBase.Ref)
-			} else {
-				lastRef = strategy.LastRef(st, allCloses, -1)
-			}
-			if lastRef > lastClose { // Sell situation.
-				lastRef = lastClose
-				jailRef := e.Price * cts.NoLostMultiplicator
-				if jailRef > lastClose {
-					losses += float64(e.Stocks) * (jailRef - lastClose)
-				}
+			lastRef := LastRef(inv, nk.Name, cought, closes, allCloses, lastClose)
+
+			if cought && e.Price > lastClose {
+				losses += float64(e.Stocks) * (e.Price - lastClose)
 			}
 
 			total += float64(e.Stocks) * lastClose

@@ -17,7 +17,7 @@ func Run() {
 	lastSunday := fns.LastSunday()
 	quotesDb := db.QuotesTb()
 	qs := quotesDb.Read()
-  qsDate := qs.Date
+	qsDate := qs.Date
 	if qsDate < lastSunday {
 		qs = quotesReader.Read()
 		quotesDb.Write(qs)

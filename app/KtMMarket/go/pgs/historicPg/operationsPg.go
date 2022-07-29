@@ -47,7 +47,7 @@ func Process(ck string, mrq cgi.T) string {
 
 		qs := db.QuotesTb().Read()
 		orders, hassets, hwithdrawal, _, _, _, _, _, profits :=
-      md.Simulation(qs, params)
+			md.Simulation(qs, params)
 		rs := result.New(
 			hassets[len(hassets)-1],
 			arr.Reduce(profits, 0, func(r, e float64) float64 {
@@ -57,11 +57,11 @@ func Process(ck string, mrq cgi.T) string {
 		)
 
 		return cgi.Rp(ck, cgi.T{
-			"model":  model.ToJs(md),
-			"result": result.ToJs(rs),
-			"dates":  js.Wa(arr.Map(qs.Dates, js.Ws)),
-			"eval":   modelEval.ToJs(eval),
-			"assets": js.Wa(arr.Map(hassets, js.Wd)),
+			"model":       model.ToJs(md),
+			"result":      result.ToJs(rs),
+			"dates":       js.Wa(arr.Map(qs.Dates, js.Ws)),
+			"eval":        modelEval.ToJs(eval),
+			"assets":      js.Wa(arr.Map(hassets, js.Wd)),
 			"withdrawals": js.Wa(arr.Map(hwithdrawal, js.Wd)),
 		})
 	default:

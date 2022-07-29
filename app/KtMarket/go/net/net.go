@@ -748,3 +748,28 @@ func UpdateHistoric(nk *nick.T) (warnings []string, err string) {
 
 	return
 }
+
+// Reads ibex and euro stoxx values from Infobolsa.
+func ReadIndexes() (ixs []float64, err string) {
+	ixs = make([]float64, 2)
+	url := "https://www.infobolsa.es/indices/mundiales"
+
+	html := download(cts.Wget, url)
+
+	ix := str.Index(html, "\"IBEX 35\"")
+	ix = str.IndexFrom(html, "price ", ix)
+	ix = str.IndexFrom(html, ">", ix) + 1
+	ix2 := str.IndexFrom(html, "<", ix)
+	ixs[0], err = toNumber(true, str.Trim(html[ix:ix2]))
+	if err != "" {
+		return
+	}
+
+	ix = str.Index(html, "\"EURO STOXX50\"")
+	ix = str.IndexFrom(html, "price ", ix)
+	ix = str.IndexFrom(html, ">", ix) + 1
+	ix2 = str.IndexFrom(html, "<", ix)
+	ixs[1], err = toNumber(true, str.Trim(html[ix:ix2]))
+
+	return
+}

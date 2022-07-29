@@ -8,9 +8,13 @@ import (
 	"github.com/dedeme/KtMarket/cts"
 	"github.com/dedeme/KtMarket/data/activity"
 	"github.com/dedeme/KtMarket/data/calendar"
+	"github.com/dedeme/KtMarket/data/ixsChartEntry"
 	"github.com/dedeme/KtMarket/data/nick"
+	"github.com/dedeme/KtMarket/data/profitsEntry"
 	"github.com/dedeme/KtMarket/db"
+	"github.com/dedeme/KtMarket/db/acc/profitsDb"
 	"github.com/dedeme/KtMarket/net"
+	"github.com/dedeme/ktlib/arr"
 	"github.com/dedeme/ktlib/log"
 	"github.com/dedeme/ktlib/sys"
 	"github.com/dedeme/ktlib/thread"
@@ -44,7 +48,7 @@ func historicUpdate() {
 }
 
 func dailyUpdate() {
-	db.UpdateDailyCharts(net.ServerReadDaily)
+	db.UpdateDailyCharts(net.ServerReadDaily, net.ReadIndexes)
 	db.UpdateHistoricProfits()
 }
 
@@ -55,7 +59,7 @@ func dailyActivate() {
 	if err != "" {
 		log.Error(err)
 	}
-	db.ActivateDailyCharts()
+	db.ActivateDailyCharts(net.ReadIndexes)
 	dailyUpdate()
 	db.NextServer()
 }
@@ -67,6 +71,15 @@ func dailyDeactivate() {
 		log.Error(err)
 	}
 	db.Operations()
+
+	invs := arr.Map(profitsDb.Read(), func(es []*profitsEntry.T) float64 {
+		return es[len(es)-1].Total()
+	})
+	ixs, err := net.ReadIndexes()
+	if err != "" {
+		log.Error(err)
+	}
+	db.IndexesTb().Write([]*ixsChartEntry.T{ixsChartEntry.NewNow(invs, ixs)})
 }
 
 func Start() {

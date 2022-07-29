@@ -22,13 +22,15 @@ type DataT struct {
 	Ref float64
 	// Returns 'true' if is a today buy
 	TodayBuy bool
+	// Returns 'true' if stocks are in jail.
+	Cought bool
 }
 
 func NewData(
 	modelId string, params []float64,
-	stocks int, price float64, ref float64, todayBuy bool,
+	stocks int, price float64, ref float64, todayBuy bool, cought bool,
 ) *DataT {
-	return &DataT{modelId, params, stocks, price, ref, todayBuy}
+	return &DataT{modelId, params, stocks, price, ref, todayBuy, cought}
 }
 
 func dataToJs(d *DataT) string {
@@ -39,6 +41,7 @@ func dataToJs(d *DataT) string {
 		js.Wd(d.Price),
 		js.Wd(d.Ref),
 		js.Wb(d.TodayBuy),
+		js.Wb(d.Cought),
 	})
 }
 
@@ -51,6 +54,7 @@ func dataFromJs(j string) *DataT {
 		js.Rd(a[3]),
 		js.Rd(a[4]),
 		js.Rb(a[5]),
+		js.Rb(a[6]),
 	)
 }
 
@@ -107,7 +111,8 @@ func NewTb(nks []*T) *TbT {
 func Default() *TbT {
 	var idata []*DataT
 	for i := 0; i < cts.Investors; i++ {
-		idata = append(idata, NewData("MFAKE", []float64{3.33}, 0, 0.0, 9.9, false))
+		idata = append(idata,
+			NewData("MFAKE", []float64{3.33}, 0, 0.0, 9.9, false, false))
 	}
 	return NewTb([]*T{
 		New("FAKE", 10.0, []int{9}, []float64{11.1}, idata),

@@ -75,6 +75,33 @@ func ReadJs() string {
 	return js.Wa(all)
 }
 
+// Reads all the investors tables. If an investor has not data,
+// the function returns an empty list for it.
+//
+// Each investor has one []*profitsEntry.T.
+func Read() [][]*profitsEntry.T {
+	ys := Years()
+	arr.Sort(ys, func(y1, y2 string) bool {
+		return y1 < y2
+	})
+
+	var all [][]*profitsEntry.T
+	for i := 0; i < cts.Investors; i++ {
+		var investorData []*profitsEntry.T
+		for _, y := range ys {
+			p := ypath(i, y)
+			if file.Exists(p) {
+				for _, e := range js.Ra(file.Read(p)) {
+					investorData = append(investorData, profitsEntry.FromJs(e))
+				}
+			}
+		}
+
+		all = append(all, investorData)
+	}
+	return all
+}
+
 // Returns the list of years with data of investors. This list is
 // unsorted.
 func Years() (r []string) {

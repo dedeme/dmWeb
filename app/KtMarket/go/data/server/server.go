@@ -175,9 +175,9 @@ func New(id int, name string, nicks []*nick.T) *T {
 // Adds a new nick code to 'server.Codes()' if it does not exist.
 //    nickId: Identifier of nick to update.
 func (s *T) AddCode(nickId int) {
-	if arr.Index(s.Codes, func(cd *CodeT) bool {
+	if !arr.Anyf(s.Codes, func(cd *CodeT) bool {
 		return cd.NickId == nickId
-	}) == -1 {
+	}) {
 		s.Codes = append(s.Codes, newCode(nickId))
 	}
 }
@@ -185,7 +185,7 @@ func (s *T) AddCode(nickId int) {
 // Removes a nick from 'server.Codes()' if it exists.
 //    nickId: Identifier of nick to update.
 func (s *T) RemoveCode(nickId int) {
-	ix := arr.Index(s.Codes, func(cd *CodeT) bool {
+	ix := arr.Indexf(s.Codes, func(cd *CodeT) bool {
 		return cd.NickId == nickId
 	})
 	if ix != -1 {
@@ -268,9 +268,9 @@ func NewTb() *TbT {
 //    shortName: Server short name.
 //    nicks: Nick list from 'nicksTb.Nicks()'
 func (t *TbT) Add(shortName string, nicks []*nick.T) bool {
-	if arr.Index(t.List, func(s *T) bool {
+	if arr.Anyf(t.List, func(s *T) bool {
 		return s.ShortName == shortName
-	}) != -1 {
+	}) {
 		return false
 	}
 

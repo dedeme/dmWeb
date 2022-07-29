@@ -13,10 +13,11 @@ import data.DailyChart;
 class ChSmall {
 
   /// Constructor
+  ///   inSelectPage: 'true' if chart is in selected page.
   ///   d: Chart data.
   ///   changeSel: Function to select-deselect a company.
   public static function mk (
-    d: DailyChart, changeSel: (Bool, String) -> Void
+    inSelectPage: Bool, d: DailyChart, changeSel: (Bool, String, Int) -> Void
   ): Domo {
     final nick = d.nick;
     final isSel = Selection.contains(nick);
@@ -69,7 +70,7 @@ class ChSmall {
         ;
         if (dif >= 0.98) {
           refs.push([isSold, e.ref, manIx]);
-        } else if (e.stocks > 0 && e.modelId == "QFIJO") {
+        } else if (e.stocks > 0 && e.modelId == "QFIJO" && !e.cought) {
           final ref2 = isSold == 1
             ? e.ref * Math.pow(1 + e.params[0], 1.5)
             : e.ref / Math.pow(1 + e.params[0], 1.5)
@@ -95,9 +96,11 @@ class ChSmall {
     function color (v: Float): String {
       return "color:" + (v > 0 ? "#00aaff" : v < 0 ? "#ff8100" : "#a9a9a9");
     }
-    function colorStocks (v: Float, withStocks: Bool): String {
+    function colorStocks (cought: Bool, v: Float, withStocks: Bool): String {
       return "color:" + (
-        v > 0 ? "#00aaff"
+        cought
+        ? "#800000"
+        : v > 0 ? "#00aaff"
           : v < 0 && withStocks ? "#ff8100"
             : "#a9a9a9"
       );
@@ -106,12 +109,33 @@ class ChSmall {
     final rsWgs = [];
     for (i in 0...rs.length) {
       if (i > 0) {
-        rsWgs.push(Q("span").text(" | "));
+        rsWgs.push(Q("span").text(
+          Selection.investor(nick) == i && inSelectPage ? " | ·" : " | "
+        ));
+      } else {
+        if (Selection.investor(nick) == 0 && inSelectPage) {
+          rsWgs.push(Q("span").text("·"));
+        }
       }
-      rsWgs.push(Q("span")
-        .style(colorStocks(-rs[i][0], d.investorsData[i].stocks > 0))
-        .text(Dec.toIso(rs[i][1], 2) + "%")
-      );
+      if (inSelectPage) {
+        rsWgs.push(Ui.link(() -> changeSel(true, nick, i))
+          .style(colorStocks(
+              d.investorsData[i].cought,
+              -rs[i][0],
+              d.investorsData[i].stocks > 0
+            ) + ";cursor:pointer")
+          .text(Dec.toIso(rs[i][1], 2) + "%")
+        );
+      } else {
+        rsWgs.push(Q("span")
+          .style(colorStocks(
+              d.investorsData[i].cought,
+              -rs[i][0],
+              d.investorsData[i].stocks > 0
+            ))
+          .text(Dec.toIso(rs[i][1], 2) + "%")
+        );
+      }
     }
 
     final cv = Q("canvas")
@@ -272,9 +296,9 @@ class ChSmall {
             .text(nick))
           .add(separator())
           .add(isSel
-            ? Ui.link(r -> changeSel(false, nick))
+            ? Ui.link(r -> changeSel(false, nick, -1))
               .add(Ui.img("unlink"))
-            : Ui.link(e -> changeSel(true, nick))
+            : Ui.link(e -> changeSel(true, nick, -1))
               .add(Ui.img("link")))
           .add(separator())
           .add(Q("span")

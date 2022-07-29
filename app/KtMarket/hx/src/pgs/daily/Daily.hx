@@ -14,6 +14,7 @@ import dm.Opt;
 import dm.Menu;
 import wgs.Dmenu;
 import data.DailyChart;
+import data.IxsChartEntry;
 import pgs.daily.Cos; // CosOrder
 import pgs.daily.Invs; // InvsOrder
 import I18n._;
@@ -22,13 +23,14 @@ import I18n._;
 class Daily {
   static final ticKey = Cts.appName + "_tic";
 
-  var wg: Domo;
-  var dmenu: Dmenu;
-  var lcPath: Array<String>;
-  var server: String;
-  var activity: String;
-  var chartsData: Array<DailyChart>;
-  var mSel: String;
+  final wg: Domo;
+  final dmenu: Dmenu;
+  final lcPath: Array<String>;
+  final activity: String;
+  final chartsData: Array<DailyChart>;
+  final ixsData: Array<IxsChartEntry>;
+  final capitals: Array<Float>;
+  final mSel: String;
   public var order(default, null): CosOrder;
   public var iorder(default, null): InvsOrder;
   public var reverse(default, null): Bool;
@@ -39,6 +41,7 @@ class Daily {
   function new (
     wg:Domo, dmenu: Dmenu, lcPath: Array<String>,
     server: String, activity: String, chartsData: Array<DailyChart>,
+    ixsData: Array<IxsChartEntry>, capitals: Array<Float>,
     order: CosOrder, iorder: InvsOrder, reverse: Bool
   ) {
     if (lcPath.length == 0) lcPath.push("summary");
@@ -47,6 +50,8 @@ class Daily {
     this.lcPath = lcPath;
     this.activity = activity;
     this.chartsData = chartsData;
+    this.ixsData = ixsData;
+    this.capitals = capitals;
     this.mSel = lcPath[0];
     this.order = order;
     this.iorder = iorder;
@@ -139,7 +144,7 @@ class Daily {
           final inv = Std.parseInt(mSel.substring(3));
           Invs.mk(wg, this, inv, chartsData);
         } else {
-          new Summary(wg, chartsData);
+          new Summary(wg, chartsData, ixsData, capitals);
         }
     }
 
@@ -260,6 +265,8 @@ class Daily {
       "rq" => Js.ws("idata")
     ], rp -> {
       final chartsData = rp["chartsData"].ra().map(e -> DailyChart.fromJs(e));
+      final ixsData = rp["indexesData"].ra().map(e -> IxsChartEntry.fromJs(e));
+      final capitals = rp["capitals"].ra().map(e -> e.rf());
       final server = rp["server"].rs();
       var activity = rp["activity"].rs();
 
@@ -269,7 +276,8 @@ class Daily {
         default: activity = _("Sleeping");
       }
       new Daily(
-        wg, dmenu, lcPath, server, activity, chartsData, order, iorder, reverse
+        wg, dmenu, lcPath, server, activity, chartsData, ixsData, capitals,
+        order, iorder, reverse
       );
     });
   }

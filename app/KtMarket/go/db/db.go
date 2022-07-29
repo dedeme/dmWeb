@@ -12,6 +12,7 @@ import (
 	"github.com/dedeme/KtMarket/data/dailyChart"
 	"github.com/dedeme/KtMarket/data/invOperation"
 	"github.com/dedeme/KtMarket/data/investor"
+	"github.com/dedeme/KtMarket/data/ixsChartEntry"
 	"github.com/dedeme/KtMarket/data/nick"
 	"github.com/dedeme/KtMarket/data/quote"
 	"github.com/dedeme/KtMarket/data/refBase"
@@ -22,6 +23,7 @@ import (
 	"github.com/dedeme/KtMarket/db/acc/profitsDb"
 	"github.com/dedeme/ktlib/arr"
 	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/js"
 	"github.com/dedeme/ktlib/jstb"
 	"github.com/dedeme/ktlib/log"
 	"github.com/dedeme/ktlib/path"
@@ -127,6 +129,22 @@ func InvOperationsTb() *jstb.T[*invOperation.TbT] {
 	)
 }
 
+// Returns "indexes.tb".
+func IndexesTb() *jstb.T[[]*ixsChartEntry.T] {
+	return jstb.New(
+		path.Cat(cts.DataPath, "indexes.tb"),
+		[]*ixsChartEntry.T{
+			ixsChartEntry.New(0, []float64{0.0, 0.0, 0.0}, []float64{0.0, 0.0}),
+		},
+		func(ixs []*ixsChartEntry.T) string {
+			return js.Wa(arr.Map(ixs, ixsChartEntry.ToJs))
+		},
+		func(j string) []*ixsChartEntry.T {
+			return arr.Map(js.Ra(j), ixsChartEntry.FromJs)
+		},
+	)
+}
+
 // Returns 'daily/daily.tb'
 func DailyTb() *jstb.T[*nick.TbIdValT] {
 	return jstb.New(
@@ -154,6 +172,22 @@ func DailyChartTb() *jstb.T[*dailyChart.TbT] {
 		dailyChart.Default(),
 		dailyChart.TbToJs,
 		dailyChart.TbFromJs,
+	)
+}
+
+// Returns "daily/indexesChart.tb"
+func IndexesChartTb() *jstb.T[[]*ixsChartEntry.T] {
+	return jstb.New(
+		path.Cat(cts.DataPath, "daily/indexesChart.tb"),
+		[]*ixsChartEntry.T{
+			ixsChartEntry.New(0, []float64{0.0, 0.0, 0.0}, []float64{0.0, 0.0}),
+		},
+		func(ixs []*ixsChartEntry.T) string {
+			return js.Wa(arr.Map(ixs, ixsChartEntry.ToJs))
+		},
+		func(j string) []*ixsChartEntry.T {
+			return arr.Map(js.Ra(j), ixsChartEntry.FromJs)
+		},
 	)
 }
 

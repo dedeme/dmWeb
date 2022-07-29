@@ -30,33 +30,33 @@ Accept = Aceptar
 # src/wgs/Dmenu.hx: 54
 Accounting = Contabilidad
 
-# src/pgs/acc/Balance.hx: 164
+# src/pgs/acc/Balance.hx: 160
 Accounting profits = Beneficios contables
 
 # src/pgs/settings/servers/Configuration.hx: 332
 Activate = Activar
 
-# src/pgs/daily/Daily.hx: 68
-# src/pgs/daily/Daily.hx: 107
-# src/pgs/daily/Daily.hx: 111
-# src/pgs/daily/Daily.hx: 226
-# src/pgs/daily/Daily.hx: 268
+# src/pgs/daily/Daily.hx: 73
+# src/pgs/daily/Daily.hx: 112
+# src/pgs/daily/Daily.hx: 116
+# src/pgs/daily/Daily.hx: 231
+# src/pgs/daily/Daily.hx: 275
 # src/pgs/settings/servers/Configuration.hx: 163
 Active = Activo
 
 # src/LinkToLogForI18n.hx: 163
 # src/LinkToLogForI18n.hx: 185
-# src/pgs/acc/Balance.hx: 460
+# src/pgs/acc/Balance.hx: 456
 # src/pgs/acc/Jail.hx: 37
 # src/pgs/acc/Profits.hx: 37
 # src/pgs/acc/Speedometers.hx: 48
 # src/pgs/acc/wgs/JailWg.hx: 343
 # src/pgs/acc/wgs/ProfitsWg.hx: 394
-# src/pgs/daily/Summary.hx: 44
+# src/pgs/daily/Summary.hx: 57
 # src/pgs/settings/acc/Acc.hx: 44
 All = Todo
 
-# src/pgs/daily/Daily.hx: 95
+# src/pgs/daily/Daily.hx: 100
 All CO's = Todas las Cías.
 
 # src/pgs/acc/Companies.hx: 78
@@ -104,7 +104,7 @@ Annotations & Settings = Anotaciones & configuración
 # src/wgs/Dmenu.hx: 80
 Application exit? = ¿Salir de la aplicación?
 
-# src/pgs/acc/Balance.hx: 228
+# src/pgs/acc/Balance.hx: 224
 # src/pgs/models/charts/Charts.hx: 77
 # src/pgs/models/charts/Charts.hx: 103
 # src/pgs/models/charts/Charts.hx: 189
@@ -116,16 +116,16 @@ Assets = Activo
 B(uy) = C
 
 # src/pgs/acc/Acc.hx: 46
-# src/pgs/acc/Balance.hx: 219
+# src/pgs/acc/Balance.hx: 215
 Balance = Balance
 
 # src/pgs/models/wgs/Operations.hx: 64
 Balance(Operations) = Saldo
 
-# src/pgs/acc/Balance.hx: 364
+# src/pgs/acc/Balance.hx: 360
 Bet = Apuesta
 
-# src/pgs/acc/Balance.hx: 323
+# src/pgs/acc/Balance.hx: 319
 # src/pgs/acc/Trading.hx: 79
 # src/pgs/daily/Invs.hx: 72
 # src/pgs/settings/acc/Editor.hx: 171
@@ -158,10 +158,10 @@ Calendar = Calendario
 # src/pgs/settings/settings/ChangePass.hx: 55
 Cancel = Cancelar
 
-# src/pgs/acc/Balance.hx: 248
+# src/pgs/acc/Balance.hx: 244
 Capital = Capital
 
-# src/pgs/acc/Balance.hx: 257
+# src/pgs/acc/Balance.hx: 253
 # src/pgs/models/charts/Charts.hx: 327
 # src/pgs/models/tests/wgs/OrdersWg.hx: 62
 Cash = Caja
@@ -205,7 +205,7 @@ Close Year = Cierre de ejercicio
 # src/pgs/settings/servers/Configuration.hx: 583
 CloseN = Cierre
 
-# src/pgs/acc/Balance.hx: 319
+# src/pgs/acc/Balance.hx: 315
 # src/pgs/acc/Trading.hx: 294
 # src/pgs/acc/Trading.hx: 303
 # src/pgs/acc/Trading.hx: 332
@@ -238,7 +238,7 @@ Current password = Contraseña actual
 # src/pgs/settings/settings/ChangePass.hx: 175
 Current password is missing = Falta indicar la contraseña actual
 
-# src/pgs/acc/Balance.hx: 151
+# src/pgs/acc/Balance.hx: 147
 Current profits = Beneficios reales
 
 # src/pgs/settings/servers/Servers.hx: 105
@@ -292,7 +292,7 @@ Date separator = Separador de fechas
 # src/pgs/settings/servers/Configuration.hx: 465
 Date separator is missing = Falta el separador de fechas
 
-# src/pgs/daily/Cos.hx: 113
+# src/pgs/daily/Cos.hx: 110
 Day = Día
 
 # src/pgs/settings/investorsPg/InvestorsPg.hx: 100
@@ -324,9 +324,6 @@ Delete '%0'? = ¿Eliminar '%0'?
 # src/pgs/settings/acc/Editor.hx: 355
 Description = Concepto
 
-# src/pgs/acc/Trading.hx: 346
-Dif. = Dif.
-
 # src/pgs/settings/acc/Editor.hx: 320
 # src/pgs/settings/acc/Editor.hx: 398
 # src/pgs/settings/acc/wgs/Annotations.hx: 85
@@ -337,7 +334,7 @@ Diff. + = Dif. +
 # src/pgs/settings/acc/wgs/Annotations.hx: 91
 Diff. - = Dif. -
 
-# src/pgs/acc/Balance.hx: 302
+# src/pgs/acc/Balance.hx: 298
 Differences = Diferencias
 
 # src/pgs/settings/nicks/Editor.hx: 129
@@ -354,7 +351,7 @@ Downloading... = Descargando ...
 # src/pgs/settings/nicks/Editor.hx: 78
 Edit = Editar
 
-# src/pgs/acc/Balance.hx: 234
+# src/pgs/acc/Balance.hx: 230
 Equity = Pasivo
 
 # src/LinkToLogForI18n.hx: 180
@@ -366,7 +363,7 @@ Errors and warnings found.\nSee log. = Se han producido errores y avisos.\nVer l
 # src/pgs/settings/nicks/List.hx: 217
 Errors found.\nSee log. = Se han producido errores.\nVer log.
 
-# src/pgs/acc/Balance.hx: 278
+# src/pgs/acc/Balance.hx: 274
 # src/pgs/settings/acc/Editor.hx: 288
 # src/pgs/settings/acc/Editor.hx: 396
 # src/pgs/settings/acc/wgs/Annotations.hx: 79
@@ -422,20 +419,20 @@ Intial stockage can not be deleted = Cartera inicial no puede ser eliminada
 
 # src/pgs/acc/Trading.hx: 331
 # src/pgs/acc/Trading.hx: 341
-# src/pgs/daily/Daily.hx: 100
-# src/pgs/daily/Daily.hx: 104
+# src/pgs/daily/Daily.hx: 105
+# src/pgs/daily/Daily.hx: 109
 Inv = Inv
 
-# src/pgs/acc/Balance.hx: 457
-# src/pgs/acc/Balance.hx: 463
+# src/pgs/acc/Balance.hx: 453
+# src/pgs/acc/Balance.hx: 459
 # src/pgs/acc/Jail.hx: 34
 # src/pgs/acc/Jail.hx: 40
 # src/pgs/acc/Profits.hx: 34
 # src/pgs/acc/Profits.hx: 40
 # src/pgs/acc/Speedometers.hx: 45
 # src/pgs/acc/Speedometers.hx: 51
-# src/pgs/daily/Summary.hx: 42
-# src/pgs/daily/Summary.hx: 47
+# src/pgs/daily/Summary.hx: 55
+# src/pgs/daily/Summary.hx: 60
 Inv- = Inv-
 
 # src/pgs/acc/Trading.hx: 88
@@ -451,7 +448,7 @@ Is ISO date? = ¿Es la fecha ISO?
 Is ISO number? = ¿Es un número ISO?
 
 # src/pgs/acc/Acc.hx: 54
-Jail = Cárcel
+Jail = Atrapados
 
 # src/Authentication.hx: 111
 Keep connected = Mantenerse conectado
@@ -535,7 +532,7 @@ New password and confirm password do not match = La nueva contraseña y su confi
 # src/pgs/settings/settings/ChangePass.hx: 180
 New password is missing = Falta indicar la nueva contraseña
 
-# src/pgs/daily/Cos.hx: 108
+# src/pgs/daily/Cos.hx: 105
 # src/pgs/models/tests/wgs/OrdersWg.hx: 60
 # src/pgs/settings/acc/Editor.hx: 135
 # src/pgs/settings/acc/Editor.hx: 173
@@ -566,7 +563,7 @@ Nicks = Nicks
 # src/pgs/settings/nicks/Editor.hx: 415
 No modification was performed.<br>See Log. = No se realizó ninguna modificación.<br>Ver el registro.
 
-# src/pgs/daily/Cos.hx: 133
+# src/pgs/daily/Cos.hx: 130
 # src/pgs/daily/Invs.hx: 87
 No selected company = No se ha seleccionado ninguna compañía
 
@@ -588,7 +585,7 @@ Operation failed.\nSee log. = La operación ha fallado.\nVer el registro.
 # src/Cts.hx: 61
 Operation successfully done. = Operatión terminada correctamente.
 
-# src/pgs/daily/Cos.hx: 105
+# src/pgs/daily/Cos.hx: 102
 Order by = Ordenado por
 
 # src/pgs/models/charts/Charts.hx: 79
@@ -613,7 +610,7 @@ Password is missing = Falta indicar la contraseña
 Password successfully changed = La contraseña se cambió correctamente
 
 # src/pgs/acc/Companies.hx: 78
-# src/pgs/daily/Daily.hx: 93
+# src/pgs/daily/Daily.hx: 98
 # src/pgs/models/charts/Charts.hx: 323
 Portfolio = Cartera
 
@@ -632,9 +629,9 @@ Portfolio = Cartera
 Price = Precio
 
 # src/pgs/acc/Acc.hx: 50
-# src/pgs/acc/Balance.hx: 143
-# src/pgs/acc/Balance.hx: 290
-# src/pgs/acc/Balance.hx: 344
+# src/pgs/acc/Balance.hx: 139
+# src/pgs/acc/Balance.hx: 286
+# src/pgs/acc/Balance.hx: 340
 # src/pgs/models/charts/Companies.hx: 45
 # src/pgs/models/wgs/Operations.hx: 64
 # src/pgs/settings/acc/Editor.hx: 256
@@ -660,13 +657,13 @@ Quotes were successfully modified = Las cotizaciones se modificaron correctament
 # src/pgs/models/wgs/Operations.hx: 65
 Ratio = Ratio
 
-# src/pgs/daily/Daily.hx: 186
+# src/pgs/daily/Daily.hx: 191
 Reactivate daily charts? = ¿Reactivar los gráficos del día?
 
 # src/pgs/acc/Trading.hx: 289
 Rebuys = Recompras
 
-# src/pgs/acc/Balance.hx: 206
+# src/pgs/acc/Balance.hx: 202
 Reference (‰) = Referencia (‰)
 
 # src/pgs/models/tests/Tests.hx: 30
@@ -689,20 +686,20 @@ Remove %0 configuration? = ¿Eliminar la configuración de %0?
 # src/pgs/settings/servers/Names.hx: 75
 Reset = Reiniciar
 
-# src/pgs/daily/Cos.hx: 123
+# src/pgs/daily/Cos.hx: 120
 Reverse = Reverso
 
-# src/pgs/acc/Balance.hx: 374
+# src/pgs/acc/Balance.hx: 370
 Rf. (‰) = Rf. (‰)
 
-# src/pgs/acc/Balance.hx: 354
+# src/pgs/acc/Balance.hx: 350
 # src/pgs/acc/Speedometers.hx: 92
 # src/pgs/acc/Speedometers.hx: 117
 # src/pgs/acc/Speedometers.hx: 168
 # src/pgs/acc/Speedometers.hx: 208
 Risk = Riesgo
 
-# src/pgs/acc/Balance.hx: 173
+# src/pgs/acc/Balance.hx: 169
 Risk profits = Beneficios - riesgo
 
 # src/pgs/settings/servers/Configuration.hx: 271
@@ -721,13 +718,13 @@ Sales = Ventas
 # src/pgs/settings/servers/Configuration.hx: 170
 Selected = Seleccionado
 
-# src/pgs/daily/Daily.hx: 97
+# src/pgs/daily/Daily.hx: 102
 # src/pgs/settings/nicks/wgs/Wnick.hx: 52
 # src/pgs/settings/nicks/wgs/Wnick.hx: 59
 # src/pgs/settings/nicks/wgs/Wnick.hx: 62
 Selection = Selección
 
-# src/pgs/acc/Balance.hx: 325
+# src/pgs/acc/Balance.hx: 321
 # src/pgs/acc/Trading.hx: 146
 # src/pgs/daily/Invs.hx: 77
 # src/pgs/settings/acc/Editor.hx: 133
@@ -735,7 +732,7 @@ Selection = Selección
 # src/pgs/settings/acc/wgs/Annotations.hx: 55
 Sell = Venta
 
-# src/pgs/acc/Balance.hx: 266
+# src/pgs/acc/Balance.hx: 262
 # src/pgs/acc/Trading.hx: 336
 # src/pgs/models/charts/Charts.hx: 319
 Sells = Ventas
@@ -767,11 +764,11 @@ Short Name is missing = Falta el nombre corto
 # src/pgs/models/tests/References.hx: 108
 Show = Mostrar
 
-# src/pgs/daily/Cos.hx: 118
+# src/pgs/daily/Cos.hx: 115
 Signal = Señal
 
-# src/pgs/daily/Daily.hx: 267
-# src/pgs/daily/Daily.hx: 269
+# src/pgs/daily/Daily.hx: 274
+# src/pgs/daily/Daily.hx: 276
 Sleeping = Dormido
 
 # src/pgs/settings/nicks/Editor.hx: 316
@@ -794,8 +791,8 @@ Speedometers = Velocímetros
 # src/pgs/settings/nicks/Editor.hx: 453
 State = Estado
 
-# src/pgs/acc/Balance.hx: 239
-# src/pgs/acc/Balance.hx: 309
+# src/pgs/acc/Balance.hx: 235
+# src/pgs/acc/Balance.hx: 305
 # src/pgs/acc/Speedometers.hx: 108
 # src/pgs/acc/Trading.hx: 114
 # src/pgs/acc/Trading.hx: 132
@@ -816,8 +813,8 @@ Stocks(Operations) = Acc.
 Stopped = Detenido
 
 # src/pgs/acc/Speedometers.hx: 156
-# src/pgs/daily/Daily.hx: 91
-# src/pgs/daily/Summary.hx: 113
+# src/pgs/daily/Daily.hx: 96
+# src/pgs/daily/Summary.hx: 127
 Summary = Resumen
 
 # src/pgs/settings/servers/Configuration.hx: 258
@@ -840,10 +837,10 @@ Test ok. = Test correcto.
 # src/pgs/models/Models.hx: 99
 Tests = Pruebas
 
-# src/pgs/acc/Balance.hx: 197
+# src/pgs/acc/Balance.hx: 193
 To withdraw = Para retirar
 
-# src/pgs/acc/Balance.hx: 185
+# src/pgs/acc/Balance.hx: 181
 Total bet = Apuesta total
 
 # src/pgs/settings/nicks/Nicks.hx: 190
@@ -870,7 +867,7 @@ User = Usuario
 # src/Authentication.hx: 33
 User name is missing = Falta indicar el nombre del usuario
 
-# src/pgs/acc/Balance.hx: 334
+# src/pgs/acc/Balance.hx: 330
 # src/pgs/acc/Speedometers.hx: 162
 # src/pgs/acc/Speedometers.hx: 198
 Value = Valor

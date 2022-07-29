@@ -20,7 +20,7 @@ class Cos {
   var data: Array<DailyChart>;
   var parent: Daily;
 
-  // type can be "all", "sel" or "portfolio"
+  // Can be "all", "sel", "portfolio" or "invN"
   function new (
     wg: Domo, parent: Daily, type: String, data: Array<DailyChart>
   ) {
@@ -48,45 +48,42 @@ class Cos {
         data = dataPond.map(e -> e.data);
       case SIGNAL:
         final dataPond = data.map(d -> {
+            final isReverse = parent.reverse;
             final quote = d.quotes[d.quotes.length - 1];
-            var psel = None;
-            for (e in d.investorsData) {
-              final isSell = e.ref < d.close;
-              final dif = type == "portfolio"
-                ? e.stocks > 0
-                  ? Some(1 - (quote - e.ref) / quote)
-                  : None
-                : isSell
-                  ? Some(1 - (quote - e.ref) / quote)
-                  : Some(1 - (e.ref - quote) / e.ref)
+            var pond = 0.0;
+            for (i in 0...d.investorsData.length) {
+              final id = d.investorsData[i];
+              final isSell = id.ref < d.close;
+              final v = id.ref < d.close
+                ? 1 - (quote - id.ref) / quote
+                : 1 - (id.ref - quote) / id.ref
               ;
-              final p = switch(dif){
-                case None: None;
-                case Some(d): Some(100 * d);
-              }
-              if (parent.reverse && type == "portfolio") {
-                psel = switch (p) {
-                  case None: psel;
-                  case Some(v): switch (psel) {
-                    case None: Some(v);
-                    case Some(sv): Some(v < sv ? v : sv);
-                  }
+              pond = switch (type) {
+                case "portfolio": {
+                  final v2 = id.cought ? 1 - (id.ref - quote) / id.ref : v;
+                  id.stocks > 0
+                    ? isReverse
+                      ? v < pond ? v : pond
+                      : v >= pond ? v : pond
+                    : pond
+                  ;
                 }
-              } else {
-                psel = switch (p) {
-                  case None: psel;
-                  case Some(v): switch (psel) {
-                    case None: Some(v);
-                    case Some(sv): Some(v > sv ? v : sv);
-                  }
+                case "sel": {
+                  final inv = Selection.investor(d.nick);
+                  inv == -1
+                    ? isReverse
+                      ? v < pond ? v : pond
+                      : v >= pond ? v : pond
+                    : inv == i ? v : pond
+                  ;
                 }
+                default:
+                  isReverse
+                    ? v < pond ? v : pond
+                    : v >= pond ? v : pond;
               }
-            };
-            final pselv = switch(psel) {
-              case None: 0.0;
-              case Some(v): v;
             }
-            return {data: d, pond: pselv}
+            return {data: d, pond: pond}
           });
         dataPond.sort((e1, e2) -> e2.pond > e1.pond ? 1 : -1);
         data = dataPond.map(e -> e.data);
@@ -141,8 +138,8 @@ class Cos {
               }
               final d = data[ix];
               return Q("td")
-                .add(ChSmall.mk(d, (isAdd, nick) -> {
-                  changeSel(isAdd, nick);
+                .add(ChSmall.mk(type == "sel", d, (isAdd, nick, inv) -> {
+                  changeSel(isAdd, nick, inv);
                 }))
               ;
             }).to())
@@ -159,9 +156,9 @@ class Cos {
 
   // Control -------------------------------------------------------------------
 
-  function changeSel (isAdd: Bool, nick: String): Void {
+  function changeSel (isAdd: Bool, nick: String, inv: Int): Void {
     if (isAdd) {
-      Selection.add(nick);
+      Selection.add(nick, inv);
     } else {
       Selection.remove(nick);
     }
@@ -183,7 +180,7 @@ class Cos {
   /// Constructor
   ///   wg: Container.
   ///   parent: Container class.
-  ///   type: Can be "all", "sel" or "portfolio"
+  ///   type: Can be "all", "sel", "portfolio" or "invN"
   ///   chartsData: Charts data.
   public static function mk (
     wg:Domo, parent: Daily, type: String, chartsData: Array<DailyChart>

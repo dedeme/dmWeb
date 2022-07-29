@@ -35,10 +35,7 @@ func New(general *TimetableT, holidays []string, specialDays []*MarketDayT) *T {
 func IsMarketDay(cal *T, tm int64) bool {
 	wd := time.Weekday(tm)
 	d := time.ToStr(tm)
-	return wd > 0 && wd < 6 &&
-		arr.Index(cal.Holidays, func(h string) bool {
-			return h == d
-		}) == -1
+	return wd > 0 && wd < 6 && !arr.Any(cal.Holidays, d)
 }
 
 // Returns true if is time to Watch market.

@@ -5,10 +5,14 @@
 package daily
 
 import (
+	"github.com/dedeme/KtMarket/cts"
+	"github.com/dedeme/KtMarket/data/acc"
 	"github.com/dedeme/KtMarket/db"
+	"github.com/dedeme/KtMarket/db/acc/diariesDb"
 	"github.com/dedeme/KtMarket/net"
 	"github.com/dedeme/ktlib/cgi"
 	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/lst"
 	"github.com/dedeme/ktlib/thread"
 )
 
@@ -20,6 +24,8 @@ func Process(ck string, mrq cgi.T) string {
 		var act string
 		var sv string
 		var chartsData string
+		var ixsData string
+		var capitals string
 		thread.Sync(func() {
 			act = db.ConfTb().Read().Activity.Activity
 			svs := db.ServerBoxTb().Read().Servers
@@ -29,12 +35,21 @@ func Process(ck string, mrq cgi.T) string {
 			}
 			sv = svs[0]
 			chartsData = db.DailyChartTb().ReadJs()
+			ixsData = db.IndexesChartTb().ReadJs()
+			capitals = js.Wa(
+				lst.Map(lst.NewRange0(cts.Investors), func(inv int) string {
+					anns := diariesDb.ReadAnnotations(inv)
+					ld, _, _, _ := acc.Settlement(anns)
+					return js.Wd(-ld.Capital)
+				}).ToArr())
 		})
 
 		return cgi.Rp(ck, cgi.T{
-			"activity":   js.Ws(act),
-			"server":     js.Ws(sv),
-			"chartsData": chartsData,
+			"activity":    js.Ws(act),
+			"server":      js.Ws(sv),
+			"chartsData":  chartsData,
+			"indexesData": ixsData,
+			"capitals":    capitals,
 		})
 
 	case "newServer":
@@ -45,8 +60,8 @@ func Process(ck string, mrq cgi.T) string {
 
 	case "reactivate":
 		thread.Sync(func() {
-			db.ActivateDailyCharts()
-			db.UpdateDailyCharts(net.ServerReadDaily)
+			db.ActivateDailyCharts(net.ReadIndexes)
+			db.UpdateDailyCharts(net.ServerReadDaily, net.ReadIndexes)
 			db.UpdateHistoricProfits()
 		})
 		return cgi.RpEmpty(ck)

@@ -2,4 +2,5 @@ module github.com/dedeme/KtMMarket
 
 go 1.18
 
-require github.com/dedeme/ktlib v0.0.0-20220701120424-df1d8facdac9
+// v2022.07
+require github.com/dedeme/ktlib v0.0.0-20220718165232-1a9f579e0321

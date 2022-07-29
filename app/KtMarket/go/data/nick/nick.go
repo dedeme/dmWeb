@@ -196,7 +196,7 @@ func (t *TbT) Modify(nickId int, name string) (
 		return
 	}
 
-	if arr.Any(t.List, func(n *T) bool {
+	if arr.Anyf(t.List, func(n *T) bool {
 		return n.Name == name
 	}) {
 		return

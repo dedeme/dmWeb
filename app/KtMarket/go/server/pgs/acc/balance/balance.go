@@ -7,9 +7,8 @@ package balance
 import (
 	"github.com/dedeme/KtMarket/cts"
 	"github.com/dedeme/KtMarket/data/acc"
+	"github.com/dedeme/KtMarket/data/invOperation"
 	"github.com/dedeme/KtMarket/data/nick"
-	"github.com/dedeme/KtMarket/data/refBase"
-	"github.com/dedeme/KtMarket/data/strategy"
 	"github.com/dedeme/KtMarket/db"
 	"github.com/dedeme/KtMarket/db/acc/diariesDb"
 	"github.com/dedeme/ktlib/arr"
@@ -29,7 +28,7 @@ func Process(ck string, mrq cgi.T) string {
 		var portfolios []string
 
 		thread.Sync(func() {
-			refs := db.RefBasesTb().Read().Refs
+			invOps := db.InvOperationsTb().Read().Operations
 			invs := db.InvestorsTb().Read().Investors
 			for i := 0; i < cts.Investors; i++ {
 				inv := invs[i]
@@ -52,32 +51,20 @@ func Process(ck string, mrq cgi.T) string {
 						log.Error("Nick " + e.Nick + " not found")
 						return
 					}
-					_, closes, err := db.CurrentCloses(nk)
+
+					_, allCloses, err := db.CurrentCloses(nk)
 					if err != "" {
 						log.Error(err)
-						return
+						continue
 					}
-
-					st, ok2 := inv.Nicks[e.Nick]
-					if !ok2 {
-						log.Error("Strategy for " + e.Nick + " not found")
-						return
-					}
-
-					ref := -1.0
-					initRef, ok := arr.Find(refs, func(r *refBase.T) bool {
-						return r.Nick.Name == e.Nick && strategy.Eq(r.Strategy, st)
-					})
-					if ok {
-						ref = initRef.Ref
-						closes = arr.Drop(closes, len(closes)-cts.ReferenceQuotes)
-					}
-
+					closes := arr.Drop(allCloses, len(allCloses)-cts.ReferenceQuotes)
 					lastClose := closes[len(closes)-1]
-					lastRef := strategy.LastRef(st, closes, ref)
-					if lastRef > lastClose { // Sell situation.
-						lastRef = lastClose
-					}
+
+					cought := arr.Anyf(invOps, func(iv *invOperation.T) bool {
+						return iv.Investor == i && iv.Nick == nk.Name
+					})
+					lastRef :=
+						db.LastRef(inv, nk.Name, cought, closes, allCloses, lastClose)
 
 					pf = append(pf, acc.NewPfEntry(
 						e.Nick, e.Stocks, e.Price, lastClose, lastRef,
