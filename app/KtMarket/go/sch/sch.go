@@ -23,7 +23,7 @@ import (
 
 var Busy bool
 
-func historicUpdate() {
+func HistoricUpdate() {
 	log.Warning("Historic update")
 
 	var nks []*nick.T
@@ -101,7 +101,7 @@ func Start() {
 			if time.ToStr(act.Time) != time.ToStr(now) ||
 				time.Hour(act.Time) < cts.ActHistoricStart {
 				if time.Hour(now) > cts.ActHistoricStart {
-					historicUpdate()
+					HistoricUpdate()
 					act = activity.NewNow(cts.ActSleeping)
 					confTb.Activity = act
 					confDb.Write(confTb)

@@ -6,14 +6,15 @@ package model
 
 import (
 	"github.com/dedeme/KtMarket/data/model/docs/qfixDoc"
+	"github.com/dedeme/KtMarket/data/reference"
 	"github.com/dedeme/ktlib/math"
 )
 
 func qfixCalc(
 	closes [][]float64,
 	params []float64,
-	refs []float64,
-	action func(closes, refs []float64),
+	refs []*reference.T,
+	action func(closes []float64, refs []*reference.T),
 ) {
 	jmp := params[0] + 1.0
 	lgJmp := math.Log(jmp)
@@ -47,31 +48,31 @@ func qfixCalc(
 	pvrow := make([]float64, nCos)
 	for i, cl := range closes[0] {
 		pvrow[i] = cl
-		if refs[i] < 0 {
-			refs[i] = downGap(cl) / jmp
+		if refs[i].Ref < 0 {
+			refs[i] = reference.New(downGap(cl)/jmp, true)
 		}
 	}
 
 	for _, row := range closes {
-		var newRefs []float64
+		var newRefs []*reference.T
 
 		for i, q := range row {
 			q0 := pvrow[i]
 			ref := refs[i]
 
-			if q0 < ref {
-				if q < q0 {
-					newRefs = append(newRefs, upGap2(q, ref))
-				} else if q > ref {
-					newRefs = append(newRefs, downGap(q))
+			if q0 >= ref.Ref { // InPortfolio
+				if q > q0 {
+					newRefs = append(newRefs, reference.New(downGap2(q, ref.Ref), true))
+				} else if q < ref.Ref {
+					newRefs = append(newRefs, reference.New(upGap(q), false))
 				} else {
 					newRefs = append(newRefs, ref)
 				}
 			} else {
-				if q > q0 {
-					newRefs = append(newRefs, downGap2(q, ref))
-				} else if q < ref {
-					newRefs = append(newRefs, upGap(q))
+				if q < q0 {
+					newRefs = append(newRefs, reference.New(upGap2(q, ref.Ref), false))
+				} else if q > ref.Ref {
+					newRefs = append(newRefs, reference.New(downGap(q), true))
 				} else {
 					newRefs = append(newRefs, ref)
 				}

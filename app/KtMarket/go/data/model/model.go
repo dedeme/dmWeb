@@ -5,6 +5,7 @@
 package model
 
 import (
+	"github.com/dedeme/KtMarket/data/reference"
 	"github.com/dedeme/ktlib/arr"
 	"github.com/dedeme/ktlib/js"
 )
@@ -30,18 +31,16 @@ type T struct {
 	// Function to calculate operations.
 	//    closes: Closes in matrix 'dates x cos' ordered from before to after.
 	//    params: Values to calculate.
-	//    refs  : Initial references. If value < 0 the reference is discarded.
+	//    refs  : Initial references. If ref.Ref < 0 the reference is discarded.
 	//    action: Function called after calculate 'refs'
-	//            When closes[i] >= refs[i], position is bought.
-	//            When closes[i] < refs[i], position is sold.
 	//            Params:
 	//              closes: Last closes. One for each company.
 	//              refs  : Last references. One for each company.
 	Calc func(
 		closes [][]float64,
 		params []float64,
-		refs []float64,
-		action func(closes []float64, refs []float64))
+		refs []*reference.T,
+		action func(closes []float64, refs []*reference.T))
 }
 
 // NOTE: Parameter m.Calc is not serialized.

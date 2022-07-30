@@ -8,6 +8,7 @@ import (
 	"github.com/dedeme/KtMarket/data/model"
 	"github.com/dedeme/KtMarket/data/quote"
 	"github.com/dedeme/KtMarket/data/strategy"
+	"github.com/dedeme/KtMarket/data/reference"
 	"github.com/dedeme/KtMarket/db"
 	"github.com/dedeme/ktlib/arr"
 	"github.com/dedeme/ktlib/cgi"
@@ -56,7 +57,12 @@ func Process(ck string, mrq cgi.T) string {
 			maxs := quote.Maxs(qs)
 
 			st := strategy.New(md, params)
-			refs = strategy.Refs(st, closes, -1)
+			refs = arr.Map(
+        strategy.Refs(st, closes, reference.New(-1, true)),
+        func (r *reference.T) float64{
+          return r.Ref
+        },
+      )
 
 			_, _, _, _, _, _, _, _, profitss :=
 				strategy.Simulation(st, dates, []string{nickName},

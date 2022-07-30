@@ -6,13 +6,14 @@ package model
 
 import (
 	"github.com/dedeme/KtMarket/data/model/docs/qmobDoc"
+	"github.com/dedeme/KtMarket/data/reference"
 )
 
 func qmobCalc(
 	closes [][]float64,
 	params []float64,
-	refs []float64,
-	action func(closes, refs []float64),
+	refs []*reference.T,
+	action func(closes []float64, refs []*reference.T),
 ) {
 	gap := params[0]
 	nCos := len(closes[0])
@@ -29,55 +30,42 @@ func qmobCalc(
 		}
 	}
 
-	isSolds := make([]bool, nCos)
 	for i, c := range pvrow {
-		rf := refs[i]
-		if rf < 0 {
-			refs[i] = c * (1 - gap)
-		} else {
-			if rf > c {
-				isSolds[i] = true
-			}
+		if refs[i].Ref < 0 {
+			refs[i] = reference.New(c*(1-gap), true)
 		}
 	}
 
 	for _, cs := range closes {
-		newRefs := make([]float64, nCos)
-		newIsSolds := make([]bool, nCos)
+		newRefs := make([]*reference.T, nCos)
 
 		for i, c := range cs {
 			rf := refs[i]
-			isSold := isSolds[i]
 
-			if isSold {
-				if c > rf {
-					// newIsSolds[i] = false
-					newRefs[i] = c * (1 - gap)
+			if rf.InPortfolio {
+				if c < rf.Ref {
+					newRefs[i] = reference.New(c*(1+gap), false)
 				} else {
-					newIsSolds[i] = true
-					newRef := c * (1 + gap)
-					if newRef > rf {
-						newRef = rf
+					newRef := c * (1 - gap)
+					if newRef < rf.Ref {
+						newRef = rf.Ref
 					}
-					newRefs[i] = newRef
+					newRefs[i] = reference.New(newRef, true)
 				}
 			} else {
-				if c < rf {
-					newIsSolds[i] = true
-					newRefs[i] = c * (1 + gap)
+				if c > rf.Ref {
+					newRefs[i] = reference.New(c*(1-gap), true)
 				} else {
-					// newIsSolds[i] = false
-					newRef := c * (1 - gap)
-					if newRef < rf {
-						newRef = rf
+					newRef := c * (1 + gap)
+					if newRef > rf.Ref {
+						newRef = rf.Ref
 					}
-					newRefs[i] = newRef
+					newRefs[i] = reference.New(newRef, false)
 				}
 			}
 
 		}
 		refs = newRefs
-		isSolds = newIsSolds
 
 		action(cs, refs)
 	}

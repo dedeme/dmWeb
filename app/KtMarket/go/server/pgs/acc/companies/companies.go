@@ -9,6 +9,7 @@ import (
 	"github.com/dedeme/KtMarket/data/acc"
 	"github.com/dedeme/KtMarket/data/nick"
 	"github.com/dedeme/KtMarket/data/refBase"
+	"github.com/dedeme/KtMarket/data/reference"
 	"github.com/dedeme/KtMarket/data/server"
 	"github.com/dedeme/KtMarket/data/strategy"
 	"github.com/dedeme/KtMarket/db"
@@ -134,7 +135,7 @@ func Process(ck string, mrq cgi.T) string {
 					st = st2
 				}
 
-				ref := -1.0
+				ref := reference.New(-1, true)
 				initRef, ok := arr.Find(refBases, func(r *refBase.T) bool {
 					return r.Nick.Name == nkName && strategy.Eq(r.Strategy, st)
 				})
@@ -143,7 +144,7 @@ func Process(ck string, mrq cgi.T) string {
 				}
 
 				for j, r := range strategy.Refs(st, cls, ref) {
-					quotes[j][i+1] = r
+					quotes[j][i+1] = r.Ref
 				}
 				anns := diariesDb.ReadAnnotations(i)
 				_, portfolio, _, es := acc.Settlement(anns)

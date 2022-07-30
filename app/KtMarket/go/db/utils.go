@@ -8,6 +8,7 @@ import (
 	"github.com/dedeme/KtMarket/data/acc"
 	"github.com/dedeme/KtMarket/data/dailyChart"
 	"github.com/dedeme/KtMarket/data/invOperation"
+	"github.com/dedeme/KtMarket/data/reference"
 	"github.com/dedeme/KtMarket/data/investor"
 	"github.com/dedeme/KtMarket/data/ixsChartEntry"
 	"github.com/dedeme/KtMarket/data/nick"
@@ -86,9 +87,9 @@ func LastRef(
 		return r.Nick.Name == nkName && strategy.Eq(r.Strategy, st)
 	})
 	if ok {
-		ref = strategy.LastRef(st, closes, refBase.Ref)
+		ref = strategy.LastRef(st, closes, refBase.Ref).Ref
 	} else {
-		ref = strategy.LastRef(st, allCloses, -1)
+		ref = strategy.LastRef(st, allCloses, reference.New(-1, true)).Ref
 	}
 
 	if cought {
@@ -174,7 +175,7 @@ func UpdateInvestors() (err string) {
 				rf2 := newRfBase2.Ref
 				cl := closes[len(closes)-1]
 
-				if (rf > cl && rf2 > cl) || (rf < cl && rf2 < cl) {
+				if (rf.Ref > cl && rf2.Ref > cl) || (rf.Ref < cl && rf2.Ref < cl) {
 					st = stBase
 				} else {
 					newRefs = append(newRefs, newRfBase2)
@@ -240,15 +241,15 @@ func Operations() (err string) {
 				st = inv.Base
 			}
 
-			var refs []float64
+			var refs []*reference.T
 			refBase, ok := RefBasesTb().Read().Get(nk, st)
 			if ok {
 				refs = strategy.Refs(st, closes, refBase.Ref)
 			} else {
-				refs = strategy.Refs(st, allCloses, -1)
+				refs = strategy.Refs(st, allCloses, reference.New(-1, true))
 			}
-			lastRef := refs[len(refs)-1]
-			lastRef2 := refs[len(refs)-2]
+			lastRef := refs[len(refs)-1].Ref
+			lastRef2 := refs[len(refs)-2].Ref
 
 			if lastRef > lastClose || isCought {
 				pfEntry, ok := arr.Find(pfs[i], func(e *acc.PfEntryT) bool {

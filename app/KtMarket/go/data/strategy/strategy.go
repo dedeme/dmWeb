@@ -9,6 +9,7 @@ import (
 	"github.com/dedeme/KtMarket/data/broker"
 	"github.com/dedeme/KtMarket/data/model"
 	"github.com/dedeme/KtMarket/data/order"
+	"github.com/dedeme/KtMarket/data/reference"
 	"github.com/dedeme/ktlib/arr"
 	"github.com/dedeme/ktlib/js"
 	"github.com/dedeme/ktlib/math"
@@ -64,24 +65,26 @@ func FromJsTb(j string) *T {
 // Returns references (one for each close) of one company
 //  s      : Strategy.
 //  closes : Company closes (from before to after), with at least one element.
-//  initRef: Initial reference or -1 if there is no one.
-func Refs(s *T, closes []float64, initRef float64) []float64 {
-	var r []float64
+//  initRef: Initial reference or initRef.Ref == -1 if there is no one.
+func Refs(s *T, closes []float64, initRef *reference.T) []*reference.T {
+	var r []*reference.T
 
 	acloses := arr.Map(closes, func(c float64) []float64 {
 		return []float64{c}
 	})
-	s.Model.Calc(acloses, s.Params, []float64{initRef}, func(cs, rs []float64) {
-		r = append(r, rs[0])
-	})
+	s.Model.Calc(acloses, s.Params, []*reference.T{initRef},
+		func(cs []float64, rs []*reference.T,
+		) {
+			r = append(r, rs[0])
+		})
 	return r
 }
 
 // Returns the last reference of one company
 //  s      : Strategy.
 //  closes : Company closes (from before to after), with at least one element.
-//  initRef: Initial reference or -1 if there is no one.
-func LastRef(s *T, closes []float64, initRef float64) float64 {
+//  initRef: Initial reference or 'initRef.Ref == -1' if there is no one.
+func LastRef(s *T, closes []float64, initRef *reference.T) *reference.T {
 	r := Refs(s, closes, initRef)
 	return r[len(r)-1]
 }
@@ -90,13 +93,17 @@ func LastRef(s *T, closes []float64, initRef float64) float64 {
 //  s      : Strategy.
 //  closes : Companies group closes (from before to after), every one with at
 //           least one element.
-//  initRef: Initial reference for each company or -1 if there is no one.
-func AllRefs(s *T, closes [][]float64, initRefs []float64) [][]float64 {
-	var r [][]float64
+//  initRef: Initial reference for each company or 'initRef.Ref == -1' if there is no one.
+func AllRefs(
+	s *T, closes [][]float64, initRefs []*reference.T,
+) [][]*reference.T {
+	var r [][]*reference.T
 
-	s.Model.Calc(closes, s.Params, initRefs, func(cs, rs []float64) {
-		r = append(r, rs)
-	})
+	s.Model.Calc(closes, s.Params, initRefs,
+		func(cs []float64, rs []*reference.T,
+		) {
+			r = append(r, rs)
+		})
 	return r
 }
 
@@ -120,7 +127,7 @@ func AllRefs(s *T, closes [][]float64, initRefs []float64) [][]float64 {
 func Simulation(
 	s *T, dates []string, nks []string, opens, closes, maxs [][]float64,
 ) (orders []*order.T, hassets, hwithdrawal []float64, cash, refAssets float64,
-	refs [][]float64, buys, sales [][]string, profits []float64,
+	refs [][]*reference.T, buys, sales [][]string, profits []float64,
 ) {
 	nDates := len(dates)
 	nCos := len(nks)
@@ -129,20 +136,19 @@ func Simulation(
 
 	hassets = make([]float64, nDates)
 	hwithdrawal = make([]float64, nDates)
-	refs = make([][]float64, nDates)
+	refs = make([][]*reference.T, nDates)
 	for i := range dates {
-		refs[i] = make([]float64, nCos)
+		refs[i] = make([]*reference.T, nCos)
 	}
 	buys = make([][]string, nCos)
 	sales = make([][]string, nCos)
 	profits = make([]float64, nCos)
 
 	prfCashs := make([]float64, nCos)
-	toSells := make([]bool, nCos)
-	initRefs := make([]float64, nCos)
+	initRefs := make([]*reference.T, nCos)
+  inPortfolios := make([]bool, nCos)
 	for i := 0; i < nCos; i++ {
-		initRefs[i] = -1.0
-		toSells[i] = true
+		initRefs[i] = reference.New(-1.0, true)
 		prfCashs[i] = cts.Bet
 	}
 	toDos := make([]bool, nCos)
@@ -154,7 +160,9 @@ func Simulation(
 	prfCoughts := make([]bool, nCos)
 	ix := 0
 
-	s.Model.Calc(closes, s.Params, initRefs, func(cs, rs []float64) {
+	s.Model.Calc(closes, s.Params, initRefs,
+    func(cs[] float64, rs []*reference.T,
+  ) {
 		refs[ix] = rs
 		date := dates[ix]
 		os := opens[ix]
@@ -165,11 +173,11 @@ func Simulation(
 			op := os[i]
 			cl := cs[i]
 			rf := rs[i]
-			toSell := toSells[i]
+			inPortfolio := inPortfolios[i]
 			toDo := toDos[i]
 
 			if toDo {
-				if toSell { // there is buy order.
+				if inPortfolio { // there is buy order.
 					if !prfCoughts[i] {
 						prfCash := prfCashs[i]
 						stocks := int((prfCash - broker.Fees(prfCash)) / op)
@@ -244,14 +252,14 @@ func Simulation(
 				assets += broker.Sell(stks, cl)
 			}
 
-			if toSell {
-				if rf > cl {
+			if inPortfolio {
+				if !rf.InPortfolio {
 					toDos[i] = true
-					toSells[i] = false
+					inPortfolios[i] = false
 				}
-			} else if rf < cl {
+			} else if rf.InPortfolio {
 				toDos[i] = true
-				toSells[i] = true
+				inPortfolios[i] = true
 			}
 		}
 
@@ -290,7 +298,7 @@ func Simulation(
 		}
 		stks = stockss[i]
 		if stks > 0 {
-			refAss += broker.Sell(stks, lastRef[i])
+			refAss += broker.Sell(stks, lastRef[i].Ref)
 		}
 	}
 	refAssets = cash + refAss

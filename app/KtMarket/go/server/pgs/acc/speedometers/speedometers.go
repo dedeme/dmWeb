@@ -7,6 +7,7 @@ package speedometers
 import (
 	"github.com/dedeme/KtMarket/cts"
 	"github.com/dedeme/KtMarket/data/acc"
+	"github.com/dedeme/KtMarket/data/reference"
 	"github.com/dedeme/KtMarket/data/nick"
 	"github.com/dedeme/KtMarket/data/refBase"
 	"github.com/dedeme/KtMarket/data/strategy"
@@ -114,14 +115,14 @@ func accData() (
 			if !ok {
 				st = inv.Base
 			}
-			initRef := -1.0
+			initRef := reference.New(-1.0, true)
 			refBase, ok := arr.Find(db.RefBasesTb().Read().Refs, func(r *refBase.T) bool {
 				return r.Nick.Name == nk.Name && strategy.Eq(r.Strategy, st)
 			})
 			if ok {
 				initRef = refBase.Ref
 			}
-			lastRef := strategy.LastRef(st, closes, initRef)
+			lastRef := strategy.LastRef(st, closes, initRef).Ref
 			if lastRef > lastClose { // Sell situation.
 				lastRef = lastClose
 			}

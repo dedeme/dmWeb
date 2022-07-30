@@ -6,59 +6,47 @@ package model
 
 import (
 	"github.com/dedeme/KtMarket/data/model/docs/apprDoc"
+	"github.com/dedeme/KtMarket/data/reference"
 )
 
 func apprCalc(
 	closes [][]float64,
 	params []float64,
-	refs []float64,
-	action func(closes, refs []float64),
+	refs []*reference.T,
+	action func(closes []float64, refs []*reference.T),
 ) {
 	start := params[0]
 	incr := params[1]
 	nCos := len(closes[0])
 
-	isSolds := make([]bool, nCos)
 	for i, c := range closes[0] {
-		rf := refs[i]
-		if rf < 0 {
-			refs[i] = c * (1 - start)
-		} else {
-			if rf > c {
-				isSolds[i] = true
-			}
+		if refs[i].Ref < 0 {
+			refs[i] = reference.New(c*(1-start), true)
 		}
 	}
 
 	for _, cs := range closes {
-		newRefs := make([]float64, nCos)
-		newIsSolds := make([]bool, nCos)
+		newRefs := make([]*reference.T, nCos)
 
 		for i, c := range cs {
 			rf := refs[i]
-			isSold := isSolds[i]
 
-			if isSold {
-				if c > rf {
-					// newIsSolds[i] = false
-					newRefs[i] = c * (1 - start)
+			if rf.InPortfolio {
+				if c < rf.Ref {
+					newRefs[i] = reference.New(c*(1+start), false)
 				} else {
-					newIsSolds[i] = true
-					newRefs[i] = rf - (rf-c)*incr
+					newRefs[i] = reference.New(rf.Ref+(c-rf.Ref)*incr, true)
 				}
 			} else {
-				if c < rf {
-					newIsSolds[i] = true
-					newRefs[i] = c * (1 + start)
+				if c > rf.Ref {
+					newRefs[i] = reference.New(c*(1-start), true)
 				} else {
-					// newIsSolds[i] = false
-					newRefs[i] = rf + (c-rf)*incr
+					newRefs[i] = reference.New(rf.Ref-(rf.Ref-c)*incr, false)
 				}
 			}
 
 		}
 		refs = newRefs
-		isSolds = newIsSolds
 
 		action(cs, refs)
 	}

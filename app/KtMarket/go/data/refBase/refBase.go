@@ -7,6 +7,7 @@ package refBase
 import (
 	"github.com/dedeme/KtMarket/cts"
 	"github.com/dedeme/KtMarket/data/nick"
+	"github.com/dedeme/KtMarket/data/reference"
 	"github.com/dedeme/KtMarket/data/strategy"
 	"github.com/dedeme/ktlib/arr"
 	"github.com/dedeme/ktlib/js"
@@ -16,10 +17,10 @@ type T struct {
 	Nick     *nick.T
 	Strategy *strategy.T
 	Date     string
-	Ref      float64
+	Ref      *reference.T
 }
 
-func New(nk *nick.T, st *strategy.T, date string, ref float64) *T {
+func New(nk *nick.T, st *strategy.T, date string, ref *reference.T) *T {
 	return &T{nk, st, date, ref}
 }
 
@@ -29,7 +30,7 @@ func MkRefBase(
 ) *T {
 	n := len(closes) - cts.ReferenceQuotes - 1
 	cs := arr.Take(closes, n)
-	lastRef := strategy.LastRef(st, cs, -1)
+	lastRef := strategy.LastRef(st, cs, reference.New(-1, true))
 	return New(nk, st, dates[n-1], lastRef)
 }
 
@@ -60,7 +61,7 @@ func ToJs(r *T) string {
 		nick.ToJs(r.Nick),
 		strategy.ToJsTb(r.Strategy),
 		js.Ws(r.Date),
-		js.Wd(r.Ref),
+		reference.ToJs(r.Ref),
 	})
 }
 
@@ -70,7 +71,7 @@ func FromJs(j string) *T {
 		nick.FromJs(a[0]),
 		strategy.FromJsTb(a[1]),
 		js.Rs(a[2]),
-		js.Rd(a[3]),
+		reference.FromJs(a[3]),
 	)
 }
 
