@@ -146,8 +146,9 @@ func Simulation(
 
 	prfCashs := make([]float64, nCos)
 	initRefs := make([]*reference.T, nCos)
-  inPortfolios := make([]bool, nCos)
+	inPortfolios := make([]bool, nCos)
 	for i := 0; i < nCos; i++ {
+		inPortfolios[i] = true
 		initRefs[i] = reference.New(-1.0, true)
 		prfCashs[i] = cts.Bet
 	}
@@ -161,128 +162,128 @@ func Simulation(
 	ix := 0
 
 	s.Model.Calc(closes, s.Params, initRefs,
-    func(cs[] float64, rs []*reference.T,
-  ) {
-		refs[ix] = rs
-		date := dates[ix]
-		os := opens[ix]
-		mxs := maxs[ix]
+		func(cs []float64, rs []*reference.T,
+		) {
+			refs[ix] = rs
+			date := dates[ix]
+			os := opens[ix]
+			mxs := maxs[ix]
 
-		assets := 0.0
-		for i, nk := range nks {
-			op := os[i]
-			cl := cs[i]
-			rf := rs[i]
-			inPortfolio := inPortfolios[i]
-			toDo := toDos[i]
+			assets := 0.0
+			for i, nk := range nks {
+				op := os[i]
+				cl := cs[i]
+				rf := rs[i]
+				inPortfolio := inPortfolios[i]
+				toDo := toDos[i]
 
-			if toDo {
-				if inPortfolio { // there is buy order.
-					if !prfCoughts[i] {
-						prfCash := prfCashs[i]
-						stocks := int((prfCash - broker.Fees(prfCash)) / op)
-						cost := broker.Buy(stocks, op)
-						for cost > prfCash {
-							stocks--
-							cost = broker.Buy(stocks, op)
+				if toDo {
+					if inPortfolio { // there is buy order.
+						if !prfCoughts[i] {
+							prfCash := prfCashs[i]
+							stocks := int((prfCash - broker.Fees(prfCash)) / op)
+							cost := broker.Buy(stocks, op)
+							for cost > prfCash {
+								stocks--
+								cost = broker.Buy(stocks, op)
+							}
+							prfStockss[i] = stocks
+							prfCashs[i] -= cost
+							buys[i] = append(buys[i], date)
+							prfPrices[i] = op
 						}
-						prfStockss[i] = stocks
-						prfCashs[i] -= cost
-						buys[i] = append(buys[i], date)
-						prfPrices[i] = op
-					}
-					if cashIn > cts.MinToBet && !coughts[i] {
-						stocks := int(cts.Bet / op)
-						stockss[i] = stocks
-						cashIn -= broker.Buy(stocks, op)
-						orders = append(orders, order.New(date, nk, order.BUY, stocks, op))
-						prices[i] = op
-					}
-				} else {
-					stocks := stockss[i]
-					if stocks > 0 && !coughts[i] {
-						if op > prices[i]*cts.NoLostMultiplicator {
-							cashIn += broker.Sell(stocks, op)
-							stockss[i] = 0
-							orders = append(orders, order.New(date, nk, order.SELL, stocks, op))
-						} else {
-							orders = append(orders, order.New(date, nk, order.CATCH, stocks, op))
-							coughts[i] = true
+						if cashIn > cts.MinToBet && !coughts[i] {
+							stocks := int(cts.Bet / op)
+							stockss[i] = stocks
+							cashIn -= broker.Buy(stocks, op)
+							orders = append(orders, order.New(date, nk, order.BUY, stocks, op))
+							prices[i] = op
+						}
+					} else {
+						stocks := stockss[i]
+						if stocks > 0 && !coughts[i] {
+							if op > prices[i]*cts.NoLostMultiplicator {
+								cashIn += broker.Sell(stocks, op)
+								stockss[i] = 0
+								orders = append(orders, order.New(date, nk, order.SELL, stocks, op))
+							} else {
+								orders = append(orders, order.New(date, nk, order.CATCH, stocks, op))
+								coughts[i] = true
+							}
+						}
+						stocks = prfStockss[i]
+						if stocks > 0 && !prfCoughts[i] {
+							if op > prfPrices[i]*cts.NoLostMultiplicator {
+								prfCashs[i] += broker.Sell(stocks, op)
+								prfStockss[i] = 0
+								sales[i] = append(sales[i], date)
+							} else {
+								prfCoughts[i] = true
+							}
 						}
 					}
-					stocks = prfStockss[i]
-					if stocks > 0 && !prfCoughts[i] {
-						if op > prfPrices[i]*cts.NoLostMultiplicator {
-							prfCashs[i] += broker.Sell(stocks, op)
-							prfStockss[i] = 0
-							sales[i] = append(sales[i], date)
-						} else {
-							prfCoughts[i] = true
-						}
+
+					toDos[i] = false
+				}
+
+				if coughts[i] {
+					price := prices[i] * cts.NoLostMultiplicator
+					if mxs[i] > price {
+						stocks := stockss[i]
+						cashIn += broker.Sell(stocks, price)
+						stockss[i] = 0
+						orders = append(orders, order.New(date, nk, order.SELL, stocks, price))
+						coughts[i] = false
 					}
 				}
 
-				toDos[i] = false
-			}
-
-			if coughts[i] {
-				price := prices[i] * cts.NoLostMultiplicator
-				if mxs[i] > price {
-					stocks := stockss[i]
-					cashIn += broker.Sell(stocks, price)
-					stockss[i] = 0
-					orders = append(orders, order.New(date, nk, order.SELL, stocks, price))
-					coughts[i] = false
+				if prfCoughts[i] {
+					price := prfPrices[i] * cts.NoLostMultiplicator
+					if mxs[i] > price {
+						stocks := prfStockss[i]
+						prfCashs[i] += broker.Sell(stocks, price)
+						prfStockss[i] = 0
+						sales[i] = append(sales[i], date)
+						prfCoughts[i] = false
+					}
 				}
-			}
 
-			if prfCoughts[i] {
-				price := prfPrices[i] * cts.NoLostMultiplicator
-				if mxs[i] > price {
-					stocks := prfStockss[i]
-					prfCashs[i] += broker.Sell(stocks, price)
-					prfStockss[i] = 0
-					sales[i] = append(sales[i], date)
-					prfCoughts[i] = false
+				stks := stockss[i]
+				if stks > 0 {
+					assets += broker.Sell(stks, cl)
 				}
-			}
 
-			stks := stockss[i]
-			if stks > 0 {
-				assets += broker.Sell(stks, cl)
-			}
-
-			if inPortfolio {
-				if !rf.InPortfolio {
+				if inPortfolio {
+					if !rf.InPortfolio {
+						toDos[i] = true
+						inPortfolios[i] = false
+					}
+				} else if rf.InPortfolio {
 					toDos[i] = true
-					inPortfolios[i] = false
+					inPortfolios[i] = true
 				}
-			} else if rf.InPortfolio {
-				toDos[i] = true
-				inPortfolios[i] = true
 			}
-		}
 
-		total := cashIn + assets
-		if total > cts.InitialCapital+cts.Bet+cts.Bet {
-			dif := total - cts.InitialCapital - cts.Bet
-			securAmount := cts.MinToBet - cts.Bet
-			withdraw := -1.0
-			if cashIn > dif+securAmount {
-				withdraw = dif
-			} else if cashIn > cts.MinToBet {
-				withdraw = math.Floor((cashIn-securAmount)/cts.Bet) * cts.Bet
+			total := cashIn + assets
+			if total > cts.InitialCapital+cts.Bet+cts.Bet {
+				dif := total - cts.InitialCapital - cts.Bet
+				securAmount := cts.MinToBet - cts.Bet
+				withdraw := -1.0
+				if cashIn > dif+securAmount {
+					withdraw = dif
+				} else if cashIn > cts.MinToBet {
+					withdraw = math.Floor((cashIn-securAmount)/cts.Bet) * cts.Bet
+				}
+				if withdraw > 0 {
+					withdrawal += withdraw
+					cashIn -= withdraw
+				}
 			}
-			if withdraw > 0 {
-				withdrawal += withdraw
-				cashIn -= withdraw
-			}
-		}
 
-		hassets[ix] = cashIn + withdrawal + assets
-		hwithdrawal[ix] = withdrawal
-		ix++
-	})
+			hassets[ix] = cashIn + withdrawal + assets
+			hwithdrawal[ix] = withdrawal
+			ix++
+		})
 
 	cash = cashIn + withdrawal
 	refAss := 0.0

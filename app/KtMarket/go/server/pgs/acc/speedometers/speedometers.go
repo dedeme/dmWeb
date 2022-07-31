@@ -7,9 +7,9 @@ package speedometers
 import (
 	"github.com/dedeme/KtMarket/cts"
 	"github.com/dedeme/KtMarket/data/acc"
-	"github.com/dedeme/KtMarket/data/reference"
 	"github.com/dedeme/KtMarket/data/nick"
 	"github.com/dedeme/KtMarket/data/refBase"
+	"github.com/dedeme/KtMarket/data/reference"
 	"github.com/dedeme/KtMarket/data/strategy"
 	"github.com/dedeme/KtMarket/db"
 	"github.com/dedeme/KtMarket/db/acc/diariesDb"

@@ -40,7 +40,7 @@ func stop() {
 }
 
 func test() {
-  sch.HistoricUpdate()
+	sch.HistoricUpdate()
 	sys.Println("All tests ok")
 }
 
