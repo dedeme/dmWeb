@@ -63,8 +63,15 @@ func Process(ck string, mrq cgi.T) string {
 					cought := arr.Anyf(invOps, func(iv *invOperation.T) bool {
 						return iv.Investor == i && iv.Nick == nk.Name
 					})
-					lastRef :=
-						db.LastRef(inv, nk.Name, cought, closes, allCloses, lastClose)
+					var lastRef float64
+					if cought {
+						lastRef = lastClose
+					} else {
+						lastRef = db.LastRef(inv, nk.Name, closes, allCloses)
+						if e.Stocks > 0 && lastRef > lastClose {
+							lastRef = lastClose
+						}
+					}
 
 					pf = append(pf, acc.NewPfEntry(
 						e.Nick, e.Stocks, e.Price, lastClose, lastRef,

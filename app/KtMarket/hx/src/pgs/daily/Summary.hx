@@ -219,7 +219,9 @@ class Summary {
     }
     for (i in 0...3) {
       for (j in 0...ixsData[0].ixs.length) {
-        sets[j][i] = Some(0.0);
+        if (i < ixsData.length) {
+          sets[j][i] = Some(0.0);
+        }
       }
     }
 

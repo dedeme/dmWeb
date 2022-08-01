@@ -73,11 +73,10 @@ func CurrentCloses(nk *nick.T) (dates []string, closes []float64, err string) {
 	return
 }
 
-// Returns the last ref of
+// Returns the last ref
 func LastRef(
-	inv *investor.T, nkName string, cought bool,
-	closes, allCloses []float64, lastClose float64,
-) (ref float64) {
+	inv *investor.T, nkName string, closes, allCloses []float64,
+) float64 {
 	st, ok := inv.Nicks[nkName]
 	if !ok {
 		st = inv.Base
@@ -87,17 +86,9 @@ func LastRef(
 		return r.Nick.Name == nkName && strategy.Eq(r.Strategy, st)
 	})
 	if ok {
-		ref = strategy.LastRef(st, closes, refBase.Ref).Ref
-	} else {
-		ref = strategy.LastRef(st, allCloses, reference.New(-1, true)).Ref
+		return strategy.LastRef(st, closes, refBase.Ref).Ref
 	}
-
-	if cought {
-		ref = lastClose
-	} else if ref > lastClose { // Sell situation.
-		ref = lastClose
-	}
-	return
+	return strategy.LastRef(st, allCloses, reference.New(-1, true)).Ref
 }
 
 // Modify 'investors.tb' and 'refsBase.tb'
@@ -319,7 +310,7 @@ func ActivateDailyCharts(readIndexes func() ([]float64, string)) {
 		return nk.IsSel
 	})
 	nks := arr.Map(selNicks, func(nk *nick.T) *dailyChart.T {
-		close := 0.0
+		lastClose := 0.0
 		hours := []int{0}
 		quotes := []float64{0}
 		invs := InvestorsTb().Read().Investors
@@ -330,20 +321,19 @@ func ActivateDailyCharts(readIndexes func() ([]float64, string)) {
 				st.Params, 0.0, 0.0, 0.0, false, false)
 		}
 
-		r := dailyChart.New(nk.Name, close, hours, quotes, invsData)
 		qs, err := QsRead(nk.Name)
 		if err != "" {
 			log.Error(err)
-			return r
+			return dailyChart.New(nk.Name, lastClose, hours, quotes, invsData)
 		}
 		allCloses := quote.Closes(qs)
 		qs = arr.Take(qs, cts.ReferenceQuotes)
 		closes := quote.Closes(qs)
-		close = closes[len(closes)-1]
+		lastClose = closes[len(closes)-1]
 
 		tm := time.Now()
 		hours[0] = time.Hour(tm)
-		quotes[0] = close
+		quotes[0] = lastClose
 
 		for i := 0; i < cts.Investors; i++ {
 			pfE, ok := arr.Find(pfs[i], func(e *acc.PfEntryT) bool {
@@ -356,25 +346,24 @@ func ActivateDailyCharts(readIndexes func() ([]float64, string)) {
 					return n == nk.Name
 				}) { // BUY TODAY
 					invsData[i].TodayBuy = true
-				} else if _, ok := arr.Find(invOps, func(io *invOperation.T) bool {
-					return io.Investor == i && io.Nick == nk.Name
-				}); ok { // IN JAIL
-					invsData[i].Cought = true
-					invsData[i].Ref = pfE.Price * cts.NoLostMultiplicator
-
-					continue
 				}
 			}
 
 			cought := arr.Anyf(invOps, func(iv *invOperation.T) bool {
 				return iv.Investor == i && iv.Nick == nk.Name
 			})
-			invsData[i].Ref =
-				LastRef(invs[i], nk.Name, cought, closes, allCloses, close)
-
+			if cought && ok {
+				invsData[i].Ref = pfE.Price * cts.NoLostMultiplicator
+				invsData[i].Cought = true
+			} else {
+				invsData[i].Ref = LastRef(invs[i], nk.Name, closes, allCloses)
+				//        if ok && invsData[i].Ref > lastClose {
+				//          invsData[i].Ref = lastClose
+				//        }
+			}
 		}
 
-		return dailyChart.New(nk.Name, close, hours, quotes, invsData)
+		return dailyChart.New(nk.Name, lastClose, hours, quotes, invsData)
 	})
 
 	DailyChartTb().Write(dailyChart.NewTb(nks))
@@ -521,7 +510,15 @@ func UpdateHistoricProfits() {
 			cought := arr.Anyf(invOps, func(iv *invOperation.T) bool {
 				return iv.Investor == i && iv.Nick == nk.Name
 			})
-			lastRef := LastRef(inv, nk.Name, cought, closes, allCloses, lastClose)
+			var lastRef float64
+			if cought {
+				lastRef = lastClose
+			} else {
+				lastRef = LastRef(inv, nk.Name, closes, allCloses)
+				if e.Stocks > 0 && lastRef > lastClose {
+					lastRef = lastClose
+				}
+			}
 
 			if cought && e.Price > lastClose {
 				losses += float64(e.Stocks) * (e.Price - lastClose)
@@ -533,5 +530,4 @@ func UpdateHistoricProfits() {
 		profitsDb.Add(i, total, account, risk)
 		jailLossesDb.Add(i, losses)
 	}
-
 }
