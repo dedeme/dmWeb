@@ -68,7 +68,7 @@ func newAppr() *T {
 			"Aproximación",
 		},
 		[]float64{
-			0.16,
+			0.04,
 			0.004,
 		},
 		[]float64{

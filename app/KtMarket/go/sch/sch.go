@@ -53,7 +53,7 @@ func dailyUpdate() {
 }
 
 func dailyActivate() {
-	log.Warning("Daily activiate")
+	log.Warning("Daily activate")
 	db.DailyTb().Write(nick.NewTbIdVal(time.ToStr(time.Now()), []*nick.IdValT{}))
 	err := db.UpdateInvestors()
 	if err != "" {
@@ -65,7 +65,7 @@ func dailyActivate() {
 }
 
 func dailyDeactivate() {
-	log.Warning("Daily deactiviate")
+	log.Warning("Daily deactivate")
 	err := db.UpdateInvestors()
 	if err != "" {
 		log.Error(err)

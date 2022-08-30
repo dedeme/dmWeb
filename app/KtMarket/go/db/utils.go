@@ -75,7 +75,7 @@ func CurrentCloses(nk *nick.T) (dates []string, closes []float64, err string) {
 
 // Returns the last ref
 func LastRef(
-	inv *investor.T, nkName string, closes, allCloses []float64,
+	inv *investor.T, nkName string, closes []float64,
 ) float64 {
 	st, ok := inv.Nicks[nkName]
 	if !ok {
@@ -86,9 +86,10 @@ func LastRef(
 		return r.Nick.Name == nkName && strategy.Eq(r.Strategy, st)
 	})
 	if ok {
+    closes = arr.Drop(closes, len(closes)-cts.ReferenceQuotes)
 		return strategy.LastRef(st, closes, refBase.Ref).Ref
 	}
-	return strategy.LastRef(st, allCloses, reference.New(-1, true)).Ref
+	return strategy.LastRef(st, closes, reference.New(-1, true)).Ref
 }
 
 // Modify 'investors.tb' and 'refsBase.tb'
@@ -154,21 +155,20 @@ func UpdateInvestors() (err string) {
 			}
 
 			if !strategy.Eq(st, stBase) {
-				rfBase2, ok := refsTb.Get(nk, st)
-				var newRfBase2 *refBase.T
-				if ok {
-					newRfBase2 = refBase.UpdateRefBase(rfBase2, dates, closes)
-				} else {
-					newRfBase2 = refBase.MkRefBase(nk, st, dates, closes)
-				}
-
-				rf := newRfBase.Ref
-				rf2 := newRfBase2.Ref
+				rf := strategy.LastRef(stBase, closes, newRfBase.Ref)
+				rf2 := strategy.LastRef(st, closes, reference.NewEmpty())
 				cl := closes[len(closes)-1]
 
 				if (rf.Ref > cl && rf2.Ref > cl) || (rf.Ref < cl && rf2.Ref < cl) {
 					st = stBase
 				} else {
+					rfBase2, ok := refsTb.Get(nk, st)
+					var newRfBase2 *refBase.T
+					if ok {
+						newRfBase2 = refBase.UpdateRefBase(rfBase2, dates, closes)
+					} else {
+						newRfBase2 = refBase.MkRefBase(nk, st, dates, closes)
+					}
 					newRefs = append(newRefs, newRfBase2)
 				}
 			}
@@ -326,8 +326,6 @@ func ActivateDailyCharts(readIndexes func() ([]float64, string)) {
 			log.Error(err)
 			return dailyChart.New(nk.Name, lastClose, hours, quotes, invsData)
 		}
-		allCloses := quote.Closes(qs)
-		qs = arr.Take(qs, cts.ReferenceQuotes)
 		closes := quote.Closes(qs)
 		lastClose = closes[len(closes)-1]
 
@@ -356,7 +354,7 @@ func ActivateDailyCharts(readIndexes func() ([]float64, string)) {
 				invsData[i].Ref = pfE.Price * cts.NoLostMultiplicator
 				invsData[i].Cought = true
 			} else {
-				invsData[i].Ref = LastRef(invs[i], nk.Name, closes, allCloses)
+				invsData[i].Ref = LastRef(invs[i], nk.Name, closes)
 				//        if ok && invsData[i].Ref > lastClose {
 				//          invsData[i].Ref = lastClose
 				//        }
@@ -499,12 +497,11 @@ func UpdateHistoricProfits() {
 				log.Error("Nick " + e.Nick + " not found")
 				continue
 			}
-			_, allCloses, err := CurrentCloses(nk)
+			_, closes, err := CurrentCloses(nk)
 			if err != "" {
 				log.Error(err)
 				continue
 			}
-			closes := arr.Drop(allCloses, len(allCloses)-cts.ReferenceQuotes)
 			lastClose := closes[len(closes)-1]
 
 			cought := arr.Anyf(invOps, func(iv *invOperation.T) bool {
@@ -514,7 +511,7 @@ func UpdateHistoricProfits() {
 			if cought {
 				lastRef = lastClose
 			} else {
-				lastRef = LastRef(inv, nk.Name, closes, allCloses)
+				lastRef = LastRef(inv, nk.Name, closes)
 				if e.Stocks > 0 && lastRef > lastClose {
 					lastRef = lastClose
 				}

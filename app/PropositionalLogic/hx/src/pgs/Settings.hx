@@ -8,6 +8,7 @@ import dm.Ui;
 import dm.Ui.Q;
 import dm.Js;
 import dm.Store;
+import data.AtomSet;
 import I18n._;
 import I18n._args;
 
@@ -24,6 +25,7 @@ class Settings {
   // View ----------------------------------------------------------------------
 
   public function show (): Void {
+    final set = AtomSet.currentSet();
     wg
       .removeAll()
       .add(Q("div")
@@ -36,6 +38,42 @@ class Settings {
           .add(Q("tr")
             .add(Q("td")
               .klass("frame")
+              .add(Q("div")
+                .add(Q("span")
+                  .html(_("Select Leters for Atomic Propositions")))
+                .add(Q("br"))
+                .add(Q("table")
+                  .att("align", "center")
+                  .klass("flat")
+                  .add(Q("tr")
+                    .add(Q("td")
+                      .add(Q("input")
+                        .att("type", "radio")
+                        .att("name", "set")
+                        .checked(set == 0)
+                        .on(CLICK, () -> setAtomicSet(0))))
+                    .add(Q("td")
+                      .html(AtomSet.sample(0).join(", "))))
+                  .add(Q("tr")
+                    .add(Q("td")
+                      .add(Q("input")
+                        .att("type", "radio")
+                        .att("name", "set")
+                        .checked(set == 1)
+                        .on(CLICK, () -> setAtomicSet(1))))
+                    .add(Q("td")
+                      .html(AtomSet.sample(1).join(", "))))
+                  .add(Q("tr")
+                    .add(Q("td")
+                      .add(Q("input")
+                        .att("type", "radio")
+                        .att("name", "set")
+                        .checked(set == 2)
+                        .on(CLICK, () -> setAtomicSet(2))))
+                    .add(Q("td")
+                      .html(AtomSet.sample(2).join(", "))))))
+              .add(Q("p")
+                .html("<p></p>"))
               .add(Q("div")
                 .add(Ui.link(e -> changeLang())
                   .klass("link")
@@ -53,6 +91,10 @@ class Settings {
   }
 
   // Control -------------------------------------------------------------------
+
+  function setAtomicSet(set: Int): Void {
+    Store.put(Cts.atomSetIx, ""+set);
+  }
 
   function changeLang (): Void {
     Store.put(Cts.langKey, lang == "es" ? "en": "es");

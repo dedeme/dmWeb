@@ -17,6 +17,11 @@ func New(ref float64, inPortfolio bool) *T {
 	return &T{ref, inPortfolio}
 }
 
+/// Creates an empty reference with 'Ref' == -1.
+func NewEmpty() *T {
+	return &T{-1, true}
+}
+
 func ToJs(r *T) string {
 	return js.Wa([]string{
 		js.Wd(r.Ref),

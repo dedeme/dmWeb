@@ -52,12 +52,11 @@ func Process(ck string, mrq cgi.T) string {
 						return
 					}
 
-					_, allCloses, err := db.CurrentCloses(nk)
+					_, closes, err := db.CurrentCloses(nk)
 					if err != "" {
 						log.Error(err)
 						continue
 					}
-					closes := arr.Drop(allCloses, len(allCloses)-cts.ReferenceQuotes)
 					lastClose := closes[len(closes)-1]
 
 					cought := arr.Anyf(invOps, func(iv *invOperation.T) bool {
@@ -67,7 +66,7 @@ func Process(ck string, mrq cgi.T) string {
 					if cought {
 						lastRef = lastClose
 					} else {
-						lastRef = db.LastRef(inv, nk.Name, closes, allCloses)
+						lastRef = db.LastRef(inv, nk.Name, closes)
 						if e.Stocks > 0 && lastRef > lastClose {
 							lastRef = lastClose
 						}

@@ -12,6 +12,7 @@ import dm.Store;
 import I18n._;
 import I18n._args;
 import pgs.Authentication;
+import data.Book;
 
 /// Applicatoin entry.
 class Main {
@@ -33,7 +34,7 @@ class Main {
   public function show (): Void {
     final search = js.Browser.location.search;
     final target = switch (search) {
-      case "?deduction" | "?settings" : search.substring(1);
+      case "?deduction" | "?theorems" | "?settings" : search.substring(1);
       default: "deduction";
     }
 
@@ -41,7 +42,9 @@ class Main {
     final bodyDiv = Q("div");
 
     final lopts = [
-      Menu.tlink("deduction", _("Deduction"))
+      Menu.tlink("deduction", _("Deduction")),
+      Menu.separator(),
+      Menu.tlink("theorems", _("Theorems"))
     ];
 
     final ropts = [
@@ -52,12 +55,14 @@ class Main {
 
     menuDiv
       .removeAll()
-      .add (new Menu(lopts, ropts, target).wg)
+      .add(new Menu(lopts, ropts, target).wg)
     ;
 
     switch (target) {
       case "deduction":
         pgs.Deduction.mk(bodyDiv);
+      case "theorems":
+        pgs.TheoremsPg.mk(bodyDiv);
       case "settings":
         new pgs.Settings(bodyDiv, lang).show();
       default:
@@ -67,7 +72,11 @@ class Main {
     wg
       .removeAll()
       .add(menuDiv)
-      .add(bodyDiv)
+      .add(Q("table")
+        .att("align", "center")
+        .add(Q("tr")
+          .add(Q("td")
+            .add(bodyDiv))))
     ;
   }
 

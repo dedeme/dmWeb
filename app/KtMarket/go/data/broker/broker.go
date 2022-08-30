@@ -22,7 +22,7 @@ func Fees(amount float64) float64 {
 
 // Returns net cost of operation (cost + fees).
 //    stocks: Stocks number.
-//    price  ; Stocks price.
+//    price : Stocks price.
 func Buy(stocks int, price float64) float64 {
 	amount := float64(stocks) * price
 	tobin := amount * 0.002

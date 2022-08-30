@@ -30,7 +30,7 @@ func MkRefBase(
 ) *T {
 	n := len(closes) - cts.ReferenceQuotes - 1
 	cs := arr.Take(closes, n)
-	lastRef := strategy.LastRef(st, cs, reference.New(-1, true))
+	lastRef := strategy.LastRef(st, cs, reference.NewEmpty())
 	return New(nk, st, dates[n-1], lastRef)
 }
 

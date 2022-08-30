@@ -3,6 +3,7 @@
 
 import dm.Client;
 import dm.Ui.Q;
+import dm.ModalBox;
 import I18n._;
 
 /// Constants.
@@ -22,6 +23,11 @@ class Cts {
         .style("text-align: right;color:#808080;font-size:x-small;")
         .html('- © ºDeme. ${Cts.appName} (${Cts.version}) -')))
   ;
+  /// Modal wait.
+  public static final wait = new ModalBox (
+    dm.Ui.img("wait.gif")
+    , false
+  );
   /// Application client.
   public static final client = new Client(true, Cts.appName, () -> {
     final wg = Q("div");
@@ -32,6 +38,8 @@ class Cts {
       .add(foot)
     ;
   });
-  /// Lang key
+  /// Store lang key.
   public static final langKey = Cts.appName + "_lang";
+  /// Store atomic propositions set key.
+  public static final atomSetIx = Cts.appName + "_set";
 }
