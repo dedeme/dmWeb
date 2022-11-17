@@ -199,7 +199,7 @@ class ChSmall {
       ctx.font = "10px sans";
       for (i in 0...5) {
         final y = min + dif * i / 4;
-        final tx = Dec.toIso(y, 2);
+        final tx = y < 10 ? Dec.toIso(y, 3) : Dec.toIso(y, 2);
         final text = ctx.measureText(tx);
         ctx.fillText(
           tx,

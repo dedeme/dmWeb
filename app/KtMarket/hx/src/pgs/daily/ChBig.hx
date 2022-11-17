@@ -55,8 +55,8 @@ class ChBig {
       var min = 1000000.0;
       for (ix in 0...quotes.length) {
         var q = quotes[ix];
-        if (q <= -30000) {
-          q = -30000;
+        if (q <= -80000) {
+          q = -80000;
           quotes[ix] = q;
         }
         if (q > max) max = q;

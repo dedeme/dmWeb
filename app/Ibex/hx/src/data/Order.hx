@@ -15,7 +15,7 @@ class Order {
   public final stocks: Int;
   /// Stock price.
   public final price: Float;
-  /// Total cost-income.
+  /// Total operation value after fees.
   public final value: Float;
   /// Profits if is a sale. Otherwise its value is 0.
   public final profits: Float;

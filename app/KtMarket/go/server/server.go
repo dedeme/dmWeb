@@ -20,6 +20,7 @@ import (
 	"github.com/dedeme/ktlib/sys"
 	"github.com/dedeme/ktlib/thread"
 	"github.com/dedeme/ktlib/websv"
+  "github.com/dedeme/ktlib/log"
 )
 
 func Start() {
@@ -47,7 +48,7 @@ func Start() {
 
 			rq = str.Trim(rq[:ix])
 			if rq != "POST /cgi-bin/ccgi.sh HTTP/1.1" {
-				panic("Bad POST request")
+				return websv.BadRequestRp("Bad POST request\n" + rq)
 			}
 
 			ix = str.Index(rqUnix, "\n\n")
@@ -64,11 +65,12 @@ func Start() {
 			cmd := rqUnix[:ix]
 			par := rqUnix[ix+1:]
 			if cmd != cts.AppName {
-				panic("Bad POST request (cmd != '" + cts.AppName + "'")
+				return websv.BadRequestRp("Unauthorized source '" + cmd + "'")
 			}
 
 			return websv.TextRp(rqProcess(par))
 		},
+    log.Error,
 	)
 }
 

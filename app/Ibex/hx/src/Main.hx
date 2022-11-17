@@ -14,6 +14,8 @@ import pgs.Authentication;
 import pgs.Home;
 import pgs.ResultsPg;
 import pgs.SavingsPg;
+import pgs.OrdersPg;
+import pgs.RefsPg;
 import pgs.Settings;
 import I18n._;
 import I18n._args;
@@ -23,6 +25,8 @@ class Main {
   static final HOME = "home";
   static final RESULTS = "results";
   static final SAVINGS = "savings";
+  static final ORDERS = "orders";
+  static final REFS = "refs";
   static final SETTINGS = "settings";
 
   static var lang: String;
@@ -47,6 +51,10 @@ class Main {
         Menu.toption(RESULTS, _("Results"), results),
         Menu.separator(),
         Menu.toption(SAVINGS, _("Savings"), savings),
+        Menu.separator(),
+        Menu.toption(ORDERS, _("Orders"), orders),
+        Menu.separator(),
+        Menu.toption(REFS, _("Refs."), refs),
       ],
       [ Menu.toption(SETTINGS, _("Settings"), settings),
         Menu.separator(),
@@ -65,6 +73,8 @@ class Main {
       case HOME: Home.mk(body);
       case RESULTS: new ResultsPg(body, market).show();
       case SAVINGS: new SavingsPg(body, market).show();
+      case ORDERS: new OrdersPg(body, market).show();
+      case REFS: new RefsPg(body, market).show();
       case SETTINGS: new Settings(body, lang).show();
       default: Home.mk(body);
     }
@@ -84,6 +94,16 @@ class Main {
 
   function savings (): Void {
     menuSel = SAVINGS;
+    show();
+  }
+
+  function orders (): Void {
+    menuSel = ORDERS;
+    show();
+  }
+
+  function refs (): Void {
+    menuSel = REFS;
     show();
   }
 

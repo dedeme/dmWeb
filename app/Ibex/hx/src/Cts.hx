@@ -46,4 +46,10 @@ class Cts {
   public static final propColor = "#800000";
   /// Ibex chart color:
   public static final pondColor = "#000080";
+  /// Closes chart color:
+  public static final closesColor = "#000000";
+  /// References bought chart color:
+  public static final boughtColor = "#800000";
+  /// References sales chart color:
+  public static final soldColor = "#000080";
 }

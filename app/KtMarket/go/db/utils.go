@@ -65,6 +65,9 @@ func CurrentCloses(nk *nick.T) (dates []string, closes []float64, err string) {
 			return idVal.Nick == nk.Id
 		})
 		if ok {
+      if c.Value < 0 {
+        c.Value = closes[len(closes) - 1]
+      }
 			closes = append(arr.Drop(closes, 1), c.Value)
 			dates = append(arr.Drop(dates, 1), dailyQs.Date)
 		}
@@ -86,7 +89,7 @@ func LastRef(
 		return r.Nick.Name == nkName && strategy.Eq(r.Strategy, st)
 	})
 	if ok {
-    closes = arr.Drop(closes, len(closes)-cts.ReferenceQuotes)
+		closes = arr.Drop(closes, len(closes)-cts.ReferenceQuotes)
 		return strategy.LastRef(st, closes, refBase.Ref).Ref
 	}
 	return strategy.LastRef(st, closes, reference.New(-1, true)).Ref
@@ -384,6 +387,7 @@ func UpdateDailyCharts(
 		}
 		return false
 	})
+
 	sv, ok := arr.Find(svs, func(sv *server.T) bool {
 		return sv.Name == svName
 	})
@@ -417,7 +421,7 @@ func UpdateDailyCharts(
 			}
 		}
 		if eq {
-			return // if daylyTb is there are values and they are equals to new data
+			return // if daylyTb is, there are values and they are equals to new data
 		}
 	}
 	dailyDb.Write(nick.NewTbIdVal(tm, qs))

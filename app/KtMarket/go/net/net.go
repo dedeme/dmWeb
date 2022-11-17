@@ -385,6 +385,7 @@ func readDaily(
 	if len(table) == 0 {
 		err = "Quotes table read from web page is empty"
 	}
+
 	return
 }
 
@@ -495,6 +496,11 @@ func OneServerReadDaily(
 					break
 				}
 			}
+      if value < 0 {
+        warnings = append(warnings, str.Fmt(
+          "Server '%v' daily code '%v' read but not defined", sv.Name, c,
+        ))
+      }
 		} else {
 			nk, ok := db.NicksTb().Read().NickFromId(nickId)
 			nkName := str.Fmt("%d", nickId)
@@ -527,16 +533,19 @@ func ServerReadDaily(
 ) (qvs []*nick.IdValT, warnings []string, err string) {
 	svsTb := db.ServersTb().Read()
 	svs, sel := svsTb.DailyList()
-	qvs, warnings, err = OneServerReadDaily(svs[sel])
+	qvs, warnings, err = OneServerReadDaily(sv)
 	if err != "" {
-		for _, sv := range svs {
-			qvs, warnings, err = ServerReadDaily(sv)
-			if err == "" {
-				break
-			}
-		}
+		qvs, warnings, err = OneServerReadDaily(svs[sel])
 		if err != "" {
-			err = "net/ServerReadDaily: No server can read daily quotes"
+			for _, sv2 := range svs {
+				qvs, warnings, err = ServerReadDaily(sv2)
+				if err == "" {
+					break
+				}
+			}
+			if err != "" {
+				err = "net/ServerReadDaily: No server can read daily quotes"
+			}
 		}
 	}
 
