@@ -3,10 +3,15 @@
 # src/Authentication.hx: 53
 Accept = Aceptar
 
-# src/Main.hx: 60
+# src/pgs/Bills.hx: 70
+# src/pgs/Stays.hx: 63
+Amount = Cantidad
+
+# src/Main.hx: 66
 Application exit? = ¿Terminar la aplicación?
 
-# src/Main.hx: 31
+# src/Main.hx: 35
+# src/pgs/Summary.hx: 81
 Bills = Gastos
 
 # src/pgs/Settings.hx: 39
@@ -21,6 +26,9 @@ Check gray squares = Marcar las casillas grises
 # src/MsgPg.hx: 32
 Click %0 to continue. = Click %0 para continuar.
 
+# src/pgs/Stays.hx: 55
+Date = Fecha
+
 # src/Authentication.hx: 178
 Grey squares checks are wrong = Las casillas grises está mal marcadas
 
@@ -30,8 +38,11 @@ Keep connected = Mantenerse conectado
 # src/Authentication.hx: 153
 Login = Identificación
 
-# src/Main.hx: 69
+# src/Main.hx: 75
 Logout-message = <p>%0 ha terminado.</p><p><b>¡Hasta pronto!</b></p>
+
+# src/pgs/Bills.hx: 62
+Month = Mes
 
 # src/Authentication.hx: 66
 Password = Contraseña
@@ -39,15 +50,32 @@ Password = Contraseña
 # src/Authentication.hx: 173
 Password is missing = Falta la contraseña
 
+# src/pgs/Bills.hx: 66
+# src/pgs/Stays.hx: 59
+Place = Lugar
+
 # src/Global.hx: 15
 Session is expired. = Las sesión ha expirado.
 
-# src/Main.hx: 35
+# src/wgs/Form.hx: 52
+Set Place = Poner lugar
+
+# src/Main.hx: 39
 # src/pgs/Settings.hx: 30
 Settings = Configuración
 
-# src/Main.hx: 33
+# src/Main.hx: 37
+# src/pgs/Summary.hx: 85
 Stays = Estancias
+
+# src/Main.hx: 33
+Summary = Resumen
+
+# src/pgs/Summary.hx: 120
+Sums = Sumas
+
+# src/pgs/Summary.hx: 89
+Total = Total
 
 # src/Authentication.hx: 59
 User = Usuario
@@ -55,8 +83,15 @@ User = Usuario
 # src/Authentication.hx: 169
 User name is missing = Falta el nombre del usuario
 
+# src/pgs/Bills.hx: 56
+# src/pgs/Stays.hx: 49
+Without Data = Sin datos
+
 # src/Authentication.hx: 111
 Wrong password = Contraseña incorrecta
+
+# src/pgs/Summary.hx: 77
+Year = Año
 
 # src/MsgPg.hx: 11
 here = aquí

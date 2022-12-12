@@ -59,7 +59,9 @@ func Initialize() {
 func ConfTb() *jstb.T[*conf.T] {
 	return jstb.New(
 		path.Cat(cts.DataPath, "conf.tb"),
-		conf.New("es", activity.New(1652263649990, cts.ActSleeping)),
+		func() *conf.T {
+			return conf.New("es", activity.New(1652263649990, cts.ActSleeping))
+		},
 		conf.ToJs,
 		conf.FromJs,
 	)
@@ -69,7 +71,9 @@ func ConfTb() *jstb.T[*conf.T] {
 func NicksTb() *jstb.T[*nick.TbT] {
 	return jstb.New(
 		path.Cat(cts.DataPath, "nicks.tb"),
-		nick.NewTb(0, -1, []*nick.T{}),
+		func() *nick.TbT {
+			return nick.NewTb(0, -1, []*nick.T{})
+		},
 		nick.TbToJs,
 		nick.TbFromJs,
 	)
@@ -79,7 +83,7 @@ func NicksTb() *jstb.T[*nick.TbT] {
 func ServersTb() *jstb.T[*server.TbT] {
 	return jstb.New(
 		path.Cat(cts.DataPath, "servers.tb"),
-		server.NewTb(),
+		func() *server.TbT { return server.NewTb() },
 		server.TbToJs,
 		server.TbFromJs,
 	)
@@ -89,11 +93,13 @@ func ServersTb() *jstb.T[*server.TbT] {
 func CalendarTb() *jstb.T[*calendar.T] {
 	return jstb.New(
 		path.Cat(cts.DataPath, "calendar.tb"),
-		calendar.New(
-			calendar.NewTimetable(0, 0, 23, 55),
-			[]string{},
-			[]*calendar.MarketDayT{},
-		),
+		func() *calendar.T {
+			return calendar.New(
+				calendar.NewTimetable(0, 0, 23, 55),
+				[]string{},
+				[]*calendar.MarketDayT{},
+			)
+		},
 		calendar.ToJs,
 		calendar.FromJs,
 	)
@@ -103,7 +109,7 @@ func CalendarTb() *jstb.T[*calendar.T] {
 func InvestorsTb() *jstb.T[*investor.TbT] {
 	return jstb.New(
 		path.Cat(cts.DataPath, "investors.tb"),
-		investor.DefaultTable(),
+		func() *investor.TbT { return investor.DefaultTable() },
 		investor.TbToJs,
 		investor.TbFromJs,
 	)
@@ -113,7 +119,7 @@ func InvestorsTb() *jstb.T[*investor.TbT] {
 func RefBasesTb() *jstb.T[*refBase.TbT] {
 	return jstb.New(
 		path.Cat(cts.DataPath, "refBases.tb"),
-		refBase.NewTb([]*refBase.T{}),
+		func() *refBase.TbT { return refBase.NewTb([]*refBase.T{}) },
 		refBase.TbToJs,
 		refBase.TbFromJs,
 	)
@@ -123,7 +129,7 @@ func RefBasesTb() *jstb.T[*refBase.TbT] {
 func InvOperationsTb() *jstb.T[*invOperation.TbT] {
 	return jstb.New(
 		path.Cat(cts.DataPath, "invOperations.tb"),
-		invOperation.NewTb([]*invOperation.T{}),
+		func() *invOperation.TbT { return invOperation.NewTb([]*invOperation.T{}) },
 		invOperation.TbToJs,
 		invOperation.TbFromJs,
 	)
@@ -133,8 +139,10 @@ func InvOperationsTb() *jstb.T[*invOperation.TbT] {
 func IndexesTb() *jstb.T[[]*ixsChartEntry.T] {
 	return jstb.New(
 		path.Cat(cts.DataPath, "indexes.tb"),
-		[]*ixsChartEntry.T{
-			ixsChartEntry.New(0, []float64{0.0, 0.0, 0.0}, []float64{0.0, 0.0}),
+		func() []*ixsChartEntry.T {
+			return []*ixsChartEntry.T{
+				ixsChartEntry.New(0, []float64{0.0, 0.0, 0.0}, []float64{0.0, 0.0}),
+			}
 		},
 		func(ixs []*ixsChartEntry.T) string {
 			return js.Wa(arr.Map(ixs, ixsChartEntry.ToJs))
@@ -149,7 +157,9 @@ func IndexesTb() *jstb.T[[]*ixsChartEntry.T] {
 func DailyTb() *jstb.T[*nick.TbIdValT] {
 	return jstb.New(
 		path.Cat(cts.DataPath, "daily/daily.tb"),
-		nick.NewTbIdVal(time.ToStr(time.Now()), []*nick.IdValT{}),
+		func() *nick.TbIdValT {
+			return nick.NewTbIdVal(time.ToStr(time.Now()), []*nick.IdValT{})
+		},
 		nick.TbIdValToJs,
 		nick.TbIdValFromJs,
 	)
@@ -159,7 +169,7 @@ func DailyTb() *jstb.T[*nick.TbIdValT] {
 func ServerBoxTb() *jstb.T[*serverBox.T] {
 	return jstb.New(
 		path.Cat(cts.DataPath, "daily/serverBox.tb"),
-		serverBox.New([]string{}),
+		func() *serverBox.T { return serverBox.New([]string{}) },
 		serverBox.ToJs,
 		serverBox.FromJs,
 	)
@@ -169,7 +179,7 @@ func ServerBoxTb() *jstb.T[*serverBox.T] {
 func DailyChartTb() *jstb.T[*dailyChart.TbT] {
 	return jstb.New(
 		path.Cat(cts.DataPath, "daily/dailyChart.tb"),
-		dailyChart.Default(),
+		func() *dailyChart.TbT { return dailyChart.Default() },
 		dailyChart.TbToJs,
 		dailyChart.TbFromJs,
 	)
@@ -179,8 +189,10 @@ func DailyChartTb() *jstb.T[*dailyChart.TbT] {
 func IndexesChartTb() *jstb.T[[]*ixsChartEntry.T] {
 	return jstb.New(
 		path.Cat(cts.DataPath, "daily/indexesChart.tb"),
-		[]*ixsChartEntry.T{
-			ixsChartEntry.New(0, []float64{0.0, 0.0, 0.0}, []float64{0.0, 0.0}),
+		func() []*ixsChartEntry.T {
+			return []*ixsChartEntry.T{
+				ixsChartEntry.New(0, []float64{0.0, 0.0, 0.0}, []float64{0.0, 0.0}),
+			}
 		},
 		func(ixs []*ixsChartEntry.T) string {
 			return js.Wa(arr.Map(ixs, ixsChartEntry.ToJs))

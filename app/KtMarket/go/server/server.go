@@ -16,11 +16,11 @@ import (
 	"github.com/dedeme/ktlib/cgi"
 	"github.com/dedeme/ktlib/cryp"
 	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/log"
 	"github.com/dedeme/ktlib/str"
 	"github.com/dedeme/ktlib/sys"
 	"github.com/dedeme/ktlib/thread"
 	"github.com/dedeme/ktlib/websv"
-  "github.com/dedeme/ktlib/log"
 )
 
 func Start() {
@@ -70,7 +70,7 @@ func Start() {
 
 			return websv.TextRp(rqProcess(par))
 		},
-    log.Error,
+		log.Error,
 	)
 }
 

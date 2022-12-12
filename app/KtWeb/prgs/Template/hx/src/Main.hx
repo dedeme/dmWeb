@@ -30,9 +30,7 @@ class Main {
     final menu = new Menu(
       [ Menu.tlink("home", _("Home"))
       ],
-      [ Menu.tlink("settings", _("Settings")),
-        Menu.separator(),
-        Menu.close(close)
+      [ Menu.tlink("settings", _("Settings"))
       ],
       page
     );
@@ -54,27 +52,13 @@ class Main {
 
   // Control -------------------------------------------------------------------
 
-  function close () {
-    if (!Ui.confirm(_("Application exit?"))) {
-      return;
-    }
-    Global.client.send([
-      "prg" => Js.ws("Main"),
-      "source" => Js.ws("Main"),
-      "rq" => Js.ws("close"),
-      "sessionId" => Js.ws(Global.client.sessionId())
-    ], rp -> {
-      new MsgPg(wg , _args(_("Logout-message"), [Cts.appName]), false).show();
-    });
-  }
-
   // Static --------------------------------------------------------------------
 
   static function mk (wg: Domo, fn: () -> Void): Void {
     Global.client.connect(ok -> {
       if (ok) {
         Global.client.send([
-          "prg" => Js.ws("Main"),
+          "prg" => Js.ws("Main"), // Call to KtWeb:Main
           "source" => Js.ws("Main"),
           "rq" => Js.ws("lang")
         ], rp -> {

@@ -6,25 +6,27 @@
 package data;
 
 import dm.Js;
+import dm.Opt;
 
 class MonthAnn {
-  final month: String;
-  final amount: Float;
+  /// In format YYYYMM (MM between 1 and 12, both inclusive.)
+  public final month: String;
+  public final place: Option<String>;
+  public final amount: Float;
 
-  /// 'month' is between 1 and 12, both inclusive.
-  public function new (month: Int, amount: Float) {
-    final d = js.lib.Date.fromHaxeDate(
-      new Date(2020, month - 1, 1, 12, 0, 0)
-    );
-    this.month = d.toLocaleDateString("es-ES", {month: cast("long")});
+  /// 'month' is in format YYYYMM (MM between 1 and 12, both inclusive.)
+  public function new (month: String, place: Option<String>, amount: Float) {
+    this.month = month;
+    this.place = place;
     this.amount = amount;
   }
 
   public static function fromJs (js: Js): MonthAnn {
     final a = js.ra();
     return new MonthAnn(
-      a[0].ri(),
-      a[1].rf()
+      a[0].rs(),
+      a[1].isNull() ? None : Some(a[1].rs()),
+      a[2].rf()
     );
   }
 }

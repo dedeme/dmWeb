@@ -65,9 +65,9 @@ func CurrentCloses(nk *nick.T) (dates []string, closes []float64, err string) {
 			return idVal.Nick == nk.Id
 		})
 		if ok {
-      if c.Value < 0 {
-        c.Value = closes[len(closes) - 1]
-      }
+			if c.Value < 0 {
+				c.Value = closes[len(closes)-1]
+			}
 			closes = append(arr.Drop(closes, 1), c.Value)
 			dates = append(arr.Drop(dates, 1), dailyQs.Date)
 		}

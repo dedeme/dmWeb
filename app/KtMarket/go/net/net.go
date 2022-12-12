@@ -496,11 +496,11 @@ func OneServerReadDaily(
 					break
 				}
 			}
-      if value < 0 {
-        warnings = append(warnings, str.Fmt(
-          "Server '%v' daily code '%v' read but not defined", sv.Name, c,
-        ))
-      }
+			if value < 0 {
+				warnings = append(warnings, str.Fmt(
+					"Server '%v' daily code '%v' read but not defined", sv.Name, c,
+				))
+			}
 		} else {
 			nk, ok := db.NicksTb().Read().NickFromId(nickId)
 			nkName := str.Fmt("%d", nickId)

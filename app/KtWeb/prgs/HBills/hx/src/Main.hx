@@ -8,9 +8,9 @@ import dm.Js;
 import dm.Menu;
 import I18n._;
 import I18n._args;
+import pgs.Summary;
 import pgs.Bills;
 import pgs.Stays;
-import pgs.Settings;
 
 /// Applicatoin entry.
 class Main {
@@ -26,27 +26,26 @@ class Main {
 
   public function show (): Void {
     final url = Ui.url();
-    final page = url.exists("0") ? url.get("0") : "bills";
+    final page = url.exists("0") ? url.get("0") : "summary";
 
     final menu = new Menu(
-      [ Menu.tlink("bills", _("Bills")),
+      [ Menu.tlink("summary", _("Summary")),
+        Menu.separator(),
+        Menu.tlink("bills", _("Bills")),
         Menu.separator(),
         Menu.tlink("stays", _("Stays")),
       ],
-      [ Menu.tlink("settings", _("Settings")),
-        Menu.separator(),
-        Menu.close(close)
-      ],
+      [ ],
       page
     );
 
     final body = Q("div");
 
     switch (page) {
+      case "summary": Summary.mk(body);
       case "bills": Bills.mk(body);
       case "stays": Stays.mk(body);
-      case "settings": Settings.mk(body);
-      default: Bills.mk(body);
+      default: Summary.mk(body);
     }
 
     wg
@@ -58,27 +57,13 @@ class Main {
 
   // Control -------------------------------------------------------------------
 
-  function close () {
-    if (!Ui.confirm(_("Application exit?"))) {
-      return;
-    }
-    Global.client.send([
-      "prg" => Js.ws("Main"),
-      "source" => Js.ws("Main"),
-      "rq" => Js.ws("close"),
-      "sessionId" => Js.ws(Global.client.sessionId())
-    ], rp -> {
-      new MsgPg(wg , _args(_("Logout-message"), [Cts.appName]), false).show();
-    });
-  }
-
   // Static --------------------------------------------------------------------
 
   static function mk (wg: Domo, fn: () -> Void): Void {
     Global.client.connect(ok -> {
       if (ok) {
         Global.client.send([
-          "prg" => Js.ws("Main"),
+          "prg" => Js.ws("Main"), // Call to KtWeb:Main
           "source" => Js.ws("Main"),
           "rq" => Js.ws("lang")
         ], rp -> {

@@ -8,9 +8,9 @@ package data;
 import dm.Js;
 
 class AccAnn {
-  final date: String;
-  final description: String;
-  final amount: Float;
+  public final date: String;
+  public final description: String;
+  public final amount: Float;
 
   public function new (date: String, description: String, amount: Float) {
     this.date = date;
