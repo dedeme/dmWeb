@@ -35,12 +35,12 @@ func (p *T) Id() string {
 	return p.id
 }
 
-// Returna a new song with sights incremented.
+// Returna a new Pict with sights incremented.
 func (p *T) Inc() sighter.T {
 	return &T{p.level, p.sights + 1, p.id}
 }
 
-// Returna a new song with sights reset.
+// Returna a new Pict with sights reset.
 func (p *T) Reset() sighter.T {
 	return &T{p.level, 0, p.id}
 }

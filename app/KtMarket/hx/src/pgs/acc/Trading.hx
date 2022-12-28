@@ -45,10 +45,6 @@ class Trading {
     this.operations = operations;
     this.portfolios = portfolios;
 
-    this.rebuys.push(new NickNameStr(
-      "ITX", "20221025"
-    ));
-
     bentry = Ui.field("pentry")
       .style("width:80px")
       .value(Dec.toIso(bet, 0));

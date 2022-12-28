@@ -76,7 +76,7 @@ func readPictList(group string) []string {
 	}
 
 	if len(pictures) == 0 {
-		panic("Pictures not found in group " + dir)
+		panic("Pictures not found in group " + group)
 	}
 
 	return pictures
