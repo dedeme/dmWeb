@@ -59,9 +59,13 @@ class AdjustmentEditor {
       "pixelsStretch", "pixelsStretch",
       state == "stretch" ? adj.params[0] : 10
     );
+trace(Fns.intToColor(adj.params[0]));
     color = Q("input")
       .att("type", "color")
-      .value(state == "background" ? Fns.intToColor(adj.params[0]) : "#ffffff")
+      .value(state == "background"
+          ? "#" + Fns.intToColor(adj.params[0])
+          : "#ffffff"
+        )
     ;
 
     mkEditor(editorDiv);

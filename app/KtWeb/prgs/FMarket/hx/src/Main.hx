@@ -11,7 +11,6 @@ import I18n._args;
 import pgs.Home;
 import pgs.RankingsPg;
 import pgs.ModelsPg;
-import pgs.Settings;
 
 /// Applicatoin entry.
 class Main {
@@ -36,8 +35,7 @@ class Main {
         Menu.separator(),
         Menu.tlink("models", _("Models"))
       ],
-      [ Menu.tlink("settings", _("Settings"))
-      ],
+      [],
       page
     );
 
@@ -47,7 +45,6 @@ class Main {
       case "home": Home.mk(body);
       case "rankings": RankingsPg.mk(body);
       case "models": ModelsPg.mk(body);
-      case "settings": Settings.mk(body);
       default: Home.mk(body);
     }
 

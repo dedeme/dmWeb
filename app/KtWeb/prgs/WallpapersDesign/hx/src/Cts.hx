@@ -4,6 +4,7 @@
 import dm.Client;
 import dm.Ui.Q;
 import I18n._;
+import data.Dim;
 
 /// Constants.
 class Cts {
@@ -35,4 +36,9 @@ class Cts {
   /// Ratio for default blur operation.
   public static final ratioBlur = 85;
 
+  /// Available dimensions for target images.
+  public static final dims = [
+    "1280 x 1024" => new Dim(1280, 1024),
+    "1920 x 1080" => new Dim(1920, 1080)
+  ];
 }

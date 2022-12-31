@@ -5,8 +5,7 @@ lib
 *.gz
 gitk
 
-#app/KtWeb/dmcgi/
-app/KtWeb/dmcgib/
+app/KtWeb/dmcgi/
 
 #web/hx
 LinkToLogForI18n.hx

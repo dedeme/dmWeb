@@ -8,7 +8,9 @@ import dm.Ui;
 import dm.Ui.Q;
 import dm.Js;
 import data.Image;
+import data.Dim;
 import wgs.Tr;
+import wgs.DimSelector;
 import I18n._;
 import I18n._args;
 
@@ -39,7 +41,14 @@ class Home {
       return;
     }
 
-    final tdSave = Q("td").klass("frame");
+    final tdSave = Q("td")
+      .klass("frame")
+      .style("text-aling:left;width:5px;white-space:nowrap")
+    ;
+    final tdDim = Q("td")
+      .klass("frame")
+      .style("text-align:right;width:5px;white-space:nowrap")
+    ;
     final trs = [];
     trs.push(Q("tr")
       .add(Q("td")
@@ -49,9 +58,11 @@ class Home {
             "pading-bottom:10px"
           )
         .add(Q("table")
-          .att("align", "center")
+          .klass("main")
           .add(Q("tr")
-            .add(tdSave))))
+            .add(tdSave)
+            .add(Q("td"))
+            .add(tdDim))))
     );
     trs.push(Q("tr")
       .add(Q("td")
@@ -60,6 +71,7 @@ class Home {
     );
 
     mkSave(tdSave);
+    mkDim(tdDim);
     for (ix in 0...images.length) {
       trs.push(new Tr(images, ix).mkTr());
     }
@@ -104,6 +116,28 @@ class Home {
     });
   }
 
+  function mkDim (td: Domo): Void {
+    td
+      .removeAll()
+      .add(Ui.img("wait.gif"));
+    Global.client.send([
+      "prg" => Js.ws(Cts.appName),
+      "source" => Js.ws("Home"),
+      "rq" => Js.ws("dim")
+    ], rp -> {
+      final width = rp["width"].ri();
+      final height = rp["height"].ri();
+      final dim = "" + width + " x " + height;
+
+      td
+        .removeAll()
+        .add(Ui.link(() -> changeDim(dim))
+          .klass("link")
+          .text(dim))
+      ;
+    });
+  }
+
   function save (): Void {
     if (Ui.confirm(_args(_("Save pictures in group %0?"), [group]))) {
       Cts.boxContent
@@ -120,6 +154,26 @@ class Home {
         js.Browser.location.assign("");
       });
     }
+  }
+
+  function changeDim (dim: String): Void {
+    function cancel (): Void {
+      Cts.box.show(false);
+    }
+    function accept (dim: Dim): Void {
+      Global.client.send([
+        "prg" => Js.ws(Cts.appName),
+        "source" => Js.ws("Home"),
+        "rq" => Js.ws("changeDim"),
+        "width" => Js.wi(dim.width),
+        "height" => Js.wi(dim.height),
+      ], rp -> {
+        js.Browser.location.assign("");
+      });
+    }
+
+    new DimSelector(Cts.boxContent, dim, cancel, accept).show();
+    Cts.box.show(true);
   }
 
   // Static --------------------------------------------------------------------
