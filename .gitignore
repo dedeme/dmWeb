@@ -5,6 +5,9 @@ lib
 *.gz
 gitk
 
+#app/KtWeb/dmcgi/
+app/KtWeb/dmcgib/
+
 #web/hx
 LinkToLogForI18n.hx
 
@@ -30,3 +33,4 @@ bin
 **/Bet1x2/kut
 **/MMagazine/kut
 **/KutDoc/kut
+
