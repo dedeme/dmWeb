@@ -34,52 +34,6 @@ class JailWg {
       return cv;
     }
 
-    if (type == ALL) {
-      final newData: Array<JailLossesEntry> = [];
-      var lastD = data[0].date.substring(0, 6);
-      var incr = 0.0;
-      newData.push(data[0]);
-      for (i in 1...data.length) {
-        final e = data[i];
-        final month = e.date.substring(4, 6);
-        if (e.date.substring(4, 6) == "01") {
-          final e1 = data[i - 1];
-          if (e1.date.substring(4, 6) == "12") {
-            incr += e1.losses;
-          }
-        }
-
-        final d = e.date.substring(0, 6);
-        if (d != lastD) {
-          newData.push(new JailLossesEntry(e.date, e.losses + incr));
-          lastD = d;
-        }
-      }
-      if (newData[newData.length - 1].date != data[data.length - 1].date) {
-        final e = data[data.length - 1];
-        newData.push(new JailLossesEntry(e.date, e.losses + incr));
-      }
-
-      data = newData;
-    } else {
-      final newData: Array<JailLossesEntry> = [];
-      var incr = 0.0;
-      newData.push(data[0]);
-      for (i in 1...data.length) {
-        final e = data[i];
-        final month = e.date.substring(4, 6);
-        if (e.date.substring(4, 6) == "01") {
-          final e1 = data[i - 1];
-          if (e1.date.substring(4, 6) == "12") {
-            incr += e1.losses;
-          }
-        }
-        newData.push(new JailLossesEntry(e.date, e.losses + incr));
-      }
-
-      data = newData;
-    }
-
     if (data[0].losses > data[data.length - 1].losses) {
       backg = "#e9e9f2";
     } else if (data[0].losses < data[data.length - 1].losses) {
@@ -172,14 +126,10 @@ class JailWg {
   }
 
   static function mkIncrement (data: Array<JailLossesEntry>, type: Int): Domo {
-    var corrections: Array<Float> = [];
     var previous = "";
     for (i in 0...data.length) {
       final e = data[i];
       final month = e.date.substring(4, 6);
-      if ( month == "01" && previous == "12") {
-        corrections.push(data[i - 1].losses - e.losses);
-      }
       previous = month;
     }
 
@@ -204,49 +154,12 @@ class JailWg {
 
     final first = data[0];
     final last = data[data.length - 1];
-    final incr = corrections.length == 0 || type == ALL
-      ? 0
-      : corrections[0]
-    ;
+    final incr = 0;
     final r = Q("table")
       .klass("frame")
       .style("border-collapse : collapse;")
       .add(mkTr("rgba(0, 0, 0)", first.losses, last.losses + incr))
     ;
-
-    if (corrections.length > 0) {
-      if (type == ALL) {
-        r.add(Q("tr")
-          .add(Q("td")
-            .att("colspan", "2")
-            .add(Q("hr"))))
-        ;
-        var sum = 0.0;
-        for (c in corrections) {
-          r.add(Q("tr")
-            .add(Q("td")
-              .text(corrections.length > 1 ? "+" : ""))
-            .add(Q("td")
-              .style("text-align: right;")
-              .text(Dec.toIso(c, 2))))
-          ;
-          sum += c;
-        }
-        if (corrections.length > 1) {
-          r.add(Q("tr")
-            .add(Q("td")
-              .style("border-top: 1px solid rgb(110,130,150);")
-              .text("="))
-            .add(Q("td")
-              .style("border-top: 1px solid rgb(110,130,150);text-align: right;")
-              .text(Dec.toIso(sum, 2))))
-          ;
-        }
-      } else {
-      }
-
-    }
-
     return r;
   }
 
