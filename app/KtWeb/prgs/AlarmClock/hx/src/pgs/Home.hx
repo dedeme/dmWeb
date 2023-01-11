@@ -37,6 +37,7 @@ class Home {
       .on(CLICK, () -> add(entry.getValue()))
     ;
 
+    alarms.sort((a1, a2) -> Std.int(a1.time - a2.time));
     final trs = alarms.map(a -> Q("tr")
       .add(Q("td")
         .klass("frame")

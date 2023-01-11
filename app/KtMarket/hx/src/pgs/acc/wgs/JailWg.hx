@@ -34,6 +34,31 @@ class JailWg {
       return cv;
     }
 
+    if (type == ALL) {
+      final newData: Array<JailLossesEntry> = [];
+      var lastD = data[0].date.substring(0, 6);
+      newData.push(data[0]);
+      for (i in 1...data.length) {
+        final e = data[i];
+        final month = e.date.substring(4, 6);
+        final d = e.date.substring(0, 6);
+        if (d != lastD) {
+          newData.push(new JailLossesEntry(
+            e.date, e.losses
+          ));
+          lastD = d;
+        }
+      }
+      if (newData[newData.length - 1].date != data[data.length - 1].date) {
+        final e = data[data.length - 1];
+        newData.push(new JailLossesEntry(
+          e.date, e.losses
+        ));
+      }
+
+      data = newData;
+    }
+
     if (data[0].losses > data[data.length - 1].losses) {
       backg = "#e9e9f2";
     } else if (data[0].losses < data[data.length - 1].losses) {
@@ -154,11 +179,10 @@ class JailWg {
 
     final first = data[0];
     final last = data[data.length - 1];
-    final incr = 0;
     final r = Q("table")
       .klass("frame")
       .style("border-collapse : collapse;")
-      .add(mkTr("rgba(0, 0, 0)", first.losses, last.losses + incr))
+      .add(mkTr("rgba(0, 0, 0)", first.losses, last.losses))
     ;
     return r;
   }
