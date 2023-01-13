@@ -5,38 +5,38 @@
 package main
 
 import (
-	"fmt"
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/json"
-	"github.com/dedeme/golib/file"
-  "path"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/path"
+	"github.com/dedeme/ktlib/str"
 )
 
-func mainProcess(ck string, mrq map[string]json.T) string {
-	rq := cgi.RqString(mrq, "rq")
+func mainProcess(ck string, mrq map[string]string) string {
+	rq := js.Rs(mrq["rq"])
 	switch rq {
 	case "read":
-    dir := path.Join(HOME, "data")
-    if !file.Exists(dir) {
-      file.Mkdir(dir)
-    }
-    f := path.Join(dir, "all.tb")
-    if !file.Exists(f) {
-      return cgi.Rp(ck, map[string]json.T{
-        "data": json.Wn(),
-      })
-    }
-    return cgi.Rp(ck, map[string]json.T {
-      "data": json.FromString(file.ReadAll(f)),
-    })
+		dir := path.Cat(HOME, "data")
+		if !file.Exists(dir) {
+			file.Mkdir(dir)
+		}
+		f := path.Cat(dir, "all.tb")
+		if !file.Exists(f) {
+			return cgi.Rp(ck, map[string]string{
+				"data": js.Wn(),
+			})
+		}
+		return cgi.Rp(ck, map[string]string{
+			"data": file.Read(f),
+		})
 	case "write":
-    f := path.Join(HOME, "data", "all.tb")
-    file.WriteAll(f, mrq["data"].String())
-    return cgi.RpEmpty(ck)
+		f := path.Cat(HOME, "data", "all.tb")
+		file.Write(f, mrq["data"])
+		return cgi.RpEmpty(ck)
 	case "close":
-		sessionId := cgi.RqString(mrq, "sessionId")
+		sessionId := js.Rs(mrq["sessionId"])
 		return cgi.DelSession(ck, sessionId)
 	default:
-		panic(fmt.Sprintf("Value of source ('%v') is not valid", rq))
+		panic(str.Fmt("Value of source ('%v') is not valid", rq))
 	}
 }
