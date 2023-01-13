@@ -5,38 +5,40 @@
 package main
 
 import (
-	"github.com/dedeme/golib/date"
-	"github.com/dedeme/golib/file"
-	"github.com/dedeme/golib/json"
-	"path"
-	"sort"
-	"strings"
+	"github.com/dedeme/ktlib/arr"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/path"
+	"github.com/dedeme/ktlib/str"
+	"github.com/dedeme/ktlib/time"
 )
 
 /// Reads TimeStamp and All-Data.
 func readData() (
-  timeStamp json.T, jyear json.T, jyears json.T, lang json.T, data json.T) {
-	dir := path.Join(HOME, "data")
+	timeStamp string, jyear string, jyears string, lang string, data string) {
+	dir := path.Cat(HOME, "data")
 	if !file.Exists(dir) {
 		file.Mkdir(dir)
-		dt := date.Now()
-		year := dt.Format("%Y")
-		file.WriteAll(
-			path.Join(dir, "control.tb"),
-			json.Wa([]json.T{json.Ws(""), json.Ws(year), json.Ws("es")}).String(),
+		dt := time.Now()
+		year := time.Fmt("%Y", dt)
+		file.Write(
+			path.Cat(dir, "control.tb"),
+			js.Wa([]string{js.Ws(""), js.Ws(year), js.Ws("es")}),
 		)
-		file.WriteAll(path.Join(dir, year+".db"), json.Wa([]json.T{}).String())
+		file.Write(path.Cat(dir, year+".db"), js.Wa([]string{}))
 	}
 
-	a := json.FromString(file.ReadAll(path.Join(dir, "control.tb"))).Ra()
-	year := a[1].Rs()
+	a := js.Ra(file.Read(path.Cat(dir, "control.tb")))
+	year := js.Rs(a[1])
 	var years []string
-	for _, fs := range file.List(dir) {
-		if strings.HasSuffix(fs.Name(), ".db") {
-			years = append(years, fs.Name()[0:len(fs.Name())-3])
+	for _, fname := range file.Dir(dir) {
+		if str.Ends(fname, ".db") {
+			years = append(years, fname[0:len(fname)-3])
 		}
 	}
-	sort.Strings(years)
+	arr.Sort(years, func(y1 string, y2 string) bool {
+		return y1 < y2
+	})
 	ok := false
 	for _, y := range years {
 		if y == year {
@@ -47,53 +49,52 @@ func readData() (
 		year = years[len(years)-1]
 	}
 
-	var ys []json.T
+	var ys []string
 	for _, y := range years {
-		ys = append(ys, json.Ws(y))
+		ys = append(ys, js.Ws(y))
 	}
 
 	timeStamp = a[0]
-  lang = a[2]
-	jyear = json.Ws(year)
-	jyears = json.Wa(ys)
-	data = json.FromString(file.ReadAll(path.Join(dir, year+".db")))
+	lang = a[2]
+	jyear = js.Ws(year)
+	jyears = js.Wa(ys)
+	data = file.Read(path.Cat(dir, year+".db"))
 	return
 }
 
 /// Writes 'data' and updates timeStamp. Returns the new timeStamp.
 /// If 'timeStamp' is out of date, returns json.Ws("").
 func writeData(
-  timeStamp json.T, year json.T, lang json.T, data json.T,
-) json.T {
-	dir := path.Join(HOME, "data")
-	a := json.FromString(file.ReadAll(path.Join(dir, "control.tb"))).Ra()
+	timeStamp string, year string, lang string, data string,
+) string {
+	dir := path.Cat(HOME, "data")
+	a := js.Ra(file.Read(path.Cat(dir, "control.tb")))
 	oldTimeStamp := a[0]
-	if oldTimeStamp.String() != timeStamp.String() {
-		return json.Ws("")
+	if oldTimeStamp != timeStamp {
+		return js.Ws("")
 	}
-	y := year.Rs()
-	timeStamp = json.Ws(date.Now().Format("%Y%M%D%T"))
-	file.WriteAll(
-		path.Join(dir, "control.tb"),
-		json.Wa([]json.T{timeStamp, json.Ws(y), lang}).String(),
+	y := js.Rs(year)
+	timeStamp = js.Ws(time.Fmt("%Y%M%D%T", time.Now()))
+	file.Write(
+		path.Cat(dir, "control.tb"),
+		js.Wa([]string{timeStamp, js.Ws(y), lang}),
 	)
-	file.WriteAll(path.Join(dir, y+".db"), data.String())
+	file.Write(path.Cat(dir, y+".db"), data)
 	return timeStamp
 }
 
 /// Change current year.
-func writeYear(timeStamp json.T, year json.T) json.T {
-	dir := path.Join(HOME, "data")
-	a := json.FromString(file.ReadAll(path.Join(dir, "control.tb"))).Ra()
+func writeYear(timeStamp string, year string) string {
+	dir := path.Cat(HOME, "data")
+	a := js.Ra(file.Read(path.Cat(dir, "control.tb")))
 	oldTimeStamp := a[0]
-	if oldTimeStamp.String() != timeStamp.String() {
-		return json.Ws("")
+	if oldTimeStamp != timeStamp {
+		return js.Ws("")
 	}
-	timeStamp = json.Ws(date.Now().Format("%Y%M%D%T"))
-	file.WriteAll(
-		path.Join(dir, "control.tb"),
-		json.Wa([]json.T{timeStamp, year, a[2]}).String(),
+	timeStamp = js.Ws(time.Fmt("%Y%M%D%T", time.Now()))
+	file.Write(
+		path.Cat(dir, "control.tb"),
+		js.Wa([]string{timeStamp, year, a[2]}),
 	)
 	return timeStamp
 }
-

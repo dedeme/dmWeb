@@ -6,25 +6,25 @@ package stocks
 
 import (
 	"fmt"
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/js"
 )
 
-func Process(ck string, mrq map[string]json.T) string {
-	rq := cgi.RqString(mrq, "rq")
+func Process(ck string, mrq map[string]string) string {
+	rq := js.Rs(mrq["rq"]);
 	switch rq {
 	case "idata":
-    lastDate := cgi.RqString(mrq, "lastDate")
+    lastDate := js.Rs(mrq["lastDate"])
 		hcontaCash, hcontaSum := hcontaData()                   // hconta.go
 		stocksStocks, stocksSum := stocksData()                 // stocksData
 		ktMarketStocks, ktMarketCash := ktMarketData(lastDate)  // ktMarket.go
-		return cgi.Rp(ck, map[string]json.T{
-			"hcontaCash":        json.Wd(hcontaCash),
-			"hcontaSum":         json.Wd(hcontaSum),
-			"stocksStocks":      json.Wa(stocksStocks),
-			"stocksSum":         json.Wd(stocksSum),
-			"ktMarketStocks": json.Wa(ktMarketStocks),
-			"ktMarketCash":   json.Wd(ktMarketCash),
+		return cgi.Rp(ck, map[string]string{
+			"hcontaCash":        js.Wd(hcontaCash),
+			"hcontaSum":         js.Wd(hcontaSum),
+			"stocksStocks":      js.Wa(stocksStocks),
+			"stocksSum":         js.Wd(stocksSum),
+			"ktMarketStocks": js.Wa(ktMarketStocks),
+			"ktMarketCash":   js.Wd(ktMarketCash),
 		})
 	default:
 		panic(fmt.Sprintf("Value of source ('%v') is not valid", rq))

@@ -5,10 +5,10 @@
 package stocks
 
 import (
-	"github.com/dedeme/golib/date"
-	"github.com/dedeme/golib/file"
-	"github.com/dedeme/golib/json"
-	"path"
+	"github.com/dedeme/ktlib/time"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/path"
 )
 
 const hcontaPath = "/dm/wwwcgi/dmcgi/Hconta/data"
@@ -16,28 +16,28 @@ const cashAcc = "57202"
 const stocksAcc = "54000"
 
 func hcontaData() (cash, sum float64) {
-	fdb := path.Join(hcontaPath, date.Now().Format("%Y")+".db")
+	fdb := path.Cat(hcontaPath, time.Fmt("%Y", time.Now())+".db")
 	if !file.Exists(fdb) {
 		panic(fdb + " not found")
 	}
-	accJs := json.FromString(file.ReadAll(fdb)).Ra()[3]
-	for _, eJs := range accJs.Ra() {
-		fields := eJs.Ra()
+	accJs := js.Ra(file.Read(fdb))[3]
+	for _, eJs := range js.Ra(accJs) {
+		fields := js.Ra(eJs)
 		debitsJs := fields[2]
 		creditsJs := fields[3]
 
-		if ammJs, ok := debitsJs.Ro()[cashAcc]; ok {
-			cash += ammJs.Rd()
+		if ammJs, ok := js.Ro(debitsJs)[cashAcc]; ok {
+			cash += js.Rd(ammJs)
 		}
-		if ammJs, ok := debitsJs.Ro()[stocksAcc]; ok {
-			sum += ammJs.Rd()
+		if ammJs, ok := js.Ro(debitsJs)[stocksAcc]; ok {
+			sum += js.Rd(ammJs)
 		}
 
-		if ammJs, ok := creditsJs.Ro()[cashAcc]; ok {
-			cash -= ammJs.Rd()
+		if ammJs, ok := js.Ro(creditsJs)[cashAcc]; ok {
+			cash -= js.Rd(ammJs)
 		}
-		if ammJs, ok := creditsJs.Ro()[stocksAcc]; ok {
-			sum -= ammJs.Rd()
+		if ammJs, ok := js.Ro(creditsJs)[stocksAcc]; ok {
+			sum -= js.Rd(ammJs)
 		}
 	}
 	return

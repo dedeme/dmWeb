@@ -5,14 +5,14 @@
 package main
 
 import (
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/js"
 )
 
-func changePassProcess(ck string, mrq map[string]json.T) string {
-	user := cgi.RqString(mrq, "user")
-	old := cgi.RqString(mrq, "old")
-	new := cgi.RqString(mrq, "new")
+func changePassProcess(ck string, mrq map[string]string) string {
+	user := js.Rs(mrq["user"])
+	old := js.Rs(mrq["old"])
+	new := js.Rs(mrq["new"])
 
 	return cgi.ChangePass(ck, user, old, new)
 }

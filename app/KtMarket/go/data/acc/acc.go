@@ -495,8 +495,8 @@ func Settlement(annotations []*AnnotationT) (
 	ledger *LedgerT, portfolio []*PfEntryT,
 	lastOps map[string]*DateProfT, serrors []string,
 ) {
-	addErr := func(format string, values ...interface{}) {
-		serrors = append(serrors, str.Fmt(format, values))
+	addErr := func(format string, values ...any) {
+		serrors = append(serrors, str.Fmt(format, values...))
 	}
 
 	arr.Sort(annotations, func(ai, aj *AnnotationT) bool {

@@ -5,39 +5,39 @@
 package main
 
 import (
-	"fmt"
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/str"
 )
 
-func mainProcess(ck string, mrq map[string]json.T) string {
-	rq := cgi.RqString(mrq, "rq")
+func mainProcess(ck string, mrq map[string]string) string {
+	rq := js.Rs(mrq["rq"])
 	switch rq {
 	case "read":
 		timeStamp, year, years, lang, data := readData() // db.go
-		return cgi.Rp(ck, map[string]json.T{
+		return cgi.Rp(ck, map[string]string{
 			"timeStamp": timeStamp,
 			"year":      year,
 			"years":     years,
-      "lang":      lang,
+			"lang":      lang,
 			"data":      data,
 		})
 	case "write":
 		timeStamp := writeData(
-      mrq["timeStamp"], mrq["year"], mrq["lang"], mrq["data"],
-    ) // db.go
-		return cgi.Rp(ck, map[string]json.T{
+			mrq["timeStamp"], mrq["year"], mrq["lang"], mrq["data"],
+		) // db.go
+		return cgi.Rp(ck, map[string]string{
 			"timeStamp": timeStamp, // If fail timeStamp == json.Ws("")
 		})
 	case "year":
 		timeStamp := writeYear(mrq["timeStamp"], mrq["year"]) // db.go
-		return cgi.Rp(ck, map[string]json.T{
+		return cgi.Rp(ck, map[string]string{
 			"timeStamp": timeStamp, // If fail timeStamp == json.Ws("")
 		})
 	case "close":
-		sessionId := cgi.RqString(mrq, "sessionId")
+		sessionId := js.Rs(mrq["sessionId"])
 		return cgi.DelSession(ck, sessionId)
 	default:
-		panic(fmt.Sprintf("Value of source ('%v') is not valid", rq))
+		panic(str.Fmt("Value of source ('%v') is not valid", rq))
 	}
 }
