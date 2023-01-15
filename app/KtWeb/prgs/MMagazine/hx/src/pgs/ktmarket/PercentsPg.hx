@@ -264,7 +264,8 @@ class PercentsPg {
   // Static --------------------------------------------------------------------
 
   public static function mk (wg: Domo): Void {
-    Cts.client.send([
+    Global.client.send([
+      "prg" => Js.ws("MMagazine"),
       "module" => Js.ws("KtMarket"),
       "source" => Js.ws("PercentsPg"),
       "rq" => Js.ws("idata"),

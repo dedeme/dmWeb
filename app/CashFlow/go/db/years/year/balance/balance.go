@@ -4,22 +4,22 @@
 package balance
 
 import (
-	"github.com/dedeme/golib/file"
-	"github.com/dedeme/golib/json"
-	"path"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/path"
 )
 
 // Create year balance data base. 'dpath' is for expample "/years/2021".
 func Mk(dpath string) {
-	Write(dpath, json.Wd(0.0))
+	Write(dpath, js.Wd(0.0))
 }
 
 // 'dpath' is for expample "/years/2021".
-func Read(dpath string) json.T {
-	return json.FromString(file.ReadAll(path.Join(dpath, "balance.tb")))
+func Read(dpath string) string {
+	return file.Read(path.Cat(dpath, "balance.tb"))
 }
 
 // 'dpath' is for expample "/years/2021".
-func Write(dpath string, value json.T) {
-	file.WriteAll(path.Join(dpath, "balance.tb"), value.String())
+func Write(dpath string, value string) {
+	file.Write(path.Cat(dpath, "balance.tb"), value)
 }

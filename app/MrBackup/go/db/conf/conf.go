@@ -5,9 +5,9 @@
 package conf
 
 import (
-	"github.com/dedeme/golib/file"
-	"github.com/dedeme/golib/json"
-	"path"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/path"
 )
 
 const (
@@ -18,23 +18,23 @@ const (
 var fpath string
 
 // Auxiliar function
-func write(cf map[string]json.T) {
-	file.WriteAll(fpath, json.Wo(cf).String())
+func write(cf map[string]string) {
+	file.Write(fpath, js.Wo(cf))
 }
 
 // Auxiliar function
-func read() map[string]json.T {
-	return json.FromString(file.ReadAll(fpath)).Ro()
+func read() map[string]string {
+	return js.Ro(file.Read(fpath))
 }
 
 // Auxiliar function
-func getField(key string) (value json.T, ok bool) {
+func getField(key string) (value string, ok bool) {
 	value, ok = read()[key]
 	return
 }
 
 // Auxiliar function
-func setField(key string, js json.T) {
+func setField(key string, js string) {
 	cf := read()
 	cf[key] = js
 	write(cf)
@@ -43,10 +43,10 @@ func setField(key string, js json.T) {
 // Intializes table.
 //    parent: Parent directory of "Conf.tb".
 func Initialize(parent string) {
-	fpath = path.Join(parent, "Conf.tb")
+	fpath = path.Cat(parent, "Conf.tb")
 	if !file.Exists(fpath) {
-		write(map[string]json.T{
-			langKey: json.Ws("es"),
+		write(map[string]string{
+			langKey: js.Ws("es"),
 		})
 	}
 }
@@ -54,20 +54,20 @@ func Initialize(parent string) {
 // Gets web language.
 func Lang() string {
 	value, _ := getField(langKey)
-	return value.Rs()
+	return js.Rs(value)
 }
 
 // Sets web language.
 //    lang: 'es' or 'en'.
 func SetLang(lang string) {
-	setField(langKey, json.Ws(lang))
+	setField(langKey, js.Ws(lang))
 }
 
 // Gets menu option.
 func Menu() string {
 	value, ok := getField(menuKey)
 	if ok {
-		return value.Rs()
+		return js.Rs(value)
 	}
 	return ""
 }
@@ -75,5 +75,5 @@ func Menu() string {
 // Sets menu option.
 //    option: A valid option menu.
 func SetMenu(option string) {
-	setField(menuKey, json.Ws(option))
+	setField(menuKey, js.Ws(option))
 }

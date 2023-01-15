@@ -6,28 +6,28 @@ package years
 
 import (
 	"github.com/dedeme/CashFlow/db/years/year"
-	"github.com/dedeme/golib/date"
-	"github.com/dedeme/golib/file"
-	"path"
-	"strconv"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/path"
+	"github.com/dedeme/ktlib/str"
+	"github.com/dedeme/ktlib/time"
 )
 
 var dpath string
 
 // Initialize data base.
 func Initialize(parentDir string) {
-	dpath = path.Join(parentDir, "years")
+	dpath = path.Cat(parentDir, "years")
 	if !file.IsDirectory(dpath) {
 		file.Mkdir(dpath)
 	}
-	y := date.Now().Year()
-	ypath := YearPath(strconv.Itoa(y))
+	y := time.Year(time.Now())
+	ypath := YearPath(str.Fmt("%v", y))
 
 	if !file.IsDirectory(ypath) {
 		year.Mk(ypath)
 	}
 
-	ypath1 := YearPath(strconv.Itoa(y + 1))
+	ypath1 := YearPath(str.Fmt("%v", y+1))
 	if !file.IsDirectory(ypath1) {
 		year.MkFrom(ypath, ypath1)
 	}
@@ -35,14 +35,14 @@ func Initialize(parentDir string) {
 
 // Returns data base path of a year.
 func YearPath(y string) string {
-	return path.Join(dpath, y)
+	return path.Cat(dpath, y)
 }
 
 // Returns the list of years
 func List() []string {
 	var r []string
-	for _, fi := range file.List(dpath) {
-		r = append(r, fi.Name())
+	for _, fname := range file.Dir(dpath) {
+		r = append(r, fname)
 	}
 	return r
 }

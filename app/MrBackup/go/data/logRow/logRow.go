@@ -5,8 +5,8 @@
 package logRow
 
 import (
-	"github.com/dedeme/golib/date"
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/time"
+	"github.com/dedeme/ktlib/js"
 	"runtime/debug"
 	"strings"
 )
@@ -19,7 +19,7 @@ type T struct {
 
 // Auxiliar function
 func now() string {
-	return date.Now().Format("%D/%M/%Y(%t)")
+	return time.Fmt("%D/%M/%Y(%t)", time.Now())
 }
 
 // Adds the stack trace to a message.
@@ -62,19 +62,19 @@ func Error(msg string) *T {
 	return &T{true, now(), msg}
 }
 
-func (r *T) ToJs() json.T {
-	return json.Wa([]json.T{
-		json.Wb(r.error),
-		json.Ws(r.time),
-		json.Ws(r.msg),
+func (r *T) ToJs() string {
+	return js.Wa([]string{
+		js.Wb(r.error),
+		js.Ws(r.time),
+		js.Ws(r.msg),
 	})
 }
 
-func FromJs(js json.T) *T {
-	a := js.Ra()
+func FromJs(j string) *T {
+	a := js.Ra(j)
 	return &T{
-		a[0].Rb(),
-		a[1].Rs(),
-		a[2].Rs(),
+		js.Rb(a[0]),
+		js.Rs(a[1]),
+		js.Rs(a[2]),
 	}
 }

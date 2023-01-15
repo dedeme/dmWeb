@@ -8,20 +8,20 @@ import (
 	"github.com/dedeme/MrBackup/data/cts"
 	"github.com/dedeme/MrBackup/db/conf"
 	"github.com/dedeme/MrBackup/db/log"
-	"github.com/dedeme/golib/file"
-	"github.com/dedeme/golib/sys"
-	"path"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/sys"
+	"github.com/dedeme/ktlib/path"
 )
 
 func Initialize() {
-	p := path.Join(sys.Home(), cts.DataPath)
-	version := path.Join(p, "version.txt")
+	p := path.Cat(sys.Environ()["HOME"], cts.DataPath)
+	version := path.Cat(p, "version.txt")
 	if !file.Exists(p) {
 		file.Mkdir(p)
-		file.WriteAll(version, cts.DataVersion)
+		file.Write(version, cts.DataVersion)
 	}
 	log.Initialize(p)
-	dbVersion := file.ReadAll(version)
+	dbVersion := file.Read(version)
 	if dbVersion != cts.DataVersion {
 		panic("Application can not continue.\n" +
 			"Expected data version:\n" +

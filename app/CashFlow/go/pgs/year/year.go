@@ -4,24 +4,24 @@
 package year
 
 import (
-	"fmt"
+	"github.com/dedeme/ktlib/str"
 	"github.com/dedeme/CashFlow/db/years"
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/js"
 )
 
-func Process(ck string, mrq map[string]json.T) string {
-	rq := cgi.RqString(mrq, "rq")
+func Process(ck string, mrq map[string]string) string {
+	rq := js.Rs(mrq["rq"])
 	switch rq {
 	case "idata":
-		var yearsJs []json.T
+		var yearsJs []string
 		for _, y := range years.List() {
-			yearsJs = append(yearsJs, json.Ws(y))
+			yearsJs = append(yearsJs, js.Ws(y))
 		}
-		rp := map[string]json.T{}
-		rp["years"] = json.Wa(yearsJs)
+		rp := map[string]string{}
+		rp["years"] = js.Wa(yearsJs)
 		return cgi.Rp(ck, rp)
 	default:
-		panic(fmt.Sprintf("Value of rq ('%v') is not valid", rq))
+		panic(str.Fmt("Value of rq ('%v') is not valid", rq))
 	}
 }

@@ -7,44 +7,44 @@ package log
 import (
 	"github.com/dedeme/MrBackup/data/cts"
 	"github.com/dedeme/MrBackup/data/logRow"
-	"github.com/dedeme/golib/file"
-	"github.com/dedeme/golib/json"
-	"path"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/path"
 )
 
 var fpath string
 
 // Auxiliar function
-func write(a []json.T) {
+func write(a []string) {
 	if len(a) > cts.LogMaxLength {
 		a = a[len(a)-cts.LogMaxLength:]
 	}
-	file.WriteAll(fpath, json.Wa(a).String())
+	file.Write(fpath, js.Wa(a))
 }
 
 // Initializes log.
 //    parent: Parent directory of "Log.tb".
 func Initialize(parent string) {
-	fpath = path.Join(parent, "Log.tb")
+	fpath = path.Cat(parent, "Log.tb")
 	if !file.Exists(fpath) {
-		write([]json.T{})
+		write([]string{})
 	}
 }
 
 // Reinitializes log.
 func Reset() {
-	file.WriteAll(fpath, "[]")
+	file.Write(fpath, "[]")
 }
 
 // Read the content of log serialized in JSON.
-func Read() json.T {
-	return json.FromString(file.ReadAll(fpath))
+func Read() string {
+	return file.Read(fpath)
 }
 
 // Adds an informative message to log.
 //   msg: Message to show.
 func Info(msg string) {
-	a := Read().Ra()
+	a := js.Ra(Read())
 	a = append(a, logRow.Info(msg).ToJs())
 	write(a)
 }
@@ -52,7 +52,7 @@ func Info(msg string) {
 // Adds an error message to log.
 //   msg: Message to show.
 func Error(msg string) {
-	a := Read().Ra()
+	a := js.Ra(Read())
 	a = append(a, logRow.Error(msg).ToJs())
 	write(a)
 }

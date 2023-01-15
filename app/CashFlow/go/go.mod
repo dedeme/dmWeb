@@ -1,6 +1,6 @@
 module github.com/dedeme/CashFlow
 
-go 1.15
+go 1.18
 
-// v2020.03
-require github.com/dedeme/golib v0.0.0-20210507144715-aa720141beec
+// v2022.012
+require github.com/dedeme/ktlib v0.0.0-20221206144224-a8fd85cf0a82

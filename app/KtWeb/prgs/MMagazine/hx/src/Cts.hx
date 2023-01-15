@@ -1,4 +1,4 @@
-// Copyright 31-Dec-2021 ºDeme
+// Copyright 07-Nov-2022 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
 import dm.Client;
@@ -8,9 +8,9 @@ import I18n._;
 /// Constants.
 class Cts {
   /// Application name.
-  public static final appName = "MMagazine";
+  public static final appName = "KtWeb:MMagazine";
   /// Application version.
-  public static var version(default, null) = "202111";
+  public static var version(default, null) = "202301";
   /// Page foot.
   public static final foot = Q("table")
     .klass("main")
@@ -20,20 +20,9 @@ class Cts {
     .add(Q("tr")
       .add(Q("td")
         .style("text-align: right;color:#808080;font-size:x-small;")
-        .html('- © ºDeme. ${Cts.appName} (${Cts.version}) -')))
+        .html('- © ºDeme. ${appName} (${version}) -')))
   ;
-  /// Application client.
-  public static final client = new Client(true, Cts.appName, () -> {
-    final wg = Q("div");
-    new MsgPg(wg, _("Session is expired.")).show();
-    Q("@body")
-      .removeAll()
-      .add(wg)
-      .add(foot)
-    ;
-  });
-  /// Lang key
-  public static final langKey = Cts.appName + "_lang";
+
   /// ToBuy references colors (one by investor)
   public static final toBuyColors = [
     "rgba(160, 0, 0)",

@@ -4,18 +4,18 @@
 package mainPg
 
 import (
-	"fmt"
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/str"
 )
 
-func Process(ck string, mrq map[string]json.T) string {
-	rq := cgi.RqString(mrq, "rq")
+func Process(ck string, mrq map[string]string) string {
+	rq := js.Rs(mrq["rq"])
 	switch rq {
 	case "close":
-		sessionId := cgi.RqString(mrq, "sessionId")
+		sessionId := js.Rs(mrq["sessionId"])
 		return cgi.DelSession(ck, sessionId)
 	default:
-		panic(fmt.Sprintf("Value of rq ('%v') is not valid", rq))
+		panic(str.Fmt("Value of rq ('%v') is not valid", rq))
 	}
 }

@@ -6,15 +6,15 @@ package poolDb
 import (
 	"github.com/dedeme/MrBackup/data/cts"
 	"github.com/dedeme/MrBackup/data/testRs"
-	"github.com/dedeme/golib/file"
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/js"
 	"os"
-	"path"
+	"github.com/dedeme/ktlib/path"
 )
 
 func lastTgzOk(base, pool, n string) bool {
-	baseTgzs := filterTgz(file.List(path.Join(base, n)))
-	poolTgzs := filterTgz(file.List(path.Join(pool, n)))
+	baseTgzs := filterTgz(file.Dir(path.Cat(base, n)))
+	poolTgzs := filterTgz(file.Dir(path.Cat(pool, n)))
 	if len(baseTgzs) == 0 {
 		return len(poolTgzs) == 0
 	}
@@ -36,8 +36,8 @@ func lastTgzOk(base, pool, n string) bool {
 }
 
 func equalsPathTxt(base, pool, n string) bool {
-	tx, ok := readPath(base, n, path.Join(base, n, "path.txt"))
-	tx2, ok2 := readPath(pool, n, path.Join(pool, n, "path.txt"))
+	tx, ok := readPath(base, n, path.Cat(base, n, "path.txt"))
+	tx2, ok2 := readPath(pool, n, path.Cat(pool, n, "path.txt"))
 	if ok {
 		return tx == tx2
 	}
@@ -48,31 +48,30 @@ func globalTest() map[string]*testRs.T {
 	rs := map[string]*testRs.T{}
 	poolBase := cts.MrBackupTargets[0]
 	var dirNames []string
-	for _, fs := range file.List(poolBase) {
+	for _, dirName := range file.Dir(poolBase) {
 		t := testRs.New()
-		dirName := fs.Name()
 		dirNames = append(dirNames, dirName)
-		dir := path.Join(poolBase, dirName)
+		dir := path.Cat(poolBase, dirName)
 		if !file.IsDirectory(dir) {
 			continue
 		}
 
-		ftxt := path.Join(dir, "path.txt")
+		ftxt := path.Cat(dir, "path.txt")
 		if info, err := os.Stat(ftxt); err == nil && info.Mode().IsRegular() {
 			t.WithPathTxt = true
-			tx := file.ReadAll(ftxt)
-			t.Path = json.FromString(tx).Rs()
+			tx := file.Read(ftxt)
+			t.Path = js.Rs(tx)
 			if tx != "" && file.IsDirectory(t.Path) {
 				t.PathOk = true
 			}
 		}
 
-    fbig := path.Join(dir, "big")
+    fbig := path.Cat(dir, "big")
     if (file.Exists(fbig)) {
       t.IsBig = true
     }
 
-		if len(file.List(dir)) > 1 {
+		if len(file.Dir(dir)) > 1 {
 			t.WithBackups = true
 		}
 
@@ -84,8 +83,7 @@ func globalTest() map[string]*testRs.T {
 			continue
 		}
 		var ldirNames []string
-		for _, fs := range file.List(pool) {
-			dirName := fs.Name()
+		for _, dirName := range file.Dir(pool) {
 			ldirNames = append(ldirNames, dirName)
 
 			isMissing := true

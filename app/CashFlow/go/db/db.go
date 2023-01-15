@@ -7,20 +7,20 @@ package db
 import (
 	"github.com/dedeme/CashFlow/data/cts"
 	"github.com/dedeme/CashFlow/db/years"
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/file"
-	"path"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/path"
 )
 
 // Initialize data base.
 func Initialize() {
-	p := path.Join(cgi.Home(), cts.DataPath)
-	version := path.Join(p, "version.txt")
+	p := path.Cat(cgi.Home(), cts.DataPath)
+	version := path.Cat(p, "version.txt")
 	if !file.Exists(p) {
 		file.Mkdir(p)
-		file.WriteAll(version, cts.DataVersion)
+		file.Write(version, cts.DataVersion)
 	}
-	dbVersion := file.ReadAll(version)
+	dbVersion := file.Read(version)
 	if dbVersion != cts.DataVersion {
 		panic("Application can not continue.\n" +
 			"Expected data version:\n" +

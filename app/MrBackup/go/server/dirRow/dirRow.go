@@ -8,19 +8,19 @@ import (
 	"fmt"
 	"github.com/dedeme/MrBackup/data/globals"
 	"github.com/dedeme/MrBackup/db/poolDb"
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/js"
 )
 
-func Process(ck string, mrq map[string]json.T) string {
-	rq := cgi.RqString(mrq, "rq")
+func Process(ck string, mrq map[string]string) string {
+	rq := js.Rs(mrq["rq"])
 	switch rq {
 	case "showDirs":
-		id := cgi.RqString(mrq, "id")
+		id := js.Rs(mrq["id"])
 		poolDb.ShowDirs(id)
 		return cgi.RpEmpty(ck)
 	case "copyToBase":
-		id := cgi.RqString(mrq, "id")
+		id := js.Rs(mrq["id"])
 		if !globals.IsBusy {
 			globals.IsBusy = true
 			poolDb.CopyToBase(id)
@@ -28,7 +28,7 @@ func Process(ck string, mrq map[string]json.T) string {
 		}
 		return cgi.RpEmpty(ck)
 	case "copyFromBase":
-		id := cgi.RqString(mrq, "id")
+		id := js.Rs(mrq["id"])
 		if !globals.IsBusy {
 			globals.IsBusy = true
 			poolDb.CopyFromBase(id)
@@ -36,7 +36,7 @@ func Process(ck string, mrq map[string]json.T) string {
 		}
 		return cgi.RpEmpty(ck)
 	case "createPathTxt":
-		id := cgi.RqString(mrq, "id")
+		id := js.Rs(mrq["id"])
 		if !globals.IsBusy {
 			globals.IsBusy = true
 			poolDb.CreatePathTxt(id)
@@ -44,8 +44,8 @@ func Process(ck string, mrq map[string]json.T) string {
 		}
 		return cgi.RpEmpty(ck)
 	case "changeDir":
-		id := cgi.RqString(mrq, "id")
-		newId := cgi.RqString(mrq, "newId")
+		id := js.Rs(mrq["id"])
+		newId := js.Rs(mrq["newId"])
 		if !globals.IsBusy {
 			globals.IsBusy = true
 			poolDb.ChangeDir(id, newId)
@@ -53,8 +53,8 @@ func Process(ck string, mrq map[string]json.T) string {
 		}
 		return cgi.RpEmpty(ck)
 	case "changePath":
-		id := cgi.RqString(mrq, "id")
-		newPath := cgi.RqString(mrq, "newPath")
+		id := js.Rs(mrq["id"])
+		newPath := js.Rs(mrq["newPath"])
 		if !globals.IsBusy {
 			globals.IsBusy = true
 			poolDb.ChangePath(id, newPath)
@@ -62,7 +62,7 @@ func Process(ck string, mrq map[string]json.T) string {
 		}
 		return cgi.RpEmpty(ck)
   case "changeBig":
-		id := cgi.RqString(mrq, "id")
+		id := js.Rs(mrq["id"])
 		if !globals.IsBusy {
 			globals.IsBusy = true
 			poolDb.ChangeBig(id)
@@ -70,7 +70,7 @@ func Process(ck string, mrq map[string]json.T) string {
 		}
 		return cgi.RpEmpty(ck)
 	case "update":
-		id := cgi.RqString(mrq, "id")
+		id := js.Rs(mrq["id"])
 		if !globals.IsBusy {
 			globals.IsBusy = true
 			poolDb.UpdateDir(id)
@@ -78,7 +78,7 @@ func Process(ck string, mrq map[string]json.T) string {
 		}
 		return cgi.RpEmpty(ck)
 	case "delete":
-		id := cgi.RqString(mrq, "id")
+		id := js.Rs(mrq["id"])
 		if !globals.IsBusy {
 			globals.IsBusy = true
 			poolDb.Delete(id)

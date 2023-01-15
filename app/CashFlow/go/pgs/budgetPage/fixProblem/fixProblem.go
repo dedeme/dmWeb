@@ -4,22 +4,22 @@
 package fixProblem
 
 import (
-	"fmt"
 	"github.com/dedeme/CashFlow/db/years"
 	"github.com/dedeme/CashFlow/db/years/year/diary"
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/str"
 )
 
-func Process(ck string, mrq map[string]json.T) string {
-	rq := cgi.RqString(mrq, "rq")
+func Process(ck string, mrq map[string]string) string {
+	rq := js.Rs(mrq["rq"])
 	switch rq {
 	case "updateDiary":
-		year := cgi.RqString(mrq, "year")
+		year := js.Rs(mrq["year"])
 		path := years.YearPath(year)
 		diary.Write(path, mrq["diary"])
 		return cgi.RpEmpty(ck)
 	default:
-		panic(fmt.Sprintf("Value of rq ('%v') is not valid", rq))
+		panic(str.Fmt("Value of rq ('%v') is not valid", rq))
 	}
 }

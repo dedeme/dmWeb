@@ -13,34 +13,34 @@ import (
 	"github.com/dedeme/MrBackup/server/pgs/directories"
 	"github.com/dedeme/MrBackup/server/pgs/settings"
 	"github.com/dedeme/MrBackup/server/pgs/summary"
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/cryp"
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/cryp"
+	"github.com/dedeme/ktlib/js"
 	"strings"
 )
 
-func subHub(ck string, mrq map[string]json.T) string {
-	rq := cgi.RqString(mrq, "rq")
+func subHub(ck string, mrq map[string]string) string {
+	rq := js.Rs(mrq["rq"])
 	switch rq {
 	case "conf":
-		return cgi.Rp(ck, map[string]json.T{
-			"lang": json.Ws(conf.Lang()),
-			"menu": json.Ws(conf.Menu()),
+		return cgi.Rp(ck, map[string]string{
+			"lang": js.Ws(conf.Lang()),
+			"menu": js.Ws(conf.Menu()),
 		})
 	case "menuOption":
-		option := cgi.RqString(mrq, "option")
+		option := js.Rs(mrq["option"])
 		conf.SetMenu(option)
 		return cgi.RpEmpty(ck)
 	case "bye":
-		sessionId := cgi.RqString(mrq, "sessionId")
+		sessionId := js.Rs(mrq["sessionId"])
 		return cgi.DelSession(ck, sessionId)
 	default:
 		panic(fmt.Sprintf("Value of rq ('%v') is not valid", rq))
 	}
 }
 
-func hub(ck string, mrq map[string]json.T) string {
-	page := cgi.RqString(mrq, "page")
+func hub(ck string, mrq map[string]string) string {
+	page := js.Rs(mrq["page"])
 	switch page {
 	case "main":
 		return subHub(ck, mrq)
@@ -73,7 +73,7 @@ func Process(rq string) (rp string) {
 	//........................................................... AUTHENTICATION
 	if ix == 0 {
 		key := cryp.Key(cts.AppName, cgi.Klen)
-		data := cryp.Decryp(key, rq[1:])
+		data := cryp.Decode(key, rq[1:])
 		ps := strings.Split(data, ":")
 		return cgi.Authentication(key, ps[0], ps[1], ps[2] == "1")
 	}
@@ -92,7 +92,7 @@ func Process(rq string) (rp string) {
 		return cgi.RpExpired()
 	}
 
-	js := cryp.Decryp(comKey, rest)
-	data := json.FromString(js).Ro()
+	j := cryp.Decode(comKey, rest)
+	data := js.Ro(j)
 	return hub(comKey, data)
 }

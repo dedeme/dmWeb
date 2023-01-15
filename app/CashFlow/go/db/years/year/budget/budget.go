@@ -4,18 +4,18 @@
 package budget
 
 import (
-	"github.com/dedeme/golib/file"
-	"github.com/dedeme/golib/json"
-	"path"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/path"
 )
 
 // Returns an empty table.
-func mkEmpty() json.T {
-	var months []json.T
+func mkEmpty() string {
+	var months []string
 	for i := 0; i < 12; i++ {
-		months = append(months, json.Wa([]json.T{}))
+		months = append(months, js.Wa([]string{}))
 	}
-	return json.Wa(months)
+	return js.Wa(months)
 }
 
 // Create year budget data base. 'dpath' is for expample "/years/2021".
@@ -25,14 +25,14 @@ func Mk(dpath string) {
 
 // 'dpath' is for expample "/years/2021".
 // If 'dpath' does not exists, it returns an empty table.
-func Read(dpath string) json.T {
+func Read(dpath string) string {
 	if file.Exists(dpath) {
-		return json.FromString(file.ReadAll(path.Join(dpath, "budget.tb")))
+		return file.Read(path.Cat(dpath, "budget.tb"))
 	}
 	return mkEmpty()
 }
 
 // 'dpath' is for expample "/years/2021".
-func Write(dpath string, entries json.T) {
-	file.WriteAll(path.Join(dpath, "budget.tb"), entries.String())
+func Write(dpath string, entries string) {
+	file.Write(path.Cat(dpath, "budget.tb"), entries)
 }

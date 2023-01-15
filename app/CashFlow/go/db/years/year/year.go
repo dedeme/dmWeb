@@ -9,7 +9,7 @@ import (
 	"github.com/dedeme/CashFlow/db/years/year/budget"
 	"github.com/dedeme/CashFlow/db/years/year/diary"
 	"github.com/dedeme/CashFlow/db/years/year/plan"
-	"github.com/dedeme/golib/file"
+	"github.com/dedeme/ktlib/file"
 )
 
 // Create year data base. 'dpath' is for expample "/years/2021"

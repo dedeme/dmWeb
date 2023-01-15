@@ -174,7 +174,8 @@ class HotMapsPg {
     final url = Ui.url();
     final model = url.exists("2") ? url.get("2").trim() : "";
 
-    Cts.client.send([
+    Global.client.send([
+      "prg" => Js.ws("MMagazine"),
       "module" => Js.ws("MMarket"),
       "source" => Js.ws("HotMapsPg"),
       "rq" => Js.ws("idata"),

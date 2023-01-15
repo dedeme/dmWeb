@@ -8,22 +8,22 @@ import (
 	"fmt"
 	"github.com/dedeme/MrBackup/data/cts"
 	"github.com/dedeme/MrBackup/db/log"
-	"github.com/dedeme/golib/file"
-	"path"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/path"
 )
 
 func findOutdated(dir string, tm int64) (all, outdated int) {
-	for _, e := range file.List(dir) {
-		p := path.Join(dir, e.Name())
+	for _, fname := range file.Dir(dir) {
+		p := path.Cat(dir, fname)
 		if file.IsDirectory(p) {
 			a, o := findOutdated(p, tm)
 			all += a
 			outdated += o
 			continue
 		}
-		if e.Mode().IsRegular() {
+		if file.IsRegular(p) {
 			all++
-			if file.LastModification(p) > tm {
+			if file.Tm(p) > tm {
 				outdated++
 			}
 		}
@@ -33,20 +33,19 @@ func findOutdated(dir string, tm int64) (all, outdated int) {
 
 func testFiles() (files, outdatedDirs, outdatedFiles int) {
 	pool := cts.MrBackupTargets[0]
-	for _, fs := range file.List(pool) {
-		dir := fs.Name()
+	for _, dir := range file.Dir(pool) {
 		pdir, ok := readPathTxt(pool, dir)
 		if !ok {
 			continue
 		}
 
-		tgzs := filterTgz(file.List(path.Join(pool, dir)))
+		tgzs := filterTgz(file.Dir(path.Cat(pool, dir)))
 		lastName := ""
 		lastTime := int64(0)
 		for _, e := range tgzs {
 			if e > lastName {
 				lastName = e
-				lastTime = file.LastModification(path.Join(pool, dir, e))
+				lastTime = file.Tm(path.Cat(pool, dir, e))
 			}
 		}
 

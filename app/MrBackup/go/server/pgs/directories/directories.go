@@ -8,33 +8,33 @@ import (
 	"fmt"
 	"github.com/dedeme/MrBackup/data/globals"
 	"github.com/dedeme/MrBackup/db/poolDb"
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/js"
 )
 
-func Process(ck string, mrq map[string]json.T) string {
-	rq := cgi.RqString(mrq, "rq")
+func Process(ck string, mrq map[string]string) string {
+	rq := js.Rs(mrq["rq"])
 	switch rq {
 	case "idata":
 		isBusy := globals.IsBusy
-		var data json.T
+		var data string
 		if !isBusy {
 			globals.IsBusy = true
 			mapRs := poolDb.GlobalTest()
-			mapJs := map[string]json.T{}
+			mapJs := map[string]string{}
 			for k, v := range mapRs {
 				mapJs[k] = v.ToJs()
 			}
-			data = json.Wo(mapJs)
+			data = js.Wo(mapJs)
 			globals.IsBusy = false
 		}
-		rp := map[string]json.T{
-			"isBusy": json.Wb(isBusy),
+		rp := map[string]string{
+			"isBusy": js.Wb(isBusy),
 			"data":   data,
 		}
 		return cgi.Rp(ck, rp)
 	case "new":
-		id := cgi.RqString(mrq, "id")
+		id := js.Rs(mrq["id"])
 		if !globals.IsBusy {
 			globals.IsBusy = true
 			poolDb.AddDir(id)

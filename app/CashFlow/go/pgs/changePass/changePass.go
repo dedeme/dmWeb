@@ -4,20 +4,20 @@
 package changePass
 
 import (
-	"fmt"
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/str"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/js"
 )
 
-func Process(ck string, mrq map[string]json.T) string {
-	rq := cgi.RqString(mrq, "rq")
+func Process(ck string, mrq map[string]string) string {
+	rq := js.Rs(mrq["rq"])
 	switch rq {
 	case "change":
-		user := cgi.RqString(mrq, "user")
-		old := cgi.RqString(mrq, "old")
-		new := cgi.RqString(mrq, "new")
+		user := js.Rs(mrq["user"])
+		old := js.Rs(mrq["old"])
+		new := js.Rs(mrq["new"])
 		return cgi.ChangePass(ck, user, old, new)
 	default:
-		panic(fmt.Sprintf("Value of rq ('%v') is not valid", rq))
+		panic(str.Fmt("Value of rq ('%v') is not valid", rq))
 	}
 }

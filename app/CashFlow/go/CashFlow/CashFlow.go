@@ -5,7 +5,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/dedeme/CashFlow/data/cts"
 	"github.com/dedeme/CashFlow/db"
 	"github.com/dedeme/CashFlow/pgs/budgetPage"
@@ -16,15 +15,15 @@ import (
 	"github.com/dedeme/CashFlow/pgs/mainPg"
 	"github.com/dedeme/CashFlow/pgs/planPage"
 	"github.com/dedeme/CashFlow/pgs/year"
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/cryp"
-	"github.com/dedeme/golib/json"
-	"os"
-	"strings"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/cryp"
+	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/str"
+	"github.com/dedeme/ktlib/sys"
 )
 
-func sourceProcess(ck string, mrq map[string]json.T) string {
-	source := cgi.RqString(mrq, "source")
+func sourceProcess(ck string, mrq map[string]string) string {
+	source := js.Rs(mrq["source"])
 	switch source {
 	case "Main":
 		return mainPg.Process(ck, mrq)
@@ -43,33 +42,34 @@ func sourceProcess(ck string, mrq map[string]json.T) string {
 	case "ChangePass":
 		return changePass.Process(ck, mrq)
 	default:
-		panic(fmt.Sprintf("Value of source ('%v') is not valid", source))
+		panic(str.Fmt("Value of source ('%v') is not valid", source))
 	}
 }
 
 func main() {
-	if len(os.Args) != 2 {
-		fmt.Println("CashFlow need one and only one argument.")
+	args := sys.Args()
+	if len(args) != 2 {
+		sys.Println("CashFlow need one and only one argument.")
 		return
 	}
-	rq := os.Args[1]
+	rq := args[1]
 
 	cgi.Initialize(cts.Home, 900)
 	db.Initialize()
 
-	ix := strings.IndexByte(rq, ':')
+	ix := str.IndexByte(rq, ':')
 	//............................................................... CONNECTION
 	if ix == -1 {
-		fmt.Print(cgi.Connect(rq))
+		sys.Print(cgi.Connect(rq))
 		return
 	}
 
 	//........................................................... AUTHENTICATION
 	if ix == 0 {
 		key := cryp.Key(cts.App, cgi.Klen)
-		data := cryp.Decryp(key, rq[1:])
-		ps := strings.Split(data, ":")
-		fmt.Print(cgi.Authentication(key, ps[0], ps[1], ps[2] == "1"))
+		data := cryp.Decode(key, rq[1:])
+		ps := str.Split(data, ":")
+		sys.Print(cgi.Authentication(key, ps[0], ps[1], ps[2] == "1"))
 		return
 	}
 
@@ -77,18 +77,18 @@ func main() {
 	sessionId := rq[:ix]
 	conKey := ""
 	rest := rq[ix+1:]
-	ix = strings.IndexByte(rest, ':')
+	ix = str.IndexByte(rest, ':')
 	if ix != -1 {
 		conKey = rest[:ix]
 		rest = rest[ix+1:]
 	}
 	comKey, ok := cgi.GetComKey(sessionId, conKey)
 	if !ok {
-		fmt.Print(cgi.RpExpired())
+		sys.Print(cgi.RpExpired())
 		return
 	}
 
-	js := cryp.Decryp(comKey, rest)
-	data := json.FromString(js).Ro()
-	fmt.Print(sourceProcess(comKey, data))
+	j := cryp.Decode(comKey, rest)
+	data := js.Ro(j)
+	sys.Print(sourceProcess(comKey, data))
 }

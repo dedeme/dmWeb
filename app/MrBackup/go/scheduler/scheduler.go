@@ -8,8 +8,8 @@ import (
 	"github.com/dedeme/MrBackup/data/globals"
 	"github.com/dedeme/MrBackup/db/log"
 	"github.com/dedeme/MrBackup/db/poolDb"
-	"github.com/dedeme/golib/date"
-	"github.com/dedeme/golib/sys"
+	"github.com/dedeme/ktlib/time"
+	"github.com/dedeme/ktlib/sys"
 )
 
 // Starts scheduler.
@@ -19,10 +19,10 @@ func Start(ch chan int) {
 	for {
 		if count > cts.SchedulerTimes {
 			if done {
-				if date.Now().Hour() != cts.SchedulerHour {
+				if time.Hour(time.Now()) != cts.SchedulerHour {
 					done = false
 				}
-			} else if date.Now().Hour() == cts.SchedulerHour {
+			} else if time.Hour(time.Now()) == cts.SchedulerHour {
 				for globals.IsBusy {
 					sys.Sleep(cts.SchedulerSleep)
 				}

@@ -103,7 +103,8 @@ class ProfitsPg {
   // Static --------------------------------------------------------------------
 
   public static function mk (wg: Domo): Void {
-    Cts.client.send([
+    Global.client.send([
+      "prg" => Js.ws("MMagazine"),
       "module" => Js.ws("KtMarket"),
       "source" => Js.ws("ProfitsPg"),
       "rq" => Js.ws("idata"),

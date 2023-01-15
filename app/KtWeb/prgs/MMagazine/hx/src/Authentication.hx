@@ -1,8 +1,6 @@
 // Copyright 19-Jun-2020 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-package pgs.main;
-
 import dm.Domo;
 import dm.Ui.Q;
 import dm.Ui;
@@ -183,7 +181,7 @@ class Authentication {
       return;
     }
 
-    Cts.client.authentication(user, pass, withExpiration, ok -> {
+    Global.client.authentication(user, pass, withExpiration, ok -> {
       if (ok) {
         captcha.reset();
         fnOk();

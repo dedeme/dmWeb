@@ -4,22 +4,22 @@
 package plan
 
 import (
-	"github.com/dedeme/golib/file"
-	"github.com/dedeme/golib/json"
-	"path"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/path"
 )
 
 // Create year annotations data base. 'dpath' is for expample "/years/2021".
 func Mk(dpath string) {
-	Write(dpath, json.Wa([]json.T{}))
+	Write(dpath, js.Wa([]string{}))
 }
 
 // 'dpath' is for expample "/years/2021".
-func Read(dpath string) json.T {
-	return json.FromString(file.ReadAll(path.Join(dpath, "plan.tb")))
+func Read(dpath string) string {
+	return file.Read(path.Cat(dpath, "plan.tb"))
 }
 
 // 'dpath' is for expample "/years/2021".
-func Write(dpath string, entries json.T) {
-	file.WriteAll(path.Join(dpath, "plan.tb"), entries.String())
+func Write(dpath string, entries string) {
+	file.Write(path.Cat(dpath, "plan.tb"), entries)
 }

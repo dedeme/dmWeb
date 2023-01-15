@@ -9,14 +9,13 @@ import (
 	"fmt"
 	"github.com/dedeme/MrBackup/data/cts"
 	"github.com/dedeme/MrBackup/db/log"
-	"github.com/dedeme/golib/date"
-	"github.com/dedeme/golib/file"
-	"github.com/dedeme/golib/sys"
+	"github.com/dedeme/ktlib/time"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/sys"
+	"github.com/dedeme/ktlib/path"
 	"os"
-	"path"
 	"sort"
 	"strings"
-	"time"
 )
 
 func tar(source, target string) (err error) {
@@ -30,7 +29,7 @@ func tar(source, target string) (err error) {
 			err = errors.New("Fail in 'tar' command")
 		}
 	}()
-	os.Chdir(path.Dir(source))
+	os.Chdir(path.Parent(source))
 	o, ee := sys.Cmd("tar", "-czf", target, path.Base(source))
 	if len(o) > 0 || len(ee) > 0 {
 		err = errors.New(string(o) + "\n" + string(ee))
@@ -41,17 +40,17 @@ func tar(source, target string) (err error) {
 }
 
 func clean(dir string) {
-	dnow := date.Now()
-	now := dnow.String()
+	dnow := time.Now()
+	now := time.ToStr(dnow)
 
 	var all []string
-	for _, e := range file.List(dir) {
-		if !e.Mode().IsRegular() {
-			f := path.Join(dir, e.Name())
-			file.Remove(f)
-			log.Error(fmt.Sprintf("Deleted %v\n", f))
+	for _, fname := range file.Dir(dir) {
+    p := path.Cat(dir, fname)
+		if file.IsDirectory(p) {
+			file.Del(p)
+			log.Error(fmt.Sprintf("Deleted %v\n", p))
 		}
-		all = append(all, e.Name())
+    all = append(all, fname)
 	}
 
   isBig := false
@@ -65,22 +64,22 @@ func clean(dir string) {
       continue
     }
 		if !strings.HasSuffix(e, ".tgz") {
-			f := path.Join(dir, e)
-			file.Remove(f)
+			f := path.Cat(dir, e)
+			file.Del(f)
 			log.Error(fmt.Sprintf("Deleted %v\n", f))
 			continue
 		}
 		date := e[:len(e)-4]
-		_, err := time.Parse("20060102", date)
-		if err != nil {
-			f := path.Join(dir, e)
-			file.Remove(f)
+		_, ok := time.FromStrOp(date)
+		if !ok {
+			f := path.Cat(dir, e)
+			file.Del(f)
 			log.Error(fmt.Sprintf("Deleted %v\n", f))
 			continue
 		}
 		if date < "20190101" || date > now {
-			f := path.Join(dir, e)
-			file.Remove(f)
+			f := path.Cat(dir, e)
+			file.Del(f)
 			log.Error(fmt.Sprintf("Deleted %v\n", f))
 			continue
 		}
@@ -129,12 +128,12 @@ func clean(dir string) {
         toDelete = toDelete[3 - saved:]
       }
       for _, tgz := range toDelete {
-        f := path.Join(dir, tgz+".tgz")
-        file.Remove(f)
+        f := path.Cat(dir, tgz+".tgz")
+        file.Del(f)
       }
     }
   } else {
-    nowD := dnow.Add(-7).String()
+    nowD := time.ToStr(time.AddDays(dnow, -7))
     lastM := now[:6]
     nowY := now[:4]
     lastY := nowY
@@ -153,29 +152,27 @@ func clean(dir string) {
         lastY = eY
         continue
       }
-      f := path.Join(dir, e+".tgz")
-      file.Remove(f)
+      f := path.Cat(dir, e+".tgz")
+      file.Del(f)
     }
   }
 }
 
 func backup(source, target string) (ok bool) {
-	fileName := date.Now().String() + ".tgz"
-	tmpDir := file.TempDir("MrBackup")
-	defer file.Remove(tmpDir)
+	fileName := time.ToStr(time.Now()) + ".tgz"
+	tmpDir := file.Tmp("/tmp", "MrBackup")
+  file.Mkdir(tmpDir)
+	defer file.Del(tmpDir)
 
-	tmpFile := path.Join(tmpDir, fileName)
+	tmpFile := path.Cat(tmpDir, fileName)
 	if e := tar(source, tmpFile); e != nil {
 		log.Error(fmt.Sprintln(e))
 		return
 	}
 
 	for _, pool := range cts.MrBackupTargets {
-		poolDir := path.Join(pool, target)
-		if e := file.Copy(tmpFile, poolDir); e != nil {
-			log.Error(fmt.Sprintln(e))
-			return
-		}
+		poolDir := path.Cat(pool, target)
+		file.Copy(tmpFile, poolDir)
 		clean(poolDir)
 	}
 
@@ -184,15 +181,15 @@ func backup(source, target string) (ok bool) {
 }
 
 func shouldUpdate(dir string, tm int64) bool {
-	for _, e := range file.List(dir) {
-		p := path.Join(dir, e.Name())
+	for _, fname := range file.Dir(dir) {
+		p := path.Cat(dir, fname)
 		if file.IsDirectory(p) {
 			if shouldUpdate(p, tm) {
 				return true
 			}
 			continue
 		}
-		if e.Mode().IsRegular() && file.LastModification(p) > tm {
+		if file.IsRegular(p) && file.Tm(p) > tm {
 			return true
 		}
 	}
@@ -202,22 +199,22 @@ func shouldUpdate(dir string, tm int64) bool {
 func updateDir(pool, dir string) {
 	pdir, ok := readPathTxt(pool, dir)
 	if !ok {
-		f := path.Join(pool, dir)
+		f := path.Cat(pool, dir)
 		if !file.IsDirectory(f) {
-			file.Remove(f)
+			file.Del(f)
 			log.Error(fmt.Sprintf("Deleted %v\n", f))
 		}
 
 		return // skip directory without 'path.txt'
 	}
 
-	tgzs := filterTgz(file.List(path.Join(pool, dir)))
+	tgzs := filterTgz(file.Dir(path.Cat(pool, dir)))
 	lastName := ""
 	lastTime := int64(0)
 	for _, e := range tgzs {
 		if e > lastName {
 			lastName = e
-			lastTime = file.LastModification(path.Join(pool, dir, e))
+			lastTime = file.Tm(path.Cat(pool, dir, e))
 		}
 	}
 
@@ -234,8 +231,7 @@ func updateDir(pool, dir string) {
 func update() {
 	log.Info("Updating backups...")
 	pool := cts.MrBackupTargets[0]
-	for _, fs := range file.List(pool) {
-		dir := fs.Name()
+	for _, dir := range file.Dir(pool) {
 		updateDir(pool, dir)
 	}
 	log.Info("Bakups updated")

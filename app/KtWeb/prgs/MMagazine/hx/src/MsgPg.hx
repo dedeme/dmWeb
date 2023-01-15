@@ -1,5 +1,6 @@
-// Copyright 12-Dec-2021 ºDeme
+// Copyright 03-Nov-2022 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
+
 
 import dm.Domo;
 import dm.Ui.Q;

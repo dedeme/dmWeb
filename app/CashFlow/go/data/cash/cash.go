@@ -4,17 +4,17 @@
 package cash
 
 import (
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/js"
 )
 
 type T []*Entry
 
-func (d T) ToJs() json.T {
-	var a []json.T
+func (d T) ToJs() string {
+	var a []string
 	for _, e := range d {
 		a = append(a, e.ToJs())
 	}
-	return json.Wa(a)
+	return js.Wa(a)
 }
 
 type Entry struct {
@@ -32,11 +32,11 @@ func (e *Entry) Amount() float64 {
 	return e.am
 }
 
-func (e *Entry) ToJs() json.T {
-	return json.Wa([]json.T{
-		json.Ws(e.month),
-		json.Ws(e.desc),
-		json.Wb(e.isIncome),
-		json.Wd(e.am),
+func (e *Entry) ToJs() string {
+	return js.Wa([]string{
+		js.Ws(e.month),
+		js.Ws(e.desc),
+		js.Wb(e.isIncome),
+		js.Wd(e.am),
 	})
 }

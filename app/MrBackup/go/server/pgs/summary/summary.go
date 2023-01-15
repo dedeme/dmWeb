@@ -9,12 +9,12 @@ import (
 	"github.com/dedeme/MrBackup/data/globals"
 	"github.com/dedeme/MrBackup/db/log"
 	"github.com/dedeme/MrBackup/db/poolDb"
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/js"
 )
 
-func Process(ck string, mrq map[string]json.T) string {
-	rq := cgi.RqString(mrq, "rq")
+func Process(ck string, mrq map[string]string) string {
+	rq := js.Rs(mrq["rq"])
 	switch rq {
 	case "dirs":
 		isBusy := globals.IsBusy
@@ -27,12 +27,12 @@ func Process(ck string, mrq map[string]json.T) string {
 			pools, badPools, dirs, badDirs = poolDb.TestDirs()
 			globals.IsBusy = false
 		}
-		rp := map[string]json.T{
-			"isBusy":   json.Wb(isBusy),
-			"pools":    json.Wi(pools),
-			"badPools": json.Wi(badPools),
-			"dirs":     json.Wi(dirs),
-			"badDirs":  json.Wi(badDirs),
+		rp := map[string]string{
+			"isBusy":   js.Wb(isBusy),
+			"pools":    js.Wi(pools),
+			"badPools": js.Wi(badPools),
+			"dirs":     js.Wi(dirs),
+			"badDirs":  js.Wi(badDirs),
 		}
 		return cgi.Rp(ck, rp)
 	case "files":
@@ -45,11 +45,11 @@ func Process(ck string, mrq map[string]json.T) string {
 			files, outdatedDirs, outdatedFiles = poolDb.TestFiles()
 			globals.IsBusy = false
 		}
-		rp := map[string]json.T{
-			"isBusy":        json.Wb(isBusy),
-			"files":         json.Wi(files),
-			"outdatedDirs":  json.Wi(outdatedDirs),
-			"outdatedFiles": json.Wi(outdatedFiles),
+		rp := map[string]string{
+			"isBusy":        js.Wb(isBusy),
+			"files":         js.Wi(files),
+			"outdatedDirs":  js.Wi(outdatedDirs),
+			"outdatedFiles": js.Wi(outdatedFiles),
 		}
 		return cgi.Rp(ck, rp)
 	case "update":
@@ -62,10 +62,10 @@ func Process(ck string, mrq map[string]json.T) string {
 		}
 		return cgi.RpEmpty(ck)
 	case "isBusy":
-		rp := map[string]json.T{"isBusy": json.Wb(globals.IsBusy)}
+		rp := map[string]string{"isBusy": js.Wb(globals.IsBusy)}
 		return cgi.Rp(ck, rp)
 	case "log":
-		rp := map[string]json.T{
+		rp := map[string]string{
 			"log": log.Read(),
 		}
 		return cgi.Rp(ck, rp)

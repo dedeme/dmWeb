@@ -95,7 +95,7 @@ func download(cmd string, url string) string {
 // Regularize number.
 func toNumber(isIso bool, n string) (nn float64, err string) {
 	defer func() {
-		if err := recover(); err != nil {
+		if er := recover(); er != nil {
 			if n == "" || str.Starts(n, "-") {
 				nn = 0.0
 			} else {

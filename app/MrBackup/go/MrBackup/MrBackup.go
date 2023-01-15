@@ -11,8 +11,8 @@ import (
 	"github.com/dedeme/MrBackup/db/log"
 	"github.com/dedeme/MrBackup/scheduler"
 	"github.com/dedeme/MrBackup/server"
-	"github.com/dedeme/golib/cgi"
-	"github.com/dedeme/golib/sys"
+	"github.com/dedeme/ktlib/cgi"
+	"github.com/dedeme/ktlib/file"
 	"net"
 	"os"
 )
@@ -22,8 +22,7 @@ func help() {
 }
 
 func main() {
-	sys.Initialize(cts.AppName)
-	cgi.Initialize(sys.Home(), cts.Expiration)
+	cgi.Initialize(file.Home(), cts.Expiration)
 
 	db.Initialize()
 

@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"github.com/dedeme/MrBackup/data/cts"
 	"github.com/dedeme/MrBackup/db/log"
-	"github.com/dedeme/golib/file"
-	"path"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/path"
 )
 
 // Tests directory condition (1).
@@ -26,9 +26,9 @@ func testDir1(pool string) (files, bads int) {
 		return
 	}
 
-	for _, e := range file.List(pool) {
+	for _, fname := range file.Dir(pool) {
 		files++
-		_, ok := readPathTxt(pool, e.Name())
+		_, ok := readPathTxt(pool, fname)
 		if !ok {
 			bads++
 		}
@@ -81,9 +81,9 @@ type nameSize struct {
 
 func mkMapNameSize(pool string) map[string]*nameSize {
 	r := map[string]*nameSize{}
-	for _, fl := range file.List(pool) {
-		d := fl.Name()
-		tgzs := filterTgz(file.List(path.Join(pool, d)))
+	for _, fname := range file.Dir(pool) {
+		d := fname
+		tgzs := filterTgz(file.Dir(path.Cat(pool, d)))
 		if len(tgzs) == 0 {
 			r[d] = &nameSize{name: "", size: 0}
 			continue
@@ -94,7 +94,7 @@ func mkMapNameSize(pool string) map[string]*nameSize {
 				name = e
 			}
 		}
-		r[d] = &nameSize{name: name, size: file.Size(path.Join(pool, d, name))}
+		r[d] = &nameSize{name: name, size: file.Size(path.Cat(pool, d, name))}
 	}
 	return r
 }
@@ -111,8 +111,8 @@ func testDirs() (pools, poolsBad, dirs, dirsBad int) {
 	}
 
 	var baseDirs []string
-	for _, e := range file.List(base) {
-		baseDirs = append(baseDirs, e.Name())
+	for _, fname := range file.Dir(base) {
+		baseDirs = append(baseDirs, fname)
 	}
 
 	var poolsOk []string
@@ -126,8 +126,8 @@ func testDirs() (pools, poolsBad, dirs, dirsBad int) {
 		}
 
 		var poolDirs []string
-		for _, e := range file.List(pool) {
-			poolDirs = append(baseDirs, e.Name())
+		for _, fname := range file.Dir(pool) {
+			poolDirs = append(baseDirs, fname)
 		}
 		bads = testDir2(baseDirs, pool, poolDirs)
 		if bads > 0 {

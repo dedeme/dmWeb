@@ -4,7 +4,7 @@
 package testRs
 
 import (
-	"github.com/dedeme/golib/json"
+	"github.com/dedeme/ktlib/js"
 )
 
 type T struct {
@@ -32,15 +32,15 @@ func New() *T {
 	}
 }
 
-func (rs *T) ToJs() json.T {
-	return json.Wa([]json.T{
-		json.Wb(rs.IsBig),
-		json.Wb(rs.WithBackups),
-		json.Wb(rs.WithPathTxt),
-		json.Ws(rs.Path),
-		json.Wb(rs.PathOk),
-		json.Wb(rs.NotInBase),
-		json.Wb(rs.IsMissing),
-		json.Wb(rs.Synchronized),
+func (rs *T) ToJs() string {
+	return js.Wa([]string{
+		js.Wb(rs.IsBig),
+		js.Wb(rs.WithBackups),
+		js.Wb(rs.WithPathTxt),
+		js.Ws(rs.Path),
+		js.Wb(rs.PathOk),
+		js.Wb(rs.NotInBase),
+		js.Wb(rs.IsMissing),
+		js.Wb(rs.Synchronized),
 	})
 }

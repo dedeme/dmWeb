@@ -17,18 +17,18 @@ import I18n._args;
 /// Home page.
 class Home {
   final wg: Domo;
-  final iparams: Array<Array<Float>>;
+  final iparamsEvals: Array<ParamsEval>;
   final models: Array<String>;
   final paramsEvals: Array<ParamsEval>;
 
   function new (
-    wg: Domo, iparams: Array<Array<Float>>, models: Array<String>,
+    wg: Domo, iparamsEvals: Array<ParamsEval>, models: Array<String>,
     paramsEvals: Array<ParamsEval>
   ) {
     this.wg = wg;
     this.models = models;
     this.paramsEvals = paramsEvals;
-    this.iparams = iparams;
+    this.iparamsEvals = iparamsEvals;
   }
 
   // View ----------------------------------------------------------------------
@@ -37,7 +37,8 @@ class Home {
     final logDiv = Q("div");
 
     function load (fn: Array<LogRow> -> Void) {
-      Cts.client.send([
+      Global.client.send([
+        "prg" => Js.ws("MMagazine"),
         "module" => Js.ws("Main"),
         "source" => Js.ws("Home"),
         "rq" => Js.ws("getLog")
@@ -48,10 +49,16 @@ class Home {
     }
 
     function reset (fn: () -> Void) {
-      Ui.alert(_("Reset must be made from server!") +
-        "\n \nMMagazine resetLog\n ");
-      fn();
+      Global.client.ssend([
+        "prg" => Js.ws("MMagazine"),
+        "module" => Js.ws("Main"),
+        "source" => Js.ws("Home"),
+        "rq" => Js.ws("resetLog")
+      ], rp -> {
+        fn();
+      });
     }
+
     Log.mk(logDiv, load, reset, _, true);
 
     wg
@@ -67,7 +74,10 @@ class Home {
                 "Los mejores resultados de los modelos usados por los inversores son:<br>" +
                 "<pre>" +
                 It.range(models.length).map(i ->
-                  "Inv-" + i + " (" + Std.string(iparams[i]) + ") -> " +
+                  "Inv-" + i + " (" +
+                  Std.string(iparamsEvals[i].params) +
+                  ": " + Std.string(iparamsEvals[i].eval / 100) +
+                  ") -> " +
                   models[i] + Std.string(paramsEvals[i].params) +
                   ": " + Std.string(paramsEvals[i].eval / 100)).to().join("\n") +
                 "</pre>"
@@ -79,15 +89,18 @@ class Home {
   // Static --------------------------------------------------------------------
 
   public static function mk (wg: Domo): Void {
-    Cts.client.send([
+    Global.client.send([
+      "prg" => Js.ws("MMagazine"),
       "module" => Js.ws("Main"),
       "source" => Js.ws("Home"),
       "rq" => Js.ws("idata"),
     ], rp -> {
-      final iparams = rp["iparams"].ra().map(e -> e.ra().map(e2 -> e2.rf()));
+      final iparamsEvals = rp["iparamsEvals"].ra()
+        .map(e -> ParamsEval.fromJs(e));
       final models = rp["models"].ra().map(e -> e.rs());
-      final paramsEvals = rp["paramsEvals"].ra().map(e -> ParamsEval.fromJs(e));
-      new Home(wg, iparams, models, paramsEvals).show();
+      final paramsEvals = rp["paramsEvals"].ra()
+        .map(e -> ParamsEval.fromJs(e));
+      new Home(wg, iparamsEvals, models, paramsEvals).show();
     });
   }
 }

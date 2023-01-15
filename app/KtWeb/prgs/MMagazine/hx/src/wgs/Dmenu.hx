@@ -10,7 +10,6 @@ import dm.Js;
 import dm.Menu;
 import I18n._;
 import I18n._args;
-import Cts;
 
 /// Double menu.
 class Dmenu {
@@ -57,11 +56,7 @@ class Dmenu {
       Menu.tlink("acc", _("Accounting")),
     ];
 
-    final ropts = [
-      Menu.tlink("settings", _("Settings")),
-      Menu.separator(),
-      Menu.close(() -> close())
-    ];
+    final ropts = [];
 
     return new Menu(lopts, ropts, selected);
   }
@@ -76,22 +71,6 @@ class Dmenu {
   }
 
   // Control -------------------------------------------------------------------
-
-  function close () {
-    if (!Ui.confirm(_("Application exit?"))) {
-      return;
-    }
-    Cts.client.send([
-      "module" => Js.ws("Main"),
-      "source" => Js.ws("Dmenu"),
-      "rq" => Js.ws("close"),
-      "sessionId" => Js.ws(Cts.client.sessionId())
-    ], rp -> {
-      new MsgPg(
-        Q("@body"), _args(_("Logout-message"), [Cts.appName]), false
-      ).show();
-    });
-  }
 
   function change () {
     hidden = !hidden;

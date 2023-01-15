@@ -118,7 +118,8 @@ class ModelsPg {
     final url = Ui.url();
     final type = url.exists("2") ? url.get("2").trim() : "";
 
-    Cts.client.send([
+    Global.client.send([
+      "prg" => Js.ws("MMagazine"),
       "module" => Js.ws("MMarket"),
       "source" => Js.ws("ModelsPg"),
       "rq" => Js.ws("idata"),

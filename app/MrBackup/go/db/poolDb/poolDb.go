@@ -9,12 +9,11 @@ import (
 	"github.com/dedeme/MrBackup/data/cts"
 	"github.com/dedeme/MrBackup/data/testRs"
 	"github.com/dedeme/MrBackup/db/log"
-	"github.com/dedeme/golib/file"
-	"github.com/dedeme/golib/json"
-	"github.com/dedeme/golib/sys"
-	"os"
-	"path"
-	"strings"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/sys"
+	"github.com/dedeme/ktlib/str"
+	"github.com/dedeme/ktlib/path"
 )
 
 // Read file 'path.txt'
@@ -29,21 +28,21 @@ func readPath(pool, dir, f string) (path string, ok bool) {
 		}
 	}()
 
-	path = json.FromString(file.ReadAll(f)).Rs()
+	path = js.Rs(file.Read(f))
 	ok = true
 	return
 }
 
 // Reads path.txt testing the file and its parent.
 func readPathTxt(pool, dir string) (pth string, ok bool) {
-	d := path.Join(pool, dir)
+	d := path.Cat(pool, dir)
 	if !file.IsDirectory(d) {
 		log.Error(fmt.Sprintf(
 			"Archivo (%v) del depósito (%v) no es un directorio.", dir, pool,
 		))
 		return
 	}
-	p := path.Join(d, "path.txt")
+	p := path.Cat(d, "path.txt")
 	if !file.Exists(p) {
 		log.Error(fmt.Sprintf(
 			"Falta 'path.txt' en (%v) del depósito (%v).", dir, pool,
@@ -66,12 +65,11 @@ func readPathTxt(pool, dir string) (pth string, ok bool) {
 	return
 }
 
-// Filters 'fs' selecting files '.tgz'
-func filterTgz(fs []os.FileInfo) []string {
+// Filters 'fnames' selecting files '.tgz'
+func filterTgz(fnames []string) []string {
 	var r []string
-	for _, e := range fs {
-		nm := e.Name()
-		if strings.HasSuffix(nm, ".tgz") {
+	for _, nm := range fnames {
+		if str.Ends(nm, ".tgz") {
 			r = append(r, nm)
 		}
 	}
@@ -111,7 +109,7 @@ func GlobalTest() map[string]*testRs.T {
 // Shows every pool directory.
 func ShowDirs(id string) {
 	for _, e := range cts.MrBackupTargets {
-		d := path.Join(e, id)
+		d := path.Cat(e, id)
 		if file.IsDirectory(d) {
 			sys.Cmd("thunar", d)
 		} else {
@@ -125,24 +123,24 @@ func CopyToBase(id string) {
 	source := ""
 	for i := 1; i < len(cts.MrBackupTargets); i++ {
 		pool := cts.MrBackupTargets[i]
-		d := path.Join(pool, id)
+		d := path.Cat(pool, id)
 		if file.IsDirectory(d) {
 			source = pool
 			break
 		}
 	}
 	if source != "" && source != cts.MrBackupTargets[0] {
-		file.Copy(path.Join(source, id), cts.MrBackupTargets[0])
+		file.Copy(path.Cat(source, id), cts.MrBackupTargets[0])
 	}
 }
 
 // Copies base to other directories.
 func CopyFromBase(id string) {
-	source := path.Join(cts.MrBackupTargets[0], id)
+	source := path.Cat(cts.MrBackupTargets[0], id)
 	if file.IsDirectory(source) {
 		for i := 1; i < len(cts.MrBackupTargets); i++ {
 			pool := cts.MrBackupTargets[i]
-			file.Remove(path.Join(pool, id))
+			file.Del(path.Cat(pool, id))
 			file.Copy(source, pool)
 		}
 	}
@@ -151,9 +149,9 @@ func CopyFromBase(id string) {
 // Creates path.txt
 func CreatePathTxt(id string) {
 	for _, pool := range cts.MrBackupTargets {
-		d := path.Join(pool, id)
+		d := path.Cat(pool, id)
 		if file.IsDirectory(d) {
-			file.WriteAll(path.Join(d, "path.txt"), json.Ws("").String())
+			file.Write(path.Cat(d, "path.txt"), js.Ws(""))
 		}
 	}
 }
@@ -161,26 +159,26 @@ func CreatePathTxt(id string) {
 // Adds directory
 func AddDir(id string) {
 	for _, pool := range cts.MrBackupTargets {
-		d := path.Join(pool, id)
+		d := path.Cat(pool, id)
 		file.Mkdir(d)
-		file.WriteAll(path.Join(d, "path.txt"), json.Ws("").String())
+		file.Write(path.Cat(d, "path.txt"), js.Ws(""))
 	}
 }
 
 // Delete a directory
 func Delete(id string) {
 	for _, pool := range cts.MrBackupTargets {
-		d := path.Join(pool, id)
-		file.Remove(d)
+		d := path.Cat(pool, id)
+		file.Del(d)
 	}
 }
 
 // Changes directory identifier.
 func ChangeDir(oldId, newId string) {
 	for _, pool := range cts.MrBackupTargets {
-		d := path.Join(pool, oldId)
+		d := path.Cat(pool, oldId)
 		if file.IsDirectory(d) {
-			newD := path.Join(pool, newId)
+			newD := path.Cat(pool, newId)
 			file.Rename(d, newD)
 		}
 	}
@@ -188,21 +186,21 @@ func ChangeDir(oldId, newId string) {
 
 // Changes directory calification of big.
 func ChangeBig(id string) {
-  f := path.Join(cts.MrBackupTargets[0], id, "big")
+  f := path.Cat(cts.MrBackupTargets[0], id, "big")
   exists := false
   if file.Exists(f) {
     exists = true
   }
 
 	for _, pool := range cts.MrBackupTargets {
-		f := path.Join(pool, id, "big")
+		f := path.Cat(pool, id, "big")
     if exists {
       if file.Exists(f) {
-        file.Remove(f)
+        file.Del(f)
       }
     } else {
       if !file.Exists(f) {
-        file.WriteAll(f, "")
+        file.Write(f, "")
       }
     }
 	}
@@ -211,9 +209,9 @@ func ChangeBig(id string) {
 // Changes path.txt
 func ChangePath(id, newPath string) {
 	for _, pool := range cts.MrBackupTargets {
-		d := path.Join(pool, id)
+		d := path.Cat(pool, id)
 		if file.IsDirectory(d) {
-			file.WriteAll(path.Join(d, "path.txt"), json.Ws(newPath).String())
+			file.Write(path.Cat(d, "path.txt"), js.Ws(newPath))
 		}
 	}
 }

@@ -7,9 +7,9 @@ package hconta
 import (
 	"github.com/dedeme/CashFlow/data/cash"
 	"github.com/dedeme/CashFlow/data/cts"
-	"github.com/dedeme/golib/file"
-	"github.com/dedeme/golib/json"
-	"path"
+	"github.com/dedeme/ktlib/file"
+	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/path"
 )
 
 type entry struct {
@@ -19,20 +19,20 @@ type entry struct {
 	credits map[string]float64
 }
 
-func entryFromJs(js json.T) *entry {
-	a := js.Ra()
+func entryFromJs(json string) *entry {
+	a := js.Ra(json)
 	dbs := map[string]float64{}
-	for k, v := range a[2].Ro() {
-		dbs[k] = v.Rd()
+	for k, v := range js.Ro(a[2]) {
+		dbs[k] = js.Rd(v)
 	}
 	cds := map[string]float64{}
-	for k, v := range a[3].Ro() {
-		cds[k] = v.Rd()
+	for k, v := range js.Ro(a[3]) {
+		cds[k] = js.Rd(v)
 	}
 
 	return &entry{
-		a[0].Rs(),
-		a[1].Rs(),
+		js.Rs(a[0]),
+		js.Rs(a[1]),
 		dbs,
 		cds,
 	}
@@ -65,14 +65,14 @@ func readCash(e *entry) (ok bool, centry *cash.Entry) {
 
 // 'balance' is the first cash entry of Hconta diary, and 'diary' are the rest.
 func Read(year string) (balance float64, c cash.T) {
-	p := path.Join(cts.HcontaPath, year+".db")
+	p := path.Cat(cts.HcontaPath, year+".db")
 	if !file.Exists(p) {
 		return
 	}
-	allJs := json.FromString(file.ReadAll(p))
-	a := allJs.Ra()
+	allJs := file.Read(p)
+	a := js.Ra(allJs)
 	first := true
-	for _, eJs := range a[3].Ra() {
+	for _, eJs := range js.Ra(a[3]) {
 		if ok, e := readCash(entryFromJs(eJs)); ok {
 			if first {
 				balance = e.Amount()
