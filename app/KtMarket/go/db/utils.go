@@ -287,7 +287,7 @@ func NextServer() {
 
 func ActivateDailyCharts(readIndexes func() ([]float64, string)) {
 	today := time.ToStr(time.Now())
-	var todayBuys []string
+	var todayBuys [][]any // investor-nick (s, i)
 	pfs := make([][]*acc.PfEntryT, cts.Investors)
 	for i := 0; i < cts.Investors; i++ {
 		anns := diariesDb.ReadAnnotations(i)
@@ -302,7 +302,7 @@ func ActivateDailyCharts(readIndexes func() ([]float64, string)) {
 		for k, v := range lastOps {
 			if v.Date == today {
 				if _, ok := v.Profits(); !ok {
-					todayBuys = append(todayBuys, k)
+					todayBuys = append(todayBuys, []any{i, k})
 				}
 			}
 		}
@@ -343,10 +343,11 @@ func ActivateDailyCharts(readIndexes func() ([]float64, string)) {
 			if ok {
 				invsData[i].Stocks = pfE.Stocks
 				invsData[i].Price = pfE.Price
-				if arr.Anyf(todayBuys, func(n string) bool {
-					return n == nk.Name
+				if arr.Anyf(todayBuys, func(n []any) bool {
+					return n[0].(int) == i && n[1].(string) == nk.Name
 				}) { // BUY TODAY
 					invsData[i].TodayBuy = true
+          ok = false
 				}
 			}
 
