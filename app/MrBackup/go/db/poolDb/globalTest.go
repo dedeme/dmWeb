@@ -8,8 +8,8 @@ import (
 	"github.com/dedeme/MrBackup/data/testRs"
 	"github.com/dedeme/ktlib/file"
 	"github.com/dedeme/ktlib/js"
-	"os"
 	"github.com/dedeme/ktlib/path"
+	"os"
 )
 
 func lastTgzOk(base, pool, n string) bool {
@@ -66,10 +66,10 @@ func globalTest() map[string]*testRs.T {
 			}
 		}
 
-    fbig := path.Cat(dir, "big")
-    if (file.Exists(fbig)) {
-      t.IsBig = true
-    }
+		fbig := path.Cat(dir, "big")
+		if file.Exists(fbig) {
+			t.IsBig = true
+		}
 
 		if len(file.Dir(dir)) > 1 {
 			t.WithBackups = true

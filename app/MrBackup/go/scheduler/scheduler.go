@@ -8,8 +8,8 @@ import (
 	"github.com/dedeme/MrBackup/data/globals"
 	"github.com/dedeme/MrBackup/db/log"
 	"github.com/dedeme/MrBackup/db/poolDb"
-	"github.com/dedeme/ktlib/time"
 	"github.com/dedeme/ktlib/sys"
+	"github.com/dedeme/ktlib/time"
 )
 
 // Starts scheduler.

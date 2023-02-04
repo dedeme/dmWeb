@@ -61,7 +61,7 @@ func Process(ck string, mrq map[string]string) string {
 			globals.IsBusy = false
 		}
 		return cgi.RpEmpty(ck)
-  case "changeBig":
+	case "changeBig":
 		id := js.Rs(mrq["id"])
 		if !globals.IsBusy {
 			globals.IsBusy = true

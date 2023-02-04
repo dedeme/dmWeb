@@ -9,10 +9,10 @@ import (
 	"fmt"
 	"github.com/dedeme/MrBackup/data/cts"
 	"github.com/dedeme/MrBackup/db/log"
-	"github.com/dedeme/ktlib/time"
 	"github.com/dedeme/ktlib/file"
-	"github.com/dedeme/ktlib/sys"
 	"github.com/dedeme/ktlib/path"
+	"github.com/dedeme/ktlib/sys"
+	"github.com/dedeme/ktlib/time"
 	"os"
 	"sort"
 	"strings"
@@ -45,24 +45,24 @@ func clean(dir string) {
 
 	var all []string
 	for _, fname := range file.Dir(dir) {
-    p := path.Cat(dir, fname)
+		p := path.Cat(dir, fname)
 		if file.IsDirectory(p) {
 			file.Del(p)
 			log.Error(fmt.Sprintf("Deleted %v\n", p))
 		}
-    all = append(all, fname)
+		all = append(all, fname)
 	}
 
-  isBig := false
+	isBig := false
 	var tgzs []string
 	for _, e := range all {
 		if e == "path.txt" {
 			continue
 		}
-    if e == "big" {
-      isBig = true
-      continue
-    }
+		if e == "big" {
+			isBig = true
+			continue
+		}
 		if !strings.HasSuffix(e, ".tgz") {
 			f := path.Cat(dir, e)
 			file.Del(f)
@@ -89,79 +89,79 @@ func clean(dir string) {
 		return tgzs[i] > tgzs[j]
 	})
 
-  if isBig {
-    if len(tgzs) > 3 {
-      nowM := now[:6]
-      nowY := now[:4]
-      var toDelete []string
-      day := true
-      month := true
-      year := true
-      saved := 0
-      for _, tgz := range tgzs {
-        if day {
-          day = false
-          saved++
-          continue
-        }
-        if month {
-          if tgz[:6] == nowM {
-            toDelete = append(toDelete, tgz)
-            continue
-          }
-          month = false
-          saved++
-          continue
-        }
-        if year {
-          if tgz[:4] == nowY {
-            toDelete = append(toDelete, tgz)
-            continue
-          }
-          year = false
-          saved++
-          continue
-        }
-        toDelete = append(toDelete, tgz)
-      }
-      if saved < 3 {
-        toDelete = toDelete[3 - saved:]
-      }
-      for _, tgz := range toDelete {
-        f := path.Cat(dir, tgz+".tgz")
-        file.Del(f)
-      }
-    }
-  } else {
-    nowD := time.ToStr(time.AddDays(dnow, -7))
-    lastM := now[:6]
-    nowY := now[:4]
-    lastY := nowY
-    for _, e := range tgzs {
-      if e >= nowD {
-        continue
-      }
-      eY := e[:4]
-      if eY == nowY {
-        eM := e[:6]
-        if eM != lastM {
-          lastM = eM
-          continue
-        }
-      } else if eY != lastY {
-        lastY = eY
-        continue
-      }
-      f := path.Cat(dir, e+".tgz")
-      file.Del(f)
-    }
-  }
+	if isBig {
+		if len(tgzs) > 3 {
+			nowM := now[:6]
+			nowY := now[:4]
+			var toDelete []string
+			day := true
+			month := true
+			year := true
+			saved := 0
+			for _, tgz := range tgzs {
+				if day {
+					day = false
+					saved++
+					continue
+				}
+				if month {
+					if tgz[:6] == nowM {
+						toDelete = append(toDelete, tgz)
+						continue
+					}
+					month = false
+					saved++
+					continue
+				}
+				if year {
+					if tgz[:4] == nowY {
+						toDelete = append(toDelete, tgz)
+						continue
+					}
+					year = false
+					saved++
+					continue
+				}
+				toDelete = append(toDelete, tgz)
+			}
+			if saved < 3 {
+				toDelete = toDelete[3-saved:]
+			}
+			for _, tgz := range toDelete {
+				f := path.Cat(dir, tgz+".tgz")
+				file.Del(f)
+			}
+		}
+	} else {
+		nowD := time.ToStr(time.AddDays(dnow, -7))
+		lastM := now[:6]
+		nowY := now[:4]
+		lastY := nowY
+		for _, e := range tgzs {
+			if e >= nowD {
+				continue
+			}
+			eY := e[:4]
+			if eY == nowY {
+				eM := e[:6]
+				if eM != lastM {
+					lastM = eM
+					continue
+				}
+			} else if eY != lastY {
+				lastY = eY
+				continue
+			}
+			f := path.Cat(dir, e+".tgz")
+			file.Del(f)
+		}
+	}
 }
 
 func backup(source, target string) (ok bool) {
 	fileName := time.ToStr(time.Now()) + ".tgz"
 	tmpDir := file.Tmp("/tmp", "MrBackup")
-  file.Mkdir(tmpDir)
+	file.Mkdir(tmpDir)
 	defer file.Del(tmpDir)
 
 	tmpFile := path.Cat(tmpDir, fileName)

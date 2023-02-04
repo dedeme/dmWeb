@@ -9,12 +9,11 @@ import (
 	"github.com/dedeme/MrBackup/db/conf"
 	"github.com/dedeme/MrBackup/db/log"
 	"github.com/dedeme/ktlib/file"
-	"github.com/dedeme/ktlib/sys"
 	"github.com/dedeme/ktlib/path"
 )
 
 func Initialize() {
-	p := path.Cat(sys.Environ()["HOME"], cts.DataPath)
+	p := path.Cat(file.Home(), cts.Home, cts.DataPath)
 	version := path.Cat(p, "version.txt")
 	if !file.Exists(p) {
 		file.Mkdir(p)

@@ -11,9 +11,9 @@ import (
 	"github.com/dedeme/MrBackup/db/log"
 	"github.com/dedeme/ktlib/file"
 	"github.com/dedeme/ktlib/js"
-	"github.com/dedeme/ktlib/sys"
-	"github.com/dedeme/ktlib/str"
 	"github.com/dedeme/ktlib/path"
+	"github.com/dedeme/ktlib/str"
+	"github.com/dedeme/ktlib/sys"
 )
 
 // Read file 'path.txt'
@@ -95,11 +95,10 @@ func Update() {
 
 // Update backups of a directory.
 func UpdateDir(id string) {
-  for _, pool := range cts.MrBackupTargets {
-    updateDir(pool, id) // in update.go
+	for _, pool := range cts.MrBackupTargets {
+		updateDir(pool, id) // in update.go
 	}
 }
-
 
 // Global test
 func GlobalTest() map[string]*testRs.T {
@@ -186,23 +185,23 @@ func ChangeDir(oldId, newId string) {
 
 // Changes directory calification of big.
 func ChangeBig(id string) {
-  f := path.Cat(cts.MrBackupTargets[0], id, "big")
-  exists := false
-  if file.Exists(f) {
-    exists = true
-  }
+	f := path.Cat(cts.MrBackupTargets[0], id, "big")
+	exists := false
+	if file.Exists(f) {
+		exists = true
+	}
 
 	for _, pool := range cts.MrBackupTargets {
 		f := path.Cat(pool, id, "big")
-    if exists {
-      if file.Exists(f) {
-        file.Del(f)
-      }
-    } else {
-      if !file.Exists(f) {
-        file.Write(f, "")
-      }
-    }
+		if exists {
+			if file.Exists(f) {
+				file.Del(f)
+			}
+		} else {
+			if !file.Exists(f) {
+				file.Write(f, "")
+			}
+		}
 	}
 }
 

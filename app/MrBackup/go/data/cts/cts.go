@@ -12,7 +12,10 @@ const (
 	// Data version
 	DataVersion = "MrBackup\nData version: 202010\n"
 
-	// Data directory relative to sys_home()
+	// Home directory
+	Home = ".dmGoApp/" + AppName
+
+	// Data directory relative to path.Cat(file.Home(), cts.Home)
 	DataPath = "data"
 
 	// Log length maximum
@@ -35,8 +38,8 @@ const (
 	// Tics of schedulerSleep
 	SchedulerTimes = 1800 // 1 hour
 
-  // Hour to start backups
-  SchedulerHour = 5
+	// Hour to start backups
+	SchedulerHour = 5
 )
 
 // Pools

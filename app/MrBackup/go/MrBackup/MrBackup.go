@@ -13,8 +13,9 @@ import (
 	"github.com/dedeme/MrBackup/server"
 	"github.com/dedeme/ktlib/cgi"
 	"github.com/dedeme/ktlib/file"
-	"net"
-	"os"
+	"github.com/dedeme/ktlib/path"
+	"github.com/dedeme/ktlib/sys"
+	"github.com/dedeme/ktlib/tcp"
 )
 
 func help() {
@@ -22,16 +23,16 @@ func help() {
 }
 
 func main() {
-	cgi.Initialize(file.Home(), cts.Expiration)
+	cgi.Initialize(path.Cat(file.Home(), cts.Home), cts.Expiration)
 
 	db.Initialize()
 
-	if len(os.Args) != 2 {
+	args := sys.Args()
+	if len(args) != 2 {
 		help()
 		return
 	}
-	switch os.Args[1] {
-
+	switch args[1] {
 	case "start":
 		log.Info("MrBackup started")
 
@@ -46,7 +47,7 @@ func main() {
 
 		log.Info("MrBackup stopped")
 	case "stop":
-		conn, err := net.Dial("tcp4", "127.0.0.1:"+cts.Port)
+		conn, err := tcp.Dial("127.0.0.1:"+cts.Port, 30000)
 		if err != nil {
 			fmt.Println("Fail connecting to stop MrBackup")
 			return

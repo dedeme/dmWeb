@@ -8,7 +8,7 @@ import (
 )
 
 type T struct {
-  IsBig bool
+	IsBig        bool
 	WithBackups  bool
 	WithPathTxt  bool
 	Path         string
@@ -21,7 +21,7 @@ type T struct {
 // Creates a *T
 func New() *T {
 	return &T{
-    IsBig: false,
+		IsBig:        false,
 		WithBackups:  false,
 		WithPathTxt:  false,
 		Path:         "",

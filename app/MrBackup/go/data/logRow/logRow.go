@@ -5,8 +5,8 @@
 package logRow
 
 import (
-	"github.com/dedeme/ktlib/time"
 	"github.com/dedeme/ktlib/js"
+	"github.com/dedeme/ktlib/time"
 	"runtime/debug"
 	"strings"
 )
