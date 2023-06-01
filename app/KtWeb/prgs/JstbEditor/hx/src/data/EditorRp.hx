@@ -11,26 +11,22 @@ import dm.Opt;
 class EditorRp {
   public static final NO_TABLE = "NoTable";
   public static final NO_JSON = "NoJSON";
-  public static final NO_TPATH = "NoTpath";
-  public static final NO_CONF = "NoConf";
   public static final MODIFIED = "Modified";
 
   public final error: String;
-  public final tpath: Option<Tpath>;
   public final jdata: Option<JsData>;
 
-  function new (error: String, tpath: Option<Tpath>, jdata: Option<JsData>) {
+  function new (error: String, jdata: Option<JsData>) {
     this.error = error;
-    this.tpath = tpath;
     this.jdata = jdata;
   }
 
   public static function fromJs (js: Js): EditorRp {
     final a = js.ra();
+    final e1 = a[1].ra();
     return new EditorRp(
       a[0].rs(),
-      a[1].isNull() ? None : Some(Tpath.fromJs(a[1])),
-      a[2].isNull() ? None : Some(JsData.fromJs(a[2]))
+      e1.length == 0 ? None : Some(JsData.fromJs(e1[0]))
     );
   }
 

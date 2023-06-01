@@ -210,7 +210,9 @@ class YearStrategy {
     ], rp -> {
       final teams = rp["teams"].ra().map(t -> t.ra().map(e -> e.rs()));
       final decisions = rp["decisions"].ra().map(row ->
-        row.ra().map(e -> e.isNull() ? None : Some(Decision.fromJs(e)))
+        row.ra()
+          .map(e -> e.ra())
+          .map(e -> e.length == 0 ? None : Some(Decision.fromJs(e[0])))
       );
       final profits = Profits.fromJs(rp["profits"]);
       new YearStrategy(wg, teams, decisions, profits).show();

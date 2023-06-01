@@ -80,8 +80,11 @@ class Main {
         .add(wg)
         .add(Cts.foot)
       ;
-      var fc = Q("#autofocus");
-      if (fc.e != null) fc.e.focus();
+
+      haxe.Timer.delay(() -> {
+        var fc = Q("#autofocus");
+        if (fc.e != null) fc.e.focus();
+      }, 120);
     });
   }
 

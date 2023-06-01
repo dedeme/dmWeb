@@ -106,7 +106,9 @@ class Standings {
     ], rp -> {
       teams = rp["teams"].ra().map(t -> t.ra().map(e -> e.rs()));
       results = rp["results"].ra().map(row ->
-        row.ra().map(e -> e.isNull() ? None : Some(Result.fromJs(e)))
+        row.ra()
+          .map(e -> e.ra())
+          .map(e -> e.length == 0 ? None : Some(Result.fromJs(e[0])))
       );
       year = y;
 
@@ -124,7 +126,9 @@ class Standings {
       final years = rp["years"].ra().map(e -> e.rs());
       final teams = rp["teams"].ra().map(t -> t.ra().map(e -> e.rs()));
       final results = rp["results"].ra().map(row ->
-        row.ra().map(e -> e.isNull() ? None : Some(Result.fromJs(e)))
+        row.ra()
+          .map(e -> e.ra())
+          .map(e -> e.length == 0 ? None : Some(Result.fromJs(e[0])))
       );
 
       new Standings(wg, years, teams, results).show();

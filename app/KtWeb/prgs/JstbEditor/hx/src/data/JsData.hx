@@ -17,10 +17,10 @@ class JsData {
   ///   BOOLEAN: js.wb()
   ///   NUMBER: js.wi() or js.wf()
   ///   STRING: js.ws()
-  ///   ARRAY: js.wa(js.wa(js.wi(), js.ws()))
-  ///          (values are [ix - js-strings possibly truncated])
-  ///   MAP: js.wo()
-  ///        (map values are js-strings possibly truncated)
+  ///   ARRAY: js.wa([length, [[index, value]]])
+  ///          (values are js-strings possibly truncated)
+  ///   MAP: js.wa([[allKeys], map[value])
+  ///        (values are js-strings possibly truncated)
   public final data: Js;
 
   function new (

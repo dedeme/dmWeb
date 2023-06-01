@@ -499,7 +499,7 @@ func OneServerReadDaily(
 			}
 			if value < 0 {
 				warnings = append(warnings, str.Fmt(
-					"Server '%v' daily code '%v' read but not defined", sv.Name, c,
+					"Server '%v' daily code '%v' defined but not read", sv.Name, c,
 				))
 			}
 		} else {
@@ -759,36 +759,36 @@ func UpdateHistoric(nk *nick.T) (warnings []string, err string) {
 	return
 }
 
-// Reads ibex and euro stoxx values from Infobolsa.
+// Reads ibex and euro stoxx values.
 func ReadIndexes() (ixs []float64, err string) {
 	defer func() {
 		if er := recover(); er != nil {
 			err = str.Fmt("%v", er)
 		}
 	}()
+	ixs = make([]float64, 3)
+	/*
+		url := "https://www.expansion.com/mercados/indices.html"
 
-	ixs = make([]float64, 2)
-	url := "https://www.expansion.com/mercados/indices.html"
+		html := download(cts.Puppeteer, url)
 
-	html := download(cts.Puppeteer, url)
+		ix := str.Index(html, "section_indices_portada")
+		ix = str.IndexFrom(html, "IBEX35", ix)
+		ix = str.IndexFrom(html, "<td>", ix) + 4
+		ix2 := str.IndexFrom(html, "<", ix)
+		ixs[0], err = toNumber(true, str.Trim(html[ix:ix2]))
+		if err != "" {
+			return
+		}
 
-	ix := str.Index(html, "section_indices_portada")
-	ix = str.IndexFrom(html, "IBEX35", ix)
-	ix = str.IndexFrom(html, "<td>", ix) + 4
-	ix2 := str.IndexFrom(html, "<", ix)
-	ixs[0], err = toNumber(true, str.Trim(html[ix:ix2]))
-	if err != "" {
-		return
-	}
-
-	//ix = str.Index(html, "href=\"/mercados/bolsa/eurostoxx_50/1321/\"")
-	ix = str.IndexFrom(html, "EURO STOXX 50", ix)
-	ix = str.IndexFrom(html, "<td>", ix) + 4
-	ix2 = str.IndexFrom(html, "<", ix)
-	ixs[1], err = toNumber(true, str.Trim(html[ix:ix2]))
+		//ix = str.Index(html, "href=\"/mercados/bolsa/eurostoxx_50/1321/\"")
+		ix = str.IndexFrom(html, "EURO STOXX 50", ix)
+		ix = str.IndexFrom(html, "<td>", ix) + 4
+		ix2 = str.IndexFrom(html, "<", ix)
+		ixs[1], err = toNumber(true, str.Trim(html[ix:ix2]))
+	*/
 
 	/*
-		ixs = make([]float64, 2)
 		url := "https://www.infobolsa.es/indices/mundiales"
 
 		html := download(cts.Wget, url)
@@ -808,5 +808,39 @@ func ReadIndexes() (ixs []float64, err string) {
 		ix2 = str.IndexFrom(html, "<", ix)
 		ixs[1], err = toNumber(true, str.Trim(html[ix:ix2]))
 	*/
+
+	url := "https://www.eleconomista.es/indices-mundiales"
+
+	html := download(cts.Wget, url)
+
+	ix := str.Index(html, "itemtype=\"//schema.org/SiteNavigationElement\"><a href=\"/indice/IBEX-35\"")
+	ix = str.IndexFrom(html, "accion", ix)
+	ix = str.IndexFrom(html, ">", ix) + 1
+	ix2 := str.IndexFrom(html, "<", ix)
+	ixs[0], err = toNumber(true, str.Trim(html[ix:ix2]))
+	if err != "" {
+		err = "Reading IBEX 35. " + err
+		return
+	}
+
+	ix = str.Index(html, "itemtype=\"//schema.org/SiteNavigationElement\"><a href=\"/indice/EUROSTOXX-50\"")
+	ix = str.IndexFrom(html, "accion", ix)
+	ix = str.IndexFrom(html, ">", ix) + 1
+	ix2 = str.IndexFrom(html, "<", ix)
+	ixs[1], err = toNumber(true, str.Trim(html[ix:ix2]))
+	if err != "" {
+		err = "Reading EUROSTOXX. " + err
+		return
+	}
+
+	ix = str.Index(html, "itemtype=\"//schema.org/SiteNavigationElement\"><a href=\"/indice/S-P-500\"")
+	ix = str.IndexFrom(html, "accion", ix)
+	ix = str.IndexFrom(html, ">", ix) + 1
+	ix2 = str.IndexFrom(html, "<", ix)
+	ixs[2], err = toNumber(true, str.Trim(html[ix:ix2]))
+	if err != "" {
+		err = "Reading SP-500. " + err
+		return
+	}
 	return
 }

@@ -72,7 +72,9 @@ class PointsPg {
     ], rp -> {
       teams = rp["teams"].ra().map(t -> t.ra().map(e -> e.rs()));
       points = rp["points"].ra().map(row ->
-        row.ra().map(e -> e.isNull() ? None : Some(Result.fromJs(e)))
+        row.ra()
+          .map(e -> e.ra())
+          .map(e -> e.length == 0 ? None : Some(Result.fromJs(e[0])))
       );
       year = y;
 
@@ -90,7 +92,9 @@ class PointsPg {
       final years = rp["years"].ra().map(e -> e.rs());
       final teams = rp["teams"].ra().map(t -> t.ra().map(e -> e.rs()));
       final points = rp["points"].ra().map(row ->
-        row.ra().map(e -> e.isNull() ? None : Some(Result.fromJs(e)))
+        row.ra()
+          .map(e -> e.ra())
+          .map(e -> e.length == 0 ? None : Some(Result.fromJs(e[0])))
       );
 
       new PointsPg(wg, years, teams, points).show();

@@ -27,16 +27,17 @@ class IndexTree {
   public function toJs (): Js {
     return Js.wa([
       Js.ws(id),
-      switch (doc) { case None: Js.wn(); case Some(v): Js.ws(v); },
+      switch (doc) { case None: Js.wa([]); case Some(v): Js.wa([Js.ws(v)]); },
       Js.wa(trees.map(e -> e.toJs()))
     ]);
   }
 
   public static function fromJs (js: Js): IndexTree {
     final a = js.ra();
+    final e1 = a[1].ra();
     return new IndexTree(
       a[0].rs(),
-      a[1].isNull() ? None : Some(a[1].rs()),
+      e1.length == 0 ? None : Some(e1[0].rs()),
       a[2].ra().map(e -> fromJs(e))
     );
   }

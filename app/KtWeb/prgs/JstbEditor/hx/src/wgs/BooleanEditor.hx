@@ -8,7 +8,9 @@ package wgs;
 import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
+import dm.Opt;
 import data.JsData;
+import data.Tpath;
 import data.FieldChange;
 import I18n._;
 import I18n._args;
@@ -16,9 +18,11 @@ import I18n._args;
 class BooleanEditor {
   final wg: Domo;
   final jsData: JsData;
-  final fn: FieldChange -> Void;
+  final fn: (FieldChange, Option<Tpath>) -> Void;
 
-  public function new (wg: Domo, jsData: JsData, fn: FieldChange -> Void) {
+  public function new (
+    wg: Domo, jsData: JsData, fn: (FieldChange, Option<Tpath>) -> Void
+  ) {
     this.wg = wg;
     this.jsData = jsData;
     this.fn = fn;
@@ -74,6 +78,6 @@ class BooleanEditor {
   function setTo(value: Bool): Void {
     final v = value ? "'true'" : "'false'";
     if (!Ui.confirm(_args(_("Set field to %0?"), [v]))) return;
-    fn(FieldChange.mkBoolean(jsData.control, value));
+    fn(FieldChange.mkBoolean(jsData.control, value), None);
   }
 }

@@ -142,10 +142,17 @@ class Summary {
           .add(Q("tr")
             .add(Q("td")
               .style("text-align:left")
-              .add(ixsText(0)))
+              .add(ixsText(-1)))
             .add(Q("td")
               .style("text-align:right")
               .add(ixsText(1))))
+          .add(Q("tr")
+            .add(Q("td")
+              .style("text-align:left")
+              .add(ixsText(0)))
+            .add(Q("td")
+              .style("text-align:right")
+              .add(ixsText(2))))
           .add(Q("tr")
             .add(Q("td")
               .att("colspan", 2)
@@ -177,10 +184,30 @@ class Summary {
   }
 
   function ixsText (index: Int): Domo {
-    final text = index == 0 ? "IBEX" : "EUROSTOXX";
-    final txColor = index == 0 ? "#000080" : "#008000";
-    final v0 = ixsData[0].ixs[index];
-    final vf = ixsData[ixsData.length - 1].ixs[index];
+    final text = index == -1
+      ? "DEMEX"
+      : index == 0
+        ? "IBEX"
+        : index == 1
+          ? "EUROSTOXX"
+          : "SP-500"
+    ;
+    final txColor = index == -1
+      ? "#000000"
+      : index == 0
+        ? "#000080"
+        : index == 1
+          ? "#008000"
+          : "#800000"
+    ;
+    final v0 = index == -1
+      ? fassets0()
+      : ixsData[0].ixs[index]
+    ;
+    final vf = index == -1
+      ? fassets(ixsData[ixsData.length - 1])
+      : ixsData[ixsData.length - 1].ixs[index]
+    ;
     final nmColor = vf > v0 ? "#00AAFF" : vf < v0 ? "#FF8100" : "#000000";
     return Q("span")
       .add(Q("span")
@@ -198,19 +225,15 @@ class Summary {
     for (i in 0...ixsData[0].ixs.length) {
       sets.push(new Array<Option<Float>>());
     }
-    final assets0 = mSel == -1
-      ? It.from(ixsData[0].invs).reduce(0.0, (r, e) -> r + e) +
-        It.from(capitals).reduce(0.0, (r, e) -> r + e)
-      : ixsData[0].invs[mSel] + capitals[mSel]
-    ;
+    final setAtts = [LineChartLine.mk(),LineChartLine.mk(),LineChartLine.mk()];
+    setAtts[0].color = "#000080";
+    setAtts[1].color = "#008000";
+    setAtts[2].color = "#800000";
+    final assets0 = fassets0();
     final ixs0 = ixsData[0].ixs;
     for (e in ixsData) {
       labels.push("" + e.hour);
-      final assets = mSel == -1
-        ? It.from(e.invs).reduce(0.0, (r, e) -> r + e) +
-          It.from(capitals).reduce(0.0, (r, e) -> r + e)
-        : e.invs[mSel] + capitals[mSel]
-      ;
+      final assets = fassets(e);
       final assetsPc = assets0 > 0 ? (assets - assets0) / assets0 : 0;
       for (i in 0...ixsData[0].ixs.length) {
         final pc = ixs0[i] > 0 ? (e.ixs[i] - ixs0[i]) / ixs0[i] : 0;
@@ -229,10 +252,9 @@ class Summary {
     ch.exArea = new LineChartArea(610, 160, LineChartAreaAtts.mk());
     ch.inPadding.left += 30;
     ch.inPadding.right += 6;
-    ch.data = new LineChartData(labels, sets, ch.data.setAtts);
+    ch.data = new LineChartData(labels, sets, setAtts);
     ch.data.maxMinRound = -2;
     ch.data.setLines.push(new LineChartSetLine(0, LineChartLine.mk()));
-    ch.data.setAtts[1].color = "#008000";
     ch.data.drawGrid = (l, i) -> i  == 0
       ? false
       : labels[i-1] == l
@@ -250,5 +272,21 @@ class Summary {
     Store.put(key, Std.string(manager));
     mSel = manager;
     view();
+  }
+
+  function fassets0 (): Float {
+    return mSel == -1
+      ? It.from(ixsData[0].invs).reduce(0.0, (r, e) -> r + e) +
+        It.from(capitals).reduce(0.0, (r, e) -> r + e)
+      : ixsData[0].invs[mSel] + capitals[mSel]
+    ;
+  }
+
+  function fassets (e: IxsChartEntry): Float {
+    return mSel == -1
+      ? It.from(e.invs).reduce(0.0, (r, e) -> r + e) +
+        It.from(capitals).reduce(0.0, (r, e) -> r + e)
+      : e.invs[mSel] + capitals[mSel]
+    ;
   }
 }

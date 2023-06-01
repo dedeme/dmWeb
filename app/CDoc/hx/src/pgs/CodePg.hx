@@ -143,8 +143,10 @@ class CodePg {
         ) {
           r = r.substring(0, ix) + "<span class='reserved'>" + w +
             "</span>" + r.substring(ix + w.length);
+          ix = r.indexOf(w, ix2 + 30);
+        } else {
+          ix = r.indexOf(w,ix2);
         }
-        ix = r.indexOf(w, ix2 + 25);
       }
     });
 
@@ -154,7 +156,7 @@ class CodePg {
         final ix2 = ix + w.length;
         r = r.substring(0, ix) + "<span class='annotation'>" + w +
           "</span>" + r.substring(ix + w.length);
-        ix = r.indexOf(w, ix2 + 27);
+        ix = r.indexOf(w, ix2 + 32);
       }
     });
 
@@ -358,7 +360,7 @@ class CodePg {
   }
 
   static function isNotId (ch: String): Bool {
-    return !isNumber(ch) && !isLetter(ch);
+    return !isNumber(ch) && !isLetter(ch) && ch != "_";
   }
 
   function toHtml (s: String): String {

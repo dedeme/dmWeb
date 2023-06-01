@@ -50,5 +50,5 @@ const (
 var MrBackupTargets = [3]string{
 	"/home/deme/MrBackup",
 	"/media/disk1/dm/MrBackup",
-	"/media/deme/Elements SE/MrBackup",
+	"/media/deme/Elements/MrBackup",
 }

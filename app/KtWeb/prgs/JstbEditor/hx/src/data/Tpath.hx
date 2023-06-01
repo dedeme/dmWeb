@@ -13,8 +13,8 @@ class Tpath {
   public final table: Table;
   /// Field path
   public final field: Field;
-  /// Field configuration
-  public final fieldCf: Option<FieldCf>;
+  /// Mutable field configuration
+  public var fieldCf: Option<FieldCf>;
 
   public function new (table: Table, field:Field, fieldCf: Option<FieldCf>) {
     this.table = table;
@@ -26,16 +26,17 @@ class Tpath {
     return Js.wa([
       table.toJs(),
       field.toJs(),
-      switch(fieldCf) { case Some(v): v.toJs(); case None: Js.wn(); },
+      switch(fieldCf) { case Some(v): Js.wa([v.toJs()]); case None: Js.wa([]); },
     ]);
   }
 
   public static function fromJs (js: Js): Tpath {
     final a = js.ra();
+    final fCf = a[2].ra();
     return new Tpath(
       Table.fromJs(a[0]),
       Field.fromJs(a[1]),
-      a[2].isNull() ? None : Some(FieldCf.fromJs(a[2]))
+      fCf.length == 0 ? None : Some(FieldCf.fromJs(fCf[0]))
     );
   }
 }

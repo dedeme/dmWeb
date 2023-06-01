@@ -8,7 +8,9 @@ package wgs;
 import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
+import dm.Opt;
 import dm.Dec;
+import data.Tpath;
 import data.JsData;
 import data.FieldChange;
 import I18n._;
@@ -17,9 +19,11 @@ import I18n._args;
 class NumberEditor {
   final wg: Domo;
   final jsData: JsData;
-  final fn: FieldChange -> Void;
+  final fn: (FieldChange, Option<Tpath>) -> Void;
 
-  public function new (wg: Domo, jsData: JsData, fn: FieldChange -> Void) {
+  public function new (
+    wg: Domo, jsData: JsData, fn: (FieldChange, Option<Tpath>) -> Void
+  ) {
     this.wg = wg;
     this.jsData = jsData;
     this.fn = fn;
@@ -61,7 +65,7 @@ class NumberEditor {
       .removeAll()
       .add(Q("div")
         .klass("head")
-        .text("Boolean"))
+        .text("Number"))
       .add(toNullDiv)
       .add(tb)
     ;
@@ -75,9 +79,9 @@ class NumberEditor {
         if (!Ui.confirm(_args(_("Set field to %0?"), ["" + v]))) return;
         final r = Dec.round(v, 0);
         if (Dec.eq(v, r, 0.0000000001))
-          fn(FieldChange.mkInt(jsData.control, Std.int(r)));
+          fn(FieldChange.mkInt(jsData.control, Std.int(r)), None);
         else
-          fn(FieldChange.mkFloat(jsData.control, v));
+          fn(FieldChange.mkFloat(jsData.control, v), None);
       }
       case None:
         Ui.alert(_args(_("'%0' is not a valid number"), [value]));

@@ -23,19 +23,19 @@ for (c = Aprx) {
 
 for (c = Qfijo) {
   E = arr.find(Rs, \e -> return e[0] == c;);
-  if (arr.empty(E)) {
-    arr.push(Rs, [c, 1]);
-  } else {
+  if (E) {
     E![1] += 1;
+  } else {
+    arr.push(Rs, [c, 1]);
   }
 }
 
 for (c = Qmovil) {
   E = arr.find(Rs, \e -> return e[0] == c;);
-  if (arr.empty(E)) {
-    arr.push(Rs, [c, 1]);
-  } else {
+  if (E) {
     E![1] += 1;
+  } else {
+    arr.push(Rs, [c, 1]);
   }
 }
 

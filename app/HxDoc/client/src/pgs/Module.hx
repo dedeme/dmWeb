@@ -50,6 +50,7 @@ class Module {
         .klass("frame2")
         .html("<b>" + path + "</b>"))
       .add(henums())
+      .add(htypedefs())
       .add(hclasses())
       .add(overview())
       .adds(body())
@@ -62,6 +63,15 @@ class Module {
       ? Q("div")
         .add(mkRule("enums"))
         .add(mkIndex(mod.enums))
+      : Q("div")
+    ;
+  }
+
+  function htypedefs (): Domo {
+    return mod.typedefs.length > 0
+      ? Q("div")
+        .add(mkRule("typedefs"))
+        .add(mkIndex(mod.typedefs))
       : Q("div")
     ;
   }
@@ -242,6 +252,7 @@ class Module {
     function ltype (l: String): String {
       if (l.startsWith("///")) return "doc";
       if (l.startsWith("enum ")) return "enum";
+      if (l.startsWith("typedef ")) return "typedef";
       if (l.startsWith("class ")) return "class";
       var isPublic = false;
       var isStatic = false;
@@ -358,6 +369,18 @@ class Module {
       r.enums.push(e);
     }
 
+    function typedf (ix: Int, l: String): Void {
+      final e = new Mentry();
+      e.id = afterWord(l, "typedef");
+      e.link = e.id;
+      e.line = nline;
+      e.doc = getDoc();
+      prev = code.indexOf(";", ix) + 1;
+      e.code = justify(code.substring(ix, prev));
+      nline += countLines(0, ix, prev);
+      r.typedefs.push(e);
+    }
+
     function vvar (isStatic: Bool, type: String, ix: Int, l: String): Void {
       final e = new Mentry();
       e.id = afterWord(l, type);
@@ -420,6 +443,8 @@ class Module {
           klass(prev, l);
         case "enum":
           enm(prev, l);
+        case "typedef":
+          typedf(prev, l);
         case "var":
           vvar(false, "var", prev, l);
         case "final":

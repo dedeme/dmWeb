@@ -8,15 +8,21 @@ package data;
 import dm.Js;
 
 class FieldChange {
+  public static final MAP_ADD = -1;
+  public static final MAP_DEL = 0;
+  public static final MAP_KEY = 1;
+  public static final MAP_DUP = 2;
+
   /// One of Type constants.
   public final type: Int;
   /// String to control external modifications of table.
   public final hash: String;
   /// Takes the following values:
-  ///   ARRAY -> Index of entry to modify or -1 for the first value in an
-  ///            empty array
-  ///   MAP -> '1' in the case of modify key, -1 for the first value in
-  ///           a map empty or, otherwise, '0'.
+  ///   ARRAY -> Index of entry to modify or -1 for adding a 'null' entry at '0'.
+  ///   MAP -> MAP_ADD: for adding a 'null' entry
+  ///          MAP_DEL: Delete entry
+  ///          MAP_KEY: Change key
+  ///          MAP_DUP: Make a duplicate
   ///   others -> -1
   public final ix: Int;
   /// Takes the following values:
@@ -25,11 +31,10 @@ class FieldChange {
   ///   NUMBER => Js.wi(intValue) or Js.wf(floatValue)
   ///   STRING => Js.ws(stringValue)
   ///   ARRAY => Js.wb(). 'true'->duplicate; 'false' delete.
-  ///   MAP => js.wa([key, change]), where:
-  ///          key => js.ws(oldKey)
-  ///          change => ix = -1: js.wn()
-  ///                    ix = 1: js.ws(newKey)
-  ///                    ix = 0: Js.wb(). 'true'->duplicate; 'false' delete.
+  ///   MAP => ix == MAP_ADD: Js.ws(newKey)
+  ///          ix == MAP_DEL: Js.ws(oldKey)
+  ///          ix == MAP_KEY: Js.wa([oldKey, newKey])
+  ///          ix == MAP_DUP: Js.wa([oldKey, newKey])
   ///   In any case can be 'js.wn()'.
   public final value: Js;
 
@@ -73,11 +78,26 @@ class FieldChange {
     return new FieldChange(Type.ARRAY, hash, ix, Js.wb(isDuplicate));
   }
 
-  public static function mkMap (hash: String, isDuplicate: Bool): FieldChange {
-    return new FieldChange(Type.MAP, hash, 0, Js.wb(isDuplicate));
+  /// Creates a FieldChange for a map modification.
+  ///   hash: Control table integrity.
+  ///   type: One of MAP_XXX
+  ///   oldKey: For type MAP_ADD its value is discarded.
+  ///   newKey: For type MAP_DEL its value is discarded.
+  public static function mkMap (
+    hash: String, type: Int, oldKey: String, newKey: String
+  ): FieldChange {
+    return new FieldChange(Type.MAP, hash, type,
+      type == MAP_ADD
+        ? Js.ws(newKey)
+        : type == MAP_DEL
+          ? Js.ws(oldKey)
+          : Js.wa([Js.ws(oldKey), Js.ws(newKey)])
+    );
   }
 
-  public static function mkMapKey (hash: String, newKey: String): FieldChange {
+  public static function mkMapModifyKey (
+    hash: String, oldKey: String, newKey: String
+  ): FieldChange {
     return new FieldChange(Type.MAP, hash, 1, Js.ws(newKey));
   }
 

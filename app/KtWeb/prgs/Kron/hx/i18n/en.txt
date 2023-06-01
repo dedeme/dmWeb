@@ -6,10 +6,10 @@
 # src/Authentication.hx: 53
 Accept = Accept
 
-# src/pgs/Home.hx: 70
+# src/pgs/Home.hx: 69
 Activate = Activate
 
-# src/pgs/Home.hx: 64
+# src/pgs/Home.hx: 63
 Active = Active
 
 # src/LogLinkForI18n.hx: 163
@@ -30,24 +30,24 @@ Click %0 to continue. = Click %0 to continue.
 # src/pgs/Periodic.hx: 79
 Command = Command
 
-# src/pgs/Fix.hx: 214
-# src/pgs/Manual.hx: 143
-# src/pgs/Periodic.hx: 197
+# src/pgs/Fix.hx: 217
+# src/pgs/Manual.hx: 145
+# src/pgs/Periodic.hx: 199
 Command value is missing = Command value is missing
 
 # src/pgs/Fix.hx: 78
 # src/pgs/Periodic.hx: 74
 Day = Day
 
-# src/pgs/Fix.hx: 204
+# src/pgs/Fix.hx: 207
 Day value is missing = Day value is missing
 
 # src/LogLinkForI18n.hx: 175
 Delete = Delete
 
-# src/pgs/Fix.hx: 242
-# src/pgs/Manual.hx: 171
-# src/pgs/Periodic.hx: 235
+# src/pgs/Fix.hx: 245
+# src/pgs/Manual.hx: 173
+# src/pgs/Periodic.hx: 237
 Delete annotation? = Delete annotation?
 
 # src/LogLinkForI18n.hx: 180
@@ -98,25 +98,25 @@ Periodic = Periodic
 # src/pgs/Periodic.hx: 44
 Periodic days = Periodic days
 
-# src/pgs/Home.hx: 70
+# src/pgs/Home.hx: 69
 Reactivate = Reactivate
 
 # src/LogLinkForI18n.hx: 170
 Reload = Reload
 
-# src/pgs/Home.hx: 56
+# src/pgs/Home.hx: 55
 Server = Server
 
 # src/Global.hx: 15
 Session is expired. = Session is expired.
 
-# src/pgs/Home.hx: 79
+# src/pgs/Home.hx: 78
 Stop = Stop
 
-# src/pgs/Home.hx: 64
+# src/pgs/Home.hx: 63
 Stopped = Stopped
 
-# src/pgs/Fix.hx: 213
+# src/pgs/Fix.hx: 216
 Time is equals or previous to the current one = Time is equals or previous to the current one
 
 # src/Authentication.hx: 59
@@ -125,12 +125,12 @@ User = User
 # src/Authentication.hx: 169
 User name is missing = User name is missing
 
-# src/pgs/Periodic.hx: 196
+# src/pgs/Periodic.hx: 198
 Week days is missing = Week days is missing
 
-# src/pgs/Fix.hx: 183
-# src/pgs/Manual.hx: 126
-# src/pgs/Periodic.hx: 175
+# src/pgs/Fix.hx: 186
+# src/pgs/Manual.hx: 128
+# src/pgs/Periodic.hx: 177
 Without entries = Without entries
 
 # src/Authentication.hx: 111

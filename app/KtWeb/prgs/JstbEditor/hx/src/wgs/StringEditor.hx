@@ -1,7 +1,7 @@
 // Copyright 25-Jan-2023 ºDeme
 // GNU General Public License - V3 <http://www.gnu.org/licenses/>
 
-/// Number editor.
+/// String editor.
 
 package wgs;
 
@@ -9,6 +9,8 @@ using StringTools;
 import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
+import dm.Opt;
+import data.Tpath;
 import data.JsData;
 import data.FieldChange;
 import I18n._;
@@ -17,9 +19,11 @@ import I18n._args;
 class StringEditor {
   final wg: Domo;
   final jsData: JsData;
-  final fn: FieldChange -> Void;
+  final fn: (FieldChange, Option<Tpath>) -> Void;
 
-  public function new (wg: Domo, jsData: JsData, fn: FieldChange -> Void) {
+  public function new (
+    wg: Domo, jsData: JsData, fn: (FieldChange, Option<Tpath>) -> Void
+  ) {
     this.wg = wg;
     this.jsData = jsData;
     this.fn = fn;
@@ -93,7 +97,7 @@ class StringEditor {
       .removeAll()
       .add(Q("div")
         .klass("head")
-        .text("Boolean"))
+        .text("String"))
       .add(toNullDiv)
       .add(tb)
     ;
@@ -111,6 +115,6 @@ class StringEditor {
           ? value.rtrim()
           : value
     ;
-    fn(FieldChange.mkString(jsData.control, v));
+    fn(FieldChange.mkString(jsData.control, v), None);
   }
 }

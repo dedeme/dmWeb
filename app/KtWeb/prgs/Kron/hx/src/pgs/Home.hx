@@ -99,7 +99,7 @@ class Home {
       "source" => Js.ws("Home"),
       "rq" => Js.ws("activate")
     ], rp -> {
-      mk(wg);
+      js.Browser.location.reload(true);
     });
   }
 

@@ -19,6 +19,8 @@ import wgs.NullEditor;
 import wgs.BooleanEditor;
 import wgs.NumberEditor;
 import wgs.StringEditor;
+import wgs.ArrayEditor;
+import wgs.MapEditor;
 import I18n._;
 import I18n._args;
 
@@ -63,13 +65,17 @@ class Editor {
       new NumberEditor(body, jsData, set).show();
     else if (jsData.type == Type.STRING)
       new StringEditor(body, jsData, set).show();
+    else if (jsData.type == Type.ARRAY)
+      new ArrayEditor(body, tpath, jsData, set).show();
+    else if (jsData.type == Type.MAP)
+      new MapEditor(body, tpath, jsData, set).show();
     else
       throw ("Unknown type " + jsData.type);
   }
 
   // Control -------------------------------------------------------------------
 
-  function set (change: FieldChange): Void {
+  function set (change: FieldChange, newTpath: Option<Tpath>): Void {
     Global.client.send([
       "prg" => Js.ws("JstbEditor"),
       "source" => Js.ws("Editor"),
@@ -101,16 +107,12 @@ class Editor {
           ).show();
           return;
         }
-        case EditorRp.NO_TPATH: {
-          Ui.alert(_("Field path not found."));
-          reload(Opt.get(response.tpath));
-        }
-        case EditorRp.NO_CONF: {
-          Ui.alert(_("Field configuation not valid."));
-          reload(Opt.get(response.tpath));
+        case EditorRp.MODIFIED: {
+          Ui.alert("Table no synchronized.\nNo change has been made");
+          js.Browser.location.assign("?");
         }
         default:
-          reload(tpath);
+          reload(switch(newTpath) { case None: tpath; case Some(tp): tp; });
       }
 
     });
@@ -158,7 +160,6 @@ class Editor {
       waitDiv.removeAll().add(Ui.led("#104080"));
 
       final response = EditorRp.fromJs(rp["response"]);
-
       switch (response.error) {
         case EditorRp.NO_TABLE: {
           new MsgPg(
@@ -181,13 +182,9 @@ class Editor {
           ).show();
           return;
         }
-        case EditorRp.NO_TPATH: {
-          Ui.alert(_("Field path not found."));
-          reload(Opt.get(response.tpath));
-        }
-        case EditorRp.NO_CONF: {
-          Ui.alert(_("Field configuation not valid."));
-          reload(Opt.get(response.tpath));
+        case EditorRp.MODIFIED: {
+          Ui.alert("Table no synchronized.");
+          js.Browser.location.assign("?");
         }
         default:
           new Editor(body, tpath, Opt.get(response.jdata)).show();

@@ -8,8 +8,10 @@ package wgs;
 import dm.Domo;
 import dm.Ui;
 import dm.Ui.Q;
+import dm.Opt;
 import data.JsData;
 import data.Type;
+import data.Tpath;
 import data.FieldChange;
 import I18n._;
 import I18n._args;
@@ -17,9 +19,11 @@ import I18n._args;
 class NullEditor {
   final wg: Domo;
   final jsData: JsData;
-  final fn: FieldChange -> Void;
+  final fn: (FieldChange, Option<Tpath>) -> Void;
 
-  public function new (wg: Domo, jsData: JsData, fn: FieldChange -> Void) {
+  public function new (
+    wg: Domo, jsData: JsData, fn: (FieldChange, Option<Tpath>) -> Void
+  ) {
     this.wg = wg;
     this.jsData = jsData;
     this.fn = fn;
@@ -67,6 +71,6 @@ class NullEditor {
 
   function setTo(type: Int): Void {
     if (!Ui.confirm(_args(_("Set field to %0?"), [Type.toString(type)]))) return;
-    fn(FieldChange.mkNull(jsData.control, type));
+    fn(FieldChange.mkNull(jsData.control, type), None);
   }
 }

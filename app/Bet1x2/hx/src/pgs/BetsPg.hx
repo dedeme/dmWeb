@@ -76,7 +76,9 @@ class BetsPg {
     ], rp -> {
       teams = rp["teams"].ra().map(t -> t.ra().map(e -> e.rs()));
       bets = rp["bets"].ra().map(row ->
-        row.ra().map(e -> e.isNull() ? None : Some(Bet.fromJs(e)))
+        row.ra()
+          .map(e -> e.ra())
+          .map(e -> e.length == 0 ? None : Some(Bet.fromJs(e[0])))
       );
       year = y;
 
@@ -94,7 +96,9 @@ class BetsPg {
       final years = rp["years"].ra().map(e -> e.rs());
       final teams = rp["teams"].ra().map(t -> t.ra().map(e -> e.rs()));
       final bets = rp["bets"].ra().map(row ->
-        row.ra().map(e -> e.isNull() ? None : Some(Bet.fromJs(e)))
+        row.ra()
+          .map(e -> e.ra())
+          .map(e -> e.length == 0 ? None : Some(Bet.fromJs(e[0])))
       );
 
       new BetsPg(wg, years, teams, bets).show();

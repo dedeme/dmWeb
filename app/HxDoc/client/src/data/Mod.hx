@@ -65,6 +65,8 @@ class Mod {
   public var overview: Option<String> = None;
   /// Enums documentation.
   public var enums: Array<Mentry> = [];
+  /// Typedefs documentation.
+  public var typedefs: Array<Mentry> = [];
   /// Classes documentation.
   public var classes: Array<Klass> = [];
 
@@ -73,14 +75,15 @@ class Mod {
 
   /// Returns every documentable element of 'this'.
   public function entries (): It<Mentry> {
-    return It.from(enums).cat(It.from(classes).reduce(
+    return It.from(typedefs).cat(It.from(enums).cat(It.from(classes).reduce(
       It.empty(), (r, e) -> r.cat(e.entries())
-    ));
+    )));
   }
 
   /// Ascendente sort of every element of 'this'.
   public function sort () {
     Mentry.sort(enums);
+    Mentry.sort(typedefs);
     Klass.sort(classes);
   }
 }

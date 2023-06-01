@@ -300,10 +300,10 @@ class BudgetView {
   function account (id: String): Void {
     final budgetMs: Array<Float> = [];
     final budgetSs: Array<Float> = [];
-    final budgetSum = 0.0;
+    var budgetSum = 0.0;
     final realMs: Array<Float> = [];
     final realSs: Array<Float> = [];
-    final realSum = 0.0;
+    var realSum = 0.0;
     for (i in 0...12) {
       final b = budget.accAmount(id, i, i + 1);
       budgetSum += b;
@@ -336,6 +336,7 @@ class BudgetView {
             .text(_("Real (B)")))
           .add(Q("td"))
           .add(Q("td")
+            .att("colspan", "2")
             .style("text-align:center")
             .text(_("Dif. (B - A))"))))
         .add(Q("tr")
@@ -362,7 +363,11 @@ class BudgetView {
           .add(Q("td")
             .klass("frameNm")
             .style("background-color:#d9d9d9")
-            .text(_(""))))
+            .text(_("Month")))
+          .add(Q("td")
+            .klass("frameNm")
+            .style("background-color:#d9d9d9")
+            .text(_("Sum"))))
         .adds(It.range(12).map(i ->
           Q("tr")
             .add(Q("td")
@@ -391,7 +396,11 @@ class BudgetView {
           .add(Q("td")
             .klass("frameNm")
             .style("background-color:#f9f9f9")
-            .text(Dec.toIso(budgetMs[i] - realMs[i], 2))))))
+            .text(Dec.toIso(budgetMs[i] - realMs[i], 2)))
+          .add(Q("td")
+            .klass("frameNm")
+            .style("background-color:#f9f9f9")
+            .text(Dec.toIso(budgetSs[i] - realSs[i], 2))))))
       .add(Q("div")
         .klass("head")
         .add(Q("button")

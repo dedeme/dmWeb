@@ -51,7 +51,7 @@ class Acc {
       Menu.separator2(),
       Menu.tlink("speedometers", _("Speedometers"), "acc"),
       Menu.separator(),
-      Menu.tlink("jail", _("Jail"), "acc")
+      Menu.tlink("jail", _("Jail"), "acc"),
     ];
     final ropts = [];
     dmenu.setDownMenu(new Menu(lopts, ropts, mSel));
