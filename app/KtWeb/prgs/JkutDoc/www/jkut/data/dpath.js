@@ -9,10 +9,10 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 
 
 
-export function mk (id, path, isShown, isValid)  {sys.$params(arguments.length, 4);  return {id:id, path:path, isShown:isShown, isValid:isValid};};
+export  function mk(id, path, isShown, isValid)  {sys.$params(arguments.length, 4);  return {id:id, path:path, isShown:isShown, isValid:isValid};};
 
 
-export function toJs (Dp)  {sys.$params(arguments.length, 1);  return [Dp.id, Dp.path, Dp.isShown, Dp.isValid];};
+export  function toJs(Dp)  {sys.$params(arguments.length, 1);  return [Dp.id, Dp.path, Dp.isShown, Dp.isValid];};
 
 
-export function fromJs (JS)  {sys.$params(arguments.length, 1);  return mk (JS[0], JS[1], JS[2], JS[3]);};
+export  function fromJs(JS)  {sys.$params(arguments.length, 1);  return mk (JS[0], JS[1], JS[2], JS[3]);};

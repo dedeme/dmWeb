@@ -12,6 +12,7 @@ func List() []*T {
 		newQfix(),
 		newQmob(),
 		newAppr(),
+		newAppr2(),
 		newMa(),
 		newEa(),
 		newEa2(),

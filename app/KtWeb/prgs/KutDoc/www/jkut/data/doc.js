@@ -9,31 +9,31 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 
 
 
-export function mkEntry (name, doc, code, link)  {sys.$params(arguments.length, 4);
+export  function mkEntry(name, doc, code, link)  {sys.$params(arguments.length, 4);
    return { name:name, doc:doc, code:code, link:link };};
 
 
-export function entryToJs (D)  {sys.$params(arguments.length, 1);  return [D.name, D.doc, D.code, D.link];};
+export  function entryToJs(D)  {sys.$params(arguments.length, 1);  return [D.name, D.doc, D.code, D.link];};
 
 
-export function entryFromJs (A)  {sys.$params(arguments.length, 1);  return mkEntry(A[0], A[1], A[2], A[3]);};
-
-
-
+export  function entryFromJs(A)  {sys.$params(arguments.length, 1);  return mkEntry(A[0], A[1], A[2], A[3]);};
 
 
 
-export function mk (doc, Functions, Values)  {sys.$params(arguments.length, 3);  return { doc:doc, Functions:Functions, Values:Values };};
 
 
-export function toJs (D)  {sys.$params(arguments.length, 1);  return [
+
+export  function mk(doc, Functions, Values)  {sys.$params(arguments.length, 3);  return { doc:doc, Functions:Functions, Values:Values };};
+
+
+export  function toJs(D)  {sys.$params(arguments.length, 1);  return [
     D.doc,
     arr.map(D.Functions, entryToJs),
     arr.map(D.Values, entryToJs)
   ];};
 
 
-export function fromJs (A)  {sys.$params(arguments.length, 1);  return mk(
+export  function fromJs(A)  {sys.$params(arguments.length, 1);  return mk(
     A[0],
     arr.map(A[1], entryFromJs),
     arr.map(A[2], entryFromJs)

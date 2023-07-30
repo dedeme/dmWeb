@@ -3,7 +3,7 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 
 
 
-const Q = sys.$checkNull(ui.q);
+const Q =sys.$checkNull( ui.q);
 
 
 
@@ -14,15 +14,15 @@ const Q = sys.$checkNull(ui.q);
 
 
 
-export function mk (wg, fend)  {sys.$params(arguments.length, 2);
-  const absoluteSpan = sys.$checkNull(Q("span"));
-  const relativeSpan = sys.$checkNull(Q("span"));
-  const progressTable = sys.$checkNull(Q("table"));
-  const end = sys.$checkNull(math.toInt(fend));
+export  function mk(wg, fend)  {sys.$params(arguments.length, 2);
+  const absoluteSpan =sys.$checkNull( Q("span"));
+  const relativeSpan =sys.$checkNull( Q("span"));
+  const progressTable =sys.$checkNull( Q("table"));
+  const end =sys.$checkNull( math.toInt(fend));
 
   
   
-  function show ()  {sys.$params(arguments.length, 0);
+   function show()  {sys.$params(arguments.length, 0);
     wg
       .removeAll()
       .add(Q("table")
@@ -43,7 +43,7 @@ export function mk (wg, fend)  {sys.$params(arguments.length, 2);
 
   
   
-  function lock (msg)  {sys.$params(arguments.length, 1);
+   function lock(msg)  {sys.$params(arguments.length, 1);
     wg
       .removeAll()
       .add(Q("table")
@@ -57,8 +57,8 @@ export function mk (wg, fend)  {sys.$params(arguments.length, 2);
 
   
   
-  function setValue (value)  {sys.$params(arguments.length, 1);
-    const width = sys.$checkNull(400);
+   function setValue(value)  {sys.$params(arguments.length, 1);
+    const width =sys.$checkNull( 400);
     const val =sys.$checkNull(sys.asBool( (value > end)) ? end : math.toInt(value));
 
     absoluteSpan
@@ -70,7 +70,7 @@ export function mk (wg, fend)  {sys.$params(arguments.length, 2);
       .removeAll()
       .text(sys.asBool(end > 0) ? (math.toIso(val * 100 / end, 2) + "%") : "");
 
-    const tds = sys.$checkNull([
+    const tds =sys.$checkNull( [
       Q("td")
         .klass("border")
         .style(

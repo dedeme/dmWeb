@@ -120,7 +120,7 @@ class ModulePg {
       function endEntry (e: DocEntry): Domo {
         var isNewLine = true;
         var bf2 = "";
-        final code = e.code;
+        final code = e.code.replace("&", "&amp;").replace("<", "&lt;");
         for (i in 0...code.length) {
           final ch = code.charAt(i);
           if (isNewLine && ch != "\n") {

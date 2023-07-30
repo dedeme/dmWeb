@@ -2,7 +2,7 @@ import * as iter from './_js/iter.js';import * as str from './_js/str.js';import
 
 
 
-const esDic = sys.$checkNull({
+const esDic =sys.$checkNull( {
   "Amount": "Cantidad",
   "Bills": "Gastos",
   "Click %0 to continue.": "Click %0 para continuar.",
@@ -21,9 +21,9 @@ const esDic = sys.$checkNull({
   "here": "aquí"
 });
 
-export function es () {sys.$params(arguments.length, 0); Lang[0] =sys.$checkExists(Lang[0], sys.$checkNull("es"));};
+export  function es() {sys.$params(arguments.length, 0); Lang[0] =sys.$checkExists(Lang[0],sys.$checkNull( "es"));};
 
-const enDic = sys.$checkNull({
+const enDic =sys.$checkNull( {
   "Amount": "Amount",
   "Bills": "Bills",
   "Click %0 to continue.": "Click %0 to continue.",
@@ -42,28 +42,28 @@ const enDic = sys.$checkNull({
   "here": "here"
 });
 
-export function en () {sys.$params(arguments.length, 0); Lang[0] =sys.$checkExists(Lang[0], sys.$checkNull("en"));};
+export  function en() {sys.$params(arguments.length, 0); Lang[0] =sys.$checkExists(Lang[0],sys.$checkNull( "en"));};
 
 
-function dicByKey (s)  {sys.$params(arguments.length, 1);    
+ function dicByKey(s)  {sys.$params(arguments.length, 1);    
   return sys.$eq(s,"es")? esDic:
   sys.$eq(s,"en")? enDic:
    "Unreachable"
 ;};
 
-const Lang = sys.$checkNull(["es"]);
+const Lang =sys.$checkNull( ["es"]);
 
-export function getLang () {sys.$params(arguments.length, 0);  return Lang[0];};
+export  function getLang() {sys.$params(arguments.length, 0);  return Lang[0];};
 
 
-export function tlt (s)  {sys.$params(arguments.length, 1);
-  const T = sys.$checkNull(dic.get(dicByKey(Lang[0]), s));
+export  function tlt(s)  {sys.$params(arguments.length, 1);
+  const T =sys.$checkNull( dic.get(dicByKey(Lang[0]), s));
   return sys.asBool( T) ? T[0] : s;
 };
 
 
-export function fmt (tp, Rpls)  {sys.$params(arguments.length, 2);
-  const R = sys.$checkNull([tp]);
-  for (let i = 0;i < arr.size(Rpls); ++i) R[0] =sys.$checkExists(R[0], sys.$checkNull(str.replace(R[0], "%" + sys.toStr(i), Rpls[i])));
+export  function fmt(tp, Rpls)  {sys.$params(arguments.length, 2);
+  const R =sys.$checkNull( [tp]);
+  for (let i = 0;i < arr.size(Rpls); ++i) R[0] =sys.$checkExists(R[0],sys.$checkNull( str.replace(R[0], "%" + sys.toStr(i), Rpls[i])));
    return R[0];
 };

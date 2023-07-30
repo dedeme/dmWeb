@@ -6,6 +6,6 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 import * as i18n from  "../i18n.js";
 
 
-export function cFmt (value)  {sys.$params(arguments.length, 1);  return "&nbsp;" +
+export  function cFmt(value)  {sys.$params(arguments.length, 1);  return "&nbsp;" +
     (sys.asBool(sys.$eq(i18n.getLang() , "es")) ? math.toIso(value, 2) : math.toEn(value, 2))
   ;};

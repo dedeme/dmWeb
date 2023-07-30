@@ -82,9 +82,9 @@ const Q =sys.$checkNull( ui.q);
 
 
 
-export  function mk(wg, load, reset, tlt, minified, lineWidth, linesNumber)  {sys.$params(arguments.length, 7);
+export  async  function mk(wg, load, reset, tlt, minified, lineWidth, linesNumber)  {sys.$params(arguments.length, 7);
   const Rows =sys.$checkNull( []);
-  load(function(Rs)  {sys.$params(arguments.length, 1); arr.each(Rs, function(LgRow)  {sys.$params(arguments.length, 1); arr.push(Rows, LgRow);});});
+  await load(function(Rs)  {sys.$params(arguments.length, 1); arr.each(Rs, function(LgRow)  {sys.$params(arguments.length, 1); arr.push(Rows, LgRow);});});
 
   const Minified =sys.$checkNull( [minified]);
   const Is2Days =sys.$checkNull( [false]);
@@ -207,21 +207,19 @@ export  function mk(wg, load, reset, tlt, minified, lineWidth, linesNumber)  {sy
       .add(Q("span")
         .add(mkOption(!sys.asBool(IsErrors[0]), tlt("All"), function()  {sys.$params(arguments.length, 0); onAll();})))
     ;
-
     const today =sys.$checkNull( time.now());
-    const Log =sys.$checkNull( arr.copy(Rows));
-    arr.reverse(Log);
+    const Log =sys.$checkNull( arr.reverse(Rows));
     area.value(
       arr.join(
         arr.map(
           arr.filter(
             Log,
             function(E)  {sys.$params(arguments.length, 1); 
-              return sys.asBool((sys.asBool(Is2Days[0]) ? time.dfDays(today, E.date) < 3 : true)) &&
+              return sys.asBool((sys.asBool(Is2Days[0]) ? time.dfDays(today, logRowDate(E)) < 3 : true)) &&
               sys.asBool((sys.asBool(IsErrors[0]) ? E.isError : true))
             ;}
           ),
-          function(E)  {sys.$params(arguments.length, 1);  return E.format(lineWidth);}
+          function(E)  {sys.$params(arguments.length, 1);  return logRowFormat(E, lineWidth);}
         ), "\n"
       )
     );
@@ -254,11 +252,9 @@ export  function mk(wg, load, reset, tlt, minified, lineWidth, linesNumber)  {sy
   ;};
   View2[0] =sys.$checkExists(View2[0],sys.$checkNull( view2));
 
-  
-   function show()  {sys.$params(arguments.length, 0); if (sys.asBool(Minified[0])) view2(); else view1();};
-  Show[0] =sys.$checkExists(Show[0],sys.$checkNull( show));
+  Show[0] =sys.$checkExists(Show[0], function()  {sys.$params(arguments.length, 0); if (sys.asBool(Minified[0])) view2(); else view1();});
 
-  show();
+  Show[0]();
 };
 
 
@@ -288,10 +284,10 @@ export  function mkLogRow(isError, tm, msg)  {sys.$params(arguments.length, 3); 
 
     const L =sys.$checkNull( [l]);
     while (sys.asBool(str.len(L[0]) > len)) {
-      const Line =sys.$checkNull( sys.$slice(L[0],null,len));
+      const Line =sys.$checkNull( [sys.$slice(L[0],null,len)]);
       L[0] =sys.$checkExists(L[0],sys.$checkNull( sys.$slice(L[0],len,null)));
       const ix =sys.$checkNull( str.lastIndex(Line[0], " "));
-      if (sys.asBool(sys.asBool(sys.$neq(ix ,  -1)) && sys.asBool(str.trim(sys.$neq(sys.$slice(Line[0],null,ix) , ""))))) {
+      if (sys.asBool(sys.asBool(sys.$neq(ix ,  -1)) && sys.asBool(sys.$neq(str.trim(sys.$slice(Line[0],null,ix)) , "")))) {
         L[0] =sys.$checkExists(L[0],sys.$checkNull( sys.$slice(Line[0],ix + 1,null) + L[0]));
         Line[0] =sys.$checkExists(Line[0],sys.$checkNull( sys.$slice(Line[0],null,ix)));
       }
@@ -318,4 +314,4 @@ export  function mkLogRow(isError, tm, msg)  {sys.$params(arguments.length, 3); 
 };
 
 
-export  function logRowFromJs(A)  {sys.$params(arguments.length, 1); mkLogRow(A[0], A[1], A[2]);};
+export  function logRowFromJs(A)  {sys.$params(arguments.length, 1);  return mkLogRow(A[0], A[1], A[2]);};

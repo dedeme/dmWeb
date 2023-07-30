@@ -92,7 +92,7 @@ func newQmob() *T {
 			"Intervalo",
 		},
 		[]float64{
-			0.10,
+			0.01,
 		},
 		[]float64{
 			0.005,

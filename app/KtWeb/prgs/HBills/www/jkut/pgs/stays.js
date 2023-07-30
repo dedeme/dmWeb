@@ -8,30 +8,30 @@ import * as fns from  "../data/fns.js";
 import * as bar from  "../wgs/bar.js";
 import * as i18n from  "../i18n.js";
 
-const Q = sys.$checkNull(ui.q);
-const II = sys.$checkNull(i18n.tlt);
+const Q =sys.$checkNull( ui.q);
+const II =sys.$checkNull( i18n.tlt);
 
 
-const date = sys.$checkNull(0);
-const description = sys.$checkNull(1);
-const amount = sys.$checkNull(2);
+const date =sys.$checkNull( 0);
+const description =sys.$checkNull( 1);
+const amount =sys.$checkNull( 2);
 
 
-export  async function mk (wg)  {sys.$params(arguments.length, 1);
-  const Rp = sys.$checkNull(await  client.send({
+export  async  function mk(wg)  {sys.$params(arguments.length, 1);
+  const Rp =sys.$checkNull( await  client.send({
     prg: cts.appName,
     source: "Stays",
     rq: "idata"
   }));
-  const Anns = sys.$checkNull(Rp.anns);
+  const Anns =sys.$checkNull( Rp.anns);
 
   
-  function table ()  {sys.$params(arguments.length, 0);
-    const max = sys.$checkNull(arr.reduce(
+   function table()  {sys.$params(arguments.length, 0);
+    const max =sys.$checkNull( arr.reduce(
       Anns, 0.0, function(r, An)  {sys.$params(arguments.length, 2); return sys.asBool( An[amount] > r) ? An[amount] : r;}
     ));
-    const tb = sys.$checkNull(Q("table").att("align", "center").klass("border"));
-    function barWg (A)  {sys.$params(arguments.length, 1);  return bar.mkWg(
+    const tb =sys.$checkNull( Q("table").att("align", "center").klass("border"));
+     function barWg(A)  {sys.$params(arguments.length, 1);  return bar.mkWg(
         bar.mk(300, 2, A[amount] / max, "#c080c0", "#ffffff")
       );};
 

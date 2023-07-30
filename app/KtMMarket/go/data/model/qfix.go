@@ -91,7 +91,7 @@ func newQfix() *T {
 			"Intervalo",
 		},
 		[]float64{
-			0.14,
+			0.01,
 		},
 		[]float64{
 			0.005,

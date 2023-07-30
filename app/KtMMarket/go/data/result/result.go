@@ -34,7 +34,7 @@ func (r *T) Eval() float64 {
 	}
 
 	return (assets*cts.AssetsRatio/cts.MaxAssets +
-		(1+profits)*cts.ProfitsAvgRatio/(1+cts.MaxProfitsAvgRatio)) /
+		(1+profits)*cts.ProfitsAvgRatio/cts.MaxProfitsAvgRatio) /
 		2
 }
 

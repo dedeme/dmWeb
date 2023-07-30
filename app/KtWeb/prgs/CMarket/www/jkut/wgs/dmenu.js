@@ -13,15 +13,19 @@ const II =sys.$checkNull( i18n.tlt);
 
 
  function mkUpMenu(selected)  {sys.$params(arguments.length, 1);
-  const lopts =sys.$checkNull( [
+  const Lopts =sys.$checkNull( [
     menu.tlink("home", II("Home"), []),
     menu.separator(),
-    menu.tlink("ktmarket", II("KtMarket"), []),
+    menu.tlink("acc", II("Accounting"), []),
     menu.separator(),
-    menu.tlink("mmarket", II("MMarket"), [])
+    menu.tlink("daily", II("Daily Quotes"), [])
   ]);
 
-   return menu.mk(lopts, [], selected, false);
+  const Ropts =sys.$checkNull( [
+    menu.tlink("settings", II("Annotations & Settings"), [])
+  ]);
+
+   return menu.mk(Lopts, Ropts, selected, false);
 };
 
 
@@ -78,13 +82,13 @@ export  function mk(wg, selected)  {sys.$params(arguments.length, 2);
 
 
 
-export  function setDownMenu(dmenu, downMenu)  {sys.$params(arguments.length, 2);  return dmenu.setDownMenu(downMenu);};
+export  function setDownMenu(dbmenu, downMenu)  {sys.$params(arguments.length, 2);  return dbmenu.setDownMenu(downMenu);};
 
 
 
-export  function mkHiddenButton(dmenu)  {sys.$params(arguments.length, 1);  return menu.mkEntry(
+export  function mkHiddenButton(dbmenu)  {sys.$params(arguments.length, 1);  return menu.mkEntry(
     [],
-    ui.link(dmenu.change)
+    ui.link(dbmenu.change)
       .add(ui.img("menu")
         .style("vertical-align:middle"))
   );};

@@ -27,19 +27,26 @@ export  async  function mk(wg)  {sys.$params(arguments.length, 1);
   const modelSel =sys.$checkNull( Rp.model);
   
   const Models =sys.$checkNull( Rp.models);
-  const MapsGroup =sys.$checkNull( arr.map(Rp.mapsGroup, hotMap.fromJs));
+  arr.sort(Models, function(m1, m2)  {sys.$params(arguments.length, 2);  return m1 < m2;});
+  
+  const DateGroups =sys.$checkNull( Rp.datesGroup);
+  arr.sort(DateGroups, function(d1, d2)  {sys.$params(arguments.length, 2);  return d1 > d2;});
 
   
 
   
-   function twoChart(Es)  {sys.$params(arguments.length, 1);
-    const firstParam =sys.$checkNull( Es[0].Params[0]);
-    const cols =sys.$checkNull( arr.size(arr.takeWhile(Es, function(E)  {sys.$params(arguments.length, 1);  return sys.$eq(E.Params[0] , firstParam);})));
-    const rows =sys.$checkNull( math.toInt(arr.size(Es) / cols));
-    const nfmt0 =sys.$checkNull( fns.paramFormatter(Es[0].Params[0], Es[cols].Params[0]));
-    const nfmt1 =sys.$checkNull( fns.paramFormatter(Es[0].Params[1], Es[1].Params[1]));
-    const max =sys.$checkNull( arr.reduce(Es, Es[0].ev, function(r, E)  {sys.$params(arguments.length, 2); return sys.asBool( E.ev > r) ? E.ev : r;}));
-    const min =sys.$checkNull( arr.reduce(Es, Es[0].ev, function(r, E)  {sys.$params(arguments.length, 2); return sys.asBool( E.ev < r) ? E.ev : r;}));
+   function twoChart(PsEvs)  {sys.$params(arguments.length, 1);
+    const firstParam =sys.$checkNull( PsEvs[0][0][0]);
+    const cols =sys.$checkNull( arr.size(arr.takeWhile(PsEvs, function(PsE)  {sys.$params(arguments.length, 1);  return sys.$eq(PsE[0][0] , firstParam);})));
+    const rows =sys.$checkNull( math.toInt(arr.size(PsEvs) / cols));
+    const nfmt0 =sys.$checkNull( fns.paramFormatter(PsEvs[0][0][0], PsEvs[cols][0][0]));
+    const nfmt1 =sys.$checkNull( fns.paramFormatter(PsEvs[0][0][1], PsEvs[1][0][1]));
+    const max =sys.$checkNull( arr.reduce(
+      PsEvs, PsEvs[0][1], function(r, PsE)  {sys.$params(arguments.length, 2); return sys.asBool( PsE[1] > r) ? PsE[1] : r;}
+    ));
+    const min =sys.$checkNull( arr.reduce(
+      PsEvs, PsEvs[0][1], function(r, PsE)  {sys.$params(arguments.length, 2); return sys.asBool( PsE[1] < r) ? PsE[1] : r;}
+    ));
     const color =sys.$checkNull( fns.valueColor(max, min));
 
      return Q("table")
@@ -47,18 +54,18 @@ export  async  function mk(wg)  {sys.$params(arguments.length, 1);
       .adds(arr.fromIter(iter.map(iter.$range(0,rows), function(row)  {sys.$params(arguments.length, 1);  return Q("tr")
           .adds(arr.fromIter(iter.map(iter.$range(0,cols), function(col)   {sys.$params(arguments.length, 1);
               const i =sys.$checkNull( row * cols + col);
-              const E =sys.$checkNull( Es[i]);
+              const PsE =sys.$checkNull( PsEvs[i]);
                return Q("td")
                 .style(
                     "padding:0px;" +
                     "width: 6px; height: 6px;" +
-                    "background: " + color(E.ev)
+                    "background: " + color(PsE[1])
                   )
                 .att(
                     "title",
-                    nfmt0(E.Params[0]) + " - " +
-                    nfmt1(E.Params[1]) + "\n" +
-                    math.toIso(E.ev / 100, 2)
+                    nfmt0(PsE[0][0]) + " - " +
+                    nfmt1(PsE[0][1]) + "\n" +
+                    math.toIso(PsE[1], 0)
                   )
               ;
             })))
@@ -67,54 +74,71 @@ export  async  function mk(wg)  {sys.$params(arguments.length, 1);
   };
 
   
-   function oneChart(Es)  {sys.$params(arguments.length, 1);
-    const nfmt =sys.$checkNull( fns.paramFormatter(Es[0].Params[0], Es[1].Params[0]));
-    const max =sys.$checkNull( arr.reduce(Es, Es[0].ev, function(r, E)  {sys.$params(arguments.length, 2); return sys.asBool( E.ev > r) ? E.ev : r;}));
-    const min =sys.$checkNull( arr.reduce(Es, Es[0].ev, function(r, E)  {sys.$params(arguments.length, 2); return sys.asBool( E.ev < r) ? E.ev : r;}));
+   function oneChart(PsEvs)  {sys.$params(arguments.length, 1);
+    const nfmt =sys.$checkNull( fns.paramFormatter(PsEvs[0][0][0], PsEvs[1][0][0]));
+    const max =sys.$checkNull( arr.reduce(
+      PsEvs, PsEvs[0][1], function(r, PsE)  {sys.$params(arguments.length, 2); return sys.asBool( PsE[1] > r) ? PsE[1] : r;}
+    ));
+    const min =sys.$checkNull( arr.reduce(
+      PsEvs, PsEvs[0][1], function(r, PsE)  {sys.$params(arguments.length, 2); return sys.asBool( PsE[1] < r) ? PsE[1] : r;}
+    ));
     const color =sys.$checkNull( fns.valueColor(max, min));
 
      return Q("table")
       .klass("flat")
-      .adds(arr.map(Es, function(E)  {sys.$params(arguments.length, 1);  return Q("tr")
+      .adds(arr.map(PsEvs, function(PsE)  {sys.$params(arguments.length, 1);  return Q("tr")
         .add(Q("td")
           .style(
               "padding:0px;" +
               "width: 120px; height: 6px;" +
-              "background: " + color(E.ev)
+              "background: " + color(PsE[1])
             )
           .att(
               "title",
-              nfmt(E.Params[0]) + "\n" +
-              math.toIso(E.ev / 100, 2)
+              nfmt(PsE[0][0]) + "\n" +
+              math.toIso(PsE[1], 0)
             ));}))
       ;
   };
 
   
-   function mapChart(Map)  {sys.$params(arguments.length, 1);
-     return Q("table")
+   async  function mapChart(td, date)  {sys.$params(arguments.length, 2);
+    const Rp =sys.$checkNull( await  client.send({
+      prg: cts.appName,
+      module: "MMarket",
+      source: "HotMapsPg",
+      rq: "evals",
+      modelSel:modelSel,
+      date:date
+    }));
+    const ParamsEvals =sys.$checkNull( Rp.paramsEvals); 
+
+    td.add(
+      Q("table")
       .klass("flat")
       .add(Q("tr")
         .add(Q("td")
           .klass("frame")
           .style("text-align:center")
-          .text(time.toIso(time.fromStr(Map.date)))))
+          .text(time.toIso(time.fromStr(date)))))
       .add(Q("tr")
         .add(Q("td")
-          .add(sys.asBool(sys.$eq(arr.size(Map.Entries[0].Params) , 1))
-            ? oneChart(Map.Entries)
-            : twoChart(Map.Entries))))
-    ;};
+          .add(sys.asBool(sys.$eq(arr.size(ParamsEvals[0][0]) , 1))
+            ? oneChart(ParamsEvals)
+            : twoChart(ParamsEvals))))
+    );
+  };
 
   
    function rowGroups(start, end)  {sys.$params(arguments.length, 2);
+    const Tds =sys.$checkNull( []);
+    for (let i = start;i < end; ++i) arr.push(Tds, Q("td"));
+    for (let i = start;i < end; ++i) mapChart(Tds[i], DateGroups[i]);
      return Q("table")
       .att("align", "center")
-      .add(Q("tr")
-        .adds(arr.fromIter(iter.map(iter.$range(start,end),  function(i)  {sys.$params(arguments.length, 1);
-           return Q("td").add(mapChart(MapsGroup[i]));}
-        ))))
-    ;};
+      .add(Q("tr").adds(Tds))
+    ;
+  };
 
   const Lopts =sys.$checkNull( []);
   for (let M  of sys.$forObject( Models)) {
@@ -125,7 +149,7 @@ export  async  function mk(wg)  {sys.$params(arguments.length, 1);
   const menuWg =sys.$checkNull( menu.mk(Lopts, [], modelSel, false));
 
 
-  const groups =sys.$checkNull( arr.size(MapsGroup));
+  const groups =sys.$checkNull( arr.size(DateGroups));
   wg
     .removeAll()
     .add(menuWg)

@@ -5,7 +5,7 @@ import * as iter from './_js/iter.js';import * as str from './_js/str.js';import
 
 import * as cts from  "./data/cts.js";
 import * as msgPg from  "./pgs/msgPg.js";
-import * as ktmarket from  "./pgs/ktmarket.js";
+import * as cmarket from  "./pgs/cmarket.js";
 import * as mmarket from  "./pgs/mmarket.js";
 import * as home from  "./pgs/main/home.js";
 import * as dmenu from  "./wgs/dmenu.js";
@@ -38,7 +38,7 @@ const II =sys.$checkNull( i18n.tlt);
   if (sys.asBool(!sys.asBool(LcPath))) LcPath.push("home");
 
   const target =sys.$checkNull(   
-      sys.$eq(LcPath[0],"models")|| sys.$eq(LcPath[0],"ktmarket")|| sys.$eq(LcPath[0],"mmarket")? LcPath[0]:
+      sys.$eq(LcPath[0],"cmarket")|| sys.$eq(LcPath[0],"mmarket")? LcPath[0]:
        "home"
     );
   arr.shift(LcPath);
@@ -48,7 +48,7 @@ const II =sys.$checkNull( i18n.tlt);
   const menu =sys.$checkNull( dmenu.mk(menuDiv, target));
 
   switch (target) {
-    case "ktmarket":{ ktmarket.process(bodyDiv, menu, LcPath);break;}
+    case "cmarket":{ cmarket.process(bodyDiv, menu, LcPath);break;}
     case "mmarket":{ mmarket.process(bodyDiv, menu, LcPath);break;}
     default:{ home.mk(bodyDiv);}
   }

@@ -14,70 +14,93 @@ const II =sys.$checkNull( i18n.tlt);
 
 export  async  function mk(wg)  {sys.$params(arguments.length, 1);
   const Url =sys.$checkNull( ui.url());
-  const type =sys.$checkNull(sys.asBool( dic.hasKey(Url, "2")) ? Url["2"] : "");
+  const type0 =sys.$checkNull(sys.asBool( dic.hasKey(Url, "2")) ? Url["2"] : "");
+  const type =sys.$checkNull(sys.asBool( sys.asBool(sys.$neq(type0 , "assets")) && sys.asBool(sys.$neq(type0 , "profits"))) ? "points" : type0);
   const Rp =sys.$checkNull( await  client.send({
     prg: cts.appName,
     module: "MMarket",
     source: "ModelsPg",
-    rq: "idata",
-    type:type
+    rq: "idata"
   }));
-  const typeSel =sys.$checkNull( Rp.type);
-  const DataGroups =sys.$checkNull( arr.map(Rp.dataGroups, modelFloats.fromJs));
-  for (let Vs  of sys.$forObject( DataGroups))
-    arr.sort(Vs.Values, function(E1, E2)  {sys.$params(arguments.length, 2);  return E1.value > E2.value;});
+  
+  const DateGroups =sys.$checkNull( Rp.dateGroups);
+  arr.sort(DateGroups, function(d1, d2)  {sys.$params(arguments.length, 2);  return d1 > d2;});
 
   
 
   
-   function groupTable(Values)  {sys.$params(arguments.length, 1);console.log( Values);
-     return Q("table")
+   async  function groupTable(td, date)  {sys.$params(arguments.length, 2);
+    const Rp =sys.$checkNull( await  client.send({
+      prg: cts.appName,
+      module: "MMarket",
+      source: "ModelsPg",
+      rq: "rank",
+      date:date,
+      type:type
+    }));
+    const ModelValues =sys.$checkNull( Rp.modelValues);
+    arr.sort(ModelValues, function(Mv1, Mv2)  {sys.$params(arguments.length, 2);  return Mv1[1] > Mv2[1];});
+
+  td.add(
+    Q("table")
       .klass("flat")
       .add(Q("tr")
         .add(Q("td")
           .klass("frame")
           .att("colspan", 2)
           .style("text-align:center")
-          .text(time.toIso(time.fromStr(Values.date)))))
+          .text(time.toIso(time.fromStr(date)))))
       .add(Q("tr")
         .add(Q("td")
           .klass("lhead")
           .text(II("Model")))
         .add(Q("td")
           .klass("rhead")
-          .text(sys.asBool(sys.$eq(typeSel , "points")) ? II("Points") : "€")))
-      .adds(arr.map(Values.Values, function(E)  {sys.$params(arguments.length, 1);  return Q("tr")
+          .text(sys.asBool(sys.$eq(type , "points"))
+              ? II("Points")
+              :sys.asBool( sys.$eq(type , "profits"))
+                ? "%"
+                : "€"
+            )))
+      .adds(arr.map(ModelValues, function(Mv)  {sys.$params(arguments.length, 1);  return Q("tr")
         .add(Q("td")
           .klass("lframe")
-          .text(E.model))
+          .text(Mv[0]))
         .add(Q("td")
           .klass("rframe")
-          .text(math.toIso(E.value, 2)));}))
-    ;};
+          .text(math.toIso(
+              Mv[1],sys.asBool(
+              sys.$eq(type , "points"))
+                ? 0
+                :sys.asBool( sys.$eq(type , "profits"))
+                  ? 4
+                  : 0
+            )));}))
+    );
+  };
 
   
    function rowGroups(start, end)  {sys.$params(arguments.length, 2);
+    const Tds =sys.$checkNull( []);
+    for (let i = start;i < end; ++i) arr.push(Tds, Q("td"));
+    for (let i = start;i < end; ++i) groupTable(Tds[i], DateGroups[i]);
      return Q("table")
       .att("align", "center")
-      .add(Q("tr")
-        .adds(arr.fromIter(iter.map(iter.$range(start,end), function(i)  {sys.$params(arguments.length, 1);
-             return Q("td").add(groupTable(DataGroups[i]));}
-        ))))
-    ;};
+      .add(Q("tr").adds(Tds))
+    ;
+  };
 
   const lopts =sys.$checkNull( [
     menu.tlink("points", II("Points"), ["mmarket&models"]),
     menu.separator(),
-    menu.tlink("total", II("Assets"), ["mmarket&models"]),
+    menu.tlink("assets", II("Assets"), ["mmarket&models"]),
     menu.separator(),
-    menu.tlink("cash", II("Cash Prfs."), ["mmarket&models"]),
-    menu.separator(),
-    menu.tlink("ref", II("Risk"), ["mmarket&models"])
+    menu.tlink("profits", II("Profits"), ["mmarket&models"])
   ]);
-  const menuWg =sys.$checkNull( menu.mk(lopts, [], typeSel, false));
+  const menuWg =sys.$checkNull( menu.mk(lopts, [], type, false));
 
 
-  const groups =sys.$checkNull( arr.size(DataGroups));
+  const groups =sys.$checkNull( arr.size(DateGroups));
   wg
     .removeAll()
     .add(menuWg)

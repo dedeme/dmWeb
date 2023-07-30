@@ -515,7 +515,6 @@ func Merge(model, newQs, oldQs []*T) (qs []*T, errs []string) {
 
 // Returns the volume average of a company quotes.
 //   qs: Company quotes sorted from after to before.
-/// \[<Quote>...] -> f
 func VolumeAvg(qs []*T) float64 {
 	qs = arr.Take(qs, cts.QuotesVolume)
 

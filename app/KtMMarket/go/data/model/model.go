@@ -37,7 +37,7 @@ type T struct {
 	//    closes: Normalized closes in matrix 'dates x cos' ordered from before to after.
 	//    params: Values to calculate.
 	//    action: Function called after calculate 'refs'
-	//            When closes[i] >= refs[i], position is bought.
+	//            When closes[i] > refs[i], position is bought.
 	//            When closes[i] < refs[i], position is sold.
 	//            Params:
 	//              closes: Last closes (without -1). One for each company.

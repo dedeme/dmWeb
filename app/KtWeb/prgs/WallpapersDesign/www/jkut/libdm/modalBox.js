@@ -14,32 +14,6 @@ const Q =sys.$checkNull( ui.q);
 
 
 export  function mk(content, withClose)  {sys.$params(arguments.length, 2);
-  const tb =sys.$checkNull( Q("table")
-    .att("align", "center")
-    .style(
-      "background-color: rgb(250, 250, 250);" +
-      "border: 1px solid rgb(110,130,150);" +
-      "padding: 4px;border-radius: 4px;"
-    ));
-
-  if (sys.asBool(withClose))
-    tb.add(Q("tr")
-      .add(Q("td")
-        .style("width:100%;text-align:right;padding-bottom:5px")
-        .add(Q("span")
-          .text("["))
-        .add(ui.link(function(ev)  {sys.$params(arguments.length, 1); show(false);})
-          .style(
-            "cursor:pointer;text-decoration: none; font-family: sans;" +
-            "color: #000080;font-weight: normal;font-size:14px;"
-          ).text(" X "))
-        .add(Q("span")
-          .text("]"))));
-
-  tb.add(Q("tr")
-    .add(Q("td")
-      .add(content)));
-
   const wg =sys.$checkNull( Q("div")
     .style(
       "display: none;" + 
@@ -54,7 +28,36 @@ export  function mk(content, withClose)  {sys.$params(arguments.length, 2);
       "background-color: rgb(0,0,0);" + 
       "background-color: rgba(0,0,0,0.4);" + 
       "text-align: center;"
-    ).add(tb));
+    ))
+  ;
+
+  const tb =sys.$checkNull( Q("table")
+    .att("align", "center")
+    .style(
+      "background-color: rgb(250, 250, 250);" +
+      "border: 1px solid rgb(110,130,150);" +
+      "padding: 4px;border-radius: 4px;"
+    ));
+
+  if (sys.asBool(withClose))
+    tb.add(Q("tr")
+      .add(Q("td")
+        .style("width:100%;text-align:right;padding-bottom:5px")
+        .add(Q("span")
+          .text("["))
+        .add(ui.link(function(ev)  {sys.$params(arguments.length, 1); show({wg:wg}, false);})
+          .style(
+            "cursor:pointer;text-decoration: none; font-family: sans;" +
+            "color: #000080;font-weight: normal;font-size:14px;"
+          ).text(" X "))
+        .add(Q("span")
+          .text("]"))));
+
+  tb.add(Q("tr")
+    .add(Q("td")
+      .add(content)));
+
+  wg.add(tb);
 
    return {wg:wg};
 };

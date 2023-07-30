@@ -3,14 +3,14 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 
 
 
-const Q = sys.$checkNull(ui.q);
+const Q =sys.$checkNull( ui.q);
 
 
 
 
 
 
-export function mkEntry (Id, wg)  {sys.$params(arguments.length, 2);  return {Id:Id, wg:wg};};
+export  function mkEntry(Id, wg)  {sys.$params(arguments.length, 2);  return {Id:Id, wg:wg};};
 
 
 
@@ -20,8 +20,8 @@ export function mkEntry (Id, wg)  {sys.$params(arguments.length, 2);  return {Id
 
 
 
-export function mk (Lopts, Ropts, selected, withSeparator)  {sys.$params(arguments.length, 4);
-  function setId (o)  {sys.$params(arguments.length, 1);
+export  function mk(Lopts, Ropts, selected, withSeparator)  {sys.$params(arguments.length, 4);
+   function setId(o)  {sys.$params(arguments.length, 1);
     if (sys.asBool(o.Id))
       o.wg.style(sys.asBool(sys.$eq(o.Id[0] , selected))
         ?
@@ -57,27 +57,27 @@ export function mk (Lopts, Ropts, selected, withSeparator)  {sys.$params(argumen
 
 
 
-export function separator () {sys.$params(arguments.length, 0);  return mkEntry([], Q("span").text(" · "));};
+export  function separator() {sys.$params(arguments.length, 0);  return mkEntry([], Q("span").text(" · "));};
 
 
 
-export function separator2 () {sys.$params(arguments.length, 0);  return mkEntry([], Q("span").text(" | "));};
-
-
-
-
-
-
-export function toption (id, tx, fn)  {sys.$params(arguments.length, 3);  return mkEntry([id], ui.link(function(ev)  {sys.$params(arguments.length, 1); fn();}).html(tx));};
+export  function separator2() {sys.$params(arguments.length, 0);  return mkEntry([], Q("span").text(" | "));};
 
 
 
 
 
 
+export  function toption(id, tx, fn)  {sys.$params(arguments.length, 3);  return mkEntry([id], ui.link(function(ev)  {sys.$params(arguments.length, 1); fn();}).html(tx));};
 
 
-export function ioption (id, img, fn)  {sys.$params(arguments.length, 3);  return mkEntry(
+
+
+
+
+
+
+export  function ioption(id, img, fn)  {sys.$params(arguments.length, 3);  return mkEntry(
     [id],
     ui.link(function(ev)  {sys.$params(arguments.length, 1); fn();})
       .add(ui.img(img)
@@ -94,7 +94,7 @@ export function ioption (id, img, fn)  {sys.$params(arguments.length, 3);  retur
 
 
 
-export function tlink (id, tx, Module)  {sys.$params(arguments.length, 3);  return mkEntry(
+export  function tlink(id, tx, Module)  {sys.$params(arguments.length, 3);  return mkEntry(
     [id],
     Q("a")
       .att("href", "?" + (sys.asBool(Module) ? Module[0] + "&" : "") + id)
@@ -112,7 +112,7 @@ export function tlink (id, tx, Module)  {sys.$params(arguments.length, 3);  retu
 
 
 
-export function ilink (id, img, Module)  {sys.$params(arguments.length, 3);  return mkEntry(
+export  function ilink(id, img, Module)  {sys.$params(arguments.length, 3);  return mkEntry(
     [id],
     Q("a")
       .att("href", "?" + (sys.asBool(Module) ? Module[0] + "&" : "") + id)
@@ -123,7 +123,7 @@ export function ilink (id, img, Module)  {sys.$params(arguments.length, 3);  ret
 
 
 
-export function close (fbye)  {sys.$params(arguments.length, 1);  return mkEntry(
+export  function close(fbye)  {sys.$params(arguments.length, 1);  return mkEntry(
     [],
     ui.link(function(ev)  {sys.$params(arguments.length, 1); fbye();})
       .add(ui.img("cross")

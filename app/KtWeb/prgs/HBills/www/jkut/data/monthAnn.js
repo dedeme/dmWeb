@@ -5,4 +5,4 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 
 
 
-export function mk (month, description, amount)  {sys.$params(arguments.length, 3);  return [month, description, amount];};
+export  function mk(month, description, amount)  {sys.$params(arguments.length, 3);  return [month, description, amount];};

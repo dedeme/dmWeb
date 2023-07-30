@@ -42,11 +42,11 @@ class Cts {
   /// Model initial capital for each cycle
   public static final initialCapital = 100000.0;
   /// Historic simulation ratio
-  public static final assetsRatio = 0.35;
+  public static final assetsRatio = 0.7;
   /// Maximum assets to calculate 'cts_assets_ratio' (Currency)
   public static final maxAssetsRatio = initialCapital * 3;
   /// Average of simulation profits ratio
-  public static final profitsAvgRatio = 0.65;
+  public static final profitsAvgRatio = 0.3;
   /// Maximum average to calculate 'cts_profits_avg_ratio' (ratio)
   public static final maxProfitsAvgRatio = 3;
 

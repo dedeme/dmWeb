@@ -8,41 +8,41 @@ import * as cts from  "../data/cts.js";
 import * as bkPaths from  "../data/bkPaths.js";
 import * as runner from  "../pgs/runner.js";
 
-const Q = sys.$checkNull(ui.q);
-const II = sys.$checkNull(i18n.tlt);
+const Q =sys.$checkNull( ui.q);
+const II =sys.$checkNull( i18n.tlt);
 
 
 
-export async function mk (wg)  {sys.$params(arguments.length, 1);
-  const Rp = sys.$checkNull(await  client.send({
+export  async  function mk(wg)  {sys.$params(arguments.length, 1);
+  const Rp =sys.$checkNull( await  client.send({
     prg: cts.appName,
     source: "BkListEditor",
     rq: "idata"
   }));
-  const List = sys.$checkNull(arr.map(Rp.list, bkPaths.fromJs));
+  const List =sys.$checkNull( arr.map(Rp.list, bkPaths.fromJs));
 
-  const inId = sys.$checkNull(ui.field("inSource").att("id", "inId").style("width: 150px"));
-  const inSource = sys.$checkNull(ui.field("inBackup").att("id", "inSource").style("width: 500px"));
-  const inBackup = sys.$checkNull(ui.field("inId").att("id", "inBackup").style("width: 500px"));
-
-  
+  const inId =sys.$checkNull( ui.field("inSource").att("id", "inId").style("width: 150px"));
+  const inSource =sys.$checkNull( ui.field("inBackup").att("id", "inSource").style("width: 500px"));
+  const inBackup =sys.$checkNull( ui.field("inId").att("id", "inBackup").style("width: 500px"));
 
   
-  async function add (ev)  {sys.$params(arguments.length, 1);
-    const id = sys.$checkNull(inId.getValue());
-    const From = sys.$checkNull([inSource.getValue()]);
-    const To = sys.$checkNull([inBackup.getValue()]);
-    while (sys.asBool(sys.asBool(str.len(From[0]) > 1) && sys.asBool(str.ends(From[0], "/")))) From[0] =sys.$checkExists(From[0], sys.$checkNull(sys.$slice(From[0],null, -1)));
-    while (sys.asBool(sys.asBool(str.len(To[0]) > 1) && sys.asBool(str.ends(To[0], "/")))) To[0] =sys.$checkExists(To[0], sys.$checkNull(sys.$slice(To[0],null, -1)));
-    const from = sys.$checkNull(From[0]);
-    const to = sys.$checkNull(To[0]);
 
-    const err = sys.$checkNull([""]);
-    if (sys.asBool(sys.$eq(id , ""))) err[0] =sys.$checkExists(err[0], sys.$checkNull(II("'Id' is missing")));
-    else if (sys.asBool(sys.$eq(from , ""))) err[0] =sys.$checkExists(err[0], sys.$checkNull(II("'From' is missing")));
-    else if (sys.asBool(sys.$eq(to , ""))) err[0] =sys.$checkExists(err[0], sys.$checkNull(II("'To' is missing")));
-    else if (sys.asBool(sys.$eq(from , "/"))) err[0] =sys.$checkExists(err[0], sys.$checkNull(II("'From' is root")));
-    else if (sys.asBool(sys.$eq(to , "/"))) err[0] =sys.$checkExists(err[0], sys.$checkNull(II("'To' is root")));
+  
+   async  function add(ev)  {sys.$params(arguments.length, 1);
+    const id =sys.$checkNull( inId.getValue());
+    const From =sys.$checkNull( [inSource.getValue()]);
+    const To =sys.$checkNull( [inBackup.getValue()]);
+    while (sys.asBool(sys.asBool(str.len(From[0]) > 1) && sys.asBool(str.ends(From[0], "/")))) From[0] =sys.$checkExists(From[0],sys.$checkNull( sys.$slice(From[0],null, -1)));
+    while (sys.asBool(sys.asBool(str.len(To[0]) > 1) && sys.asBool(str.ends(To[0], "/")))) To[0] =sys.$checkExists(To[0],sys.$checkNull( sys.$slice(To[0],null, -1)));
+    const from =sys.$checkNull( From[0]);
+    const to =sys.$checkNull( To[0]);
+
+    const err =sys.$checkNull( [""]);
+    if (sys.asBool(sys.$eq(id , ""))) err[0] =sys.$checkExists(err[0],sys.$checkNull( II("'Id' is missing")));
+    else if (sys.asBool(sys.$eq(from , ""))) err[0] =sys.$checkExists(err[0],sys.$checkNull( II("'From' is missing")));
+    else if (sys.asBool(sys.$eq(to , ""))) err[0] =sys.$checkExists(err[0],sys.$checkNull( II("'To' is missing")));
+    else if (sys.asBool(sys.$eq(from , "/"))) err[0] =sys.$checkExists(err[0],sys.$checkNull( II("'From' is root")));
+    else if (sys.asBool(sys.$eq(to , "/"))) err[0] =sys.$checkExists(err[0],sys.$checkNull( II("'To' is root")));
     if (sys.asBool(err[0])) {
       ui.alert(err[0]);
       return;
@@ -69,15 +69,15 @@ export async function mk (wg)  {sys.$params(arguments.length, 1);
   };
 
   
-  function edit (bkPs)  {sys.$params(arguments.length, 1);
+   function edit(bkPs)  {sys.$params(arguments.length, 1);
     inId.value(bkPs.id);
     inSource.value(bkPs.source);
     inBackup.value(bkPs.backup);
   };
 
   
-  async function del (bkPs)  {sys.$params(arguments.length, 1);
-    const id = sys.$checkNull(bkPs.id);
+   async  function del(bkPs)  {sys.$params(arguments.length, 1);
+    const id =sys.$checkNull( bkPs.id);
     if (sys.asBool(!sys.asBool(ui.confirm(i18n.fmt(II("Delete '%0'?"), [id]))))) {
       return;
     }
@@ -93,13 +93,13 @@ export async function mk (wg)  {sys.$params(arguments.length, 1);
   };
 
   
-  function go (bkPs)  {sys.$params(arguments.length, 1);
+   function go(bkPs)  {sys.$params(arguments.length, 1);
     runner.mk(wg, bkPs.id);
   };
 
   
 
-  const tbEntry = sys.$checkNull(Q("table")
+  const tbEntry =sys.$checkNull( Q("table")
     .add(Q("tr")
       .add(Q("td")
         .att("colspan", 2))

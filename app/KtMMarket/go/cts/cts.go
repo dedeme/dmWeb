@@ -36,15 +36,15 @@ const (
 	NoLostMultiplicator = 1.05
 
 	// Assets ratio for evaluation.
-	AssetsRatio = 0.35
+	AssetsRatio = 0.7
 
-	// Maximum assets to calculate evaluation ratio.
-	MaxAssets = InitialCapital * 3.0
+	// Maximum assets to calculate evaluation ratio. (IC € generate IC*MPAR €)
+	MaxAssets = InitialCapital * MaxProfitsAvgRatio
 
 	// Profits ratio for evaluation.
-	ProfitsAvgRatio = 0.65
+	ProfitsAvgRatio = 1 - AssetsRatio
 
-	// Maximum ratio for profits evaluation.
+	// Maximum ratio for profits evaluation. (1€ generates 3€)
 	MaxProfitsAvgRatio = 3.0
 
 	// Weeks for geometrical results average

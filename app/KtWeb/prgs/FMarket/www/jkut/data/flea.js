@@ -3,9 +3,7 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 
 
 
-import * as fmodel from  "../data/fmodel.js";
 import * as cts from  "../data/cts.js";
-import * as fns from  "../data/fns.js";
 
 
 
@@ -14,44 +12,43 @@ import * as fns from  "../data/fns.js";
 
 
 
-export function mk (id, cycle, isMale, Models, assets)  {sys.$params(arguments.length, 5);  return {
-    id:id, cycle:cycle, isMale:isMale, Models:Models, assets:assets
-  };};
 
 
-export function fmtId (F)  {sys.$params(arguments.length, 1);
-  const R = sys.$checkNull(["" + F.id]);
-  while (sys.asBool(str.len(R[0]) < 9)) R[0] =sys.$checkExists(R[0], sys.$checkNull("0" + R[0]));
-   return R[0];
-};
 
 
-export function fmtCycle (F)  {sys.$params(arguments.length, 1);
-  const R = sys.$checkNull(["" + F.cycle]);
-  while (sys.asBool(str.len(R[0]) < 4)) R[0] =sys.$checkExists(R[0], sys.$checkNull("0" + R[0]));
-   return R[0];
-};
+
+export  function mk(id, cycle, model, params, assets, profits, points, sales)  {sys.$params(arguments.length, 8);
+   return {id:id, cycle:cycle, model:model, params:params, assets:assets, profits:profits, points:points, sales:sales};};
 
 
-export function fmtModels (F)  {sys.$params(arguments.length, 1);
-  
-  function fmt (Md)  {sys.$params(arguments.length, 1);
-    const R = sys.$checkNull([Md.modelId]);
-    while (sys.asBool(str.len(R[0]) < 5)) R[0] +=sys.$checkExists(R[0], sys.$checkNull(" "));
-     return R[0] + "[" +
-      arr.join(arr.map(Md.Params, function(n)  {sys.$params(arguments.length, 1);  return fns.nFormat2(n, 4);}), ", ") +
-      "]"
-    ;
-  };
-   return arr.map(F.Models, fmt);
-};
 
 
-export function fmtModels2 (F)  {sys.$params(arguments.length, 1);  return arr.join(arr.map(
-    F.Models, function(M)  {sys.$params(arguments.length, 1);  return "" + cts.modelIxs[M.modelId];}
-  ), "");};
 
 
-export function fromJs (A)  {sys.$params(arguments.length, 1);  return mk (
-    A[0], A[1], A[2], arr.map(A[3], fmodel.fromJs), A[4]
+export  function evaluate(assets, profits)  {sys.$params(arguments.length, 2);  return math.toInt(
+    ( assets * cts.assetsRatio / cts.maxAssets +
+        (1.0 + profits) * cts.profitsAvgRatio / cts.maxProfitsAvgRatio
+      ) * 3000.0
+  );};
+
+
+
+export  function greater(F1, F2)  {sys.$params(arguments.length, 2); return sys.asBool(
+  sys.$eq(F1.points , F2.points))
+    ?sys.asBool( sys.$eq(F1.assets , F2.assets))
+      ? F1.profits > F2.profits
+      : F1.assets > F2.assets
+    : F1.points > F2.points
+  ;};
+
+
+export  function fromJs(A)  {sys.$params(arguments.length, 1);  return mk(
+    A[0],
+    A[1],
+    A[2],
+    A[3],
+    A[4],
+    A[5],
+    evaluate(A[4], A[5]),
+    A[6]
   );};

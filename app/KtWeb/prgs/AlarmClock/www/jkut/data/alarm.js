@@ -5,17 +5,17 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 
 import * as fns from  "../data/fns.js";
 
-const II = sys.$checkNull(fns.tlt);
+const II =sys.$checkNull( fns.tlt);
 
 
 
 
 
-export function mk (id, tm)  {sys.$params(arguments.length, 2);  return [id, tm];};
+export  function mk(id, tm)  {sys.$params(arguments.length, 2);  return [id, tm];};
 
 
-export function timeToStr (A)  {sys.$params(arguments.length, 1);
-  const now = sys.$checkNull(time.now());
+export  function timeToStr(A)  {sys.$params(arguments.length, 1);
+  const now =sys.$checkNull( time.now());
    return (sys.asBool(sys.$eq(time.day(now) , time.day(A[1]))) ? II("Today") : II("Tomorrow")) +
     " " + II("at") + " " + sys.$slice(time.fmt("%t", A[1]),null, -3)
   ;
@@ -23,17 +23,17 @@ export function timeToStr (A)  {sys.$params(arguments.length, 1);
 
 
 
-export function compare (A1, A2)  {sys.$params(arguments.length, 2);
-  const fmt = sys.$checkNull("%Y%M%D%t");
-  const d1 = sys.$checkNull(sys.$slice(time.fmt(fmt, fns.ftoi(A1[1])),null, -3));
-  const d2 = sys.$checkNull(sys.$slice(time.fmt(fmt, fns.ftoi(A2[1])),null, -3));
+export  function compare(A1, A2)  {sys.$params(arguments.length, 2);
+  const fmt =sys.$checkNull( "%Y%M%D%t");
+  const d1 =sys.$checkNull( sys.$slice(time.fmt(fmt, fns.ftoi(A1[1])),null, -3));
+  const d2 =sys.$checkNull( sys.$slice(time.fmt(fmt, fns.ftoi(A2[1])),null, -3));
   return sys.asBool( d1 > d2) ? 1:sys.asBool( d1 < d2) ?  -1 : 0;
 };
 
 
 
 
-export function add (As, A)  {sys.$params(arguments.length, 2);
+export  function add(As, A)  {sys.$params(arguments.length, 2);
   if (sys.asBool(arr.any(As, function(A0)  {sys.$params(arguments.length, 1);  return sys.$eq(compare(A0, A) , 0);})))  return false;
   arr.push(As, A);
    return true;
@@ -41,14 +41,14 @@ export function add (As, A)  {sys.$params(arguments.length, 2);
 
 
 
-export function del (As, A)  {sys.$params(arguments.length, 2);
+export  function del(As, A)  {sys.$params(arguments.length, 2);
   arr.filterIn(As, function(A0)  {sys.$params(arguments.length, 1);  return sys.$neq(compare(A0, A) , 0);});
 };
 
 
 
-export function update (As)  {sys.$params(arguments.length, 1);
-  const tm = sys.$checkNull(time.now() - 180000); 
+export  function update(As)  {sys.$params(arguments.length, 1);
+  const tm =sys.$checkNull( time.now() - 180000); 
   arr.filterIn(As, function(A)  {sys.$params(arguments.length, 1);
      return fns.ftoi(A[1]) > tm;
   });

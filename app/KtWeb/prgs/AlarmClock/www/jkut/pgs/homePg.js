@@ -8,35 +8,35 @@ import * as alarm from  "../data/alarm.js";
 import * as main from  "../main.js";
 import * as i18n from  "../i18n.js";
 
-const Q = sys.$checkNull(ui.q);
-const II = sys.$checkNull(i18n.tlt);
+const Q =sys.$checkNull( ui.q);
+const II =sys.$checkNull( i18n.tlt);
 
 
-export async function mk (wg)  {sys.$params(arguments.length, 1);
-  const Rp = sys.$checkNull(await  client.send({
+export  async  function mk(wg)  {sys.$params(arguments.length, 1);
+  const Rp =sys.$checkNull( await  client.send({
     prg: cts.appName,
     source: "Home",
     rq: "idata"
   }));
 
-  const Alarms = sys.$checkNull(Rp.alarms);
+  const Alarms =sys.$checkNull( Rp.alarms);
   arr.sort(Alarms, function(a1, a2)  {sys.$params(arguments.length, 2);  return a1[1] < a2[1];});
 
-  const butonSpan = sys.$checkNull(Q("span"));
-  const entry = sys.$checkNull(ui.field("_accept")
+  const butonSpan =sys.$checkNull( Q("span"));
+  const entry =sys.$checkNull( ui.field("_accept")
     .style("width:50px"))
   ;
-  const accept = sys.$checkNull(Q("button")
+  const accept =sys.$checkNull( Q("button")
     .att("id", "_accept")
     .text(II("Add")))
   ;
 
   
 
-  async function add (t)  {sys.$params(arguments.length, 1);
+   async  function add(t)  {sys.$params(arguments.length, 1);
     
-    function badFormat ()  {sys.$params(arguments.length, 0);
-      const or = sys.$checkNull(II("or"));
+     function badFormat()  {sys.$params(arguments.length, 0);
+      const or =sys.$checkNull( II("or"));
        return II("Bad Format. Use") + ":\n"+
         "  HH,MM " + or + " HH.MM " + or + " HH:MM"
       ;
@@ -54,20 +54,20 @@ export async function mk (wg)  {sys.$params(arguments.length, 1);
       return;
     }
 
-    const parts = sys.$checkNull(t.split(sep));
+    const parts =sys.$checkNull( t.split(sep));
     if (sys.asBool(sys.$neq(parts.length , 2))) {
       ui.alert(badFormat());
       return;
     }
-    const H = sys.$checkNull(math.fromStr(parts[0]));
+    const H =sys.$checkNull( math.fromStr(parts[0]));
     const ms =sys.$checkNull(sys.asBool( sys.$eq(parts[1].length , 1)) ? "0" + parts[1] : parts[1]);
-    const M = sys.$checkNull(math.fromStr(ms));
+    const M =sys.$checkNull( math.fromStr(ms));
     if (sys.asBool(sys.asBool(!sys.asBool(H)) || sys.asBool(!sys.asBool(M)))) {
       ui.alert(badFormat());
       return;
     }
-    const h = sys.$checkNull(H[0]);
-    const m = sys.$checkNull(M[0]);
+    const h =sys.$checkNull( H[0]);
+    const m =sys.$checkNull( M[0]);
     if (sys.asBool(sys.asBool(h < 0) || sys.asBool(h > 23))) {
       ui.alert(II("Hour out of range"));
       return;
@@ -77,16 +77,16 @@ export async function mk (wg)  {sys.$params(arguments.length, 1);
       return;
     }
 
-    const tm = sys.$checkNull(time.now());
-    const hnow = sys.$checkNull(time.hour(tm));
-    const mnow = sys.$checkNull(time.minute(tm));
+    const tm =sys.$checkNull( time.now());
+    const hnow =sys.$checkNull( time.hour(tm));
+    const mnow =sys.$checkNull( time.minute(tm));
 
     const dayAlarm =sys.$checkNull(sys.asBool( sys.asBool(h > hnow) || sys.asBool((sys.asBool(sys.$eq(hnow , h)) && sys.asBool(m > mnow))))
       ? tm
       : time.addDays(tm, 1))
     ;
     butonSpan.removeAll().add(ui.img("wait.gif"));
-    const Rp = sys.$checkNull(await  client.send({
+    const Rp =sys.$checkNull( await  client.send({
       prg: cts.appName,
       source: "Home",
       rq: "add",
@@ -102,7 +102,7 @@ export async function mk (wg)  {sys.$params(arguments.length, 1);
   };
 
   
-  async function del (A)  {sys.$params(arguments.length, 1);
+   async  function del(A)  {sys.$params(arguments.length, 1);
     if (sys.asBool(ui.confirm(II("Remove the alarm") + " '" + alarm.timeToStr(A) + "'"))) {
       await client.ssend({
         prg: cts.appName,
@@ -118,7 +118,7 @@ export async function mk (wg)  {sys.$params(arguments.length, 1);
 
   accept.on("click", function(e)  {sys.$params(arguments.length, 1); add(entry.getValue());});
 
-  const trs = sys.$checkNull(arr.map(Alarms, function(A)  {sys.$params(arguments.length, 1);  return Q("tr")
+  const trs =sys.$checkNull( arr.map(Alarms, function(A)  {sys.$params(arguments.length, 1);  return Q("tr")
       .add(Q("td")
         .klass("frame")
         .style("text-align: right")

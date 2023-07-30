@@ -25,17 +25,22 @@ export const foot =sys.$checkNull( Q("table")
 ;
 
 
+export const meNick =sys.$checkNull( "<ME>");
+
+export const ibexNick =sys.$checkNull( "<IBEX>");
+
+export const euroNick =sys.$checkNull( "<EURO>");
+
+export const usaNick =sys.$checkNull( "<USA>");
+
+
+export const trading =sys.$checkNull( 1500000);
+
 export const bet =sys.$checkNull( 10000.0);
 
 export const initialCapital =sys.$checkNull( 100000.0);
 
 export const minToBet =sys.$checkNull( 11000.0);
-
-export const noLostMultiplicator =sys.$checkNull( 1.05);
-
-export const wget =sys.$checkNull( "Wget");
-
-export const puppeteer =sys.$checkNull( "Puppeteer");
 
 export const serverStopped =sys.$checkNull( 0);
 
@@ -46,20 +51,34 @@ export const serverSelected =sys.$checkNull( 2);
 export const accountingQuotes =sys.$checkNull( 250);
 
 
-
 export const okMsg =sys.$checkNull( II("Operation successfully done."));
 
 export const failMsg =sys.$checkNull( II("Operation failed.\nSee log."));
 
 
-export const ToBuyColors =sys.$checkNull( [
+export const toBuyColors =sys.$checkNull( [
   "rgba(160, 0, 0)",
   "rgba(224, 160, 0)",
   "rgba(240, 224, 0)"
 ]);
 
-export const ToSellColors =sys.$checkNull( [
+export const toSellColors =sys.$checkNull( [
   "rgba(0, 0, 160)",
   "rgba(0, 160, 224)",
   "rgba(0, 160, 0)"
 ]);
+
+
+export const active =sys.$checkNull( "Active");
+
+
+export const sleeping =sys.$checkNull( "Sleeping");
+
+
+export const chartOrderNick =sys.$checkNull( 0);
+
+
+export const chartOrderDay =sys.$checkNull( 1);
+
+
+export const chartOrderSignal =sys.$checkNull( 2);

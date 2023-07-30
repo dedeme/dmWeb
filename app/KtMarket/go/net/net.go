@@ -768,33 +768,12 @@ func ReadIndexes() (ixs []float64, err string) {
 	}()
 	ixs = make([]float64, 3)
 	/*
-		url := "https://www.expansion.com/mercados/indices.html"
+		url := "https://www.infobolsa.es/indices/mundiales"
 
 		html := download(cts.Puppeteer, url)
 
-		ix := str.Index(html, "section_indices_portada")
-		ix = str.IndexFrom(html, "IBEX35", ix)
-		ix = str.IndexFrom(html, "<td>", ix) + 4
-		ix2 := str.IndexFrom(html, "<", ix)
-		ixs[0], err = toNumber(true, str.Trim(html[ix:ix2]))
-		if err != "" {
-			return
-		}
-
-		//ix = str.Index(html, "href=\"/mercados/bolsa/eurostoxx_50/1321/\"")
-		ix = str.IndexFrom(html, "EURO STOXX 50", ix)
-		ix = str.IndexFrom(html, "<td>", ix) + 4
-		ix2 = str.IndexFrom(html, "<", ix)
-		ixs[1], err = toNumber(true, str.Trim(html[ix:ix2]))
-	*/
-
-	/*
-		url := "https://www.infobolsa.es/indices/mundiales"
-
-		html := download(cts.Wget, url)
-
-		ix := str.Index(html, "\"IBEX 35\"")
-		ix = str.IndexFrom(html, "price ", ix)
+		ix := str.Index(html, "alt=\"IBEX 35\"")
+		ix = str.IndexFrom(html, "<td class=", ix)
 		ix = str.IndexFrom(html, ">", ix) + 1
 		ix2 := str.IndexFrom(html, "<", ix)
 		ixs[0], err = toNumber(true, str.Trim(html[ix:ix2]))
@@ -802,11 +781,23 @@ func ReadIndexes() (ixs []float64, err string) {
 			return
 		}
 
-		ix = str.Index(html, "\"EURO STOXX50\"")
-		ix = str.IndexFrom(html, "price ", ix)
+		ix = str.Index(html, "alt=\"EURO STOXX50\"")
+		ix = str.IndexFrom(html, "<td class=", ix)
 		ix = str.IndexFrom(html, ">", ix) + 1
 		ix2 = str.IndexFrom(html, "<", ix)
 		ixs[1], err = toNumber(true, str.Trim(html[ix:ix2]))
+		if err != "" {
+			return
+		}
+
+		ix = str.Index(html, "alt=\"NASDAQ COMP.\"")
+		ix = str.IndexFrom(html, "<td class=", ix)
+		ix = str.IndexFrom(html, ">", ix) + 1
+		ix2 = str.IndexFrom(html, "<", ix)
+		ixs[2], err = toNumber(true, str.Trim(html[ix:ix2]))
+		if err != "" {
+			return
+		}
 	*/
 
 	url := "https://www.eleconomista.es/indices-mundiales"
@@ -842,5 +833,7 @@ func ReadIndexes() (ixs []float64, err string) {
 		err = "Reading SP-500. " + err
 		return
 	}
+
 	return
+
 }

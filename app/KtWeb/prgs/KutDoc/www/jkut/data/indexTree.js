@@ -9,10 +9,10 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 
 
 
-export function mk (id, Doc, Trees)  {sys.$params(arguments.length, 3);  return {id:id, Doc:Doc, Trees:Trees};};
+export  function mk(id, Doc, Trees)  {sys.$params(arguments.length, 3);  return {id:id, Doc:Doc, Trees:Trees};};
 
 
-export function toJs (I)  {sys.$params(arguments.length, 1);  return [I.id, I.Doc, arr.map(I.Trees, toJs)];};
+export  function toJs(I)  {sys.$params(arguments.length, 1);  return [I.id, I.Doc, arr.map(I.Trees, toJs)];};
 
 
-export function fromJs (A)  {sys.$params(arguments.length, 1);  return mk(A[0], A[1], arr.map(A[2], fromJs));};
+export  function fromJs(A)  {sys.$params(arguments.length, 1);  return mk(A[0], A[1], arr.map(A[2], fromJs));};

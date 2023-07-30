@@ -16,7 +16,7 @@ const II =sys.$checkNull( i18n.tlt);
   const lopts =sys.$checkNull( [
     menu.tlink("home", II("Home"), []),
     menu.separator(),
-    menu.tlink("ktmarket", II("KtMarket"), []),
+    menu.tlink("cmarket", II("CMarket"), []),
     menu.separator(),
     menu.tlink("mmarket", II("MMarket"), [])
   ]);

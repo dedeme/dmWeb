@@ -8,19 +8,19 @@ import * as msgPg from  "./pgs/msgPg.js";
 import * as homePg from  "./pgs/homePg.js";
 import * as i18n from  "./i18n.js";
 
-const Q = sys.$checkNull(ui.q);
-const II = sys.$checkNull(i18n.tlt);
+const Q =sys.$checkNull( ui.q);
+const II =sys.$checkNull( i18n.tlt);
 
 
-async function mk (wg)  {sys.$params(arguments.length, 1);
-  const ok = sys.$checkNull(await  client.connect());
+ async  function mk(wg)  {sys.$params(arguments.length, 1);
+  const ok =sys.$checkNull( await  client.connect());
   if (sys.asBool(!sys.asBool(ok))) {
     ui.alert(II("KtWeb session is closed.\nAuthenticating from KtWeb:Main."));
     window.location.assign("http://" + window.location.host + "/Main");
     return;
   }
 
-  const rp = sys.$checkNull(await  client.send({
+  const rp =sys.$checkNull( await  client.send({
     prg: "Main", 
     source: "Main",
     rq: "lang"
@@ -32,15 +32,15 @@ async function mk (wg)  {sys.$params(arguments.length, 1);
 
 
 
-const wg = sys.$checkNull(Q("div"));
+const wg =sys.$checkNull( Q("div"));
 
 
-export function load ()  {sys.$params(arguments.length, 0);
+export  function load()  {sys.$params(arguments.length, 0);
   mk(wg);
 };
 
 client.init(true, "KtWeb", function()  {sys.$params(arguments.length, 0);
-  const msgWg = sys.$checkNull(Q("div"));
+  const msgWg =sys.$checkNull( Q("div"));
   msgPg.mk(msgWg, II("Session is expired."), true);
   Q("@body")
     .removeAll()

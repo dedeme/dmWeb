@@ -8,12 +8,12 @@ import * as msgPg from  "../pgs/msgPg.js";
 import * as cts from  "../cts.js";
 import * as indexTree from  "../data/indexTree.js";
 
-const Q = sys.$checkNull(ui.q);
-const II = sys.$checkNull(i18n.tlt);
+const Q =sys.$checkNull( ui.q);
+const II =sys.$checkNull( i18n.tlt);
 
 
-export async function mk (wg, pack)  {sys.$params(arguments.length, 2);
-  const Rp = sys.$checkNull(await  client.ssend({
+export  async  function mk(wg, pack)  {sys.$params(arguments.length, 2);
+  const Rp =sys.$checkNull( await  client.ssend({
     prg: "KutDoc",
     source: "IndexPg",
     rq: "index",
@@ -25,12 +25,12 @@ export async function mk (wg, pack)  {sys.$params(arguments.length, 2);
     return;
   }
 
-  const Tree = sys.$checkNull(indexTree.fromJs(Rp.index[0]));
-  const linkPrefix = sys.$checkNull("?" + pack + "@");
+  const Tree =sys.$checkNull( indexTree.fromJs(Rp.index[0]));
+  const linkPrefix =sys.$checkNull( "?" + pack + "@");
 
   Q("@title").text(cts.appName + " - " + pack);
 
-  const Trs = sys.$checkNull([]);
+  const Trs =sys.$checkNull( []);
   add(Trs, Tree.Trees, "", 0, linkPrefix);
 
   wg
@@ -44,7 +44,7 @@ export async function mk (wg, pack)  {sys.$params(arguments.length, 2);
 };
 
 
-function add (Trs, Trees, ppath, space, linkPrefix)  {sys.$params(arguments.length, 5);
+ function add(Trs, Trees, ppath, space, linkPrefix)  {sys.$params(arguments.length, 5);
   const path =sys.$checkNull(sys.asBool( sys.$neq(ppath , "")) ? ppath + "/" : ppath);
 
   arr.sort(Trees, function(T1, T2)  {sys.$params(arguments.length, 2);

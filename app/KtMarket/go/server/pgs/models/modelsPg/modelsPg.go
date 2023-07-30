@@ -42,16 +42,15 @@ func Process(ck string, mrq cgi.T) string {
 		var withdrawals []float64
 
 		thread.Sync(func() {
-			inv, ok2 := arr.Find(
-				db.InvestorsTb().Read().Investors, func(inv *investor.T) bool {
-					return inv.Base.Model.Id == modelId
-				})
-			if !ok2 {
-				log.Error("Investor with model " + modelId + " not found")
-				inv = db.InvestorsTb().Read().Investors[0]
-			}
-			params = inv.Base.Params
-			if !js.IsNull(paramsJs) {
+			if js.IsNull(paramsJs) {
+				inv, ok2 := arr.Find(
+					db.InvestorsTb().Read().Investors, func(inv *investor.T) bool {
+						return inv.Base.Model.Id == modelId
+					})
+				if ok2 {
+					params = inv.Base.Params
+				}
+			} else {
 				params = arr.Map(js.Ra(mrq["params"]), js.Rd)
 			}
 
@@ -68,6 +67,12 @@ func Process(ck string, mrq cgi.T) string {
 			if !ok2 {
 				log.Error("Model '" + modelId + "' not found")
 				return
+			}
+			if params == nil {
+				params = make([]float64, len(md.ParamMaxs))
+				for i, max := range md.ParamMaxs {
+					params[i] = (max + md.ParamMins[i]) / 2.0
+				}
 			}
 			st := strategy.New(md, params)
 

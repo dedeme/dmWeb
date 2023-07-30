@@ -8,7 +8,7 @@ func Get() string {
 	return "<h3>Símbolos</h3>" +
 		"<pre>" +
 		"<i> s</i>: Ratio de separación inicial<br>" +
-		"<i> &Delta;</i>: Ratio de incremento" +
+		"<i> &Delta;</i>: Ratio de incremento<br>" +
 		"<i> q</i>: Última cotización<br>" +
 		"<i> r</i>: Referencia<br>" +
 		"<i>r'</i>: Nueva referencia<br>" +

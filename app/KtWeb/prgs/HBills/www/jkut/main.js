@@ -11,28 +11,28 @@ import * as stays from  "./pgs/stays.js";
 import * as summary from  "./pgs/summary.js";
 import * as i18n from  "./i18n.js";
 
-const Q = sys.$checkNull(ui.q);
-const II = sys.$checkNull(i18n.tlt);
+const Q =sys.$checkNull( ui.q);
+const II =sys.$checkNull( i18n.tlt);
 
 
- async function mk (wg)  {sys.$params(arguments.length, 1);
-  const ok = sys.$checkNull(await  client.connect());
+ async  function mk(wg)  {sys.$params(arguments.length, 1);
+  const ok =sys.$checkNull( await  client.connect());
   if (sys.asBool(!sys.asBool(ok))) {
     ui.alert(II("KtWeb session is closed.\nAuthenticating from KtWeb:Main."));
     window.location.assign("http://" + window.location.host + "/Main");
     return;
   }
 
-  const Rp = sys.$checkNull(await  client.send({
+  const Rp =sys.$checkNull( await  client.send({
     prg: "Main", 
     source: "Main",
     rq: "lang"
   }));
   if (sys.asBool(sys.$eq(Rp.lang , "en"))) i18n.en();
 
-  const Url = sys.$checkNull(ui.url());
+  const Url =sys.$checkNull( ui.url());
   const page =sys.$checkNull(sys.asBool( dic.hasKey(Url, "0")) ? Url["0"] : "summary");
-  const menuWg = sys.$checkNull(menu.mk(
+  const menuWg =sys.$checkNull( menu.mk(
     [ menu.tlink("summary", II("Summary"), []),
       menu.separator(),
       menu.tlink("bills", II("Bills"), []),
@@ -44,7 +44,7 @@ const II = sys.$checkNull(i18n.tlt);
     false
   ));
 
-  const body = sys.$checkNull(Q("div"));
+  const body =sys.$checkNull( Q("div"));
 
   switch (page) {
     case "bills":{ bills.mk(body);break;}
@@ -61,15 +61,15 @@ const II = sys.$checkNull(i18n.tlt);
 
 
 
-const wg = sys.$checkNull(Q("div"));
+const wg =sys.$checkNull( Q("div"));
 
 
-export function load ()  {sys.$params(arguments.length, 0);
+export  function load()  {sys.$params(arguments.length, 0);
   mk(wg);
 };
 
 client.init(true, "KtWeb", function()  {sys.$params(arguments.length, 0);
-  const msgWg = sys.$checkNull(Q("div"));
+  const msgWg =sys.$checkNull( Q("div"));
   msgPg.mk(msgWg, II("Session is expired."), true);
   Q("@body")
     .removeAll()

@@ -6,19 +6,19 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 import * as monthAnn from  "../data/monthAnn.js";
 import * as i18n from  "../i18n.js";
 
-const Q = sys.$checkNull(ui.q);
-const II = sys.$checkNull(i18n.tlt);
+const Q =sys.$checkNull( ui.q);
+const II =sys.$checkNull( i18n.tlt);
 
 
-const month = sys.$checkNull(0);
-const place = sys.$checkNull(1);
-const amount = sys.$checkNull(2);
+const month =sys.$checkNull( 0);
+const place =sys.$checkNull( 1);
+const amount =sys.$checkNull( 2);
 
 
 
-export function mk (Ann, fclose, faccept)  {sys.$params(arguments.length, 3);
+export  function mk(Ann, fclose, faccept)  {sys.$params(arguments.length, 3);
   const place0 =sys.$checkNull(sys.asBool( Ann[place]) ? Ann[place][0] : "");
-  const entry = sys.$checkNull(Q("input")
+  const entry =sys.$checkNull( Q("input")
     .att("type", "text")
     .att("id", "formEntry")
     .style("width:100px")
@@ -29,12 +29,12 @@ export function mk (Ann, fclose, faccept)  {sys.$params(arguments.length, 3);
       sys.asBool(sys.$eq(ev.code.toLowerCase() , "numpadenter")) ||
       sys.asBool(sys.$eq(ev.code.toLowerCase() , "enter")))
     ) {
-      const pVal = sys.$checkNull(entry.getValue());
+      const pVal =sys.$checkNull( entry.getValue());
       if (sys.asBool(sys.$eq(pVal , place0))) {
         fclose();
       } else {
         const Place =sys.$checkNull(sys.asBool( sys.$eq(pVal , "")) ? [] : [pVal]);
-        const A2 = sys.$checkNull(monthAnn.mk(
+        const A2 =sys.$checkNull( monthAnn.mk(
           Ann[month],
           Place,
           Ann[amount]

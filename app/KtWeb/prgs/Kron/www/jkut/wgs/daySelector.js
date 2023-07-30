@@ -24,7 +24,8 @@ export  function mk(wg, days, editable)  {sys.$params(arguments.length, 3);
 
   
    function click(n)  {sys.$params(arguments.length, 1);
-    if (sys.asBool(arr.any(days, function(d)  {sys.$params(arguments.length, 1);  return sys.$eq(d , n);}))) arr.remove(days, n);
+    const ix =sys.$checkNull( arr.index(days, function(d)  {sys.$params(arguments.length, 1);  return sys.$eq(d , n);}));
+    if (sys.asBool(sys.$neq(ix ,  -1))) arr.remove(days, ix);
     else arr.push(days, n);
     Show[0]();
   };

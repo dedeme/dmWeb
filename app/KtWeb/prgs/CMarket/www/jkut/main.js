@@ -6,7 +6,12 @@ import * as iter from './_js/iter.js';import * as str from './_js/str.js';import
 import * as cts from  "./data/cts.js";
 import * as msgPg from  "./pgs/msgPg.js";
 import * as home from  "./pgs/home/home.js";
+import * as acc from  "./pgs/acc/acc.js";
+import * as dailyPg from  "./pgs/daily/dailyPg.js";
+import * as models from  "./pgs/models/models.js";
+import * as settings from  "./pgs/settings/settings.js";
 import * as dmenu from  "./wgs/dmenu.js";
+import * as msg from  "./wgs/msg.js";
 import * as i18n from  "./i18n.js";
 
 const Q =sys.$checkNull( ui.q);
@@ -36,16 +41,19 @@ const II =sys.$checkNull( i18n.tlt);
   if (sys.asBool(!sys.asBool(LcPath))) LcPath.push("home");
 
   const target =sys.$checkNull(   
-      sys.$eq(LcPath[0],"models")|| sys.$eq(LcPath[0],"daily")|| sys.$eq(LcPath[0],"acc")|| sys.$eq(LcPath[0],"settings")? LcPath[0]:
+      sys.$eq(LcPath[0],"daily")|| sys.$eq(LcPath[0],"acc")|| sys.$eq(LcPath[0],"settings")? LcPath[0]:
        "home"
     );
   arr.shift(LcPath);
 
   const menuDiv =sys.$checkNull( Q("div"));
   const bodyDiv =sys.$checkNull( Q("div"));
-   dmenu.mk(menuDiv, target);
+  const menu =sys.$checkNull( dmenu.mk(menuDiv, target));
 
   switch (target) {
+    case "daily":{ dailyPg.mk(bodyDiv, menu, LcPath);break;}
+    case "acc":{ acc.mk(bodyDiv, menu, LcPath);break;}
+    case "settings":{ settings.mk(bodyDiv, menu, LcPath);break;}
     default:{ home.mk(bodyDiv);}
   }
 
@@ -79,6 +87,8 @@ Q("@body")
   .removeAll()
   .add(wg)
   .add(cts.foot)
+  .add(ui.upTop("up"))
+  .add(msg.wg)
 ;
 
 load();

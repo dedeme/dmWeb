@@ -7,27 +7,27 @@ import * as i18n from  "../i18n.js";
 import * as cts from  "../data/cts.js";
 import * as progressBar from  "../wgs/progressBar.js";
 
-const Q = sys.$checkNull(ui.q);
-const II = sys.$checkNull(i18n.tlt);
+const Q =sys.$checkNull( ui.q);
+const II =sys.$checkNull( i18n.tlt);
 
 
 
-export async function mk (wg, id)  {sys.$params(arguments.length, 2);
-  const Rp = sys.$checkNull(await  client.send({
+export  async  function mk(wg, id)  {sys.$params(arguments.length, 2);
+  const Rp =sys.$checkNull( await  client.send({
     prg: cts.appName,
     source: "Runner",
     rq: "run",
     id: id
   }));
-  const tm = sys.$checkNull(math.toInt(Rp.tm));
+  const tm =sys.$checkNull( math.toInt(Rp.tm));
 
-  const startTime = sys.$checkNull(time.now());
-  const tmTimer = sys.$checkNull(timer.mk(1000));
-  const bkTimer = sys.$checkNull(timer.mk(1000));
-  const progressDiv = sys.$checkNull(Q("div"));
-  const TmProgressBar = sys.$checkNull([[]]);
-  const BkProgressBar = sys.$checkNull([[]]);
-  const editor = sys.$checkNull(Q("textarea")
+  const startTime =sys.$checkNull( time.now());
+  const tmTimer =sys.$checkNull( timer.mk(1000));
+  const bkTimer =sys.$checkNull( timer.mk(1000));
+  const progressDiv =sys.$checkNull( Q("div"));
+  const TmProgressBar =sys.$checkNull( [[]]);
+  const BkProgressBar =sys.$checkNull( [[]]);
+  const editor =sys.$checkNull( Q("textarea")
     .att("rows", 10)
     .att("cols", 80)
     .att("spellcheck", false)
@@ -35,30 +35,30 @@ export async function mk (wg, id)  {sys.$params(arguments.length, 2);
   ;
 
   if (sys.asBool(tm < 0)) {
-    TmProgressBar[0] =sys.$checkExists(TmProgressBar[0], sys.$checkNull(progressBar.mk(progressDiv, 0)));
+    TmProgressBar[0] =sys.$checkExists(TmProgressBar[0],sys.$checkNull( progressBar.mk(progressDiv, 0)));
     TmProgressBar[0].lock(II("Time to read files list is not kown yet"));
   } else {
-    const TmProgressBar = sys.$checkNull(progressBar.mk(progressDiv, tm));
+    const TmProgressBar =sys.$checkNull( progressBar.mk(progressDiv, tm));
     TmProgressBar.show();
   }
 
   
 
   
-  function toList (ev)  {sys.$params(arguments.length, 1);
+   function toList(ev)  {sys.$params(arguments.length, 1);
     window.location.assign("");
   };
 
   
-  async function bkProgress ()  {sys.$params(arguments.length, 0);
-    const Rp = sys.$checkNull(await  client.send({
+   async  function bkProgress()  {sys.$params(arguments.length, 0);
+    const Rp =sys.$checkNull( await  client.send({
       prg: cts.appName,
       source: "Runner",
       rq: "state",
       id: id
     }));
-    const State = sys.$checkNull(arr.map(Rp.state, math.toInt));
-    const Errors = sys.$checkNull(Rp.errors);
+    const State =sys.$checkNull( arr.map(Rp.state, math.toInt));
+    const Errors =sys.$checkNull( Rp.errors);
 
     if (sys.asBool(sys.$eq(arr.size(State) , 0))) {
       timer.stop(bkTimer);
@@ -71,15 +71,15 @@ export async function mk (wg, id)  {sys.$params(arguments.length, 2);
   };
 
   
-  async function tmProgress ()  {sys.$params(arguments.length, 0);
-    const Rp = sys.$checkNull(await  client.send({
+   async  function tmProgress()  {sys.$params(arguments.length, 0);
+    const Rp =sys.$checkNull( await  client.send({
       prg: cts.appName,
       source: "Runner",
       rq: "state",
       id: id
     }));
-    const State = sys.$checkNull(arr.map(Rp.state, math.toInt));
-    const Errors = sys.$checkNull(Rp.errors);
+    const State =sys.$checkNull( arr.map(Rp.state, math.toInt));
+    const Errors =sys.$checkNull( Rp.errors);
 
     if (sys.asBool(sys.$neq(arr.size(State) , 1))) {
       timer.stop(tmTimer);
@@ -91,7 +91,7 @@ export async function mk (wg, id)  {sys.$params(arguments.length, 2);
         tm: time.now() - startTime
       });
       const end =sys.$checkNull(sys.asBool( sys.$eq(arr.size(State) , 2)) ? State[1] : 0);
-      BkProgressBar[0] =sys.$checkExists(BkProgressBar[0], sys.$checkNull(progressBar.mk(progressDiv, end)));
+      BkProgressBar[0] =sys.$checkExists(BkProgressBar[0],sys.$checkNull( progressBar.mk(progressDiv, end)));
       BkProgressBar[0].show();
       timer.run(bkTimer, bkProgress);
     } else {

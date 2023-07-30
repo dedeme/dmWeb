@@ -3,7 +3,6 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 
 
 
-import * as fns from  "../data/fns.js";
 
 
 
@@ -17,19 +16,18 @@ import * as fns from  "../data/fns.js";
 
 
 
-
-export function mk (id, source, sourceError, backup, backupError, msgs, tm, state)  {sys.$params(arguments.length, 8);
+export  function mk(id, source, sourceError, backup, backupError, msgs, tm, state)  {sys.$params(arguments.length, 8);
    return { id:id, source:source, sourceError:sourceError, backup:backup, backupError:backupError, msgs:msgs, tm:tm, state:state };};
 
 
-export function isRunning (BkP)  {sys.$params(arguments.length, 1);  return sys.asBool(sys.$eq(arr.size(BkP.state) , 1)) || sys.asBool((
+export  function isRunning(BkP)  {sys.$params(arguments.length, 1);  return sys.asBool(sys.$eq(arr.size(BkP.state) , 1)) || sys.asBool((
     sys.asBool(sys.asBool(sys.$eq(arr.size(BkP.state) , 2)) &&
     sys.asBool(sys.$neq(BkP.state[1] , 0))) &&
     sys.asBool(BkP.state[1] - BkP.state[0] > 0)
   ));};
 
 
-export function toJs (BkP)  {sys.$params(arguments.length, 1);  return [
+export  function toJs(BkP)  {sys.$params(arguments.length, 1);  return [
     BkP.id,
     BkP.source,
     BkP.sourceError,
@@ -41,7 +39,7 @@ export function toJs (BkP)  {sys.$params(arguments.length, 1);  return [
   ];};
 
 
-export function fromJs (A)  {sys.$params(arguments.length, 1);
+export  function fromJs(A)  {sys.$params(arguments.length, 1);
    return mk(
     A[0],
     A[1],
@@ -49,7 +47,7 @@ export function fromJs (A)  {sys.$params(arguments.length, 1);
     A[3],
     A[4],
     A[5],
-    fns.ftoi(A[6]),
-    arr.map(A[7], fns.ftoi)
+    A[6],
+    A[7]
   );
 };

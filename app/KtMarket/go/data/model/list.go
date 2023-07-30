@@ -9,5 +9,7 @@ func List() []*T {
 		newQfix(),
 		newQmob(),
 		newAppr(),
+    newAppr2(),
+		newEa(),
 	}
 }

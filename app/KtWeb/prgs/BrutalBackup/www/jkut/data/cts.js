@@ -3,14 +3,14 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 
 
 
-const Q = sys.$checkNull(ui.q);
+const Q =sys.$checkNull( ui.q);
 
 
-export const appName = sys.$checkNull("BrutalBackup");
+export const appName =sys.$checkNull( "BrutalBackup");
 
-export const version = sys.$checkNull("202205");
+export const version =sys.$checkNull( "202205");
 
-export const foot = sys.$checkNull(Q("table")
+export const foot =sys.$checkNull( Q("table")
   .klass("main")
   .add(Q("tr")
     .add(Q("td")

@@ -6,16 +6,16 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 import * as i18n from  "../i18n.js";
 import * as main from  "../main.js";
 
-const Q = sys.$checkNull(ui.q);
-const II = sys.$checkNull(i18n.tlt);
+const Q =sys.$checkNull( ui.q);
+const II =sys.$checkNull( i18n.tlt);
 
 
-export function mk (wg, Cf, AllPaths)  {sys.$params(arguments.length, 3);
+export  function mk(wg, Cf, AllPaths)  {sys.$params(arguments.length, 3);
 
   
-  function validateChar (chars, id)  {sys.$params(arguments.length, 2);
+   function validateChar(chars, id)  {sys.$params(arguments.length, 2);
     for (let i = 0;i < str.len(chars); ++i) {
-      const ch = sys.$checkNull(chars[i]);
+      const ch =sys.$checkNull( chars[i]);
       if (sys.asBool(sys.$neq(str.index(id, ch) ,  -1)))
          return i18n.fmt(II("Name '%0' contains '%1'"), [id, ch]);
     }
@@ -23,7 +23,7 @@ export function mk (wg, Cf, AllPaths)  {sys.$params(arguments.length, 3);
   };
 
   
-  function validateId (id)  {sys.$params(arguments.length, 1);
+   function validateId(id)  {sys.$params(arguments.length, 1);
     const r =sys.$checkNull(sys.asBool( sys.$eq(id , ""))
       ? II("Name is missing")
       :sys.asBool( sys.$neq(str.index(id, " ") ,  -1))
@@ -39,12 +39,12 @@ export function mk (wg, Cf, AllPaths)  {sys.$params(arguments.length, 3);
   };
 
   
-  function validatePath (path)  {sys.$params(arguments.length, 1);
+   function validatePath(path)  {sys.$params(arguments.length, 1);
     if (sys.asBool(!sys.asBool(str.starts(path, "/"))))
        return i18n.fmt(II("Path '%0' does not start with '/'"), [path]);
-    const Path = sys.$checkNull([path]);
+    const Path =sys.$checkNull( [path]);
     while (sys.asBool(sys.asBool(str.len(Path[0]) > 1) && sys.asBool(str.ends(Path[0], "/"))))
-      Path[0] =sys.$checkExists(Path[0], sys.$checkNull(sys.$slice(Path[0],null, -1)));
+      Path[0] =sys.$checkExists(Path[0],sys.$checkNull( sys.$slice(Path[0],null, -1)));
     return sys.asBool( sys.$eq(Path[0] , "/"))
       ? II("Path is '/'")
       :sys.asBool( sys.$eq(Path[0] , ""))
@@ -54,22 +54,22 @@ export function mk (wg, Cf, AllPaths)  {sys.$params(arguments.length, 3);
   };
 
   
-  function validateIdPath (id, path)  {sys.$params(arguments.length, 2);
-    const err = sys.$checkNull(validateId(id));
+   function validateIdPath(id, path)  {sys.$params(arguments.length, 2);
+    const err =sys.$checkNull( validateId(id));
     return sys.asBool( sys.$neq(err , "")) ? err : validatePath(path);
   };
 
   
-  async function newPath (id, path)  {sys.$params(arguments.length, 2);
-    const err = sys.$checkNull(validateIdPath(id, path));
+   async  function newPath(id, path)  {sys.$params(arguments.length, 2);
+    const err =sys.$checkNull( validateIdPath(id, path));
     if (sys.asBool(sys.$neq(err , ""))) {
       ui.alert(err);
       return;
     }
 
-    const Path = sys.$checkNull([path]);
+    const Path =sys.$checkNull( [path]);
     while (sys.asBool(sys.asBool(str.len(Path[0]) > 1) && sys.asBool(str.ends(Path[0], "/"))))
-      Path[0] =sys.$checkExists(Path[0], sys.$checkNull(sys.$slice(Path[0],null, -1)));
+      Path[0] =sys.$checkExists(Path[0],sys.$checkNull( sys.$slice(Path[0],null, -1)));
     await client.ssend({
       prg: "KutDoc",
       source: "PathsPg",
@@ -81,7 +81,7 @@ export function mk (wg, Cf, AllPaths)  {sys.$params(arguments.length, 3);
   };
 
   
-  async function changeShowAll (e)  {sys.$params(arguments.length, 1);
+   async  function changeShowAll(e)  {sys.$params(arguments.length, 1);
     await client.ssend({
       prg: "KutDoc",
       source: "PathsPg",
@@ -91,7 +91,7 @@ export function mk (wg, Cf, AllPaths)  {sys.$params(arguments.length, 3);
   };
 
   
-  async function modifyPath (id, newId, path)  {sys.$params(arguments.length, 3);
+   async  function modifyPath(id, newId, path)  {sys.$params(arguments.length, 3);
     const err =sys.$checkNull(sys.asBool( sys.$eq(id , newId))
       ? validatePath(path)
       : validateIdPath(newId, path))
@@ -101,9 +101,9 @@ export function mk (wg, Cf, AllPaths)  {sys.$params(arguments.length, 3);
       return;
     }
 
-    const Path = sys.$checkNull([path]);
+    const Path =sys.$checkNull( [path]);
     while (sys.asBool(sys.asBool(str.len(Path[0]) > 1) && sys.asBool(str.ends(Path[0], "/"))))
-      Path[0] =sys.$checkExists(Path[0], sys.$checkNull(sys.$slice(Path[0],null, -1)));
+      Path[0] =sys.$checkExists(Path[0],sys.$checkNull( sys.$slice(Path[0],null, -1)));
 
     await client.ssend({
       prg: "KutDoc",
@@ -118,7 +118,7 @@ export function mk (wg, Cf, AllPaths)  {sys.$params(arguments.length, 3);
   };
 
   
-  async function changeShown (id, error)  {sys.$params(arguments.length, 2);
+   async  function changeShown(id, error)  {sys.$params(arguments.length, 2);
     if (sys.asBool(error)) {
       ui.alert(II("This source can not be selected, because it does not exist"));
       return;
@@ -133,7 +133,7 @@ export function mk (wg, Cf, AllPaths)  {sys.$params(arguments.length, 3);
   };
 
   
-  async function deletePath (id)  {sys.$params(arguments.length, 1);
+   async  function deletePath(id)  {sys.$params(arguments.length, 1);
     if (sys.asBool(!sys.asBool(ui.confirm(i18n.fmt(II("Delete %0?"), [id]))))) return;
     await client.ssend({
       prg: "KutDoc",
@@ -152,7 +152,7 @@ export function mk (wg, Cf, AllPaths)  {sys.$params(arguments.length, 3);
   );
 
   
-  function modifyBegin (id)  {sys.$params(arguments.length, 1);
+   function modifyBegin(id)  {sys.$params(arguments.length, 1);
     Q("#newEnter")
       .removeAll()
       .add(Q("div")
@@ -168,9 +168,9 @@ export function mk (wg, Cf, AllPaths)  {sys.$params(arguments.length, 3);
     ;
 
     for (let p  of sys.$forObject( Paths)) {
-      const pId = sys.$checkNull(p.id);
-      const path = sys.$checkNull(p.path);
-      const isShown = sys.$checkNull(p.isShown);
+      const pId =sys.$checkNull( p.id);
+      const path =sys.$checkNull( p.path);
+      const isShown =sys.$checkNull( p.isShown);
 
       if (sys.asBool(sys.$eq(pId , id))) {
         Q("#" + pId + ":InOut")
@@ -276,10 +276,10 @@ export function mk (wg, Cf, AllPaths)  {sys.$params(arguments.length, 3);
         .adds(sys.asBool(
           Paths.length > 0)
             ? arr.map(Paths, function(entry)  {sys.$params(arguments.length, 1);
-                const id = sys.$checkNull(entry.id);
-                const path = sys.$checkNull(entry.path);
-                const sel = sys.$checkNull(entry.isShown);
-                const error = sys.$checkNull(!sys.asBool(entry.isValid));
+                const id =sys.$checkNull( entry.id);
+                const path =sys.$checkNull( entry.path);
+                const sel =sys.$checkNull( entry.isShown);
+                const error =sys.$checkNull( !sys.asBool(entry.isValid));
 
                  return Q("tr")
                   .add(Q("td")

@@ -10,33 +10,33 @@ import * as fns from  "../data/fns.js";
 import * as bar from  "../wgs/bar.js";
 import * as i18n from  "../i18n.js";
 
-const Q = sys.$checkNull(ui.q);
-const II = sys.$checkNull(i18n.tlt);
+const Q =sys.$checkNull( ui.q);
+const II =sys.$checkNull( i18n.tlt);
 
 
-const date = sys.$checkNull(0);
+const date =sys.$checkNull( 0);
 
-const month = sys.$checkNull(0);
+const month =sys.$checkNull( 0);
 
-const amount = sys.$checkNull(2);
+const amount =sys.$checkNull( 2);
 
 
-export  async function mk (wg)  {sys.$params(arguments.length, 1);
-  const Rp = sys.$checkNull(await  client.send({
+export  async  function mk(wg)  {sys.$params(arguments.length, 1);
+  const Rp =sys.$checkNull( await  client.send({
     prg: cts.appName,
     source: "Summary",
     rq: "idata"
   }));
-  const Years = sys.$checkNull(Rp.years);
-  const BillAnns = sys.$checkNull(Rp.billAnns);
-  const StayAnns = sys.$checkNull(Rp.stayAnns);
+  const Years =sys.$checkNull( Rp.years);
+  const BillAnns =sys.$checkNull( Rp.billAnns);
+  const StayAnns =sys.$checkNull( Rp.stayAnns);
 
   
-  function table ()  {sys.$params(arguments.length, 0);
+   function table()  {sys.$params(arguments.length, 0);
     
-    function fmax (n1, n2)  {sys.$params(arguments.length, 2); return sys.asBool( n1 > n2) ? n1 : n2;};
+     function fmax(n1, n2)  {sys.$params(arguments.length, 2); return sys.asBool( n1 > n2) ? n1 : n2;};
     
-    const Rows = sys.$checkNull(arr.map(Years, function(y)  {sys.$params(arguments.length, 1);  return [
+    const Rows =sys.$checkNull( arr.map(Years, function(y)  {sys.$params(arguments.length, 1);  return [
         y,
         arr.reduce(
           arr.filter(BillAnns, function(A)  {sys.$params(arguments.length, 1);  return str.starts(A[month], y);}),
@@ -47,10 +47,10 @@ export  async function mk (wg)  {sys.$params(arguments.length, 1);
           0.0, function(r, A)  {sys.$params(arguments.length, 2);  return r + A[amount];}
         )
       ];}));
-    const max = sys.$checkNull(arr.reduce(Rows, 0.0, function(r, Row)  {sys.$params(arguments.length, 2);  return fmax(Row[1] + Row[2], r);}));
-    const sumBills = sys.$checkNull(arr.reduce(Rows, 0.0, function(r, Row)  {sys.$params(arguments.length, 2);  return r + Row[1];}));
-    const sumStays = sys.$checkNull(arr.reduce(Rows, 0.0, function(r, Row)  {sys.$params(arguments.length, 2);  return r + Row[2];}));
-    function barWg (Row)  {sys.$params(arguments.length, 1);  return bar.mkWg(
+    const max =sys.$checkNull( arr.reduce(Rows, 0.0, function(r, Row)  {sys.$params(arguments.length, 2);  return fmax(Row[1] + Row[2], r);}));
+    const sumBills =sys.$checkNull( arr.reduce(Rows, 0.0, function(r, Row)  {sys.$params(arguments.length, 2);  return r + Row[1];}));
+    const sumStays =sys.$checkNull( arr.reduce(Rows, 0.0, function(r, Row)  {sys.$params(arguments.length, 2);  return r + Row[2];}));
+     function barWg(Row)  {sys.$params(arguments.length, 1);  return bar.mkWg(
         bar.mk(300, 2, (Row[1] + Row[2]) / max, "#c0c080", "#ffffff")
       );};
 

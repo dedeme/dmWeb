@@ -7,54 +7,52 @@ import * as log from  "../libdm/log.js";
 import * as cts from  "../data/cts.js";
 import * as i18n from  "../i18n.js";
 
-const Q = sys.$checkNull(ui.q);
-const II = sys.$checkNull(i18n.tlt);
+const Q =sys.$checkNull( ui.q);
+const II =sys.$checkNull( i18n.tlt);
 
 
-export async function mk (wg)  {sys.$params(arguments.length, 1);
-  const Rp = sys.$checkNull(await  client.send({
+export  async  function mk(wg)  {sys.$params(arguments.length, 1);
+  const Rp =sys.$checkNull( await  client.send({
     prg: cts.appName,
     source: "Home",
     rq: "idata"
   }));
-  const activity = sys.$checkNull(Rp.activity);
+  const activity =sys.$checkNull( Rp.activity);
 
-  const activities = sys.$checkNull({
+  const activities =sys.$checkNull( {
     stopped: II("Stopped"),
-    Generating: II("Generating"),
-    Evaluating: II("Evaluating"),
-    Selecting: II("Selecting"),
-    Saving: II("Saving")
+    active: II("Active")
   });
 
-  const logDiv = sys.$checkNull(Q("div"));
+  const logDiv =sys.$checkNull( Q("div"));
 
 
 
-  async function activate (ev)  {sys.$params(arguments.length, 1);
-    logDiv
-      .removeAll()
-      .add(Q("table")
-        .att("align", "center")
-        .add(Q("tr")
-          .add(Q("td")
-            .add(ui.img("wait.gif")))))
-    ;
+   async  function activate(ev)  {sys.$params(arguments.length, 1);
     await client.send({
       prg: cts.appName,
       source: "Home",
       rq: "activate"
     });
-    mk(wg);
+    window.location.reload(true);
+  };
+
+   async  function deactivate(ev)  {sys.$params(arguments.length, 1);
+    await client.send({
+      prg: cts.appName,
+      source: "Home",
+      rq: "deactivate"
+    });
+    window.location.reload(true);
   };
 
 
 
   
-  function show ()  {sys.$params(arguments.length, 0);
+   function show()  {sys.$params(arguments.length, 0);
     
-    async function load (fn)  {sys.$params(arguments.length, 1);
-      const Rp = sys.$checkNull(await  client.send({
+     async  function load(fn)  {sys.$params(arguments.length, 1);
+      const Rp =sys.$checkNull( await  client.send({
         prg: cts.appName,
         source: "Home",
         rq: "getLog"
@@ -63,7 +61,7 @@ export async function mk (wg)  {sys.$params(arguments.length, 1);
     };
 
     
-    async function reset (fn)  {sys.$params(arguments.length, 1);
+     async  function reset(fn)  {sys.$params(arguments.length, 1);
       await client.send({
         prg: cts.appName,
         source: "Home",
@@ -73,7 +71,7 @@ export async function mk (wg)  {sys.$params(arguments.length, 1);
     };
 
     
-    function tlt (tx)  {sys.$params(arguments.length, 1);    
+     function tlt(tx)  {sys.$params(arguments.length, 1);    
       return sys.$eq(tx,"All log entries will be deleted.\nContinue?")?
         II("All log entries will be deleted.\nContinue?"):
       sys.$eq(tx,"2 Days")? II("2 Days"):
@@ -103,12 +101,13 @@ export async function mk (wg)  {sys.$params(arguments.length, 1);
           .add(Q("td")
             .style("width:100px;text-align:center")
             .add(sys.asBool(sys.$neq(activity , "stopped"))
-                ? Q("span")
-                  .text("* * *")
+                ? ui.link(deactivate)
+                  .klass("link")
+                  .text(II("Stop"))
                 : ui.link(activate)
                   .klass("link")
-                  .text(II("Start")
-              )))))
+                  .text(II("Start"))
+              ))))
       .add(Q("hr"))
       .add(logDiv)
     ;

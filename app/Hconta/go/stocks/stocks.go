@@ -17,7 +17,7 @@ func Process(ck string, mrq map[string]string) string {
     lastDate := js.Rs(mrq["lastDate"])
 		hcontaCash, hcontaSum := hcontaData()                   // hconta.go
 		stocksStocks, stocksSum := stocksData()                 // stocksData
-		ktMarketStocks, ktMarketCash := ktMarketData(lastDate)  // ktMarket.go
+		ktMarketStocks, ktMarketCash := cMarketData(lastDate)  // cMarket.go
 		return cgi.Rp(ck, map[string]string{
 			"hcontaCash":        js.Wd(hcontaCash),
 			"hcontaSum":         js.Wd(hcontaSum),

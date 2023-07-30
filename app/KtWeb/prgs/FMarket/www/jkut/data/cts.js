@@ -3,14 +3,14 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 
 
 
-const Q = sys.$checkNull(ui.q);
+const Q =sys.$checkNull( ui.q);
 
 
-export const appName = sys.$checkNull("FMarket");
+export const appName =sys.$checkNull( "FMarket");
 
-export const version = sys.$checkNull("202205");
+export const version =sys.$checkNull( "202207");
 
-export const foot = sys.$checkNull(Q("table")
+export const foot =sys.$checkNull( Q("table")
   .klass("main")
   .add(Q("tr")
     .add(Q("td")
@@ -22,12 +22,16 @@ export const foot = sys.$checkNull(Q("table")
 ;
 
 
-export const modelIxs = sys.$checkNull({
-  APRX: 0,
-  ME: 1,
-  ME2: 2,
-  MM: 3,
-  "MX_MN": 4,
-  QFIJO: 5,
-  QMOV: 6
-});
+export const initialCapital =sys.$checkNull( 250000.0);
+
+
+export const assetsRatio =sys.$checkNull( 0.7);
+
+
+export const profitsAvgRatio =sys.$checkNull( 1.0 - assetsRatio);
+
+
+export const maxProfitsAvgRatio =sys.$checkNull( 3.0);
+
+
+export const maxAssets =sys.$checkNull( initialCapital * maxProfitsAvgRatio);

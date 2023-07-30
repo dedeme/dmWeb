@@ -22,7 +22,7 @@ class Result {
     final p = profits > Cts.maxProfitsAvgRatio ? Cts.maxProfitsAvgRatio : profits;
     return
       ( a * Cts.assetsRatio / Cts.maxAssetsRatio +
-        (1 + p) * Cts.profitsAvgRatio / (1 + Cts.maxProfitsAvgRatio)
+        (1 + p) * Cts.profitsAvgRatio / Cts.maxProfitsAvgRatio
       ) / 2
     ;
   }

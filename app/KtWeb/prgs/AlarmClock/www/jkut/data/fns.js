@@ -7,7 +7,7 @@ import * as i18n from  "../i18n.js";
 
 
 
-export function ftoi (n)  {sys.$params(arguments.length, 1);  return math.toInt(n);};
+export  function ftoi(n)  {sys.$params(arguments.length, 1);  return math.toInt(n);};
 
 
-export const tlt = sys.$checkNull(i18n.tlt);
+export const tlt =sys.$checkNull( i18n.tlt);

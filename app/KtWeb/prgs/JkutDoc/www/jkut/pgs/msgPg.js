@@ -6,17 +6,17 @@ import * as iter from '../_js/iter.js';import * as str from '../_js/str.js';impo
 import * as i18n from  "../i18n.js";
 import * as cts from  "../cts.js";
 
-const Q = sys.$checkNull(ui.q);
-const II = sys.$checkNull(i18n.tlt);
+const Q =sys.$checkNull( ui.q);
+const II =sys.$checkNull( i18n.tlt);
 
 
 
 
 
-export function mk (wg, msg, withReload)  {sys.$params(arguments.length, 3);
-  const tx = sys.$checkNull("<a href='?@'>" + II("here") + "</a>");
-  const reload =
-    sys.$checkNull("<p><b>" +
+export  function mk(wg, msg, withReload)  {sys.$params(arguments.length, 3);
+  const tx =sys.$checkNull( "<a href='?@'>" + II("here") + "</a>");
+  const reload =sys.$checkNull(
+    "<p><b>" +
     i18n.fmt(II("Click %0 to continue."), [tx]) +
     "</b></p>");
   wg

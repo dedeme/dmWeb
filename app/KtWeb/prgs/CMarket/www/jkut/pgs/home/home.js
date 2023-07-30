@@ -13,13 +13,6 @@ const II =sys.$checkNull( i18n.tlt);
 
 
 export  async  function mk(wg)  {sys.$params(arguments.length, 1);
-  await client.send({
-    prg: cts.appName,
-    module: "Home",
-    source: "Home",
-    rq: "idata"
-  });
-
   const logDiv =sys.$checkNull( Q("div"));
 
   
@@ -61,16 +54,6 @@ export  async  function mk(wg)  {sys.$params(arguments.length, 1);
 
   wg
     .removeAll()
-    .adds(arr.map([0, 1], function(i)  {sys.$params(arguments.length, 1);  return Q("div").klass("separator");}))
-    .add(Q("table")
-      .klass("frame")
-      .att("align", "center")
-      .add(Q("tr")
-        .add(Q("td")
-          .add(Q("span")
-            .html(
-              "Los mejores resultados de los modelos usados por los inversores son:<br>"
-            )))))
     .add(logDiv)
   ;
 };
