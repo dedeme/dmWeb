@@ -6,7 +6,7 @@ package cts
 
 const (
 	APP  = "Wallpapers"
-	HOME = "/dm/wwwcgi/dmcgi/" + APP
+	HOME = "/var/www/wwwcgi/dmcgi/" + APP
 	// Number of picture groups
 	PICTURE_GROUPS = 10
 )

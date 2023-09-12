@@ -64,7 +64,7 @@ func update(group string) {
 
 func readPictList(group string) []string {
 	var pictures []string
-	infs, err := ioutil.ReadDir(path.Join("/dm/fondosEscritorio/jpg", group))
+	infs, err := ioutil.ReadDir(path.Join("/var/www/html/fondosEscritorio/jpg", group))
 	if err != nil {
 		panic(err)
 	}

@@ -27,7 +27,7 @@ func Initialize(parentDir string) {
 // Returns groups list
 func GetGroups() []string {
 	var groups []string
-	infs, err := ioutil.ReadDir("/dm/danceBic")
+	infs, err := ioutil.ReadDir("/var/www/html/danceBic")
 	if err != nil {
 		panic(err)
 	}
@@ -75,7 +75,7 @@ func update(group string) {
 
 func readSongList(group string) []string {
 	var songs []string
-	infs, err := ioutil.ReadDir(path.Join("/dm/danceBic", group))
+	infs, err := ioutil.ReadDir(path.Join("/var/www/html/danceBic", group))
 	if err != nil {
 		panic(err)
 	}
